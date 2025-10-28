@@ -9,29 +9,29 @@ import LoadingHomePage from "./pages/loadingHomePage/LoadingHomePage";
 import NotFound404Page from "./pages/notFound404Page/NotFound404Page";
 import ProvisoirPage from "./pages/ProvisoirPage";
 import RegisterPage from "./pages/RegisterPage";
-import { useMyProfilStore } from "./zustand/myProfilStore";
+import { useMyProfileStore } from "./zustand/myProfileStore";
 import Conversations from "./pages/Conversations";
 
 const App = () => {
   const { data, loading } = useGetMeProfileQuery();
-  const { setUserProfil } = useMyProfilStore();
+  const { setUserProfile } = useMyProfileStore();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (data?.getMeProfile) {
-      setUserProfil(data.getMeProfile);
+      setUserProfile(data.getMeProfile);
       // si on était sur une page que on est pas censé étre une foie connecté on redirige vers la page principale
       if (["/", "/connexion", "/inscription"].includes(window.location.pathname)) {
         navigate("/dashboard");
       }
     } else if (!loading) {
-      setUserProfil(null);
+      setUserProfile(null);
       // si on est pas connecté on redirige forcement vers la page de connexion ou d'inscription
       if (!["/connexion", "/inscription", "/"].includes(window.location.pathname)) {
         navigate("/");
       }
     }
-  }, [data, loading, setUserProfil]);
+  }, [data, loading, setUserProfile]);
 
   if (loading) return <LoadingHomePage />;
 

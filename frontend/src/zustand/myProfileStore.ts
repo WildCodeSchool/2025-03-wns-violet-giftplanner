@@ -2,14 +2,14 @@ import { create } from "zustand";
 import type { Users } from "../generated/graphql-types";
 
 type State = {
-  userProfil: null | Users;
-  setUserProfil: (user: null | Users) => void;
-  clearUserProfil: () => void;
+  userProfile: null | Users;
+  setUserProfile: (user: null | Users) => void;
+  clearUserProfile: () => void;
 };
-export const useMyProfilStore = create<State>((set) => ({
-  userProfil: null,
-  setUserProfil: (newUser) => set(() => ({ userProfil: newUser })),
-  clearUserProfil: () => set({ userProfil: null }),
+export const useMyProfileStore = create<State>((set) => ({
+  userProfile: null,
+  setUserProfile: (newUser) => set(() => ({ userProfile: newUser })),
+  clearUserProfile: () => set({ userProfile: null }),
 }));
 
 // export const userProfil = () => useUserStore((set) => set.user);

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useSignupMutation } from "../../generated/graphql-types";
 import consoleErrorDev from "../../hook/erreurMod";
-import { useMyProfilStore } from "../../zustand/myProfilStore";
+import { useMyProfileStore } from "../../zustand/myProfileStore";
 
 const RegisterForm = () => {
   const [form, setForm] = useState({
@@ -18,7 +18,7 @@ const RegisterForm = () => {
   const [hasFile, setHasFile] = useState(false);
   const navigate = useNavigate();
   const [messageError, setMessageError] = useState("");
-  const { setUserProfil } = useMyProfilStore();
+  const { setUserProfile } = useMyProfileStore();
 
   const [signup] = useSignupMutation();
 
@@ -83,7 +83,7 @@ const RegisterForm = () => {
 
       // Si succès
       if (res.data) {
-        setUserProfil(res.data.signup);
+        setUserProfile(res.data.signup);
         navigate("/provisoir");
       }
     } catch (err: any) {
