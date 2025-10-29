@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router";
 import { useSignupMutation } from "../../generated/graphql-types";
 import consoleErrorDev from "../../hook/erreurMod";
 import { useMyProfileStore } from "../../zustand/myProfileStore";
+import "../auth/auth.css";
 
 const RegisterForm = () => {
   const [form, setForm] = useState({
