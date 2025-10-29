@@ -1,14 +1,14 @@
 import UserResolver from "../../src/resolvers/UserResolver";
-import Users from "../../src/entities/Users";
+import User from "../../src/entities/User";
 
 describe("UserResolver test unitaire", () => {
     describe("getAllUsers", () => {
         test("renvoie tous les utilisateurs existants", async () => {
             // constrie les fausses données
-            const fakeUsers = [{ id: 1, firstName: "Alice" }, { id: 2, firstName: "Bob" }] as Users[];
+            const fakeUsers = [{ id: 1, firstName: "Alice" }, { id: 2, firstName: "Bob" }] as User[];
 
             // simule la reponse de la bdd avec les fausses données
-            jest.spyOn(Users, "find").mockResolvedValue(fakeUsers);
+            jest.spyOn(User, "find").mockResolvedValue(fakeUsers);
 
             // crée une instance du resolver
             const resolver = new UserResolver();
@@ -18,12 +18,12 @@ describe("UserResolver test unitaire", () => {
             // vérifie que le résultat coorrespond aux fausses données
             expect(result).toEqual(fakeUsers);
             // verifie que la fausse méthode a été appelée une fois
-            expect(Users.find).toHaveBeenCalledTimes(1);
+            expect(User.find).toHaveBeenCalledTimes(1);
         });
 
         test("renvoie un tableau vide si aucun utilisateur", async () => {
             // simule la reponse de la bdd avec un tableau vide
-            jest.spyOn(Users, "find").mockResolvedValue([]);
+            jest.spyOn(User, "find").mockResolvedValue([]);
 
             // crée une instance du resolver
             const resolver = new UserResolver();
@@ -35,7 +35,7 @@ describe("UserResolver test unitaire", () => {
 
         test("propage une erreur si la DB échoue", async () => {
             // simule une erreur de la bdd
-            jest.spyOn(Users, "find").mockRejectedValue(new Error("DB down"));
+            jest.spyOn(User, "find").mockRejectedValue(new Error("DB down"));
 
             // crée une instance du resolver
             const resolver = new UserResolver();
@@ -45,8 +45,8 @@ describe("UserResolver test unitaire", () => {
 
         test("renvoie des utilisateurs avec les bons champs", async () => {
             // constrie les fausses données
-            const fakeUsers = [{ id: 50, firstName: "toto" }] as Users[];
-            jest.spyOn(Users, "find").mockResolvedValue(fakeUsers);
+            const fakeUsers = [{ id: 50, firstName: "toto" }] as User[];
+            jest.spyOn(User, "find").mockResolvedValue(fakeUsers);
 
             // crée une instance du resolver
             const resolver = new UserResolver();
@@ -62,7 +62,7 @@ describe("UserResolver test unitaire", () => {
         test("crée un utilisateur avec des données valides", async () => {
             // simule la création et la sauvegarde d'un utilisateur
             const saveMock = jest.fn().mockResolvedValue(true);
-            jest.spyOn(Users, "create").mockReturnValue({ id: 1, isAdmin: false, save: saveMock } as any);
+            jest.spyOn(User, "create").mockReturnValue({ id: 1, isAdmin: false, save: saveMock } as any);
 
             // crée une instance du resolver
             const resolver = new UserResolver();

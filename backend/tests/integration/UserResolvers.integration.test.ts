@@ -4,7 +4,7 @@ import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import { buildSchema } from "type-graphql";
 import dataSource from "../../src/config/db";
-import Users from "../../src/entities/Users";
+import User from "../../src/entities/User";
 import UserResolver from "../../src/resolvers/UserResolver";
 
 let server: ApolloServer;
@@ -12,9 +12,9 @@ let url: string;
 
 
 async function createData() {
-    await Users.save([
-        Users.create({ firstName: "bob", lastName: "robert", email: "bob.robert@gmail.com", password_hashed: "defegg", phone_number: "0612345678", date_of_birth: "11/09/2025" }),
-        Users.create({ firstName: "michel", lastName: "robert", email: "michel.robert@hotmail.com", password_hashed: "gfydtyfdftiu", phone_number: "0712345678", date_of_birth: "11/09/2025" }),
+    await User.save([
+        User.create({ firstName: "bob", lastName: "robert", email: "bob.robert@gmail.com", password_hashed: "defegg", phone_number: "0612345678", date_of_birth: "11/09/2025" }),
+        User.create({ firstName: "michel", lastName: "robert", email: "michel.robert@hotmail.com", password_hashed: "gfydtyfdftiu", phone_number: "0712345678", date_of_birth: "11/09/2025" }),
     ]);
 }
 
