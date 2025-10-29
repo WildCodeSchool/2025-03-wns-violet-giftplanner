@@ -55,8 +55,8 @@ describe("UserResolver test integration", () => {
         // verifie que la réponse contient les utilisateurs créés
         expect(res.body.data.getAllUsers).toEqual(
             expect.arrayContaining([
-                expect.objectContaining({ id: 1, firstName: "bob" }),
-                expect.objectContaining({ id: 2, firstName: "michel" }),
+                expect.objectContaining({ id: "1", firstName: "bob" }),
+                expect.objectContaining({ id: "2", firstName: "michel" }),
             ])
         );
     });

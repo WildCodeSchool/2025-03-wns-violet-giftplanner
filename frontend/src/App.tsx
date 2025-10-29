@@ -5,10 +5,10 @@ import Conversations from "./pages/Conversations";
 import Dashboard from "./pages/Dashboard";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
-import WishListPage from "./pages/WishListPage";
 import LoadingHomePage from "./pages/loadingHomePage/LoadingHomePage";
 import NotFound404Page from "./pages/notFound404Page/NotFound404Page";
 import RegisterPage from "./pages/RegisterPage";
+import WishListPage from "./pages/WishListPage";
 import { useMyProfileStore } from "./zustand/myProfileStore";
 
 const App = () => {
@@ -49,8 +49,8 @@ const App = () => {
         </Route>
 
         <Route path="*" element={<NotFound404Page />} />
-      </Route >
-    </Routes >
+      </Route>
+    </Routes>
   );
 };
 
