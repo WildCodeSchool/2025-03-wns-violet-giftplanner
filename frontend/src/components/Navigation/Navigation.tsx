@@ -1,20 +1,14 @@
-import Redirect from './Redirect'
-import Icon from "../utils/Icon";
 import { useNavigate } from "react-router-dom";
-
-import { useLogoutMutation } from '../../generated/graphql-types';
-import consoleErrorDev from '../../hook/erreurMod';
-import { useMyProfileStore } from '../../zustand/myProfileStore';
-
 import { toast } from "react-toastify";
-
-
-  
+import { useLogoutMutation } from "../../generated/graphql-types";
+import consoleErrorDev from "../../hook/erreurMod";
+import { useMyProfileStore } from "../../zustand/myProfileStore";
+import Icon from "../utils/Icon";
+import Redirect from "./Redirect";
 
 export default function Navigation() {
-
   const [logoutMutation] = useLogoutMutation();
-  const { clearUserProfile, userProfile } = useMyProfileStore();
+  const { clearUserProfile } = useMyProfileStore();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -35,32 +29,24 @@ export default function Navigation() {
   return (
     <div className="w-[12vw] max-w-[125px] bg-dark rounded-2xl flex flex-col justify-between gap-2 p-4">
       <div className="h-7/12 flex flex-col  justify-between ">
-        <div className= "w-full aspect-1/1">
-          <img src={`/images/avatar2.jpg`} alt="Profile" className=" border-4 border-white aspect-1/1 rounded-full object-cover" />
+        <div className="w-full aspect-1/1">
+          <img
+            src={`/images/avatar2.jpg`}
+            alt="Profile"
+            className=" border-4 border-white aspect-1/1 rounded-full object-cover"
+          />
         </div>
 
         <div className="text-white text-4xl h-auto flex flex-col flex-grow justify-around items-center">
-          <Redirect link='/dashboard/conversations'  icon={<Icon icon="chat"/>}/>
-          <Redirect link='/dashboard/wishlist'  icon={<Icon icon="gift" />}/>
-          <Redirect link='/dashboard/profile'  icon={<Icon icon="user" />}/>
+          <Redirect link="/dashboard/conversations" icon={<Icon icon="chat" />} />
+          <Redirect link="/dashboard/wishlist" icon={<Icon icon="gift" />} />
+          <Redirect link="/dashboard/profile" icon={<Icon icon="user" />} />
         </div>
       </div>
-      <div className="text-white h-2/12 flex flex-col justify-between items-center content-center"> 
-        <Redirect onClick={handleLogout}  icon={<Icon icon="logout" className='text-4xl'/>}/>
+      <div className="text-white h-2/12 flex flex-col justify-between items-center content-center">
+        <Redirect onClick={handleLogout} icon={<Icon icon="logout" className="text-4xl" />} />
         <p className="font-poppins-extra-bold text-xl">GiftChat.</p>
       </div>
-      
-      
     </div>
   );
 }
-
-
-{/* <Button
-        icon="dollar"
-        onClick={() => navigate("/dashboard/conversations")}
-      />
-      <Button
-        icon="heart"
-        onClick={() => navigate("/dashboard/wishlist")}
-      /> */}

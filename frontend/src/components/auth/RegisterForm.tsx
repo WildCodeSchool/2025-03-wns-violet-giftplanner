@@ -84,7 +84,7 @@ const RegisterForm = () => {
       // Si succès
       if (res.data) {
         setUserProfile(res.data.signup);
-        navigate("/provisoir");
+        navigate("/dashboard");
       }
     } catch (err: any) {
       // Si c'est une erreur GraphQL

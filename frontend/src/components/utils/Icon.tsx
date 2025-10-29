@@ -1,11 +1,7 @@
-import { FiPlusCircle, FiLogOut  } from "react-icons/fi";
 import { FaArrowCircleRight, FaRegHeart, FaRegUser } from "react-icons/fa";
+import { FiLogOut, FiPlusCircle } from "react-icons/fi";
 import { HiDotsVertical, HiOutlineCurrencyDollar } from "react-icons/hi";
-import { IoGiftOutline } from "react-icons/io5";
-import { IoChatboxEllipsesOutline } from "react-icons/io5";
-
-
-
+import { IoChatboxEllipsesOutline, IoGiftOutline } from "react-icons/io5";
 
 export type IconProps = {
   icon: "dots" | "plus" | "heart" | "dollar" | "arrow" | "logout" | "user" | "gift" | "chat";
@@ -22,7 +18,7 @@ const iconMap = {
   logout: FiLogOut,
   user: FaRegUser,
   gift: IoGiftOutline,
-  chat: IoChatboxEllipsesOutline
+  chat: IoChatboxEllipsesOutline,
 };
 
 export default function Icon({ icon, text, className }: IconProps) {
