@@ -1,13 +1,13 @@
-import { Field, ObjectType } from "type-graphql";
-import { CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Field, ID, ObjectType } from "type-graphql";
+import { BaseEntity, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Groups } from "./Groups";
 import Users from "./Users";
 
 @Entity()
 @ObjectType()
-export class GroupMembers {
+export class GroupMembers extends BaseEntity {
   @PrimaryGeneratedColumn()
-  @Field()
+  @Field(() => ID)
   id: number;
 
   @CreateDateColumn({

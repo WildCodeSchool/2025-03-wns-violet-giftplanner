@@ -22,7 +22,7 @@ export type Gifts = {
   __typename?: 'Gifts';
   createdAt: Scalars['DateTimeISO']['output'];
   description: Scalars['String']['output'];
-  id: Scalars['Float']['output'];
+  id: Scalars['ID']['output'];
   imageUrl: Scalars['String']['output'];
   likes: Array<Likes>;
   list: Lists;
@@ -35,7 +35,7 @@ export type Gifts = {
 export type GroupMembers = {
   __typename?: 'GroupMembers';
   group: Groups;
-  id: Scalars['Float']['output'];
+  id: Scalars['ID']['output'];
   joined_at: Scalars['DateTimeISO']['output'];
   user: Users;
 };
@@ -47,7 +47,7 @@ export type Groups = {
   deadline: Scalars['DateTimeISO']['output'];
   event_type: Scalars['String']['output'];
   groupMember: Array<GroupMembers>;
-  id: Scalars['Float']['output'];
+  id: Scalars['ID']['output'];
   likes: Array<Likes>;
   list_group: Lists;
   messages: Array<Messages>;
@@ -63,7 +63,7 @@ export type Likes = {
   createdAt: Scalars['DateTimeISO']['output'];
   gift: Gifts;
   group: Groups;
-  id: Scalars['Float']['output'];
+  id: Scalars['ID']['output'];
   user: Users;
 };
 
@@ -72,7 +72,7 @@ export type Lists = {
   createdAt: Scalars['DateTimeISO']['output'];
   gift: Array<Gifts>;
   groups: Array<Groups>;
-  id: Scalars['Float']['output'];
+  id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   updatedAt: Scalars['DateTimeISO']['output'];
   user: Array<Users>;
@@ -88,7 +88,7 @@ export type Messages = {
   content: Scalars['String']['output'];
   createdAt: Scalars['DateTimeISO']['output'];
   group: Groups;
-  id: Scalars['Float']['output'];
+  id: Scalars['ID']['output'];
   isEdited: Scalars['Boolean']['output'];
   updatedAt: Scalars['DateTimeISO']['output'];
   user: Users;
@@ -120,6 +120,7 @@ export type Query = {
   testAdmin: Scalars['String']['output'];
   testUser: Scalars['String']['output'];
   welcomeAll: Scalars['String']['output'];
+  wishlistItems: Array<Gifts>;
 };
 
 export type SignupInput = {
@@ -140,7 +141,7 @@ export type Users = {
   firstName: Scalars['String']['output'];
   gifts: Array<Gifts>;
   groupMember: Array<GroupMembers>;
-  id: Scalars['Float']['output'];
+  id: Scalars['ID']['output'];
   image_url?: Maybe<Scalars['String']['output']>;
   isAdmin: Scalars['Boolean']['output'];
   isVerified: Scalars['Boolean']['output'];
@@ -157,19 +158,19 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'Users', id: number, firstName: string, lastName: string, email: string, phone_number?: string | null, date_of_birth: string, createdAt: any, updatedAt: any, image_url?: string | null, isVerified: boolean, isAdmin: boolean } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'Users', id: string, firstName: string, lastName: string, email: string, phone_number?: string | null, date_of_birth: string, createdAt: any, updatedAt: any, image_url?: string | null, isVerified: boolean, isAdmin: boolean } };
 
 export type SignupMutationVariables = Exact<{
   data: SignupInput;
 }>;
 
 
-export type SignupMutation = { __typename?: 'Mutation', signup: { __typename?: 'Users', createdAt: any, date_of_birth: string, email: string, firstName: string, id: number, image_url?: string | null, isAdmin: boolean, isVerified: boolean, lastName: string, phone_number?: string | null, updatedAt: any } };
+export type SignupMutation = { __typename?: 'Mutation', signup: { __typename?: 'Users', createdAt: any, date_of_birth: string, email: string, firstName: string, id: string, image_url?: string | null, isAdmin: boolean, isVerified: boolean, lastName: string, phone_number?: string | null, updatedAt: any } };
 
 export type GetMeProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetMeProfileQuery = { __typename?: 'Query', getMeProfile: { __typename?: 'Users', id: number, firstName: string, lastName: string, email: string, phone_number?: string | null, date_of_birth: string, createdAt: any, updatedAt: any, image_url?: string | null, isVerified: boolean, isAdmin: boolean } };
+export type GetMeProfileQuery = { __typename?: 'Query', getMeProfile: { __typename?: 'Users', id: string, firstName: string, lastName: string, email: string, phone_number?: string | null, date_of_birth: string, createdAt: any, updatedAt: any, image_url?: string | null, isVerified: boolean, isAdmin: boolean } };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 

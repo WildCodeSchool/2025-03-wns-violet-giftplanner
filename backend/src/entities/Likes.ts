@@ -1,14 +1,14 @@
-import { Field, ObjectType } from "type-graphql";
-import { CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Field, ID, ObjectType } from "type-graphql";
+import { BaseEntity, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Gifts } from "./Gifts";
 import { Groups } from "./Groups";
 import Users from "./Users";
 
 @Entity()
 @ObjectType()
-export class Likes {
+export class Likes extends BaseEntity {
   @PrimaryGeneratedColumn()
-  @Field()
+  @Field(() => ID)
   id: number;
 
   @CreateDateColumn({
