@@ -9,4 +9,5 @@ export default function Dashboard() {
         <Outlet />
       </div>
     </div>
-  )};
+  );
+}

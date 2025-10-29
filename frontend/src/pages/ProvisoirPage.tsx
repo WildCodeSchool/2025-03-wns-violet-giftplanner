@@ -2,19 +2,19 @@ import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import { useLogoutMutation } from "../generated/graphql-types";
 import consoleErrorDev from "../hook/erreurMod";
-import { useMyProfilStore } from "../zustand/myProfilStore";
+import { useMyProfileStore } from "../zustand/myProfileStore";
 import "./ProvisoirPage.css";
 
 const ProvisoirePage = () => {
   const [logoutMutation] = useLogoutMutation();
-  const { clearUserProfil, userProfil } = useMyProfilStore();
+  const { clearUserProfile, userProfile } = useMyProfileStore();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
       const res = await logoutMutation();
       if (res.data?.logout) {
-        clearUserProfil();
+        clearUserProfile();
         navigate("/");
       } else {
         toast.error("La déconnexion a échoué");
@@ -62,39 +62,39 @@ const ProvisoirePage = () => {
           </button>
         </div>
 
-        {userProfil && (
+        {userProfile && (
           <div className="card profil">
             <h2>👤 Profil Utilisateur</h2>
             <div className="profil-grid">
               <p>
-                <span>ID :</span> {userProfil.id}
+                <span>ID :</span> {userProfile.id}
               </p>
               <p>
-                <span>Prénom :</span> {userProfil.firstName}
+                <span>Prénom :</span> {userProfile.firstName}
               </p>
               <p>
-                <span>Nom :</span> {userProfil.lastName}
+                <span>Nom :</span> {userProfile.lastName}
               </p>
               <p>
-                <span>Email :</span> {userProfil.email}
+                <span>Email :</span> {userProfile.email}
               </p>
               <p>
-                <span>Image :</span> {userProfil.image_url}
+                <span>Image :</span> {userProfile.image_url}
               </p>
               <p>
-                <span>Admin :</span> {userProfil.isAdmin ? "Oui" : "Non"}
+                <span>Admin :</span> {userProfile.isAdmin ? "Oui" : "Non"}
               </p>
               <p>
-                <span>Vérifié :</span> {userProfil.isVerified ? "Oui" : "Non"}
+                <span>Vérifié :</span> {userProfile.isVerified ? "Oui" : "Non"}
               </p>
               <p>
-                <span>Date de naissance :</span> {userProfil.date_of_birth}
+                <span>Date de naissance :</span> {userProfile.date_of_birth}
               </p>
               <p>
-                <span>Créé le :</span> {userProfil.createdAt}
+                <span>Créé le :</span> {userProfile.createdAt}
               </p>
               <p>
-                <span>Mis à jour le :</span> {userProfil.updatedAt}
+                <span>Mis à jour le :</span> {userProfile.updatedAt}
               </p>
             </div>
           </div>

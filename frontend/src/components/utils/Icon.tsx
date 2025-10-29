@@ -1,9 +1,10 @@
-import { FiPlusCircle } from "react-icons/fi";
-import { FaArrowCircleRight, FaRegHeart } from "react-icons/fa";
+import { FaArrowCircleRight, FaRegHeart, FaRegUser } from "react-icons/fa";
+import { FiLogOut, FiPlusCircle } from "react-icons/fi";
 import { HiDotsVertical, HiOutlineCurrencyDollar } from "react-icons/hi";
+import { IoChatboxEllipsesOutline, IoGiftOutline } from "react-icons/io5";
 
 export type IconProps = {
-  icon: "dots" | "plus" | "heart" | "dollar" | "arrow";
+  icon: "dots" | "plus" | "heart" | "dollar" | "arrow" | "logout" | "user" | "gift" | "chat";
   text?: string;
   className?: string;
 };
@@ -14,6 +15,10 @@ const iconMap = {
   heart: FaRegHeart,
   dollar: HiOutlineCurrencyDollar,
   arrow: FaArrowCircleRight,
+  logout: FiLogOut,
+  user: FaRegUser,
+  gift: IoGiftOutline,
+  chat: IoChatboxEllipsesOutline,
 };
 
 export default function Icon({ icon, text, className }: IconProps) {
@@ -21,7 +26,7 @@ export default function Icon({ icon, text, className }: IconProps) {
 
   return (
     <div className={`flex items-center gap-1 ${className || ""}`}>
-      <IconComponent className="w-5 aspect-[1/1]" />
+      <IconComponent className="" />
       {text && <span>{text}</span>}
     </div>
   );
