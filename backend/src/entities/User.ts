@@ -10,16 +10,16 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { Gifts } from "./Gifts";
-import { GroupMembers } from "./GroupMembers";
-import { Groups } from "./Groups";
-import { Likes } from "./Likes";
-import { Lists } from "./Lists";
-import { Messages } from "./Messages";
+import { Gift } from "./Gift";
+import { Group } from "./Group";
+import { GroupMember } from "./GroupMember";
+import { Like } from "./Like";
+import { List } from "./List";
+import { Message } from "./Message";
 
 @Entity()
 @ObjectType()
-class Users extends BaseEntity {
+class User extends BaseEntity {
   @PrimaryGeneratedColumn()
   @Field(() => ID)
   id: number;
@@ -76,54 +76,54 @@ class Users extends BaseEntity {
   isAdmin: boolean = false;
 
   @OneToMany(
-    () => Likes,
+    () => Like,
     (likes) => likes.user,
   )
-  @Field(() => [Likes])
-  likes: Likes[];
+  @Field(() => [Like])
+  likes: Like[];
 
   @OneToMany(
-    () => Gifts,
+    () => Gift,
     (gifts) => gifts.user,
   )
-  @Field(() => [Gifts])
-  gifts: Gifts[];
+  @Field(() => [Gift])
+  gifts: Gift[];
 
   @OneToMany(
-    () => Groups,
+    () => Group,
     (group) => group.user_admin,
   )
-  @Field(() => [Groups])
-  admin_groups: Groups[];
+  @Field(() => [Group])
+  admin_groups: Group[];
 
   @OneToMany(
-    () => Groups,
+    () => Group,
     (group) => group.user_beneficiary,
   )
-  @Field(() => [Groups])
-  beneficiary_groups: Groups[];
+  @Field(() => [Group])
+  beneficiary_groups: Group[];
 
   @OneToMany(
-    () => GroupMembers,
+    () => GroupMember,
     (groupMember) => groupMember.user,
   )
-  @Field(() => [GroupMembers])
-  groupMember: GroupMembers[];
+  @Field(() => [GroupMember])
+  groupMember: GroupMember[];
 
   @OneToMany(
-    () => Messages,
+    () => Message,
     (messages) => messages.user,
   )
-  @Field(() => [Messages])
-  messages: Messages[];
+  @Field(() => [Message])
+  messages: Message[];
 
   @ManyToMany(
-    () => Lists,
+    () => List,
     (lists) => lists.user,
   )
   @JoinTable() // seulement sur un des deux côtés
-  @Field(() => [Lists])
-  lists: Lists[];
+  @Field(() => [List])
+  lists: List[];
 }
 
-export default Users;
+export default User;

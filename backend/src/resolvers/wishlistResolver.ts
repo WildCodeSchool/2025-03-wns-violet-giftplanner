@@ -1,21 +1,21 @@
 import { Query, Resolver } from "type-graphql";
-import { Gifts } from "../entities/Gifts";
+import { Gift } from "../entities/Gift";
 
 @Resolver()
 export default class WishlistResolver {
-  @Query(() => [Gifts])
+  @Query(() => [Gift])
   async wishlistItems() {
     // récupère tout les cadeaux
-    const allUsers = Gifts.find();
+    const allGitf = Gift.find();
 
-    // renvoie tous les cadeaux
-    return allUsers;
+    // renvoie tous les cadeaux (provisoir nouvelle logique a venir)
+    return allGitf;
   }
 
   // @Mutation(() => ID)
   // async createWishlistItem(@Arg("data") data: AddWishlistItemInput) {
   //     const wishlistItem = WishlistItem.create({
-
+  //
   //     })
   // }
 }

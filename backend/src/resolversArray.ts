@@ -1,8 +1,8 @@
 import type { NonEmptyArray } from "type-graphql";
 import UserResolver from "./resolvers/UserResolver";
+import Welcome from "./resolvers/Welcome";
 import WishlistResolver from "./resolvers/WishlistResolver";
-import Welcome from "./resolvers/welcome";
 
-const resolverIndex = [Welcome, UserResolver, WishlistResolver] as NonEmptyArray<Function>;
+const resolverArray = [Welcome, UserResolver, WishlistResolver] as NonEmptyArray<Function>;
 
-export default resolverIndex;
+export default resolverArray;

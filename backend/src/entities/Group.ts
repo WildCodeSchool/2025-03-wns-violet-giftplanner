@@ -9,15 +9,15 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { GroupMembers } from "./GroupMembers";
-import { Likes } from "./Likes";
-import { Lists } from "./Lists";
-import { Messages } from "./Messages";
-import Users from "./Users";
+import { GroupMember } from "./GroupMember";
+import { Like } from "./Like";
+import { List } from "./List";
+import { Message } from "./Message";
+import Users from "./User";
 
 @Entity()
 @ObjectType()
-export class Groups extends BaseEntity {
+export class Group extends BaseEntity {
   @PrimaryGeneratedColumn()
   @Field(() => ID)
   id: number;
@@ -58,11 +58,11 @@ export class Groups extends BaseEntity {
   budget: number;
 
   @OneToMany(
-    () => Likes,
+    () => Like,
     (likes) => likes.group,
   )
-  @Field(() => [Likes])
-  likes: Likes[];
+  @Field(() => [Like])
+  likes: Like[];
 
   @ManyToOne(
     () => Users,
@@ -79,23 +79,23 @@ export class Groups extends BaseEntity {
   user_beneficiary: Users;
 
   @ManyToOne(
-    () => Lists,
+    () => List,
     (list_group) => list_group.groups,
   )
-  @Field(() => Lists)
-  list_group: Lists;
+  @Field(() => List)
+  list_group: List;
 
   @OneToMany(
-    () => GroupMembers,
+    () => GroupMember,
     (groupMember) => groupMember.group,
   )
-  @Field(() => [GroupMembers])
-  groupMember: GroupMembers[];
+  @Field(() => [GroupMember])
+  groupMember: GroupMember[];
 
   @OneToMany(
-    () => Messages,
+    () => Message,
     (messages) => messages.group,
   )
-  @Field(() => [Messages])
-  messages: Messages[];
+  @Field(() => [Message])
+  messages: Message[];
 }

@@ -4,23 +4,25 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToOne,
+  ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { Groups } from "./Groups";
-import Users from "./Users";
+import { Gift } from "./Gift";
+import { Group } from "./Group";
+import User from "./User";
 
 @Entity()
 @ObjectType()
-export class Messages extends BaseEntity {
+export class List extends BaseEntity {
   @PrimaryGeneratedColumn()
   @Field(() => ID)
   id: number;
 
   @Column()
   @Field()
-  content: string;
+  name: string;
 
   @CreateDateColumn({
     type: "timestamptz",
@@ -37,21 +39,24 @@ export class Messages extends BaseEntity {
   @Field()
   updatedAt: Date;
 
-  @Column()
-  @Field()
-  isEdited: boolean;
-
-  @ManyToOne(
-    () => Users,
-    (user) => user.messages,
+  @OneToMany(
+    () => Gift,
+    (gift) => gift.list,
   )
-  @Field(() => Users)
-  user: Users;
+  @Field(() => [Gift])
+  gift: Gift[];
 
-  @ManyToOne(
-    () => Groups,
-    (group) => group.messages,
+  @OneToMany(
+    () => Group,
+    (groups) => groups.list_group,
   )
-  @Field(() => Groups)
-  group: Groups;
+  @Field(() => [Group])
+  groups: Group[];
+
+  @ManyToMany(
+    () => User,
+    (user) => user.lists,
+  )
+  @Field(() => [User])
+  user: User[];
 }

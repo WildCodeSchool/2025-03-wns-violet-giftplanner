@@ -1,12 +1,12 @@
 import { Field, ID, ObjectType } from "type-graphql";
 import { BaseEntity, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Gifts } from "./Gifts";
-import { Groups } from "./Groups";
-import Users from "./Users";
+import { Gift } from "./Gift";
+import { Group } from "./Group";
+import User from "./User";
 
 @Entity()
 @ObjectType()
-export class Likes extends BaseEntity {
+export class Like extends BaseEntity {
   @PrimaryGeneratedColumn()
   @Field(() => ID)
   id: number;
@@ -19,26 +19,26 @@ export class Likes extends BaseEntity {
   createdAt: Date;
 
   @ManyToOne(
-    () => Users,
+    () => User,
     (user) => user.likes,
     { onDelete: "CASCADE" },
   )
-  @Field(() => Users)
-  user: Users;
+  @Field(() => User)
+  user: User;
 
   @ManyToOne(
-    () => Groups,
+    () => Group,
     (group) => group.likes,
     { onDelete: "CASCADE" },
   )
-  @Field(() => Groups)
-  group: Groups;
+  @Field(() => Group)
+  group: Group;
 
   @ManyToOne(
-    () => Gifts,
+    () => Gift,
     (gift) => gift.likes,
     { onDelete: "CASCADE" },
   )
-  @Field(() => Gifts)
-  gift: Gifts;
+  @Field(() => Gift)
+  gift: Gift;
 }

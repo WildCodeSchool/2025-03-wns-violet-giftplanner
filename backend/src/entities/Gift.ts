@@ -4,25 +4,37 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToMany,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { Gifts } from "./Gifts";
-import { Groups } from "./Groups";
-import Users from "./Users";
+import { Like } from "./Like";
+import { List } from "./List";
+import User from "./User";
 
 @Entity()
 @ObjectType()
-export class Lists extends BaseEntity {
+export class Gift extends BaseEntity {
   @PrimaryGeneratedColumn()
   @Field(() => ID)
   id: number;
 
   @Column()
   @Field()
+  imageUrl: string;
+
+  @Column()
+  @Field()
+  url: string;
+
+  @Column()
+  @Field()
   name: string;
+
+  @Column()
+  @Field()
+  description: string;
 
   @CreateDateColumn({
     type: "timestamptz",
@@ -39,24 +51,28 @@ export class Lists extends BaseEntity {
   @Field()
   updatedAt: Date;
 
+  // joiture many
   @OneToMany(
-    () => Gifts,
-    (gift) => gift.list,
+    () => Like,
+    (likes) => likes.group,
   )
-  @Field(() => [Gifts])
-  gift: Gifts[];
+  @Field(() => [Like])
+  likes: Like[];
 
-  @OneToMany(
-    () => Groups,
-    (groups) => groups.list_group,
+  // joiture id
+  @ManyToOne(
+    () => List,
+    (list) => list.gift,
+    { onDelete: "CASCADE" },
   )
-  @Field(() => [Groups])
-  groups: Groups[];
+  @Field(() => List)
+  list: List;
 
-  @ManyToMany(
-    () => Users,
-    (user) => user.lists,
+  @ManyToOne(
+    () => User,
+    (user) => user.gifts,
+    { onDelete: "CASCADE" },
   )
-  @Field(() => [Users])
-  user: Users[];
+  @Field(() => User)
+  user: User;
 }
