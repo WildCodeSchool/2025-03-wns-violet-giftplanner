@@ -8,8 +8,8 @@ import LoadingHomePage from "./pages/loadingHomePage/LoadingHomePage";
 import NotFound404Page from "./pages/notFound404Page/NotFound404Page";
 import ProvisoirPage from "./pages/ProvisoirPage";
 import RegisterPage from "./pages/RegisterPage";
-import { useMyProfilStore } from "./zustand/myProfilStore";
 import WishListPage from "./pages/WishListPage";
+import { useMyProfilStore } from "./zustand/myProfilStore";
 
 const App = () => {
   const { data, loading } = useGetMeProfileQuery();

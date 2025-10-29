@@ -1,5 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 @import "tailwindcss";
 
 /* * {
@@ -27,7 +27,6 @@
   scrollbar-width: thin;
 } */
 
-
 /* @theme {
   --color-blue: #292E96;
   --color-white: #FDFBF6;
@@ -50,45 +49,42 @@
   }
 } */
 
-
 /* If a colour does not work, hardcode it first */
 @theme inline {
-  --color-blue: #292E96;
-  --color-white: #FDFBF6;
-  --color-orange: #EA4B09;
+  --color-blue: #292e96;
+  --color-white: #fdfbf6;
+  --color-orange: #ea4b09;
   --color-green: #019645;
-  --color-yellow: #FFC300;
-  --color-light-grey: #F0F0F0;
-  --color-grey: #E6E6E6;
-  --color-dark: #200904
+  --color-yellow: #ffc300;
+  --color-light-grey: #f0f0f0;
+  --color-grey: #e6e6e6;
+  --color-dark: #200904;
 }
-
 
 @layer utilities {
   .font-inter {
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     font-weight: 400;
     /* Regular */
   }
 
   .font-inter-extra-bold {
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     font-weight: 800;
     /* ExtraBold */
   }
 
   .font-poppins {
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
     font-weight: 400;
     /* Regular */
   }
 
   .font-poppins-extre-bold {
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
     font-weight: 800;
     /* ExtraBold */
   }
-
 }
 
 /* Works for webkit browsers */

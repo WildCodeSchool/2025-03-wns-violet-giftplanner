@@ -18,9 +18,80 @@ export type Scalars = {
   DateTimeISO: { input: any; output: any; }
 };
 
+export type Gifts = {
+  __typename?: 'Gifts';
+  createdAt: Scalars['DateTimeISO']['output'];
+  description: Scalars['String']['output'];
+  id: Scalars['Float']['output'];
+  imageUrl: Scalars['String']['output'];
+  likes: Array<Likes>;
+  list: Lists;
+  name: Scalars['String']['output'];
+  updatedAt: Scalars['DateTimeISO']['output'];
+  url: Scalars['String']['output'];
+  user: Users;
+};
+
+export type GroupMembers = {
+  __typename?: 'GroupMembers';
+  group: Groups;
+  id: Scalars['Float']['output'];
+  joined_at: Scalars['DateTimeISO']['output'];
+  user: Users;
+};
+
+export type Groups = {
+  __typename?: 'Groups';
+  budget: Scalars['Float']['output'];
+  createdAt: Scalars['DateTimeISO']['output'];
+  deadline: Scalars['DateTimeISO']['output'];
+  event_type: Scalars['String']['output'];
+  groupMember: Array<GroupMembers>;
+  id: Scalars['Float']['output'];
+  likes: Array<Likes>;
+  list_group: Lists;
+  messages: Array<Messages>;
+  name: Scalars['String']['output'];
+  piggy_bank: Scalars['Float']['output'];
+  updatedAt: Scalars['DateTimeISO']['output'];
+  user_admin: Users;
+  user_beneficiary: Users;
+};
+
+export type Likes = {
+  __typename?: 'Likes';
+  createdAt: Scalars['DateTimeISO']['output'];
+  gift: Gifts;
+  group: Groups;
+  id: Scalars['Float']['output'];
+  user: Users;
+};
+
+export type Lists = {
+  __typename?: 'Lists';
+  createdAt: Scalars['DateTimeISO']['output'];
+  gift: Array<Gifts>;
+  groups: Array<Groups>;
+  id: Scalars['Float']['output'];
+  name: Scalars['String']['output'];
+  updatedAt: Scalars['DateTimeISO']['output'];
+  user: Array<Users>;
+};
+
 export type LoginInput = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
+};
+
+export type Messages = {
+  __typename?: 'Messages';
+  content: Scalars['String']['output'];
+  createdAt: Scalars['DateTimeISO']['output'];
+  group: Groups;
+  id: Scalars['Float']['output'];
+  isEdited: Scalars['Boolean']['output'];
+  updatedAt: Scalars['DateTimeISO']['output'];
+  user: Users;
 };
 
 export type Mutation = {
@@ -49,7 +120,6 @@ export type Query = {
   testAdmin: Scalars['String']['output'];
   testUser: Scalars['String']['output'];
   welcomeAll: Scalars['String']['output'];
-  wishlistItems: Array<WishlistItem>;
 };
 
 export type SignupInput = {
@@ -62,30 +132,24 @@ export type SignupInput = {
 
 export type Users = {
   __typename?: 'Users';
+  admin_groups: Array<Groups>;
+  beneficiary_groups: Array<Groups>;
   createdAt: Scalars['DateTimeISO']['output'];
   date_of_birth: Scalars['String']['output'];
   email: Scalars['String']['output'];
   firstName: Scalars['String']['output'];
+  gifts: Array<Gifts>;
+  groupMember: Array<GroupMembers>;
   id: Scalars['Float']['output'];
   image_url?: Maybe<Scalars['String']['output']>;
   isAdmin: Scalars['Boolean']['output'];
   isVerified: Scalars['Boolean']['output'];
   lastName: Scalars['String']['output'];
+  likes: Array<Likes>;
+  lists: Array<Lists>;
+  messages: Array<Messages>;
   phone_number?: Maybe<Scalars['String']['output']>;
   updatedAt: Scalars['DateTimeISO']['output'];
-};
-
-export type WishlistItem = {
-  __typename?: 'WishlistItem';
-  createdAt: Scalars['DateTimeISO']['output'];
-  description?: Maybe<Scalars['String']['output']>;
-  id: Scalars['ID']['output'];
-  imageUrl?: Maybe<Scalars['String']['output']>;
-  listId?: Maybe<Scalars['String']['output']>;
-  name: Scalars['String']['output'];
-  price?: Maybe<Scalars['Float']['output']>;
-  updatedAt: Scalars['DateTimeISO']['output'];
-  userId?: Maybe<Scalars['String']['output']>;
 };
 
 export type LoginMutationVariables = Exact<{

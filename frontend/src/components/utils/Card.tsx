@@ -18,7 +18,8 @@ export default function Card({
   children,
 }: CardProps) {
   return (
-    <div
+    <button
+      type="button"
       className={`flex items-center bg-white rounded-lg p-4 mr-4 shadow cursor-pointer ${
         large ? "min-h-[100px]" : "min-h-[75px]"
       }`}
@@ -34,6 +35,6 @@ export default function Card({
         <h2 className="font-bold text-gray-900 truncate">{title}</h2>
         <div className="overflow-hidden text-ellipsis whitespace-nowrap">{children}</div>
       </div>
-    </div>
+    </button>
   );
 }

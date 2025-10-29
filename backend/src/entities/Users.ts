@@ -4,9 +4,18 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { Gifts } from "./Gifts";
+import { GroupMembers } from "./GroupMembers";
+import { Groups } from "./Groups";
+import { Likes } from "./Likes";
+import { Lists } from "./Lists";
+import { Messages } from "./Messages";
 
 @Entity()
 @ObjectType()
@@ -65,6 +74,56 @@ class Users extends BaseEntity {
   @Column({ default: false })
   @Field()
   isAdmin: boolean = false;
+
+  @OneToMany(
+    () => Likes,
+    (likes) => likes.user,
+  )
+  @Field(() => [Likes])
+  likes: Likes[];
+
+  @OneToMany(
+    () => Gifts,
+    (gifts) => gifts.user,
+  )
+  @Field(() => [Gifts])
+  gifts: Gifts[];
+
+  @OneToMany(
+    () => Groups,
+    (group) => group.user_admin,
+  )
+  @Field(() => [Groups])
+  admin_groups: Groups[];
+
+  @OneToMany(
+    () => Groups,
+    (group) => group.user_beneficiary,
+  )
+  @Field(() => [Groups])
+  beneficiary_groups: Groups[];
+
+  @OneToMany(
+    () => GroupMembers,
+    (groupMember) => groupMember.user,
+  )
+  @Field(() => [GroupMembers])
+  groupMember: GroupMembers[];
+
+  @OneToMany(
+    () => Messages,
+    (messages) => messages.user,
+  )
+  @Field(() => [Messages])
+  messages: Messages[];
+
+  @ManyToMany(
+    () => Lists,
+    (lists) => lists.user,
+  )
+  @JoinTable() // seulement sur un des deux côtés
+  @Field(() => [Lists])
+  lists: Lists[];
 }
 
 export default Users;
