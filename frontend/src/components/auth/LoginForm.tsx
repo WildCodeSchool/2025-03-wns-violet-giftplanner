@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useLoginMutation } from "../../generated/graphql-types";
 import consoleErrorDev from "../../hook/erreurMod";
-import { useMyProfilStore } from "../../zustand/myProfilStore";
+import { useMyProfileStore } from "../../zustand/myProfileStore";
 
 const LoginForm = () => {
   const [form, setForm] = useState({
@@ -11,7 +11,7 @@ const LoginForm = () => {
   });
   const [messageError, setMessageError] = useState("");
   const navigate = useNavigate();
-  const { setUserProfil } = useMyProfilStore();
+  const { setUserProfile } = useMyProfileStore();
 
   const [login] = useLoginMutation();
 
@@ -25,9 +25,9 @@ const LoginForm = () => {
       // si la connexion a reussi
       if (res.data) {
         // on met a jour le profil dans le store
-        setUserProfil(res.data.login);
+        setUserProfile(res.data.login);
         // rediriger vers la page d'accueil
-        navigate("/provisoir");
+        navigate("/dashboard");
       }
     } catch (err: any) {
       // si c'est une erreur GraphQL

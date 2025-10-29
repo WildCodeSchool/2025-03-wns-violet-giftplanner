@@ -1,7 +1,7 @@
 {
-  "name": "gitchat",
+  "name": "giftchat",
   "version": "1.0.0",
-  "description": "GifChat",
+  "description": "GiftChat",
   "main": "index.js",
   "scripts": {
     "prepare": "husky",

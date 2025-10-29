@@ -26,4 +26,4 @@ Si vous êtes vraiment obligé de bypass husky, vous pouvez utiliser la commande
 ```bash
 git commit --no-verify -m "votre message de commit"
 ```
-En sachant que ca va foirée les tests qui aura l'ore du merge avec la dev.
+En sachant que ca va foirer les tests qui aura lors du merge avec la dev.

@@ -7,7 +7,7 @@ const NotFound404Page = () => {
       <h1 className={style.notfoundTitle}>404</h1>
       <p className={style.notfoundSubtitle}>Oups... Cette page n’existe pas.</p>
       <p className={style.notfoundText}>La ressource que vous cherchez est introuvable ou a été déplacée.</p>
-      <Link to="/provisoir" className={style.notfoundButton}>
+      <Link to="/dashboard" className={style.notfoundButton}>
         ⬅️ Retour à l’accueil
       </Link>
 
