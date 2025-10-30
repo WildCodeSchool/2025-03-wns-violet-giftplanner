@@ -10,7 +10,7 @@ export default class Welcome {
 
   @Query(() => String)
   async coucou() {
-    return "Bienvenue dans notre API GraphQL";
+    return "Bienvenue dans notre API GraphQL !";
   }
 
   @UseMiddleware(RoleMiddleware())

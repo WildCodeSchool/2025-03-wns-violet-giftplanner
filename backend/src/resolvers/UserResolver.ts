@@ -1,6 +1,6 @@
 import argon2 from "argon2";
 import { Arg, Ctx, Field, InputType, Mutation, Query, Resolver } from "type-graphql";
-import Users from "../entities/Users";
+import User from "../entities/User";
 import cookieManager from "../lib/cookiManager/cookiManager";
 import type { ContextType } from "../types/context";
 import { createAndSetToken } from "../utils/jwtUtils";
@@ -32,40 +32,40 @@ class LoginInput {
   password!: string;
 }
 
-@Resolver(Users)
+@Resolver(User)
 export default class UserResolver {
-  @Query(() => [Users])
+  @Query(() => [User])
   async getAllUsers() {
     //récupère tout les utilisateurs
-    const allUsers = Users.find();
+    const allUsers = User.find();
 
     // renvoir tous les utilisateurs
     return allUsers;
   }
 
-  @Query(() => [Users])
+  @Query(() => [User])
   async getAllUsersAdmin() {
     //récupère tout les utilisateurs
-    const allUsers = Users.find({ where: { isAdmin: true } });
+    const allUsers = User.find({ where: { isAdmin: true } });
 
     // renvoir tous les utilisateurs
     return allUsers;
   }
 
-  @Query(() => Users)
+  @Query(() => User)
   async getMeProfile(@Ctx() ctx: ContextType) {
     if (!ctx.user) throw new Error("Utilisateur non connecté");
 
     //récupère le profil de l'utilisateur connecté
-    const user = await Users.findOne({ where: { id: ctx.user.id } });
+    const user = await User.findOne({ where: { id: ctx.user.id } });
 
     // si l'utilisateur a été supprimé (ou inexistant)
     if (!user) throw new Error("Utilisateur supprimé");
 
-    return user as Users;
+    return user as User;
   }
 
-  @Mutation(() => Users)
+  @Mutation(() => User)
   async signup(@Arg("data") data: SignupInput, @Ctx() ctx: ContextType) {
     if (!data.firstName.trim()) throw new Error("Le prénom est obligatoire");
     if (!data.lastName.trim()) throw new Error("Le nom est obligatoire");
@@ -93,7 +93,7 @@ export default class UserResolver {
     const password_hashed = await argon2.hash(data.password);
 
     // crée le nouvel utilisateur
-    const user = Users.create({ ...data, password_hashed });
+    const user = User.create({ ...data, password_hashed });
     //sauvegarde le nouvel utilisateur dans la bdd
     await user.save();
 
@@ -105,10 +105,10 @@ export default class UserResolver {
     return user;
   }
 
-  @Mutation(() => Users)
+  @Mutation(() => User)
   async login(@Arg("data") data: LoginInput, @Ctx() ctx: ContextType) {
     // essaye de trouver l'utilisateur grace a son mail
-    const user = await Users.findOne({ where: { email: data.email } });
+    const user = await User.findOne({ where: { email: data.email } });
 
     if (!user) throw new Error("Utilisateur introuvable");
 
