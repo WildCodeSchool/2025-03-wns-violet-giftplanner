@@ -1,3 +1,6 @@
+import Icon from "./Icon";
+import type { IconTypes } from "./Icon";
+
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     name: string;
     value: string;
@@ -7,6 +10,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     className?: string;
     placholder?: string;
     label?: string;
+    icon?: IconTypes;
 }
 
 export default function Input({
@@ -19,27 +23,28 @@ export default function Input({
     label,
     className = "",
     placeholder,
+    icon,
     ...props
 }: InputProps) {
   const baseStyles =
-    "w-full px-4 py-2 border-2 rounded-lg font-medium outline-none transition-colors duration-200";
+    "w-full px-2 py-2 border-2 rounded-lg font-bold text-md outline-none transition-colors duration-200";
 
   const themeStyles =
     theme === "dark"
-      ? "bg-gray-800 border-gray-700 text-white placeholder-gray-400 focus:border-blue-400"
-      : "bg-white border-gray-300 text-gray-800 placeholder-gray-400 focus:border-blue-500";
+      ? " border-dark text-dark focus:border-blue"
+      : "bg-transparent border-white-100 text-white placeholder-white-100 focus:placeholder-white ";
 
-  const errorStyles = error ? "border-red-500 focus:border-red-500" : "";
+  const errorStyles = error ? "border-orange focus:border-orange" : "";
 
   return (
-    <div className="flex flex-col gap-1 w-full">
+    <div className="flex flex-col w-full">
       {label && (
-        <label className="font-semibold text-sm text-gray-700 dark:text-gray-300">
+        <label className="font-semibold text-md text-white dark:text-dark">
           {label}
         </label>
       )}
-
-      <input
+      <div className="relative">
+        <input
         type={type}
         value={value}
         onChange={onChange}
@@ -48,8 +53,10 @@ export default function Input({
         placeholder={placeholder}
         {...props}
       />
+        {icon && <Icon icon={icon} className={`absolute right-3 top-1/2 -translate-y-1/2 ${error ? "text-orange" : "text-white"} text-2xl cursor-pointer`}/>}
+      </div>
+      {error && <p className="text-orange font-inter text-sm pt-1">{error}</p>}
 
-      {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
-    </div>
+       </div>
   );
 }

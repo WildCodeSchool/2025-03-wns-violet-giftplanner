@@ -10,10 +10,11 @@ type ButtonProps = {
   rounded?: boolean;
   className?: string;
   children?: React.ReactNode;
-  type?:ButtonType 
+  type?:ButtonType
+  big?: boolean 
 };
 
-export default function Button({ onClick, text, colour = "green", icon, rounded = false, className, children, type = "button" }: ButtonProps) {
+export default function Button({ onClick, text, big, colour = "green", icon, rounded = false, className, children, type = "button" }: ButtonProps) {
 
   const backgroundColours = {
     blue: "bg-blue",
@@ -27,10 +28,11 @@ export default function Button({ onClick, text, colour = "green", icon, rounded 
 
   let backgroundColour = backgroundColours[colour] || backgroundColours["green"];
 
+
   return (
     <button
       type={type}
-      className={`${backgroundColour} text-white font-inter-extra-bold text-base ${rounded ? "rounded-full p-2" : "rounded-lg py-1 px-2"} flex items-center gap-1 font-medium shadow-md hover:brightness-110 hover:scale-[1.02] active:scale-[0.97] active:brightness-95 transition-all duration-200 ease-in-out ${className}  `}
+      className={`${backgroundColour} text-white font-inter-extra-bold ${rounded ? "rounded-full p-2" : "rounded-lg py-1 px-2"} flex items-center gap-1 font-medium shadow-md hover:brightness-110 hover:scale-[1.02] active:scale-[0.97] active:brightness-95 transition-all duration-200 ease-in-out ${className}  `}
       onClick={onClick}
     >
       {children}

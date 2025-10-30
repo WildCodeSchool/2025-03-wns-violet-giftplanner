@@ -13,7 +13,7 @@
   --color-yellow: #FFC300;
   --color-light-grey: #F0F0F0;
   --color-grey: #E6E6E6;
-  --color-dark: #200904
+  --color-dark: #200904;
 }
 
 
@@ -59,4 +59,16 @@
 
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-grey;
+}
+
+@layer base {
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
 }

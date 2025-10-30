@@ -1,6 +1,7 @@
 import Button from "../utils/Button";
 import Input from "../utils/Input";
 import Title from "../utils/Title";
+import Icon from "../utils/Icon";
 import { useSanitizedForm } from "../../hooks/useSanitizedForm";
 import { countdownDate } from "../../utils/dateCalculator";
 import { useCreateGroupMutation } from "../../generated/graphql-types";
@@ -16,7 +17,7 @@ function validate(values: FormValues) {
     const errors: Partial<Record<keyof FormValues, string>> = {};
 
     if (!values.event_type) errors.event_type = "What is the occasion?";
-    else if (values.name.length < 6) errors.event_type = "Too short...";
+    else if (values.name.length < 3) errors.event_type = "Too short...";
 
     if (!values.name) errors.name = "Group Name is required.";
     else if (values.name.length < 6)
@@ -77,69 +78,76 @@ export default function CreateGroupForm() {
     }
 
     return (
+      <>
         <form className=" flex w-full h-full" onSubmit={handleSubmit}>
-                <div className="bg-green w-1/2 h-full flex flex-col p-4">
+                <div className="bg-green w-1/2 h-full flex flex-col justify-center py-5">
                   {/* Form to create a new group */}
-                  <Title className="text-center">Créer un nouveau groupe</Title>
-                  <div className="flex h-full flex-col justify-evenly my-10 px-10">
+                  <Title className="text-center text-3xl">Créer un groupe</Title>
+                  <div className="text-white text-9xl m-auto">
+                    <Icon icon="image" text="" />
+                  </div>
+                  <div className="flex flex-col gap-7 px-10">
                     <Input
                       name="name"
-                      label= "Nom du groupe"
                       type="text"
                       value={formData.name}
                       onChange={handleChange}
                       placeholder="Entrez le nom du groupe"
                       error={errors.name}
+                      icon="doubleChat"
                     />
 
                     <Input
                       name="event_type"
-                      label="Email du destinataire"
                       type="text"
                       value={formData.event_type}
                       onChange={handleChange}
-                      placeholder="Adresse email du destinataire du cadeau"
+                      placeholder="Quel est l'événement ?"
                       error={errors.event_type}
+                      icon="gift"
                     />
 
                     <Input
                       name="piggy_bank"
-                      label="Cagnotte"
                       type="number"
                       value={String(formData.piggy_bank)}
                       onChange={handleChange}
-                      placeholder="Quel budget pour ce cadeau?"
+                      placeholder={String(formData.piggy_bank)}
                       error={errors.piggy_bank}
+                      icon="dollar"
                     />
 
                     <Input
                       name="deadline"
-                      label="Date de l'événement"
                       type="date"
                       value={formData.deadline}
                       onChange={handleChange}
-                      placeholder="Sélectionnez une date"
+                      placeholder="Sélectionnez une date de fin"
                       error={errors.deadline}
                     />
-                  </div>
-                  
+                  </div>                
                 </div>
                 
-                <div className="w-1/2 bg-blue">
+                <div className="w-1/2 bg-white">
                   {/* Adding users can go here */}
                   <p>Ici, il y aura l'option d'ajouter les participants</p>
                 </div>
 
-                <Button
-                  type="submit"
-                  text="Créer le groupe"
-                  className="absolute bottom-4 left-1/2 -translate-x-1/2"
-                  colour="dark"
-                >
-                  Help
-                </Button>
+                
 
             </form>
+            <Button
+                  type="submit"
+                  text="Créer le groupe"
+                  className="absolute bottom-4 left-1/2 -translate-x-1/2 px-10 text-2xl"
+                  colour="dark"
+                  rounded
+                >
+                  Créer
+                </Button>
+          
+          
+          </>
 
     );
 }
