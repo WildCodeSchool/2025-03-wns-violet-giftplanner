@@ -1,5 +1,11 @@
 import { DataSource } from "typeorm";
-import Users from "../entities/Users";
+import { Gift } from "../entities/Gift";
+import { Group } from "../entities/Group";
+import { GroupMember } from "../entities/GroupMember";
+import { Like } from "../entities/Like";
+import { List } from "../entities/List";
+import { Message } from "../entities/Message";
+import User from "../entities/User";
 import { getVariableEnvMulti } from "../lib/envManager/envManager";
 
 const { DB_HOST, DB_DATABASE, DB_USER, DB_PASSWORD } = getVariableEnvMulti([
@@ -16,7 +22,7 @@ const dataSource = new DataSource({
   password: DB_PASSWORD,
   database: DB_DATABASE,
 
-  entities: [Users],
+  entities: [User, Gift, GroupMember, Group, Like, List, Message],
   synchronize: true,
   logging: ["error"],
   // "query"

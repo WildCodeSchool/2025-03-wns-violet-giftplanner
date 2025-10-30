@@ -6,7 +6,7 @@ import { buildSchema } from "type-graphql";
 import dataSource from "./config/db";
 import startServeurContext from "./context";
 import { getVariableEnv } from "./lib/envManager/envManager";
-import resolverIndex from "./resolversIndex";
+import resolverArray from "./resolversArray";
 
 dotenv.config();
 
@@ -17,7 +17,7 @@ async function startServer() {
   await dataSource.initialize();
 
   const schema = await buildSchema({
-    resolvers: resolverIndex,
+    resolvers: resolverArray,
   });
 
   const apolloServer = new ApolloServer({
