@@ -59,7 +59,7 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - ./persist/database:/var/lib/postgresql/data
+      - ./persist/database:/var/lib/postgresql
 
   gateway:
     container_name: gateway-dev

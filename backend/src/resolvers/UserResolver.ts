@@ -24,6 +24,27 @@ class SignupInput {
 }
 
 @InputType()
+class UpdateMyProfileInput {
+  @Field()
+  email!: string;
+
+  @Field()
+  password!: string;
+
+  @Field()
+  firstName!: string;
+
+  @Field()
+  lastName!: string;
+
+  @Field()
+  date_of_birth!: string;
+
+  @Field()
+  phone_number!: string;
+}
+
+@InputType()
 class LoginInput {
   @Field()
   email!: string;
@@ -132,5 +153,21 @@ export default class UserResolver {
 
     // return un boolean de succès
     return true;
+  }
+
+  @Mutation(() => Users)
+  async UpdateMyProfile(@Arg("data") data: UpdateMyProfileInput, @Ctx() ctx: ContextType) {
+    if (!ctx.user) throw new Error("Utilisateur non connecté update impossible");
+
+    // hash le mot de passe
+    const password_hashed = await argon2.hash(data.password);
+
+    // modifie l'utilisateur connecté
+    await Users.update({ id: ctx.user.id }, { ...data, password_hashed });
+
+    //récupère le profil de l'utilisateur connecté
+    const user = await Users.findOne({ where: { id: ctx.user.id } });
+
+    return user as Users;
   }
 }

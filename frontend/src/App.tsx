@@ -9,12 +9,15 @@ import LoginPage from "./pages/LoginPage";
 import LoadingHomePage from "./pages/loadingHomePage/LoadingHomePage";
 import NotFound404Page from "./pages/notFound404Page/NotFound404Page";
 import RegisterPage from "./pages/RegisterPage";
+import UserProfilePage from "./pages/UserProfilePage";
 import { useMyProfileStore } from "./zustand/myProfileStore";
 
 const App = () => {
   const { data, loading } = useGetMeProfileQuery();
-  const { setUserProfile } = useMyProfileStore();
+  const { setUserProfile, userProfile } = useMyProfileStore();
   const navigate = useNavigate();
+
+  console.log("User Profile Updated:", userProfile);
 
   useEffect(() => {
     if (data?.getMeProfile) {
@@ -46,6 +49,7 @@ const App = () => {
           <Route index element={<Navigate to="conversations" replace />} />
           <Route path="conversations" element={<Conversations />} />
           <Route path="wishlist" element={<Wishlist />} />
+          <Route path="profile" element={<UserProfilePage />} />
         </Route>
 
         <Route path="*" element={<NotFound404Page />} />

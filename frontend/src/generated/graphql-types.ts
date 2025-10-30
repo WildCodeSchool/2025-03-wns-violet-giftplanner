@@ -25,9 +25,15 @@ export type LoginInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  UpdateMyProfile: Users;
   login: Users;
   logout: Scalars['Boolean']['output'];
   signup: Users;
+};
+
+
+export type MutationUpdateMyProfileArgs = {
+  data: UpdateMyProfileInput;
 };
 
 
@@ -58,6 +64,15 @@ export type SignupInput = {
   firstName: Scalars['String']['input'];
   lastName: Scalars['String']['input'];
   password: Scalars['String']['input'];
+};
+
+export type UpdateMyProfileInput = {
+  date_of_birth: Scalars['String']['input'];
+  email: Scalars['String']['input'];
+  firstName: Scalars['String']['input'];
+  lastName: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+  phone_number: Scalars['String']['input'];
 };
 
 export type Users = {

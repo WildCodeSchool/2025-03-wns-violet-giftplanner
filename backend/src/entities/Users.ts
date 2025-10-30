@@ -31,9 +31,9 @@ class Users extends BaseEntity {
   // ne jamais mettre de field pour pas que le mot de passe soit publiquement accessible via GraphQL
   password_hashed: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, default: "" })
   @Field(() => String, { nullable: true })
-  phone_number: string;
+  phone_number?: string;
 
   @Column()
   @Field()
