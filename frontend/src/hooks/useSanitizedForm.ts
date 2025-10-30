@@ -37,6 +37,8 @@ export function sanitizeObject<T extends Record<string, any>>(obj: T): T {
 
 type ValidatorFn<T> = (values: T) => Partial<Record<keyof T, string>>;
 
+
+
 /**
  * Hook for managing and sanitizing form data.
  * Automatically sanitizes input values when changed or on submit.

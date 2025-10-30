@@ -3,49 +3,74 @@ import Input from "../utils/Input";
 import Title from "../utils/Title";
 import { useSanitizedForm } from "../../hooks/useSanitizedForm";
 import { countdownDate } from "../../utils/dateCalculator";
+import { useCreateGroupMutation } from "../../generated/graphql-types";
 
 type FormValues = {
-    groupName: string;
-    recipientEmail: string;
-    budget: string;
-    eventDate: string;
+    name: string;
+    event_type: string;
+    piggy_bank: number;
+    deadline: string;
 };
 
 function validate(values: FormValues) {
     const errors: Partial<Record<keyof FormValues, string>> = {};
 
-    if (!values.recipientEmail) errors.recipientEmail = "Email is required.";
-    else if (!/\S+@\S+\.\S+/.test(values.recipientEmail)) errors.recipientEmail = "Invalid email.";
+    if (!values.event_type) errors.event_type = "What is the occasion?";
+    else if (values.name.length < 6) errors.event_type = "Too short...";
 
-    if (!values.groupName) errors.groupName = "Group Name is required.";
-    else if (values.groupName.length < 6)
-    errors.groupName = "Group name must be at least 6 characters.";
+    if (!values.name) errors.name = "Group Name is required.";
+    else if (values.name.length < 6)
+    errors.name = "Group name must be at least 6 characters.";
 
-    if (!values.budget) errors.budget = "Budget is required.";
-    else if (isNaN(Number(values.budget)) || Number(values.budget) <= 0)
-    errors.budget = "Budget must be a positive number.";
+    if (!values.piggy_bank) errors.piggy_bank = "Budget is required.";
+    else if (isNaN(Number(values.piggy_bank)) || Number(values.piggy_bank) <= 0)
+    errors.piggy_bank = "Budget must be a positive number.";
 
-    if(!values.eventDate) errors.eventDate = "Event Date is required.";
-    else if(countdownDate(new Date(values.eventDate)) < 0) errors.eventDate = "Event date cannot be in the past.";
+    if(!values.deadline) errors.deadline = "Event Date is required.";
+    else if(countdownDate(new Date(values.deadline)) < 0) errors.deadline = "Event date cannot be in the past.";
 
     return errors;
 }
 
 export default function CreateGroupForm() {
-    const { formData, handleChange, getSanitizedData, errors, isValid} = useSanitizedForm({
-        groupName: "",
-        recipientEmail: "",
-        budget: "",
-        eventDate: ""
+    const { formData, handleChange, getSanitizedData, errors, isValid, setFormData} = useSanitizedForm({
+        name: "",
+        event_type: "",
+        piggy_bank: 0,
+        deadline: ""
     }, validate);
 
-    function handleSubmit(e: React.FormEvent) {
-        e.preventDefault();
-        const sanitizedData = getSanitizedData();
+    const [createGroup] = useCreateGroupMutation();
 
+    async function handleSubmit(e: React.FormEvent) {
+        e.preventDefault();
         if(isValid) {
-          console.log("Form submitted", sanitizedData);
-          return;
+          try {
+            const sanitizedData = getSanitizedData();
+            if (!sanitizedData) {
+              console.error("Sanitized data is null or undefined.");
+              return;
+            }
+
+            const response = await createGroup({
+              variables: { data : {
+                ...sanitizedData, 
+                piggy_bank: Number(sanitizedData?.piggy_bank), 
+                deadline: new Date(sanitizedData?.deadline)
+              } }
+            })
+
+            console.log("Group created successfully:", response.data);
+            setFormData({
+              name: "",
+              event_type: "",
+              piggy_bank: 0,
+              deadline: ""
+            })
+          }
+          catch (error) {
+            console.error("Error creating group:", error);
+          }
         }
 
         console.log("Form has errors, cannot submit.", errors);
@@ -58,43 +83,43 @@ export default function CreateGroupForm() {
                   <Title className="text-center">Créer un nouveau groupe</Title>
                   <div className="flex h-full flex-col justify-evenly my-10 px-10">
                     <Input
-                      name="groupName"
+                      name="name"
                       label= "Nom du groupe"
                       type="text"
-                      value={formData.groupName}
+                      value={formData.name}
                       onChange={handleChange}
                       placeholder="Entrez le nom du groupe"
-                      error={errors.groupName}
+                      error={errors.name}
                     />
 
                     <Input
-                      name="recipientEmail"
+                      name="event_type"
                       label="Email du destinataire"
                       type="text"
-                      value={formData.recipientEmail}
+                      value={formData.event_type}
                       onChange={handleChange}
                       placeholder="Adresse email du destinataire du cadeau"
-                      error={errors.recipientEmail}
+                      error={errors.event_type}
                     />
 
                     <Input
-                      name="budget"
+                      name="piggy_bank"
                       label="Cagnotte"
                       type="number"
-                      value={formData.budget}
+                      value={String(formData.piggy_bank)}
                       onChange={handleChange}
-                      placeholder="Combien aimeriez-vous récolter?"
-                      error={errors.budget}
+                      placeholder="Quel budget pour ce cadeau?"
+                      error={errors.piggy_bank}
                     />
 
                     <Input
-                      name="eventDate"
+                      name="deadline"
                       label="Date de l'événement"
                       type="date"
-                      value={formData.eventDate}
+                      value={formData.deadline}
                       onChange={handleChange}
                       placeholder="Sélectionnez une date"
-                      error={errors.eventDate}
+                      error={errors.deadline}
                     />
                   </div>
                   

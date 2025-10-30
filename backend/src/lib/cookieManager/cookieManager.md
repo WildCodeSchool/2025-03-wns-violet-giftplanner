@@ -1,4 +1,4 @@
-# 🍪CookiManeger  
+# 🍪CookiManager  
 
 Mini framework de gestion de cookies
 
@@ -6,7 +6,7 @@ Mini framework de gestion de cookies
 - Avoir un accès facile aux cookies de nimporte ou dans le projets
 
 ## 🚀 Installation  
-Copier les fichiers du mini framework dans un dossier `lib/cookiManeger/`  
+Copier les fichiers du mini framework dans un dossier `lib/cookiManager/`  
 
 **Arborescence du projet :**
 
