@@ -14,10 +14,8 @@ import { useMyProfileStore } from "./zustand/myProfileStore";
 
 const App = () => {
   const { data, loading } = useGetMeProfileQuery();
-  const { setUserProfile, userProfile } = useMyProfileStore();
+  const { setUserProfile } = useMyProfileStore();
   const navigate = useNavigate();
-
-  console.log("User Profile Updated:", userProfile);
 
   useEffect(() => {
     if (data?.getMeProfile) {

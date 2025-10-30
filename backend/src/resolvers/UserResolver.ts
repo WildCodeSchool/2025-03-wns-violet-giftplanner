@@ -162,8 +162,10 @@ export default class UserResolver {
     // hash le mot de passe
     const password_hashed = await argon2.hash(data.password);
 
+    const newData = { ...data, password_hashed, password: undefined };
+
     // modifie l'utilisateur connecté
-    await Users.update({ id: ctx.user.id }, { ...data, password_hashed });
+    await Users.update({ id: ctx.user.id }, newData);
 
     //récupère le profil de l'utilisateur connecté
     const user = await Users.findOne({ where: { id: ctx.user.id } });

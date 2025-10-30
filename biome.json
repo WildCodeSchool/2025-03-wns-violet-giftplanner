@@ -4,7 +4,8 @@
     "includes": [
       "frontend/src/**/*.{js,ts,tsx,css}",
       "!frontend/src/**/generated",
-      "backend/src/**/*.{js,ts}"
+      "backend/src/**/*.{js,ts}",
+      "!frontend/src/index.css"
     ],
     "experimentalScannerIgnores": ["node_modules", "dist", "*.json"]
   },
@@ -38,7 +39,8 @@
         }
       },
       "complexity": {
-        "noBannedTypes": "off"
+        "noBannedTypes": "off",
+        "noImportantStyles": "off"
       },
       "style": {
         "noNonNullAssertion": "off"

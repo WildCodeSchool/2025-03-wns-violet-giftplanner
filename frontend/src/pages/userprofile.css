@@ -129,9 +129,13 @@
   border-radius: 8px;
   font-size: 18px;
   font-weight: bold;
-  color: #200904;
+  color: #c4bfb4;
   font-family: "Inter", sans-serif;
   outline: none;
+}
+
+.profile-input.editable {
+  color: #200904;
 }
 
 .profile-input:focus {
@@ -151,7 +155,6 @@
 
 .profile-input::placeholder {
   color: #c4c0b3;
-  font-weight: normal;
   font-weight: 700;
 }
 
