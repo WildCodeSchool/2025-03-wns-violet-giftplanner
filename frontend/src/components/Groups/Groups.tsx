@@ -1,9 +1,10 @@
-// import data from "./data/groups.json";
-
 import type { GroupProps } from "../../types/Groups";
 import Button from "../utils/Button";
 import Card from "../utils/Card";
 import Container from "../utils/Container";
+import Modal from "../utils/Modal";
+import { useState } from "react";
+import CreateGroupForm from "../forms/CreateGroupForm";
 
 type GroupsProps = {
   groups: GroupProps[];
@@ -12,11 +13,16 @@ type GroupsProps = {
 };
 
 export default function Groups({ groups, setActiveGroup }: GroupsProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  
+  function toggleModal() {
+    setIsOpen(!isOpen);
+  }
   return (
     <Container
       colour="blue"
       title="Mes Groupes"
-      button={<Button text={"Ajouter un groupe"} icon="plus" colour="green" />}
+      button={<Button text={"Ajouter un groupe"} icon="plus" colour="green" onClick={toggleModal}/>}
     >
       {groups.map((group) => {
         return (
@@ -34,6 +40,16 @@ export default function Groups({ groups, setActiveGroup }: GroupsProps) {
           </Card>
         );
       })}
+
+
+      {/* Modal */
+      
+      isOpen && 
+        <Modal onClose={toggleModal}>
+            <CreateGroupForm />
+        </Modal>
+      }
+
     </Container>
   );
 }
