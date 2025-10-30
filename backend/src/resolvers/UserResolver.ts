@@ -1,7 +1,7 @@
 import argon2 from "argon2";
 import { Arg, Ctx, Field, InputType, Mutation, Query, Resolver } from "type-graphql";
 import User from "../entities/User";
-import cookieManager from "../lib/cookiManager/cookiManager";
+import cookieManager from "../lib/cookieManager/cookieManager";
 import type { ContextType } from "../types/context";
 import { createAndSetToken } from "../utils/jwtUtils";
 
