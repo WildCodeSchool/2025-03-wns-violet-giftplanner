@@ -54,7 +54,7 @@ class Users extends BaseEntity {
   @Field()
   updatedAt: Date;
 
-  @Column({ default: "lien_image_defaut" })
+  @Column({ default: null, nullable: true })
   @Field({ nullable: true })
   image_url: string;
 

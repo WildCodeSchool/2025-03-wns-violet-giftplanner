@@ -1,12 +1,23 @@
 import { useEffect, useState } from "react";
 import "./userprofile.css";
 import Icon from "../components/utils/Icon";
+import { defaultPictureProfile } from "../data/pictureDefault";
 import { useUpdateMyProfileMutation } from "../generated/graphql-types";
 import { useMyProfileStore } from "../zustand/myProfileStore";
 
+function toBase64(file: File) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+}
+
 const UserProfilePage = () => {
   const { userProfile, setUserProfile } = useMyProfileStore();
-  const [imageUrl, setImageUrl] = useState(userProfile?.image_url || "/default-profile.png");
+  const [imageUrl, setImageUrl] = useState(defaultPictureProfile);
+  const [image, setImage] = useState<null | File>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [messageError, setMessageError] = useState("");
   const [messageSuccess, setMessageSuccess] = useState("");
@@ -35,6 +46,7 @@ const UserProfilePage = () => {
         password: "",
         passwordConfirmation: "",
       });
+      setImageUrl(userProfile?.image_url || defaultPictureProfile);
     }, 300);
   }, [userProfile]);
 
@@ -44,11 +56,7 @@ const UserProfilePage = () => {
 
     const newImageUrl = URL.createObjectURL(file);
     setImageUrl(newImageUrl);
-
-    // MAJ instantanée du store pour Navigation
-    if (userProfile) {
-      setUserProfile({ ...userProfile, image_url: newImageUrl });
-    }
+    setImage(file);
   };
 
   const handleEditClick = () => {
@@ -60,6 +68,7 @@ const UserProfilePage = () => {
   const handleCancelClick = () => {
     setIsEditing(false);
     setProfile({ ...profileBackup });
+    setImageUrl(userProfile?.image_url || defaultPictureProfile);
     setMessageError("");
     setMessageSuccess("");
   };
@@ -111,6 +120,7 @@ const UserProfilePage = () => {
           phone_number: profile.phone_number,
           date_of_birth: profile.date_of_birth,
           password: profile.password,
+          pictureBase64: image ? ((await toBase64(image)) as string) : undefined,
         },
       },
     });
@@ -122,7 +132,6 @@ const UserProfilePage = () => {
     }
 
     // setUserProfile(response.data?.updateMyProfile);
-    setProfile({ ...profile, password: "", passwordConfirmation: "" });
     setMessageSuccess("Profil mis à jour avec succès !");
   };
 
@@ -147,6 +156,7 @@ const UserProfilePage = () => {
             id="file-input"
             type="file"
             accept="image/*"
+            disabled={!isEditing}
             onChange={handleFileChange}
             style={{ display: "none" }}
           />

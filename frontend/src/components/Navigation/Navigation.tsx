@@ -9,9 +9,8 @@ import Redirect from "./Redirect";
 import "./navigation.css";
 
 export default function Navigation() {
-  const { userProfile } = useMyProfileStore();
+  const { userProfile, clearUserProfile } = useMyProfileStore();
   const [logoutMutation] = useLogoutMutation();
-  const { clearUserProfile } = useMyProfileStore();
   const [currentLocation, setCurrentLocation] = useState<string>("");
   const navigate = useNavigate();
   const location = useLocation();

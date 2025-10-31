@@ -73,6 +73,7 @@ export type UpdateMyProfileInput = {
   lastName: Scalars['String']['input'];
   password: Scalars['String']['input'];
   phone_number: Scalars['String']['input'];
+  pictureBase64?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Users = {
