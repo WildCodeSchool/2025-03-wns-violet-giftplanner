@@ -1,37 +1,12 @@
+import { useState } from "react";
 import Button from "../utils/Button";
 import Input from "../utils/Input";
 import Title from "../utils/Title";
 import Icon from "../utils/Icon";
 import { useSanitizedForm } from "../../hooks/useSanitizedForm";
-import { countdownDate } from "../../utils/dateCalculator";
 import { useCreateGroupMutation } from "../../generated/graphql-types";
+import { groupCreationFormValidation } from "../../hooks/formValidationRules";
 
-type FormValues = {
-    name: string;
-    event_type: string;
-    piggy_bank: number;
-    deadline: string;
-};
-
-function validate(values: FormValues) {
-    const errors: Partial<Record<keyof FormValues, string>> = {};
-
-    if (!values.event_type) errors.event_type = "What is the occasion?";
-    else if (values.name.length < 3) errors.event_type = "Too short...";
-
-    if (!values.name) errors.name = "Group Name is required.";
-    else if (values.name.length < 6)
-    errors.name = "Group name must be at least 6 characters.";
-
-    if (!values.piggy_bank) errors.piggy_bank = "Budget is required.";
-    else if (isNaN(Number(values.piggy_bank)) || Number(values.piggy_bank) <= 0)
-    errors.piggy_bank = "Budget must be a positive number.";
-
-    if(!values.deadline) errors.deadline = "Event Date is required.";
-    else if(countdownDate(new Date(values.deadline)) < 0) errors.deadline = "Event date cannot be in the past.";
-
-    return errors;
-}
 
 export default function CreateGroupForm() {
     const { formData, handleChange, getSanitizedData, errors, isValid, setFormData, isEmpty} = useSanitizedForm({
@@ -39,7 +14,9 @@ export default function CreateGroupForm() {
         event_type: "",
         piggy_bank: 0,
         deadline:"",
-    }, validate);
+    }, groupCreationFormValidation);
+
+    const [error, setError] = useState<string>("")
 
     const [createGroup] = useCreateGroupMutation();
 
@@ -47,7 +24,8 @@ export default function CreateGroupForm() {
         e.preventDefault();
         if (isEmpty) {
           console.info("Form is empty.")
-          validate(formData); // voir pourquoi les erreurs ne s'affichent pas
+          setError("Etre bref c'est bien, mais il faut quand même remplir le formulaire")
+          
           return;
         
         };
@@ -104,7 +82,7 @@ export default function CreateGroupForm() {
                       icon="doubleChat"
                     />
 
-                    <Input
+                    <Input //TODO: faire un select avec des options types d'événements
                       name="event_type"
                       type="text"
                       value={formData.event_type}
@@ -124,13 +102,15 @@ export default function CreateGroupForm() {
                       icon="dollar"
                     />
 
-                    <Input //Afficher le date aujourd'hui par defaut
+                    <Input //TODO: Afficher le date aujourd'hui par defaut
                       name="deadline"
                       type="date"
                       value={formData.deadline}
                       onChange={handleChange}
                       error={errors.deadline}
                     />
+
+                    {/* Ajouter l'option d'ajouter le destinataire*/}
                   </div>
                   <Button
                     type="submit"
@@ -146,6 +126,7 @@ export default function CreateGroupForm() {
                 <div className="w-1/2 bg-white rounded-tr-2xl rounded-br-2xl">
                   {/* Adding users can go here */}
                   <p>Ici, il y aura l'option d'ajouter les participants</p>
+                  { error? error : ""}
                 </div>
             </form>
           </>

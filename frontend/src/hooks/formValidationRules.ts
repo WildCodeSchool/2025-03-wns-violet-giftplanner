@@ -1,13 +1,8 @@
 import type { CreateGroupInput } from "../generated/graphql-types";
 import { countdownDate } from "../utils/dateCalculator";
 
-// Turn all fields into strings (because form inputs return strings)
-type FormValues = {
-  [K in keyof CreateGroupInput]: string;
-};
-
-export default function validate(values: FormValues) {
-    const errors: Partial<Record<keyof FormValues, string>> = {};
+export function groupCreationFormValidation(values: CreateGroupInput) {
+    const errors: Partial<Record<keyof CreateGroupInput, string>> = {};
 
     if (!values.event_type) errors.event_type = "What is the occasion?";
     else if (values.name.length < 6) errors.event_type = "Too short...";
