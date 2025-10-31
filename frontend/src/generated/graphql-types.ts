@@ -96,9 +96,15 @@ export type Message = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  UpdateMyProfile: User;
   login: User;
   logout: Scalars['Boolean']['output'];
   signup: User;
+};
+
+
+export type MutationUpdateMyProfileArgs = {
+  data: UpdateMyProfileInput;
 };
 
 
@@ -129,6 +135,16 @@ export type SignupInput = {
   firstName: Scalars['String']['input'];
   lastName: Scalars['String']['input'];
   password: Scalars['String']['input'];
+};
+
+export type UpdateMyProfileInput = {
+  date_of_birth: Scalars['String']['input'];
+  email: Scalars['String']['input'];
+  firstName: Scalars['String']['input'];
+  lastName: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+  phone_number: Scalars['String']['input'];
+  pictureBase64?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type User = {
@@ -171,6 +187,13 @@ export type GetMeProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetMeProfileQuery = { __typename?: 'Query', getMeProfile: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, phone_number?: string | null, date_of_birth: string, createdAt: any, updatedAt: any, image_url?: string | null, isVerified: boolean, isAdmin: boolean } };
+
+export type UpdateMyProfileMutationVariables = Exact<{
+  data: UpdateMyProfileInput;
+}>;
+
+
+export type UpdateMyProfileMutation = { __typename?: 'Mutation', UpdateMyProfile: { __typename?: 'User', createdAt: any, date_of_birth: string, email: string, firstName: string, id: string, image_url?: string | null, isAdmin: boolean, isVerified: boolean, lastName: string, phone_number?: string | null, updatedAt: any } };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -215,9 +238,9 @@ export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutati
  * });
  */
 export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginMutation, LoginMutationVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, options);
+      }
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
@@ -258,9 +281,9 @@ export type SignupMutationFn = Apollo.MutationFunction<SignupMutation, SignupMut
  * });
  */
 export function useSignupMutation(baseOptions?: Apollo.MutationHookOptions<SignupMutation, SignupMutationVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useMutation<SignupMutation, SignupMutationVariables>(SignupDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SignupMutation, SignupMutationVariables>(SignupDocument, options);
+      }
 export type SignupMutationHookResult = ReturnType<typeof useSignupMutation>;
 export type SignupMutationResult = Apollo.MutationResult<SignupMutation>;
 export type SignupMutationOptions = Apollo.BaseMutationOptions<SignupMutation, SignupMutationVariables>;
@@ -298,17 +321,17 @@ export const GetMeProfileDocument = gql`
  * });
  */
 export function useGetMeProfileQuery(baseOptions?: Apollo.QueryHookOptions<GetMeProfileQuery, GetMeProfileQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useQuery<GetMeProfileQuery, GetMeProfileQueryVariables>(GetMeProfileDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetMeProfileQuery, GetMeProfileQueryVariables>(GetMeProfileDocument, options);
+      }
 export function useGetMeProfileLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMeProfileQuery, GetMeProfileQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useLazyQuery<GetMeProfileQuery, GetMeProfileQueryVariables>(GetMeProfileDocument, options);
-}
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetMeProfileQuery, GetMeProfileQueryVariables>(GetMeProfileDocument, options);
+        }
 export function useGetMeProfileSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetMeProfileQuery, GetMeProfileQueryVariables>) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions }
-  return Apollo.useSuspenseQuery<GetMeProfileQuery, GetMeProfileQueryVariables>(GetMeProfileDocument, options);
-}
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetMeProfileQuery, GetMeProfileQueryVariables>(GetMeProfileDocument, options);
+        }
 export type GetMeProfileQueryHookResult = ReturnType<typeof useGetMeProfileQuery>;
 export type GetMeProfileLazyQueryHookResult = ReturnType<typeof useGetMeProfileLazyQuery>;
 export type GetMeProfileSuspenseQueryHookResult = ReturnType<typeof useGetMeProfileSuspenseQuery>;
@@ -350,9 +373,9 @@ export type UpdateMyProfileMutationFn = Apollo.MutationFunction<UpdateMyProfileM
  * });
  */
 export function useUpdateMyProfileMutation(baseOptions?: Apollo.MutationHookOptions<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useMutation<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>(UpdateMyProfileDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>(UpdateMyProfileDocument, options);
+      }
 export type UpdateMyProfileMutationHookResult = ReturnType<typeof useUpdateMyProfileMutation>;
 export type UpdateMyProfileMutationResult = Apollo.MutationResult<UpdateMyProfileMutation>;
 export type UpdateMyProfileMutationOptions = Apollo.BaseMutationOptions<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>;
@@ -380,9 +403,9 @@ export type LogoutMutationFn = Apollo.MutationFunction<LogoutMutation, LogoutMut
  * });
  */
 export function useLogoutMutation(baseOptions?: Apollo.MutationHookOptions<LogoutMutation, LogoutMutationVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument, options);
+      }
 export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
 export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
 export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;

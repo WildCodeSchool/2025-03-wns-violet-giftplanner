@@ -20,8 +20,9 @@ export default function Card({
   return (
     <button
       type="button"
-      className={`flex items-center bg-white rounded-lg p-4 mr-4 shadow cursor-pointer ${large ? "min-h-[100px]" : "min-h-[75px]"
-        }`}
+      className={`flex items-center bg-white rounded-lg p-4 mr-4 shadow cursor-pointer ${
+        large ? "min-h-[100px]" : "min-h-[75px]"
+      }`}
       onClick={onClick}
       key={id}
     >

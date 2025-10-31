@@ -40,9 +40,9 @@ class User extends BaseEntity {
   // ne jamais mettre de field pour pas que le mot de passe soit publiquement accessible via GraphQL
   password_hashed: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, default: "" })
   @Field(() => String, { nullable: true })
-  phone_number: string;
+  phone_number?: string;
 
   @Column()
   @Field()
@@ -63,7 +63,7 @@ class User extends BaseEntity {
   @Field()
   updatedAt: Date;
 
-  @Column({ default: "lien_image_defaut" })
+  @Column({ default: null, nullable: true })
   @Field({ nullable: true })
   image_url: string;
 

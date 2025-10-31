@@ -31,7 +31,7 @@ const UserProfilePage = () => {
     password: "",
     passwordConfirmation: "",
   });
-  const [profileBackup, _setProfileBackup] = useState(profile);
+  const [profileBackup, setProfileBackup] = useState(profile);
   const [updateMyProfile] = useUpdateMyProfileMutation();
 
   useEffect(() => {
@@ -126,11 +126,12 @@ const UserProfilePage = () => {
     });
 
     // toto cooriger ca
-    if (!response || !response.data) {
+    if (!response || !response.data?.UpdateMyProfile) {
       setMessageError("Erreur inattendue lors de la mise à jour du profil");
       return;
     }
 
+    setUserProfile(response.data.UpdateMyProfile);
     // setUserProfile(response.data?.updateMyProfile);
     setMessageSuccess("Profil mis à jour avec succès !");
   };

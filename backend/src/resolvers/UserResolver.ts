@@ -85,7 +85,11 @@ export default class UserResolver {
     const user = await User.findOne({ where: { id: ctx.user.id } });
 
     // si l'utilisateur a été supprimé (ou inexistant)
-    if (!user) throw new Error("Utilisateur supprimé");
+    if (!user) {
+      // supprime le cookie de connexion
+      cookieManager.delCookie(ctx, "token", { secure: false });
+      throw new Error("Utilisateur supprimé");
+    }
 
     return user as User;
   }
