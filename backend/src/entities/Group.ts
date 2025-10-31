@@ -53,10 +53,6 @@ export class Group extends BaseEntity {
   @Field()
   deadline: Date;
 
-  @Column()
-  @Field()
-  budget: number;
-
   @OneToMany(
     () => Like,
     (likes) => likes.group,
@@ -99,3 +95,5 @@ export class Group extends BaseEntity {
   @Field(() => [Message])
   messages: Message[];
 }
+
+export default Group;

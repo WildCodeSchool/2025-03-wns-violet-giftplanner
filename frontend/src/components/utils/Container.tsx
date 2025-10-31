@@ -15,7 +15,7 @@ export default function Container({ colour, title, button, children }: Container
     >
       {/* Header */}
       <div className="flex justify-between items-center pb-4">
-        <Title text={title} />
+        <Title>{title}</Title>
         {button}
       </div>
 

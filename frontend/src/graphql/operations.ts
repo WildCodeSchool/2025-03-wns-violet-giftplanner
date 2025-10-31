@@ -1,7 +1,8 @@
 import { gql } from "@apollo/client";
 
-// mutation pour la connexion
-export const LOIGIN = gql`
+//USER OPERATIONS
+
+export const LOGIN = gql`
   mutation Login($data: LoginInput!) {
     login(data: $data){
       id
@@ -37,10 +38,9 @@ export const SIGNUP = gql`
   }
 `;
 
-// query pour récupérer le profil de l'utilisateur connecté
-export const GET_ME_PROFILE = gql`
-  query GetMeProfile {
-    getMeProfile {
+export const GET_MY_PROFILE = gql`
+  query GetMyProfile {
+    getMyProfile {
       id
       firstName
       lastName
@@ -77,5 +77,29 @@ export const UPDATE_ME_PROFILE = gql`
 export const LOGOUT = gql`
   mutation Logout {
     logout
+  }
+`;
+
+//GROUP OPERATIONS
+
+export const CREATE_GROUP = gql`
+mutation CreateGroup($data: CreateGroupInput!) {
+  createGroup(data: $data) {
+    id
+    name
+    piggy_bank
+    event_type
+  }
+}
+`;
+
+export const GET_ALL_MY_GROUPS = gql`
+  query getAllMyGroups {
+    getAllMyGroups {
+      id
+      name
+      piggy_bank
+      event_type
+}
   }
 `;

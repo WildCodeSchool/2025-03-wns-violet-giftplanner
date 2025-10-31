@@ -2,7 +2,7 @@ import argon2 from "argon2";
 import axios from "axios";
 import { Arg, Ctx, Field, InputType, Mutation, Query, Resolver } from "type-graphql";
 import User from "../entities/User";
-import cookieManager from "../lib/cookiManager/cookiManager";
+import cookieManager from "../lib/cookieManager/cookieManager";
 import type { ContextType } from "../types/context";
 import { createAndSetToken } from "../utils/jwtUtils";
 
@@ -78,7 +78,7 @@ export default class UserResolver {
   }
 
   @Query(() => User)
-  async getMeProfile(@Ctx() ctx: ContextType) {
+  async getMyProfile(@Ctx() ctx: ContextType) {
     if (!ctx.user) throw new Error("Utilisateur non connecté");
 
     //récupère le profil de l'utilisateur connecté
@@ -130,7 +130,7 @@ export default class UserResolver {
     const payload = { id: user.id, isAdmin: user.isAdmin };
     createAndSetToken(ctx, payload);
 
-    // return le token;
+    // return le user;
     return user;
   }
 

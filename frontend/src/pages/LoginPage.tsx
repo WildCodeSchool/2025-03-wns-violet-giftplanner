@@ -1,6 +1,5 @@
 import LoginForm from "../components/auth/LoginForm";
 import InfoHome from "../components/InfoHome";
-import "./auth.css";
 
 const LoginPage = () => {
   return (

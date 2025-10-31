@@ -18,6 +18,13 @@ export type Scalars = {
   DateTimeISO: { input: any; output: any; }
 };
 
+export type CreateGroupInput = {
+  deadline: Scalars['DateTimeISO']['input'];
+  event_type: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  piggy_bank: Scalars['Float']['input'];
+};
+
 export type Gift = {
   __typename?: 'Gift';
   createdAt: Scalars['DateTimeISO']['output'];
@@ -34,7 +41,6 @@ export type Gift = {
 
 export type Group = {
   __typename?: 'Group';
-  budget: Scalars['Float']['output'];
   createdAt: Scalars['DateTimeISO']['output'];
   deadline: Scalars['DateTimeISO']['output'];
   event_type: Scalars['String']['output'];
@@ -96,15 +102,15 @@ export type Message = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  UpdateMyProfile: User;
+  createGroup: Group;
   login: User;
   logout: Scalars['Boolean']['output'];
   signup: User;
 };
 
 
-export type MutationUpdateMyProfileArgs = {
-  data: UpdateMyProfileInput;
+export type MutationCreateGroupArgs = {
+  data: CreateGroupInput;
 };
 
 
@@ -120,9 +126,10 @@ export type MutationSignupArgs = {
 export type Query = {
   __typename?: 'Query';
   coucou: Scalars['String']['output'];
+  getAllMyGroups: Array<Group>;
   getAllUsers: Array<User>;
   getAllUsersAdmin: Array<User>;
-  getMeProfile: User;
+  getMyProfile: User;
   testAdmin: Scalars['String']['output'];
   testUser: Scalars['String']['output'];
   welcomeAll: Scalars['String']['output'];
@@ -183,10 +190,10 @@ export type SignupMutationVariables = Exact<{
 
 export type SignupMutation = { __typename?: 'Mutation', signup: { __typename?: 'User', createdAt: any, date_of_birth: string, email: string, firstName: string, id: string, image_url?: string | null, isAdmin: boolean, isVerified: boolean, lastName: string, phone_number?: string | null, updatedAt: any } };
 
-export type GetMeProfileQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetMyProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetMeProfileQuery = { __typename?: 'Query', getMeProfile: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, phone_number?: string | null, date_of_birth: string, createdAt: any, updatedAt: any, image_url?: string | null, isVerified: boolean, isAdmin: boolean } };
+export type GetMyProfileQuery = { __typename?: 'Query', getMyProfile: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, phone_number?: string | null, date_of_birth: string, createdAt: any, updatedAt: any, image_url?: string | null, isVerified: boolean, isAdmin: boolean } };
 
 export type UpdateMyProfileMutationVariables = Exact<{
   data: UpdateMyProfileInput;
@@ -199,6 +206,18 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 
 export type LogoutMutation = { __typename?: 'Mutation', logout: boolean };
+
+export type CreateGroupMutationVariables = Exact<{
+  data: CreateGroupInput;
+}>;
+
+
+export type CreateGroupMutation = { __typename?: 'Mutation', createGroup: { __typename?: 'Group', id: string, name: string, piggy_bank: number, event_type: string } };
+
+export type GetAllMyGroupsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllMyGroupsQuery = { __typename?: 'Query', getAllMyGroups: Array<{ __typename?: 'Group', id: string, name: string, piggy_bank: number, event_type: string }> };
 
 
 export const LoginDocument = gql`
@@ -287,9 +306,9 @@ export function useSignupMutation(baseOptions?: Apollo.MutationHookOptions<Signu
 export type SignupMutationHookResult = ReturnType<typeof useSignupMutation>;
 export type SignupMutationResult = Apollo.MutationResult<SignupMutation>;
 export type SignupMutationOptions = Apollo.BaseMutationOptions<SignupMutation, SignupMutationVariables>;
-export const GetMeProfileDocument = gql`
-    query GetMeProfile {
-  getMeProfile {
+export const GetMyProfileDocument = gql`
+    query GetMyProfile {
+  getMyProfile {
     id
     firstName
     lastName
@@ -306,79 +325,36 @@ export const GetMeProfileDocument = gql`
     `;
 
 /**
- * __useGetMeProfileQuery__
+ * __useGetMyProfileQuery__
  *
- * To run a query within a React component, call `useGetMeProfileQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetMeProfileQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetMyProfileQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMyProfileQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetMeProfileQuery({
+ * const { data, loading, error } = useGetMyProfileQuery({
  *   variables: {
  *   },
  * });
  */
-export function useGetMeProfileQuery(baseOptions?: Apollo.QueryHookOptions<GetMeProfileQuery, GetMeProfileQueryVariables>) {
+export function useGetMyProfileQuery(baseOptions?: Apollo.QueryHookOptions<GetMyProfileQuery, GetMyProfileQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetMeProfileQuery, GetMeProfileQueryVariables>(GetMeProfileDocument, options);
+        return Apollo.useQuery<GetMyProfileQuery, GetMyProfileQueryVariables>(GetMyProfileDocument, options);
       }
-export function useGetMeProfileLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMeProfileQuery, GetMeProfileQueryVariables>) {
+export function useGetMyProfileLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMyProfileQuery, GetMyProfileQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetMeProfileQuery, GetMeProfileQueryVariables>(GetMeProfileDocument, options);
+          return Apollo.useLazyQuery<GetMyProfileQuery, GetMyProfileQueryVariables>(GetMyProfileDocument, options);
         }
-export function useGetMeProfileSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetMeProfileQuery, GetMeProfileQueryVariables>) {
+export function useGetMyProfileSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetMyProfileQuery, GetMyProfileQueryVariables>) {
           const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetMeProfileQuery, GetMeProfileQueryVariables>(GetMeProfileDocument, options);
+          return Apollo.useSuspenseQuery<GetMyProfileQuery, GetMyProfileQueryVariables>(GetMyProfileDocument, options);
         }
-export type GetMeProfileQueryHookResult = ReturnType<typeof useGetMeProfileQuery>;
-export type GetMeProfileLazyQueryHookResult = ReturnType<typeof useGetMeProfileLazyQuery>;
-export type GetMeProfileSuspenseQueryHookResult = ReturnType<typeof useGetMeProfileSuspenseQuery>;
-export type GetMeProfileQueryResult = Apollo.QueryResult<GetMeProfileQuery, GetMeProfileQueryVariables>;
-export const UpdateMyProfileDocument = gql`
-    mutation UpdateMyProfile($data: UpdateMyProfileInput!) {
-  UpdateMyProfile(data: $data) {
-    createdAt
-    date_of_birth
-    email
-    firstName
-    id
-    image_url
-    isAdmin
-    isVerified
-    lastName
-    phone_number
-    updatedAt
-  }
-}
-    `;
-export type UpdateMyProfileMutationFn = Apollo.MutationFunction<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>;
-
-/**
- * __useUpdateMyProfileMutation__
- *
- * To run a mutation, you first call `useUpdateMyProfileMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateMyProfileMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateMyProfileMutation, { data, loading, error }] = useUpdateMyProfileMutation({
- *   variables: {
- *      data: // value for 'data'
- *   },
- * });
- */
-export function useUpdateMyProfileMutation(baseOptions?: Apollo.MutationHookOptions<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>(UpdateMyProfileDocument, options);
-      }
-export type UpdateMyProfileMutationHookResult = ReturnType<typeof useUpdateMyProfileMutation>;
-export type UpdateMyProfileMutationResult = Apollo.MutationResult<UpdateMyProfileMutation>;
-export type UpdateMyProfileMutationOptions = Apollo.BaseMutationOptions<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>;
+export type GetMyProfileQueryHookResult = ReturnType<typeof useGetMyProfileQuery>;
+export type GetMyProfileLazyQueryHookResult = ReturnType<typeof useGetMyProfileLazyQuery>;
+export type GetMyProfileSuspenseQueryHookResult = ReturnType<typeof useGetMyProfileSuspenseQuery>;
+export type GetMyProfileQueryResult = Apollo.QueryResult<GetMyProfileQuery, GetMyProfileQueryVariables>;
 export const LogoutDocument = gql`
     mutation Logout {
   logout
@@ -409,3 +385,81 @@ export function useLogoutMutation(baseOptions?: Apollo.MutationHookOptions<Logou
 export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
 export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
 export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
+export const CreateGroupDocument = gql`
+    mutation CreateGroup($data: CreateGroupInput!) {
+  createGroup(data: $data) {
+    id
+    name
+    piggy_bank
+    event_type
+  }
+}
+    `;
+export type CreateGroupMutationFn = Apollo.MutationFunction<CreateGroupMutation, CreateGroupMutationVariables>;
+
+/**
+ * __useCreateGroupMutation__
+ *
+ * To run a mutation, you first call `useCreateGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createGroupMutation, { data, loading, error }] = useCreateGroupMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateGroupMutation(baseOptions?: Apollo.MutationHookOptions<CreateGroupMutation, CreateGroupMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateGroupMutation, CreateGroupMutationVariables>(CreateGroupDocument, options);
+      }
+export type CreateGroupMutationHookResult = ReturnType<typeof useCreateGroupMutation>;
+export type CreateGroupMutationResult = Apollo.MutationResult<CreateGroupMutation>;
+export type CreateGroupMutationOptions = Apollo.BaseMutationOptions<CreateGroupMutation, CreateGroupMutationVariables>;
+export const GetAllMyGroupsDocument = gql`
+    query getAllMyGroups {
+  getAllMyGroups {
+    id
+    name
+    piggy_bank
+    event_type
+  }
+}
+    `;
+
+/**
+ * __useGetAllMyGroupsQuery__
+ *
+ * To run a query within a React component, call `useGetAllMyGroupsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllMyGroupsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllMyGroupsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllMyGroupsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllMyGroupsQuery, GetAllMyGroupsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllMyGroupsQuery, GetAllMyGroupsQueryVariables>(GetAllMyGroupsDocument, options);
+      }
+export function useGetAllMyGroupsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllMyGroupsQuery, GetAllMyGroupsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllMyGroupsQuery, GetAllMyGroupsQueryVariables>(GetAllMyGroupsDocument, options);
+        }
+export function useGetAllMyGroupsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetAllMyGroupsQuery, GetAllMyGroupsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllMyGroupsQuery, GetAllMyGroupsQueryVariables>(GetAllMyGroupsDocument, options);
+        }
+export type GetAllMyGroupsQueryHookResult = ReturnType<typeof useGetAllMyGroupsQuery>;
+export type GetAllMyGroupsLazyQueryHookResult = ReturnType<typeof useGetAllMyGroupsLazyQuery>;
+export type GetAllMyGroupsSuspenseQueryHookResult = ReturnType<typeof useGetAllMyGroupsSuspenseQuery>;
+export type GetAllMyGroupsQueryResult = Apollo.QueryResult<GetAllMyGroupsQuery, GetAllMyGroupsQueryVariables>;

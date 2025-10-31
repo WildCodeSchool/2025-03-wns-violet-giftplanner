@@ -1,8 +1,8 @@
 type TitleProps = {
-  text: string;
   className?: string;
+  children?: React.ReactNode;
 };
 
-export default function Title({ text, className }: TitleProps) {
-  return <h2 className={`text-white font-poppins-extre-bold ${className}`}>{text}</h2>;
+export default function Title({ className, children }: TitleProps) {
+  return <h2 className={`text-white font-poppins-extra-bold ${className}`}>{children}</h2>;
 }

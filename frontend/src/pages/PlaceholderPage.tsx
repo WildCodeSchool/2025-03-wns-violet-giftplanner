@@ -1,11 +1,11 @@
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import { useLogoutMutation } from "../generated/graphql-types";
-import consoleErrorDev from "../hook/erreurMod";
+import consoleErrorDev from "../hooks/erreurMod";
 import { useMyProfileStore } from "../zustand/myProfileStore";
-import "./ProvisoirPage.css";
+import "./PlaceholderPage.css";
 
-const ProvisoirePage = () => {
+const PlaceholderPage = () => {
   const [logoutMutation] = useLogoutMutation();
   const { clearUserProfile, userProfile } = useMyProfileStore();
   const navigate = useNavigate();
@@ -104,4 +104,4 @@ const ProvisoirePage = () => {
   );
 };
 
-export default ProvisoirePage;
+export default PlaceholderPage;
