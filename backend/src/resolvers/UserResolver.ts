@@ -159,7 +159,7 @@ export default class UserResolver {
     return true;
   }
 
-  @Mutation(() => Users)
+  @Mutation(() => User)
   async UpdateMyProfile(@Arg("data") data: UpdateMyProfileInput, @Ctx() ctx: ContextType) {
     if (!ctx.user) throw new Error("Utilisateur non connecté update impossible");
 
@@ -185,11 +185,11 @@ export default class UserResolver {
     };
 
     // modifie l'utilisateur connecté
-    await Users.update({ id: ctx.user.id }, newData);
+    await User.update({ id: ctx.user.id }, newData);
 
     //récupère le profil de l'utilisateur connecté
-    const user = await Users.findOne({ where: { id: ctx.user.id } });
+    const user = await User.findOne({ where: { id: ctx.user.id } });
 
-    return user as Users;
+    return user as User;
   }
 }
