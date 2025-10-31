@@ -34,17 +34,23 @@ function validate(values: FormValues) {
 }
 
 export default function CreateGroupForm() {
-    const { formData, handleChange, getSanitizedData, errors, isValid, setFormData} = useSanitizedForm({
+    const { formData, handleChange, getSanitizedData, errors, isValid, setFormData, isEmpty} = useSanitizedForm({
         name: "",
         event_type: "",
         piggy_bank: 0,
-        deadline: ""
+        deadline:"",
     }, validate);
 
     const [createGroup] = useCreateGroupMutation();
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
+        if (isEmpty) {
+          console.info("Form is empty.")
+          validate(formData); // voir pourquoi les erreurs ne s'affichent pas
+          return;
+        
+        };
         if(isValid) {
           try {
             const sanitizedData = getSanitizedData();
@@ -61,32 +67,33 @@ export default function CreateGroupForm() {
               } }
             })
 
-            console.log("Group created successfully:", response.data);
+            console.info("Group created successfully:", response.data);
             setFormData({
               name: "",
               event_type: "",
               piggy_bank: 0,
-              deadline: ""
+              deadline: "",
             })
+            // TO DO: fermer la modale après création puis afficher le nouveau groupe dans la liste des groupes
           }
           catch (error) {
             console.error("Error creating group:", error);
           }
         }
 
-        console.log("Form has errors, cannot submit.", errors);
+        console.error("Form has errors, cannot submit.", errors);
     }
 
     return (
       <>
-        <form className=" flex w-full h-full" onSubmit={handleSubmit}>
-                <div className="bg-green w-1/2 h-full flex flex-col justify-center py-5">
+        <form className=" flex w-full h-full rounded-2xl" onSubmit={handleSubmit} autoComplete="off">
+                <div className="bg-green w-1/2 h-full flex flex-col justify-center pt-10 pb-5 rounded-tl-2xl rounded-bl-2xl">
                   {/* Form to create a new group */}
-                  <Title className="text-center text-3xl">Créer un groupe</Title>
-                  <div className="text-white text-9xl m-auto">
-                    <Icon icon="image" text="" />
+                  <Title className="text-center text-2xl">Créer un groupe</Title>
+                  <div className="text-white text-8xl m-auto">
+                    <Icon icon="image" />
                   </div>
-                  <div className="flex flex-col gap-7 px-10">
+                  <div className="flex flex-col gap-4 px-20">
                     <Input
                       name="name"
                       type="text"
@@ -112,41 +119,35 @@ export default function CreateGroupForm() {
                       type="number"
                       value={String(formData.piggy_bank)}
                       onChange={handleChange}
-                      placeholder={String(formData.piggy_bank)}
+                      placeholder={String(0)}
                       error={errors.piggy_bank}
                       icon="dollar"
                     />
 
-                    <Input
+                    <Input //Afficher le date aujourd'hui par defaut
                       name="deadline"
                       type="date"
                       value={formData.deadline}
                       onChange={handleChange}
-                      placeholder="Sélectionnez une date de fin"
                       error={errors.deadline}
                     />
-                  </div>                
+                  </div>
+                  <Button
+                    type="submit"
+                    text="Créer le groupe"
+                    className="text-center w-fit px-8 py-1 m-auto text-lg"
+                    colour="dark"
+                    rounded
+                >
+                  Créer
+                </Button>                
                 </div>
                 
-                <div className="w-1/2 bg-white">
+                <div className="w-1/2 bg-white rounded-tr-2xl rounded-br-2xl">
                   {/* Adding users can go here */}
                   <p>Ici, il y aura l'option d'ajouter les participants</p>
                 </div>
-
-                
-
             </form>
-            <Button
-                  type="submit"
-                  text="Créer le groupe"
-                  className="absolute bottom-4 left-1/2 -translate-x-1/2 px-10 text-2xl"
-                  colour="dark"
-                  rounded
-                >
-                  Créer
-                </Button>
-          
-          
           </>
 
     );

@@ -78,6 +78,12 @@ export function useSanitizedForm<T extends Record<string, any>>(initialState: T,
     setErrors({});
   }
 
+  function isEmpty(obj: T) {
+    //check that each field in obj is empty
+    const isEmpty = Object.values(obj).every(value => value === "" || value === null || value === undefined || (typeof value === "number" && value === 0));
+    return isEmpty;
+  }
+
   return {
     formData,
     handleChange,
@@ -87,5 +93,6 @@ export function useSanitizedForm<T extends Record<string, any>>(initialState: T,
     errors,
     setErrors,
     isValid: Object.keys(errors).length === 0, // exposed in case you want manual control
+    isEmpty: isEmpty(formData),
   };
 }

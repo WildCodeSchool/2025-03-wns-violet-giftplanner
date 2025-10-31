@@ -2,9 +2,10 @@ import { FaArrowCircleRight, FaRegHeart, FaRegUser } from "react-icons/fa";
 import { FiLogOut, FiPlusCircle } from "react-icons/fi";
 import { HiDotsVertical, HiOutlineCurrencyDollar } from "react-icons/hi";
 import { IoChatboxEllipsesOutline, IoGiftOutline } from "react-icons/io5";
-import { IoMdClose } from "react-icons/io";
 import { HiOutlineChatBubbleLeftRight } from "react-icons/hi2";
 import { RiImageCircleLine } from "react-icons/ri";
+import { ImCancelCircle } from "react-icons/im";
+
 
 
 
@@ -27,7 +28,7 @@ const iconMap = {
   gift: IoGiftOutline,
   chat: IoChatboxEllipsesOutline,
   doubleChat: HiOutlineChatBubbleLeftRight,
-  close: IoMdClose,
+  close: ImCancelCircle,
   image: RiImageCircleLine
 };
 
