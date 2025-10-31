@@ -18,22 +18,87 @@ export type Scalars = {
   DateTimeISO: { input: any; output: any; }
 };
 
+export type Gift = {
+  __typename?: 'Gift';
+  createdAt: Scalars['DateTimeISO']['output'];
+  description: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  imageUrl: Scalars['String']['output'];
+  likes: Array<Like>;
+  list: List;
+  name: Scalars['String']['output'];
+  updatedAt: Scalars['DateTimeISO']['output'];
+  url: Scalars['String']['output'];
+  user: User;
+};
+
+export type Group = {
+  __typename?: 'Group';
+  budget: Scalars['Float']['output'];
+  createdAt: Scalars['DateTimeISO']['output'];
+  deadline: Scalars['DateTimeISO']['output'];
+  event_type: Scalars['String']['output'];
+  groupMember: Array<GroupMember>;
+  id: Scalars['ID']['output'];
+  likes: Array<Like>;
+  list_group: List;
+  messages: Array<Message>;
+  name: Scalars['String']['output'];
+  piggy_bank: Scalars['Float']['output'];
+  updatedAt: Scalars['DateTimeISO']['output'];
+  user_admin: User;
+  user_beneficiary: User;
+};
+
+export type GroupMember = {
+  __typename?: 'GroupMember';
+  group: Group;
+  id: Scalars['ID']['output'];
+  joined_at: Scalars['DateTimeISO']['output'];
+  user: User;
+};
+
+export type Like = {
+  __typename?: 'Like';
+  createdAt: Scalars['DateTimeISO']['output'];
+  gift: Gift;
+  group: Group;
+  id: Scalars['ID']['output'];
+  user: User;
+};
+
+export type List = {
+  __typename?: 'List';
+  createdAt: Scalars['DateTimeISO']['output'];
+  gift: Array<Gift>;
+  groups: Array<Group>;
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  updatedAt: Scalars['DateTimeISO']['output'];
+  user: Array<User>;
+};
+
 export type LoginInput = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
 };
 
-export type Mutation = {
-  __typename?: 'Mutation';
-  UpdateMyProfile: Users;
-  login: Users;
-  logout: Scalars['Boolean']['output'];
-  signup: Users;
+export type Message = {
+  __typename?: 'Message';
+  content: Scalars['String']['output'];
+  createdAt: Scalars['DateTimeISO']['output'];
+  group: Group;
+  id: Scalars['ID']['output'];
+  isEdited: Scalars['Boolean']['output'];
+  updatedAt: Scalars['DateTimeISO']['output'];
+  user: User;
 };
 
-
-export type MutationUpdateMyProfileArgs = {
-  data: UpdateMyProfileInput;
+export type Mutation = {
+  __typename?: 'Mutation';
+  login: User;
+  logout: Scalars['Boolean']['output'];
+  signup: User;
 };
 
 
@@ -49,13 +114,13 @@ export type MutationSignupArgs = {
 export type Query = {
   __typename?: 'Query';
   coucou: Scalars['String']['output'];
-  getAllUsers: Array<Users>;
-  getAllUsersAdmin: Array<Users>;
-  getMeProfile: Users;
+  getAllUsers: Array<User>;
+  getAllUsersAdmin: Array<User>;
+  getMeProfile: User;
   testAdmin: Scalars['String']['output'];
   testUser: Scalars['String']['output'];
   welcomeAll: Scalars['String']['output'];
-  wishlistItems: Array<WishlistItem>;
+  wishlistItems: Array<Gift>;
 };
 
 export type SignupInput = {
@@ -66,42 +131,26 @@ export type SignupInput = {
   password: Scalars['String']['input'];
 };
 
-export type UpdateMyProfileInput = {
-  date_of_birth: Scalars['String']['input'];
-  email: Scalars['String']['input'];
-  firstName: Scalars['String']['input'];
-  lastName: Scalars['String']['input'];
-  password: Scalars['String']['input'];
-  phone_number: Scalars['String']['input'];
-  pictureBase64?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type Users = {
-  __typename?: 'Users';
+export type User = {
+  __typename?: 'User';
+  admin_groups: Array<Group>;
+  beneficiary_groups: Array<Group>;
   createdAt: Scalars['DateTimeISO']['output'];
   date_of_birth: Scalars['String']['output'];
   email: Scalars['String']['output'];
   firstName: Scalars['String']['output'];
-  id: Scalars['Float']['output'];
+  gifts: Array<Gift>;
+  groupMember: Array<GroupMember>;
+  id: Scalars['ID']['output'];
   image_url?: Maybe<Scalars['String']['output']>;
   isAdmin: Scalars['Boolean']['output'];
   isVerified: Scalars['Boolean']['output'];
   lastName: Scalars['String']['output'];
+  likes: Array<Like>;
+  lists: Array<List>;
+  messages: Array<Message>;
   phone_number?: Maybe<Scalars['String']['output']>;
   updatedAt: Scalars['DateTimeISO']['output'];
-};
-
-export type WishlistItem = {
-  __typename?: 'WishlistItem';
-  createdAt: Scalars['DateTimeISO']['output'];
-  description?: Maybe<Scalars['String']['output']>;
-  id: Scalars['ID']['output'];
-  imageUrl?: Maybe<Scalars['String']['output']>;
-  listId?: Maybe<Scalars['String']['output']>;
-  name: Scalars['String']['output'];
-  price?: Maybe<Scalars['Float']['output']>;
-  updatedAt: Scalars['DateTimeISO']['output'];
-  userId?: Maybe<Scalars['String']['output']>;
 };
 
 export type LoginMutationVariables = Exact<{
@@ -109,26 +158,19 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'Users', id: number, firstName: string, lastName: string, email: string, phone_number?: string | null, date_of_birth: string, createdAt: any, updatedAt: any, image_url?: string | null, isVerified: boolean, isAdmin: boolean } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, phone_number?: string | null, date_of_birth: string, createdAt: any, updatedAt: any, image_url?: string | null, isVerified: boolean, isAdmin: boolean } };
 
 export type SignupMutationVariables = Exact<{
   data: SignupInput;
 }>;
 
 
-export type SignupMutation = { __typename?: 'Mutation', signup: { __typename?: 'Users', createdAt: any, date_of_birth: string, email: string, firstName: string, id: number, image_url?: string | null, isAdmin: boolean, isVerified: boolean, lastName: string, phone_number?: string | null, updatedAt: any } };
+export type SignupMutation = { __typename?: 'Mutation', signup: { __typename?: 'User', createdAt: any, date_of_birth: string, email: string, firstName: string, id: string, image_url?: string | null, isAdmin: boolean, isVerified: boolean, lastName: string, phone_number?: string | null, updatedAt: any } };
 
 export type GetMeProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetMeProfileQuery = { __typename?: 'Query', getMeProfile: { __typename?: 'Users', id: number, firstName: string, lastName: string, email: string, phone_number?: string | null, date_of_birth: string, createdAt: any, updatedAt: any, image_url?: string | null, isVerified: boolean, isAdmin: boolean } };
-
-export type UpdateMyProfileMutationVariables = Exact<{
-  data: UpdateMyProfileInput;
-}>;
-
-
-export type UpdateMyProfileMutation = { __typename?: 'Mutation', UpdateMyProfile: { __typename?: 'Users', createdAt: any, date_of_birth: string, email: string, firstName: string, id: number, image_url?: string | null, isAdmin: boolean, isVerified: boolean, lastName: string, phone_number?: string | null, updatedAt: any } };
+export type GetMeProfileQuery = { __typename?: 'Query', getMeProfile: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, phone_number?: string | null, date_of_birth: string, createdAt: any, updatedAt: any, image_url?: string | null, isVerified: boolean, isAdmin: boolean } };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -173,9 +215,9 @@ export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutati
  * });
  */
 export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginMutation, LoginMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, options);
-      }
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, options);
+}
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
@@ -216,9 +258,9 @@ export type SignupMutationFn = Apollo.MutationFunction<SignupMutation, SignupMut
  * });
  */
 export function useSignupMutation(baseOptions?: Apollo.MutationHookOptions<SignupMutation, SignupMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<SignupMutation, SignupMutationVariables>(SignupDocument, options);
-      }
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<SignupMutation, SignupMutationVariables>(SignupDocument, options);
+}
 export type SignupMutationHookResult = ReturnType<typeof useSignupMutation>;
 export type SignupMutationResult = Apollo.MutationResult<SignupMutation>;
 export type SignupMutationOptions = Apollo.BaseMutationOptions<SignupMutation, SignupMutationVariables>;
@@ -256,17 +298,17 @@ export const GetMeProfileDocument = gql`
  * });
  */
 export function useGetMeProfileQuery(baseOptions?: Apollo.QueryHookOptions<GetMeProfileQuery, GetMeProfileQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetMeProfileQuery, GetMeProfileQueryVariables>(GetMeProfileDocument, options);
-      }
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<GetMeProfileQuery, GetMeProfileQueryVariables>(GetMeProfileDocument, options);
+}
 export function useGetMeProfileLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMeProfileQuery, GetMeProfileQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetMeProfileQuery, GetMeProfileQueryVariables>(GetMeProfileDocument, options);
-        }
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<GetMeProfileQuery, GetMeProfileQueryVariables>(GetMeProfileDocument, options);
+}
 export function useGetMeProfileSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetMeProfileQuery, GetMeProfileQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetMeProfileQuery, GetMeProfileQueryVariables>(GetMeProfileDocument, options);
-        }
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions }
+  return Apollo.useSuspenseQuery<GetMeProfileQuery, GetMeProfileQueryVariables>(GetMeProfileDocument, options);
+}
 export type GetMeProfileQueryHookResult = ReturnType<typeof useGetMeProfileQuery>;
 export type GetMeProfileLazyQueryHookResult = ReturnType<typeof useGetMeProfileLazyQuery>;
 export type GetMeProfileSuspenseQueryHookResult = ReturnType<typeof useGetMeProfileSuspenseQuery>;
@@ -308,9 +350,9 @@ export type UpdateMyProfileMutationFn = Apollo.MutationFunction<UpdateMyProfileM
  * });
  */
 export function useUpdateMyProfileMutation(baseOptions?: Apollo.MutationHookOptions<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>(UpdateMyProfileDocument, options);
-      }
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>(UpdateMyProfileDocument, options);
+}
 export type UpdateMyProfileMutationHookResult = ReturnType<typeof useUpdateMyProfileMutation>;
 export type UpdateMyProfileMutationResult = Apollo.MutationResult<UpdateMyProfileMutation>;
 export type UpdateMyProfileMutationOptions = Apollo.BaseMutationOptions<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>;
@@ -338,9 +380,9 @@ export type LogoutMutationFn = Apollo.MutationFunction<LogoutMutation, LogoutMut
  * });
  */
 export function useLogoutMutation(baseOptions?: Apollo.MutationHookOptions<LogoutMutation, LogoutMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument, options);
-      }
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument, options);
+}
 export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
 export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
 export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;

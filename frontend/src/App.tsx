@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { Navigate, Outlet, Route, Routes, useNavigate } from "react-router";
-import Wishlist from "./components/Wishlist";
 import { useGetMeProfileQuery } from "./generated/graphql-types";
 import Conversations from "./pages/Conversations";
 import Dashboard from "./pages/Dashboard";
@@ -10,6 +9,7 @@ import LoadingHomePage from "./pages/loadingHomePage/LoadingHomePage";
 import NotFound404Page from "./pages/notFound404Page/NotFound404Page";
 import RegisterPage from "./pages/RegisterPage";
 import UserProfilePage from "./pages/UserProfilePage";
+import WishListPage from "./pages/WishListPage";
 import { useMyProfileStore } from "./zustand/myProfileStore";
 
 const App = () => {
@@ -46,8 +46,8 @@ const App = () => {
         <Route path="dashboard" element={<Dashboard />}>
           <Route index element={<Navigate to="conversations" replace />} />
           <Route path="conversations" element={<Conversations />} />
-          <Route path="wishlist" element={<Wishlist />} />
           <Route path="profile" element={<UserProfilePage />} />
+          <Route path="wishlist" element={<WishListPage />} />
         </Route>
 
         <Route path="*" element={<NotFound404Page />} />
