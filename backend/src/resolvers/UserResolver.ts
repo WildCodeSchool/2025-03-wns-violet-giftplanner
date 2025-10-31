@@ -1,4 +1,5 @@
 import argon2 from "argon2";
+import axios from "axios";
 import { Arg, Ctx, Field, InputType, Mutation, Query, Resolver } from "type-graphql";
 import User from "../entities/User";
 import cookieManager from "../lib/cookiManager/cookiManager";
@@ -21,6 +22,30 @@ class SignupInput {
 
   @Field()
   date_of_birth!: string;
+}
+
+@InputType()
+class UpdateMyProfileInput {
+  @Field()
+  email!: string;
+
+  @Field()
+  password!: string;
+
+  @Field()
+  firstName!: string;
+
+  @Field()
+  lastName!: string;
+
+  @Field()
+  date_of_birth!: string;
+
+  @Field()
+  phone_number!: string;
+
+  @Field(() => String, { nullable: true })
+  pictureBase64?: string;
 }
 
 @InputType()
@@ -60,7 +85,11 @@ export default class UserResolver {
     const user = await User.findOne({ where: { id: ctx.user.id } });
 
     // si l'utilisateur a été supprimé (ou inexistant)
-    if (!user) throw new Error("Utilisateur supprimé");
+    if (!user) {
+      // supprime le cookie de connexion
+      cookieManager.delCookie(ctx, "token", { secure: false });
+      throw new Error("Utilisateur supprimé");
+    }
 
     return user as User;
   }
@@ -132,5 +161,39 @@ export default class UserResolver {
 
     // return un boolean de succès
     return true;
+  }
+
+  @Mutation(() => User)
+  async UpdateMyProfile(@Arg("data") data: UpdateMyProfileInput, @Ctx() ctx: ContextType) {
+    if (!ctx.user) throw new Error("Utilisateur non connecté update impossible");
+
+    let urlImage = null;
+    if (data.pictureBase64) {
+      try {
+        urlImage = await axios.post("http://picture-service:3410/service/picture/uploads", {
+          imageBase64: data.pictureBase64,
+        });
+      } catch (error) {
+        throw new Error("Erreur lors de l'upload de l'image");
+      }
+    }
+
+    // hash le mot de passe
+    const password_hashed = await argon2.hash(data.password);
+    const newData = {
+      ...data,
+      password_hashed,
+      password: undefined,
+      image_url: urlImage ? urlImage.data.url : undefined,
+      pictureBase64: undefined,
+    };
+
+    // modifie l'utilisateur connecté
+    await User.update({ id: ctx.user.id }, newData);
+
+    //récupère le profil de l'utilisateur connecté
+    const user = await User.findOne({ where: { id: ctx.user.id } });
+
+    return user as User;
   }
 }

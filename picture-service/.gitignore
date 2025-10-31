@@ -1,0 +1,5 @@
+node_modules
+/public/uploads/gift-picture/*
+/public/uploads/group-picture/*
+/public/uploads/profil-user/*
+!/public/uploads/**/.gitkeep

@@ -1,17 +1,28 @@
 import { create } from "zustand";
-import type { Users } from "../generated/graphql-types";
+import { defaultPictureProfile } from "../data/pictureDefault";
+import type { GetMeProfileQuery } from "../generated/graphql-types";
 
 type State = {
-  userProfile: null | Users;
-  setUserProfile: (user: null | Users) => void;
+  userProfile: null | UserProfil;
+  setUserProfile: (user: null | UserProfil) => void;
   clearUserProfile: () => void;
 };
+
+type UserProfil = GetMeProfileQuery["getMeProfile"];
+
 export const useMyProfileStore = create<State>((set) => ({
   userProfile: null,
-  setUserProfile: (newUser) => set(() => ({ userProfile: newUser })),
+  setUserProfile: (newUser: UserProfil | null) =>
+    set(() => ({
+      userProfile: newUser
+        ? ({
+            ...newUser,
+            image_url: newUser.image_url ? `/service/picture/${newUser.image_url}` : defaultPictureProfile,
+          } as UserProfil)
+        : null,
+    })),
   clearUserProfile: () => set({ userProfile: null }),
 }));
-
 // export const userProfil = () => useUserStore((set) => set.user);
 // export const setUserProfil = () => useUserStore((set) => set.setProfil);
 // export const clearUserProfil = () => useUserStore((set) => set.logout);

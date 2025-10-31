@@ -96,9 +96,15 @@ export type Message = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  UpdateMyProfile: User;
   login: User;
   logout: Scalars['Boolean']['output'];
   signup: User;
+};
+
+
+export type MutationUpdateMyProfileArgs = {
+  data: UpdateMyProfileInput;
 };
 
 
@@ -129,6 +135,16 @@ export type SignupInput = {
   firstName: Scalars['String']['input'];
   lastName: Scalars['String']['input'];
   password: Scalars['String']['input'];
+};
+
+export type UpdateMyProfileInput = {
+  date_of_birth: Scalars['String']['input'];
+  email: Scalars['String']['input'];
+  firstName: Scalars['String']['input'];
+  lastName: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+  phone_number: Scalars['String']['input'];
+  pictureBase64?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type User = {
@@ -171,6 +187,13 @@ export type GetMeProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetMeProfileQuery = { __typename?: 'Query', getMeProfile: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, phone_number?: string | null, date_of_birth: string, createdAt: any, updatedAt: any, image_url?: string | null, isVerified: boolean, isAdmin: boolean } };
+
+export type UpdateMyProfileMutationVariables = Exact<{
+  data: UpdateMyProfileInput;
+}>;
+
+
+export type UpdateMyProfileMutation = { __typename?: 'Mutation', UpdateMyProfile: { __typename?: 'User', createdAt: any, date_of_birth: string, email: string, firstName: string, id: string, image_url?: string | null, isAdmin: boolean, isVerified: boolean, lastName: string, phone_number?: string | null, updatedAt: any } };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -313,6 +336,49 @@ export type GetMeProfileQueryHookResult = ReturnType<typeof useGetMeProfileQuery
 export type GetMeProfileLazyQueryHookResult = ReturnType<typeof useGetMeProfileLazyQuery>;
 export type GetMeProfileSuspenseQueryHookResult = ReturnType<typeof useGetMeProfileSuspenseQuery>;
 export type GetMeProfileQueryResult = Apollo.QueryResult<GetMeProfileQuery, GetMeProfileQueryVariables>;
+export const UpdateMyProfileDocument = gql`
+    mutation UpdateMyProfile($data: UpdateMyProfileInput!) {
+  UpdateMyProfile(data: $data) {
+    createdAt
+    date_of_birth
+    email
+    firstName
+    id
+    image_url
+    isAdmin
+    isVerified
+    lastName
+    phone_number
+    updatedAt
+  }
+}
+    `;
+export type UpdateMyProfileMutationFn = Apollo.MutationFunction<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>;
+
+/**
+ * __useUpdateMyProfileMutation__
+ *
+ * To run a mutation, you first call `useUpdateMyProfileMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateMyProfileMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateMyProfileMutation, { data, loading, error }] = useUpdateMyProfileMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateMyProfileMutation(baseOptions?: Apollo.MutationHookOptions<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>(UpdateMyProfileDocument, options);
+      }
+export type UpdateMyProfileMutationHookResult = ReturnType<typeof useUpdateMyProfileMutation>;
+export type UpdateMyProfileMutationResult = Apollo.MutationResult<UpdateMyProfileMutation>;
+export type UpdateMyProfileMutationOptions = Apollo.BaseMutationOptions<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>;
 export const LogoutDocument = gql`
     mutation Logout {
   logout

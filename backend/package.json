@@ -12,6 +12,7 @@
   "dependencies": {
     "@apollo/server": "^5.0.0",
     "argon2": "^0.43.1",
+    "axios": "^1.13.1",
     "cookie": "^1.0.2",
     "dotenv": "^17.2.1",
     "graphql": "^16.11.0",

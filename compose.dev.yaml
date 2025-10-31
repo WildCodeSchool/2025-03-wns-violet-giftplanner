@@ -44,6 +44,23 @@ services:
       SERVEUR_PORT: ${SERVEUR_PORT}
       MODE: ${MODE}
 
+  picture-service:
+    container_name: picture-service-dev
+    restart: always
+    build: ./picture-service
+    volumes:
+      - ./picture-service/src/:/app/src/
+      - ./picture-service/public/:/app/public/
+    healthcheck:
+      test: [ "CMD-SHELL", 'curl --fail --request POST --header ''Content-Type: application/json'' --url ''http://localhost:${PICTURE_SERVICE_PORT}'' --data ''{"query":"query { __typename }"}'' || exit 1' ]
+      interval: 10s
+      retries: 5
+      start_period: 20s
+    environment:
+      BACKEND_URL: ${SERVEUR_URL}
+      CLIENT_URL: ${FRONTEND_URL}
+      APP_PORT: ${PICTURE_SERVICE_PORT}
+
   database:
     container_name: database-dev
     image: postgres

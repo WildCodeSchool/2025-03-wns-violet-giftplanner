@@ -56,6 +56,24 @@ export const GET_ME_PROFILE = gql`
   }
 `;
 
+export const UPDATE_ME_PROFILE = gql`
+  mutation UpdateMyProfile($data: UpdateMyProfileInput!) {
+  UpdateMyProfile(data: $data) {
+    createdAt
+    date_of_birth
+    email
+    firstName
+    id
+    image_url
+    isAdmin
+    isVerified
+    lastName
+    phone_number
+    updatedAt
+  }
+}
+`;
+
 export const LOGOUT = gql`
   mutation Logout {
     logout
