@@ -8,6 +8,7 @@ import LoginPage from "./pages/LoginPage";
 import LoadingHomePage from "./pages/loadingHomePage/LoadingHomePage";
 import NotFound404Page from "./pages/notFound404Page/NotFound404Page";
 import RegisterPage from "./pages/RegisterPage";
+import UserProfilePage from "./pages/UserProfilePage";
 import WishListPage from "./pages/WishListPage";
 import { useMyProfileStore } from "./zustand/myProfileStore";
 
@@ -45,6 +46,7 @@ const App = () => {
         <Route path="dashboard" element={<Dashboard />}>
           <Route index element={<Navigate to="conversations" replace />} />
           <Route path="conversations" element={<Conversations />} />
+          <Route path="profile" element={<UserProfilePage />} />
           <Route path="wishlist" element={<WishListPage />} />
         </Route>
 

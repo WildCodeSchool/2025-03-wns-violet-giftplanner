@@ -11,9 +11,9 @@
   --color-orange: #EA4B09;
   --color-green: #019645;
   --color-yellow: #FFC300;
-  --color-light-grey: #F0F0F0;
-  --color-grey: #E6E6E6;
-  --color-dark: #200904;
+  --color-light-grey: #FDFBF6;
+  --color-grey: #dddad2;
+  --color-dark: #200904
 }
 
 
@@ -47,6 +47,7 @@
 /* Works for webkit browsers */
 ::-webkit-scrollbar {
   @apply w-2 h-2;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
