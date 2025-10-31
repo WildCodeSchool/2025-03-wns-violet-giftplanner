@@ -1,7 +1,6 @@
 import RegisterForm from "../components/auth/RegisterForm";
 import InfoHome from "../components/InfoHome";
 
-
 const RegisterPage = () => {
   return (
     <div className="min-h-screen flex flex-col md:flex-row">

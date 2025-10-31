@@ -62,7 +62,6 @@ export const LOGOUT = gql`
   }
 `;
 
-
 //GROUP OPERATIONS
 
 export const CREATE_GROUP = gql`

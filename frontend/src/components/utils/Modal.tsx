@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 import Icon from "./Icon";
 
 interface ModalProps {
@@ -9,9 +9,7 @@ interface ModalProps {
 
 export default function Modal({ onClose, children }: ModalProps) {
   return (
-    <div
-      className={`fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm`}
-    >
+    <div className={`fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm`}>
       {/* Modal content container */}
       <div className={`relative w-[75vw] h-[40vw] rounded-2xl shadow-2xl bg-white`}>
         {/* Close button (top-right corner) */}
@@ -20,8 +18,7 @@ export default function Modal({ onClose, children }: ModalProps) {
           onClick={onClose}
           className="absolute top-4 right-4 z-50 shadow-none hover:shadow-none rounded-full"
         >
-          <Icon icon="close" className="text-4xl font-light text-green"/>
-
+          <Icon icon="close" className="text-4xl font-light text-green" />
         </button>
 
         {/* Modal body */}

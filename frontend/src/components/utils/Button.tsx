@@ -10,12 +10,20 @@ type ButtonProps = {
   rounded?: boolean;
   className?: string;
   children?: React.ReactNode;
-  type?:ButtonType
-  big?: boolean 
+  type?: ButtonType;
+  big?: boolean;
 };
 
-export default function Button({ onClick, text, big, colour = "green", icon, rounded = false, className, children, type = "button" }: ButtonProps) {
-
+export default function Button({
+  onClick,
+  text,
+  colour = "green",
+  icon,
+  rounded = false,
+  className,
+  children,
+  type = "button",
+}: ButtonProps) {
   const backgroundColours = {
     blue: "bg-blue",
     green: "bg-green",
@@ -23,11 +31,10 @@ export default function Button({ onClick, text, big, colour = "green", icon, rou
     orange: "bg-orange",
     yellow: "bg-yellow",
     dark: "bg-dark",
-    white: "bg-white"
-  }
+    white: "bg-white",
+  };
 
-  let backgroundColour = backgroundColours[colour] || backgroundColours["green"];
-
+  const backgroundColour = backgroundColours[colour] || backgroundColours.green;
 
   return (
     <button
