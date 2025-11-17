@@ -30,7 +30,7 @@ const App = () => {
         navigate("/");
       }
     }
-  }, [data, loading, setUserProfile]);
+  }, [data, loading]);
 
   if (loading) return <LoadingHomePage />;
 

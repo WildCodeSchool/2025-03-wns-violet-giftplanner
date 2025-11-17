@@ -60,3 +60,7 @@
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-grey;
 }
+
+.bg-green {
+  background-color: #019645 !important;
+}

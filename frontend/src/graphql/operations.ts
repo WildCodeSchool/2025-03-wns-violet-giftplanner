@@ -61,3 +61,62 @@ export const LOGOUT = gql`
     logout
   }
 `;
+
+export const WISHLIST_ITEMS = gql`
+  query WishlistItems {
+    wishlistItems {
+      id
+      name
+      description
+      imageUrl
+      url
+      createdAt
+      updatedAt
+      user {
+        id
+      }
+      list {
+        id
+      }
+    }
+  }
+`
+
+export const ADD_GIFT = gql`
+  mutation AddGift($data: AddGiftInput!) {
+    addGift(data: $data) {
+      id
+      name
+      description
+      imageUrl
+      url
+      createdAt
+      updatedAt
+      user { 
+        id 
+      }
+      list {
+        id 
+      }
+    }
+  }
+`;
+
+export const UPDATE_GIFT = gql`
+  mutation UpdateGift($id: Int!, $data: UpdateGiftInput!) {
+    updateGift(id: $id, data: $data) {
+      id
+      name
+      description
+      imageUrl
+      url
+      updatedAt
+    }
+  }
+`;
+
+export const DELETE_GIFT = gql`
+  mutation DeleteGift($id: Int!) {
+    deleteGift(id: $id)
+  }
+`;

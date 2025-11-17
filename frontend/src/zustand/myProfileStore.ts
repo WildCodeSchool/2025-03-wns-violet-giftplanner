@@ -1,9 +1,9 @@
 import { create } from "zustand";
-import type { Users } from "../generated/graphql-types";
+import type { User } from "../generated/graphql-types";
 
 type State = {
-  userProfile: null | Users;
-  setUserProfile: (user: null | Users) => void;
+  userProfile: null | User;
+  setUserProfile: (user: null | User) => void;
   clearUserProfile: () => void;
 };
 export const useMyProfileStore = create<State>((set) => ({
