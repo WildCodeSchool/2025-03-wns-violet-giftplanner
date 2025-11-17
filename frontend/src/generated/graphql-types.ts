@@ -102,10 +102,16 @@ export type Message = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  UpdateMyProfile: User;
   createGroup: Group;
   login: User;
   logout: Scalars['Boolean']['output'];
   signup: User;
+};
+
+
+export type MutationUpdateMyProfileArgs = {
+  data: UpdateMyProfileInput;
 };
 
 
@@ -355,6 +361,49 @@ export type GetMyProfileQueryHookResult = ReturnType<typeof useGetMyProfileQuery
 export type GetMyProfileLazyQueryHookResult = ReturnType<typeof useGetMyProfileLazyQuery>;
 export type GetMyProfileSuspenseQueryHookResult = ReturnType<typeof useGetMyProfileSuspenseQuery>;
 export type GetMyProfileQueryResult = Apollo.QueryResult<GetMyProfileQuery, GetMyProfileQueryVariables>;
+export const UpdateMyProfileDocument = gql`
+    mutation UpdateMyProfile($data: UpdateMyProfileInput!) {
+  UpdateMyProfile(data: $data) {
+    createdAt
+    date_of_birth
+    email
+    firstName
+    id
+    image_url
+    isAdmin
+    isVerified
+    lastName
+    phone_number
+    updatedAt
+  }
+}
+    `;
+export type UpdateMyProfileMutationFn = Apollo.MutationFunction<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>;
+
+/**
+ * __useUpdateMyProfileMutation__
+ *
+ * To run a mutation, you first call `useUpdateMyProfileMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateMyProfileMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateMyProfileMutation, { data, loading, error }] = useUpdateMyProfileMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateMyProfileMutation(baseOptions?: Apollo.MutationHookOptions<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>(UpdateMyProfileDocument, options);
+      }
+export type UpdateMyProfileMutationHookResult = ReturnType<typeof useUpdateMyProfileMutation>;
+export type UpdateMyProfileMutationResult = Apollo.MutationResult<UpdateMyProfileMutation>;
+export type UpdateMyProfileMutationOptions = Apollo.BaseMutationOptions<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>;
 export const LogoutDocument = gql`
     mutation Logout {
   logout

@@ -6,6 +6,7 @@ import Button from "../utils/Button";
 import Icon from "../utils/Icon";
 import Input from "../utils/Input";
 import Title from "../utils/Title";
+import ManageUsersForm from "./ManageUsersForm";
 
 export default function CreateGroupForm() {
   const { formData, handleChange, getSanitizedData, errors, isValid, setFormData, isEmpty } =
@@ -125,10 +126,16 @@ export default function CreateGroupForm() {
         </Button>
       </div>
 
-      <div className="w-1/2 bg-white rounded-tr-2xl rounded-br-2xl">
+      <div className="w-1/2 bg-white h-full flex flex-col rounded-tr-2xl rounded-br-2xl">
+
+      <div className="flex flex-col gap-4 px-20">
         {/* Adding users can go here */}
         <p>Ici, il y aura l'option d'ajouter les participants</p>
-        {error ? error : ""}
+        <ManageUsersForm />
+
+
+      </div>
+        
       </div>
     </form>
   );
