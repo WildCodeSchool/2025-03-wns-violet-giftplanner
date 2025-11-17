@@ -98,8 +98,12 @@ export const GET_ALL_MY_GROUPS = gql`
     getAllMyGroups {
       id
       name
-      piggy_bank
+      createdAt
+      updatedAt
       event_type
+      piggy_bank
+      deadline
 }
   }
 `;
+
