@@ -41,7 +41,7 @@ export default function Wishlist() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user?.id) {
-      console.error("No logged-in user id available.");
+      console.error("Aucun identifiant utilisateur connecté disponible.");
       return;
     }
     await addGift({

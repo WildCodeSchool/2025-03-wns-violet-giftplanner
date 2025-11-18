@@ -29,7 +29,7 @@ export default class WishlistResolver {
 
     // Always use the connected user
     const user = await User.findOneBy({ id: ctx.user.id });
-    if (!user) throw new Error("User not found");
+    if (!user) throw new Error("Utilisateur non trouvé");
 
     let list: List | null = null;
     if (data.listId) {
@@ -37,7 +37,7 @@ export default class WishlistResolver {
         where: { id: data.listId, user: { id: ctx.user.id } }, // ownership check
         relations: { user: true },
       });
-      if (!list) throw new Error("List not found or not yours");
+      if (!list) throw new Error("Liste introuvable ou ne vous appartenant pas");
     }
 
     const gift = Gift.create({
