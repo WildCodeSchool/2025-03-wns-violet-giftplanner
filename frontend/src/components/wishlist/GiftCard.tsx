@@ -31,7 +31,7 @@ export default function GiftCard({ gift, className, onEdit, onDelete }: GiftCard
             </div>
           )}
           <div className="p-3 flex-1 flex flex-col">
-            <h5 className="text-lg font-semibold text-[#200904] mb-2">{name}</h5>
+            <h5 className="text-lg font-semibold text-[#200904] mb-2 leading-tight">{name}</h5>
             {description && (
               <p className="text-sm text-[#200904] opacity-80 flex-1">{description}</p>
             )}
@@ -78,7 +78,7 @@ export default function GiftCard({ gift, className, onEdit, onDelete }: GiftCard
               e.stopPropagation();
               onDelete?.(gift);
             }}
-            className="px-3 py-1 rounded-md bg-[#FA7D7D] text-white text-sm shadow hover:bg-red-700"
+            className="px-3 py-1 rounded-md bg-[#A74228] text-white text-sm shadow hover:bg-[#7A2F1C]"
           >
             Supprimer
           </button>
@@ -88,7 +88,7 @@ export default function GiftCard({ gift, className, onEdit, onDelete }: GiftCard
   );
 }
 
-/** Optional skeleton for loading states */
+/** Skeleton cards for loading states */
 export function GiftCardSkeleton() {
   return (
     <div className="bg-[#FDFBF6] rounded-lg shadow overflow-hidden animate-pulse">
