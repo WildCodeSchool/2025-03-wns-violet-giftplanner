@@ -23,6 +23,7 @@ export type CreateGroupInput = {
   event_type: Scalars['String']['input'];
   name: Scalars['String']['input'];
   piggy_bank: Scalars['Float']['input'];
+  users?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 export type Gift = {
@@ -58,10 +59,10 @@ export type Group = {
 
 export type GroupMember = {
   __typename?: 'GroupMember';
-  group: Group;
+  groupId: Scalars['Float']['output'];
   id: Scalars['ID']['output'];
   joined_at: Scalars['DateTimeISO']['output'];
-  user: User;
+  userId: Scalars['Float']['output'];
 };
 
 export type Like = {
@@ -218,7 +219,7 @@ export type CreateGroupMutationVariables = Exact<{
 }>;
 
 
-export type CreateGroupMutation = { __typename?: 'Mutation', createGroup: { __typename?: 'Group', id: string, name: string, piggy_bank: number, event_type: string } };
+export type CreateGroupMutation = { __typename?: 'Mutation', createGroup: { __typename?: 'Group', id: string, name: string, event_type: string, piggy_bank: number, deadline: any, createdAt: any, groupMember: Array<{ __typename?: 'GroupMember', id: string, userId: number, groupId: number }> } };
 
 export type GetAllMyGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -439,8 +440,15 @@ export const CreateGroupDocument = gql`
   createGroup(data: $data) {
     id
     name
-    piggy_bank
     event_type
+    piggy_bank
+    deadline
+    createdAt
+    groupMember {
+      id
+      userId
+      groupId
+    }
   }
 }
     `;

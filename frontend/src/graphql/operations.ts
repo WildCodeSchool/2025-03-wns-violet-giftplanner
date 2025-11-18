@@ -87,8 +87,15 @@ mutation CreateGroup($data: CreateGroupInput!) {
   createGroup(data: $data) {
     id
     name
-    piggy_bank
     event_type
+    piggy_bank
+    deadline
+    createdAt
+    groupMember {
+      id
+      userId
+      groupId
+    }
   }
 }
 `;

@@ -6,9 +6,13 @@ import Button from "../utils/Button";
 import Icon from "../utils/Icon";
 import Input from "../utils/Input";
 import Title from "../utils/Title";
-import ManageUsersForm from "./ManageUsersForm";
+import SearchInput from "../utils/SearchInput";
 
 export default function CreateGroupForm() {
+  //TO DO: query recupérer tous les utilisateurs existant du groupe pour les afficher dans le formulaire
+
+  const [query, setQuery] = useState("")
+  const [userError, setUserError] = useState<string>("")
   const { formData, handleChange, getSanitizedData, errors, isValid, setFormData, isEmpty } =
     useSanitizedForm(
       {
@@ -16,6 +20,7 @@ export default function CreateGroupForm() {
         event_type: "",
         piggy_bank: 0,
         deadline: "",
+        users: [] as string[],
       },
       groupCreationFormValidation,
     );
@@ -29,7 +34,6 @@ export default function CreateGroupForm() {
     if (isEmpty) {
       console.info("Form is empty.");
       setError("Etre bref c'est bien, mais il faut quand même remplir le formulaire");
-
       return;
     }
     if (isValid) {
@@ -56,6 +60,7 @@ export default function CreateGroupForm() {
           event_type: "",
           piggy_bank: 0,
           deadline: "",
+          users: [], //Do not reset users here instead show the list of existing users
         });
         // TO DO: fermer la modale après création puis afficher le nouveau groupe dans la liste des groupes
       } catch (error) {
@@ -64,6 +69,7 @@ export default function CreateGroupForm() {
     }
 
     console.error("Form has errors, cannot submit.", errors);
+    setError("Etre bref c'est bien, mais il faut quand même remplir le formulaire");
   }
 
   return (
@@ -124,16 +130,47 @@ export default function CreateGroupForm() {
         >
           Créer
         </Button>
+        {error && <p className="text-orange font-inter text-sm pt-1 text-center">{error}</p>}
       </div>
 
       <div className="w-1/2 bg-white h-full flex flex-col rounded-tr-2xl rounded-br-2xl">
 
       <div className="flex flex-col gap-4 px-20">
         {/* Adding users can go here */}
-        <p>Ici, il y aura l'option d'ajouter les participants</p>
-        <ManageUsersForm />
-
-
+        <SearchInput
+          placeholder="Ajouter des participants..."
+          theme="dark"
+          name="users"
+          value={query}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setUserError("");
+          }}
+          onClick={(email) => {
+            setFormData({ ...formData, users: formData.users.filter(u => u !== email) });
+            setUserError("");
+          }}
+          onAddTag={(email) => {
+            // Email regex validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            if (!emailRegex.test(email)) {
+              setUserError("Format d'email invalide");
+              return;
+            }
+            
+            if (formData.users.includes(email)) {
+              setUserError("Cet utilisateur est déjà dans le groupe");
+              return;
+            }
+            
+            setFormData({ ...formData, users: [...formData.users, email] });
+            setQuery("");
+            setUserError("");
+          }}
+          items={formData.users}
+          error={userError}
+        />
       </div>
         
       </div>
