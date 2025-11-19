@@ -3,6 +3,9 @@
 dev: ## Lance l’application en mode développement séparé
 	docker compose --env-file .env.dev -f compose.dev.yaml up -d --build
 
+dev-stop: ## arrete prorement
+	docker compose --env-file .env.dev -f compose.dev.yaml down
+
 stop-all: ##Stoppe tous les conteneurs en cours d'exécution
 	docker stop $$(docker ps -q)
 

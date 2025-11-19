@@ -106,6 +106,7 @@ export type Mutation = {
   createGroup: Group;
   login: User;
   logout: Scalars['Boolean']['output'];
+  sendMessage: Scalars['Boolean']['output'];
   signup: User;
 };
 
@@ -125,13 +126,24 @@ export type MutationLoginArgs = {
 };
 
 
+export type MutationSendMessageArgs = {
+  data: NewMessageInput;
+};
+
+
 export type MutationSignupArgs = {
   data: SignupInput;
+};
+
+export type NewMessageInput = {
+  groupId: Scalars['Float']['input'];
+  message: Scalars['String']['input'];
 };
 
 export type Query = {
   __typename?: 'Query';
   coucou: Scalars['String']['output'];
+  fetchMessagesByGroup: Scalars['String']['output'];
   getAllMyGroups: Array<Group>;
   getAllUsers: Array<User>;
   getAllUsersAdmin: Array<User>;
@@ -223,7 +235,14 @@ export type CreateGroupMutation = { __typename?: 'Mutation', createGroup: { __ty
 export type GetAllMyGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllMyGroupsQuery = { __typename?: 'Query', getAllMyGroups: Array<{ __typename?: 'Group', id: string, name: string, createdAt: any, updatedAt: any, event_type: string, piggy_bank: number, deadline: any }> };
+export type GetAllMyGroupsQuery = { __typename?: 'Query', getAllMyGroups: Array<{ __typename?: 'Group', id: string, name: string, createdAt: any, updatedAt: any, event_type: string, piggy_bank: number, deadline: any, messages: Array<{ __typename?: 'Message', id: string, content: string, createdAt: any, isEdited: boolean, user: { __typename?: 'User', id: string, firstName: string, lastName: string, image_url?: string | null, isAdmin: boolean } }> }> };
+
+export type SendMessageMutationVariables = Exact<{
+  data: NewMessageInput;
+}>;
+
+
+export type SendMessageMutation = { __typename?: 'Mutation', sendMessage: boolean };
 
 
 export const LoginDocument = gql`
@@ -473,6 +492,19 @@ export type CreateGroupMutationOptions = Apollo.BaseMutationOptions<CreateGroupM
 export const GetAllMyGroupsDocument = gql`
     query getAllMyGroups {
   getAllMyGroups {
+    messages {
+      id
+      content
+      createdAt
+      isEdited
+      user {
+        id
+        firstName
+        lastName
+        image_url
+        isAdmin
+      }
+    }
     id
     name
     createdAt
@@ -515,3 +547,34 @@ export type GetAllMyGroupsQueryHookResult = ReturnType<typeof useGetAllMyGroupsQ
 export type GetAllMyGroupsLazyQueryHookResult = ReturnType<typeof useGetAllMyGroupsLazyQuery>;
 export type GetAllMyGroupsSuspenseQueryHookResult = ReturnType<typeof useGetAllMyGroupsSuspenseQuery>;
 export type GetAllMyGroupsQueryResult = Apollo.QueryResult<GetAllMyGroupsQuery, GetAllMyGroupsQueryVariables>;
+export const SendMessageDocument = gql`
+    mutation SendMessage($data: NewMessageInput!) {
+  sendMessage(data: $data)
+}
+    `;
+export type SendMessageMutationFn = Apollo.MutationFunction<SendMessageMutation, SendMessageMutationVariables>;
+
+/**
+ * __useSendMessageMutation__
+ *
+ * To run a mutation, you first call `useSendMessageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSendMessageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [sendMessageMutation, { data, loading, error }] = useSendMessageMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useSendMessageMutation(baseOptions?: Apollo.MutationHookOptions<SendMessageMutation, SendMessageMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SendMessageMutation, SendMessageMutationVariables>(SendMessageDocument, options);
+      }
+export type SendMessageMutationHookResult = ReturnType<typeof useSendMessageMutation>;
+export type SendMessageMutationResult = Apollo.MutationResult<SendMessageMutation>;
+export type SendMessageMutationOptions = Apollo.BaseMutationOptions<SendMessageMutation, SendMessageMutationVariables>;

@@ -96,14 +96,32 @@ mutation CreateGroup($data: CreateGroupInput!) {
 export const GET_ALL_MY_GROUPS = gql`
   query getAllMyGroups {
     getAllMyGroups {
+    messages {
       id
-      name
+      content
       createdAt
-      updatedAt
-      event_type
-      piggy_bank
-      deadline
-}
+      isEdited
+      user {
+        id
+        firstName
+        lastName
+        image_url
+        isAdmin
+      }
+    }
+    id
+    name
+    createdAt
+    updatedAt
+    event_type
+    piggy_bank
+    deadline
+  }
   }
 `;
 
+export const SendMessage = gql`
+  mutation SendMessage($data: NewMessageInput!) {
+    sendMessage(data: $data)
+  }
+`;

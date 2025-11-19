@@ -1,6 +1,9 @@
-import { Arg, Field, InputType, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Ctx, Field, InputType, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
 import Group from "../entities/Group";
 import { GroupMember } from "../entities/GroupMember";
+import { RoleMiddleware } from "../middleware/RoleMiddleware";
+import type { ContextType } from "../types/context";
+import { Message } from "../entities/Message";
 
 @InputType()
 class CreateGroupInput {
@@ -18,23 +21,34 @@ class CreateGroupInput {
 }
 
 @Resolver(Group)
+@UseMiddleware(RoleMiddleware())
 export default class GroupResolver {
   @Query(() => [Group])
-  async getAllMyGroups() {
-    const allGroups = Group.find({
+  async getAllMyGroups(@Ctx() ctx: ContextType) {
+    // récupère tout les groupes de l'utilisateur connecté
+    const groups = await Group.find({
       where: {
         groupMember: {
-          user: { id: 8 }
+          user: { id: ctx.user?.id }
         }
       },
       relations: {
-        groupMember: {
-          user: true,
-        },
-      }
+        groupMember: { user: true },
+      },
+      order: { id: "DESC" }
     });
-    //TO DO: il faudra utiliser l'id de l'utilisateur connecté pour filtrer les groupes
-    return allGroups;
+
+    // charge les 10 derniers messages de chaque groupe
+    for (const group of groups) {
+      group.messages = await Message.find({
+        where: { group: { id: group.id } },
+        relations: { user: true },
+        order: { createdAt: "DESC" },
+        take: 10,
+      });
+    }
+
+    return groups;
   }
 
   @Mutation(() => Group)
