@@ -110,6 +110,7 @@ export type Mutation = {
   login: User;
   logout: Scalars['Boolean']['output'];
   signup: User;
+  updateGift: Gift;
 };
 
 
@@ -119,7 +120,7 @@ export type MutationAddGiftArgs = {
 
 
 export type MutationDeleteGiftArgs = {
-  giftId: Scalars['Int']['input'];
+  id: Scalars['Int']['input'];
 };
 
 
@@ -130,6 +131,12 @@ export type MutationLoginArgs = {
 
 export type MutationSignupArgs = {
   data: SignupInput;
+};
+
+
+export type MutationUpdateGiftArgs = {
+  data: UpdateGiftInput;
+  id: Scalars['Int']['input'];
 };
 
 export type Query = {
@@ -155,6 +162,13 @@ export type SignupInput = {
   firstName: Scalars['String']['input'];
   lastName: Scalars['String']['input'];
   password: Scalars['String']['input'];
+};
+
+export type UpdateGiftInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  imageUrl?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  url?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type User = {
@@ -214,6 +228,21 @@ export type AddGiftMutationVariables = Exact<{
 
 
 export type AddGiftMutation = { __typename?: 'Mutation', addGift: { __typename?: 'Gift', id: string, name: string, description: string, imageUrl: string, url: string, createdAt: any, updatedAt: any, user?: { __typename?: 'User', id: string } | null, list?: { __typename?: 'List', id: string } | null } };
+
+export type UpdateGiftMutationVariables = Exact<{
+  id: Scalars['Int']['input'];
+  data: UpdateGiftInput;
+}>;
+
+
+export type UpdateGiftMutation = { __typename?: 'Mutation', updateGift: { __typename?: 'Gift', id: string, name: string, description: string, imageUrl: string, url: string, updatedAt: any } };
+
+export type DeleteGiftMutationVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type DeleteGiftMutation = { __typename?: 'Mutation', deleteGift: number };
 
 
 export const LoginDocument = gql`
@@ -477,3 +506,73 @@ export function useAddGiftMutation(baseOptions?: Apollo.MutationHookOptions<AddG
 export type AddGiftMutationHookResult = ReturnType<typeof useAddGiftMutation>;
 export type AddGiftMutationResult = Apollo.MutationResult<AddGiftMutation>;
 export type AddGiftMutationOptions = Apollo.BaseMutationOptions<AddGiftMutation, AddGiftMutationVariables>;
+export const UpdateGiftDocument = gql`
+    mutation UpdateGift($id: Int!, $data: UpdateGiftInput!) {
+  updateGift(id: $id, data: $data) {
+    id
+    name
+    description
+    imageUrl
+    url
+    updatedAt
+  }
+}
+    `;
+export type UpdateGiftMutationFn = Apollo.MutationFunction<UpdateGiftMutation, UpdateGiftMutationVariables>;
+
+/**
+ * __useUpdateGiftMutation__
+ *
+ * To run a mutation, you first call `useUpdateGiftMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateGiftMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateGiftMutation, { data, loading, error }] = useUpdateGiftMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateGiftMutation(baseOptions?: Apollo.MutationHookOptions<UpdateGiftMutation, UpdateGiftMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateGiftMutation, UpdateGiftMutationVariables>(UpdateGiftDocument, options);
+      }
+export type UpdateGiftMutationHookResult = ReturnType<typeof useUpdateGiftMutation>;
+export type UpdateGiftMutationResult = Apollo.MutationResult<UpdateGiftMutation>;
+export type UpdateGiftMutationOptions = Apollo.BaseMutationOptions<UpdateGiftMutation, UpdateGiftMutationVariables>;
+export const DeleteGiftDocument = gql`
+    mutation DeleteGift($id: Int!) {
+  deleteGift(id: $id)
+}
+    `;
+export type DeleteGiftMutationFn = Apollo.MutationFunction<DeleteGiftMutation, DeleteGiftMutationVariables>;
+
+/**
+ * __useDeleteGiftMutation__
+ *
+ * To run a mutation, you first call `useDeleteGiftMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteGiftMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteGiftMutation, { data, loading, error }] = useDeleteGiftMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteGiftMutation(baseOptions?: Apollo.MutationHookOptions<DeleteGiftMutation, DeleteGiftMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteGiftMutation, DeleteGiftMutationVariables>(DeleteGiftDocument, options);
+      }
+export type DeleteGiftMutationHookResult = ReturnType<typeof useDeleteGiftMutation>;
+export type DeleteGiftMutationResult = Apollo.MutationResult<DeleteGiftMutation>;
+export type DeleteGiftMutationOptions = Apollo.BaseMutationOptions<DeleteGiftMutation, DeleteGiftMutationVariables>;

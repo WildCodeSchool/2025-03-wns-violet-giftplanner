@@ -1,30 +1,49 @@
-import { Arg, Mutation, Query, Resolver, Ctx, Int } from "type-graphql";
+import { Arg, Ctx, Int, Mutation, Query, Resolver } from "type-graphql";
 import { Gift } from "../entities/Gift";
-import { AddGiftInput } from "../inputs/AddGiftInput";
-import User from "../entities/User";
 import List from "../entities/List";
+import User from "../entities/User";
+import { AddGiftInput } from "../inputs/AddGiftInput";
 import { UpdateGiftInput } from "../inputs/UpdateGiftInput";
 import type { ContextType } from "../types/context";
 
 @Resolver()
 export default class WishlistResolver {
-
   @Query(() => [Gift])
-  async wishlistItems(@Ctx() ctx: ContextType, @Arg("listId", { nullable: true }) listId?: string): Promise<Gift[]> {
-
+  async wishlistItems(
+    @Ctx() ctx: ContextType,
+    @Arg("listId", () => Int, { nullable: true }) listId?: number,
+  ): Promise<Gift[]> {
     if (!ctx.user) throw new Error("Utilisateur non connecté");
 
-    // récupère tout les cadeaux
-    const allGifts = await Gift.find({ where: { user: {id: ctx.user.id }, }, relations: { user: true, list: true } });
+    // If a listId is provided → fetch gifts for that specific list
+    if (listId != null) {
+      return Gift.find({
+        where: {
+          list: { id: listId },
+        },
+        relations: { user: true, list: true },
+      });
+    }
 
-    return allGifts;
+    // Otherwise → fetch gifts created by the current user
+    return Gift.find({
+      where: {
+        user: { id: ctx.user.id },
+      },
+      relations: { user: true, list: true },
+    });
+
+    // // récupère tout les cadeaux - ancienne version
+    // const allGifts = await Gift.find({
+    //   where: { user: { id: ctx.user.id } },
+    //   relations: { user: true, list: true },
+    // });
+
+    // return allGifts;
   }
 
   @Mutation(() => Gift)
-  async addGift(
-    @Arg("data") data: AddGiftInput,
-    @Ctx() ctx: ContextType
-  ): Promise<Gift> {
+  async addGift(@Arg("data") data: AddGiftInput, @Ctx() ctx: ContextType): Promise<Gift> {
     if (!ctx.user) throw new Error("Utilisateur non connecté");
 
     // Always use the connected user
@@ -45,7 +64,7 @@ export default class WishlistResolver {
       description: data.description ?? "",
       imageUrl: data.imageUrl ?? "",
       url: data.url ?? "",
-      user,         // <- force owner to current user
+      user, // <- force owner to current user
       list: list ?? undefined,
     });
 
@@ -57,7 +76,7 @@ export default class WishlistResolver {
   async updateGift(
     @Arg("id", () => Int) id: number,
     @Arg("data") data: UpdateGiftInput,
-    @Ctx() ctx: ContextType
+    @Ctx() ctx: ContextType,
   ): Promise<Gift> {
     if (!ctx.user) throw new Error("Utilisateur non connecté");
 
@@ -76,10 +95,7 @@ export default class WishlistResolver {
   }
 
   @Mutation(() => Int)
-  async deleteGift(
-    @Arg("id", () => Int) id: number,
-    @Ctx() ctx: ContextType
-  ): Promise<number> {
+  async deleteGift(@Arg("id", () => Int) id: number, @Ctx() ctx: ContextType): Promise<number> {
     if (!ctx.user) throw new Error("Utilisateur non connecté");
 
     // Always use the connected user
@@ -90,6 +106,5 @@ export default class WishlistResolver {
     await gift.remove();
 
     return id;
-
   }
 }

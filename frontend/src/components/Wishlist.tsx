@@ -1,12 +1,12 @@
 // src/components/Wishlist.tsx
+import { useMutation, useQuery } from "@apollo/client";
 import { useState } from "react";
-import { useQuery, useMutation } from "@apollo/client";
-import Icon from "./utils/Icon";
-import Button from "./utils/Button";
-import Modal from "./utils/Modal";
+import { ADD_GIFT, DELETE_GIFT, UPDATE_GIFT, WISHLIST_ITEMS } from "../graphql/operations";
 import type { Gift } from "../types/Gift";
-import { WISHLIST_ITEMS, ADD_GIFT, DELETE_GIFT, UPDATE_GIFT } from "../graphql/operations";
 import { useMyProfileStore } from "../zustand/myProfileStore";
+import Button from "./utils/Button";
+import Icon from "./utils/Icon";
+import Modal from "./utils/Modal";
 import GiftCard, { GiftCardSkeleton } from "./wishlist/GiftCard";
 
 export default function Wishlist() {
@@ -94,11 +94,9 @@ export default function Wishlist() {
       refetchQueries: [{ query: WISHLIST_ITEMS }],
       awaitRefetchQueries: true,
     });
-
     setEditModalOpen(false);
     setEditingGift(null);
-  }
-
+  };
 
   return (
     <div className="h-full p-3 px-2 flex flex-col mx-auto bg-[#EA4B09] rounded-2xl">
@@ -108,13 +106,7 @@ export default function Wishlist() {
           <Icon icon="heart" className="mr-2 text-2xl" />
           <h2 className="text-2xl font-bold tracking-wide">Ma wishlist</h2>
         </div>
-        <Button
-          icon="plus"
-          text="Nouvelle idée"
-          colour="green"
-          onClick={() => setIsModalOpen(true)}
-        />
-
+        <Button icon="plus" text="Nouvelle idée" colour="green" onClick={() => setIsModalOpen(true)} />
       </div>
 
       {/* Content */}
@@ -125,10 +117,18 @@ export default function Wishlist() {
           <ul className="grid gap-5 grid-cols-[repeat(auto-fill,minmax(200px,1fr))] items-stretch">
             {loading && (
               <>
-                <li><GiftCardSkeleton /></li>
-                <li><GiftCardSkeleton /></li>
-                <li><GiftCardSkeleton /></li>
-                <li><GiftCardSkeleton /></li>
+                <li>
+                  <GiftCardSkeleton />
+                </li>
+                <li>
+                  <GiftCardSkeleton />
+                </li>
+                <li>
+                  <GiftCardSkeleton />
+                </li>
+                <li>
+                  <GiftCardSkeleton />
+                </li>
               </>
             )}
 
@@ -138,6 +138,7 @@ export default function Wishlist() {
                   <Icon icon="gift" className="text-7xl opacity-80 mb-3" />
                   <p className="text-lg mb-4">Aucune idée pour l’instant.</p>
                   <button
+                    type="button"
                     onClick={() => setIsModalOpen(true)}
                     className="flex items-center gap-2 bg-[#019645] text-[#FDFBF6] font-semibold px-4 py-2 rounded-xl hover:bg-[#01803b] transition"
                   >
@@ -151,9 +152,9 @@ export default function Wishlist() {
             {!loading &&
               items.map((gift) => (
                 <li key={gift.id} className="h-full">
-                  <GiftCard 
-                    gift={gift} 
-                    onDelete={handleDeleteGift} 
+                  <GiftCard
+                    gift={gift}
+                    onDelete={handleDeleteGift}
                     onEdit={(gift) => {
                       setEditingGift(gift);
                       setEditFormData({
@@ -163,7 +164,8 @@ export default function Wishlist() {
                         url: gift.url ?? "",
                       });
                       setEditModalOpen(true);
-                    }}/>
+                    }}
+                  />
                 </li>
               ))}
           </ul>
@@ -175,46 +177,69 @@ export default function Wishlist() {
         <h2 className="text-xl font-bold text-[#200904] mb-4">Ajouter une nouvelle idée</h2>
         <form onSubmit={handleSubmit} className="space-y-3">
           <div>
-            <label className="block text-[#200904] mb-1">Nom</label>
+            <label htmlFor="name" className="block text-[#200904] mb-1">
+              Nom
+            </label>
             <input
-              type="text" name="name" value={formData.name} onChange={handleChange} required
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              required
               className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#EA4B09]"
             />
           </div>
           <div>
-            <label className="block text-[#200904] mb-1">Description</label>
+            <label htmlFor="description" className="block text-[#200904] mb-1">
+              Description
+            </label>
             <textarea
-              name="description" value={formData.description} onChange={handleChange} rows={2}
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              rows={2}
               maxLength={150}
               className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#EA4B09]"
             />
             <div className="text-xs text-gray-600 text-right">{formData.description.length}/150</div>
           </div>
           <div>
-            <label className="block text-[#200904] mb-1">Image URL</label>
+            <label htmlFor="imageUrl" className="block text-[#200904] mb-1">
+              Image URL
+            </label>
             <input
-              type="url" name="imageUrl" value={formData.imageUrl} onChange={handleChange}
+              type="url"
+              name="imageUrl"
+              value={formData.imageUrl}
+              onChange={handleChange}
               placeholder="https://example.com/image.jpg"
               className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#EA4B09]"
             />
           </div>
           <div>
-            <label className="block text-[#200904] mb-1">Lien d'achat</label>
+            <label htmlFor="url" className="block text-[#200904] mb-1">
+              Lien d'achat
+            </label>
             <input
-              type="url" name="url" value={formData.url} onChange={handleChange}
+              type="url"
+              name="url"
+              value={formData.url}
+              onChange={handleChange}
               placeholder="https://exemple.com"
               className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#EA4B09]"
             />
           </div>
           <div className="flex justify-end gap-3 pt-3">
             <button
-              type="button" onClick={() => setIsModalOpen(false)}
+              type="button"
+              onClick={() => setIsModalOpen(false)}
               className="px-4 py-2 rounded-lg border border-gray-400 text-[#200904] hover:bg-gray-100"
             >
               Annuler
             </button>
             <button
-              type="submit" disabled={creating}
+              type="submit"
+              disabled={creating}
               className="px-4 py-2 rounded-lg bg-[#019645] text-[#FDFBF6] font-semibold hover:bg-[#01803b]"
             >
               {creating ? "Ajout…" : "Ajouter"}
@@ -228,46 +253,69 @@ export default function Wishlist() {
         <h2 className="text-xl font-bold text-[#200904] mb-4">Modifier le cadeau</h2>
         <form onSubmit={handleEditSubmit} className="space-y-3">
           <div>
-            <label className="block text-[#200904] mb-1">Nom</label>
+            <label htmlFor="name" className="block text-[#200904] mb-1">
+              Nom
+            </label>
             <input
-              type="text" name="name" value={editFormData.name} onChange={handleEditChange} required
+              type="text"
+              name="name"
+              value={editFormData.name}
+              onChange={handleEditChange}
+              required
               className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#EA4B09]"
             />
           </div>
           <div>
-            <label className="block text-[#200904] mb-1">Description</label>
+            <label htmlFor="description" className="block text-[#200904] mb-1">
+              Description
+            </label>
             <textarea
-              name="description" value={editFormData.description} onChange={handleEditChange} rows={2}
+              name="description"
+              value={editFormData.description}
+              onChange={handleEditChange}
+              rows={2}
               maxLength={150}
               className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#EA4B09]"
             />
             <div className="text-xs text-gray-600 text-right">{editFormData.description.length}/150</div>
           </div>
           <div>
-            <label className="block text-[#200904] mb-1">Image URL</label>
+            <label htmlFor="imageUrl" className="block text-[#200904] mb-1">
+              Image URL
+            </label>
             <input
-              type="url" name="imageUrl" value={editFormData.imageUrl} onChange={handleEditChange}
+              type="url"
+              name="imageUrl"
+              value={editFormData.imageUrl}
+              onChange={handleEditChange}
               placeholder="https://example.com/image.jpg"
               className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#EA4B09]"
             />
           </div>
           <div>
-            <label className="block text-[#200904] mb-1">Lien d'achat</label>
+            <label htmlFor="url" className="block text-[#200904] mb-1">
+              Lien d'achat
+            </label>
             <input
-              type="url" name="url" value={editFormData.url} onChange={handleEditChange}
+              type="url"
+              name="url"
+              value={editFormData.url}
+              onChange={handleEditChange}
               placeholder="https://exemple.com"
               className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#EA4B09]"
             />
           </div>
           <div className="flex justify-end gap-3 pt-3">
             <button
-              type="button" onClick={() => setEditModalOpen(false)}
+              type="button"
+              onClick={() => setEditModalOpen(false)}
               className="px-4 py-2 rounded-lg border border-gray-400 text-[#200904] hover:bg-gray-100"
             >
               Annuler
             </button>
             <button
-              type="submit" disabled={updating}
+              type="submit"
+              disabled={updating}
               className="px-4 py-2 rounded-lg bg-[#019645] text-[#FDFBF6] font-semibold hover:bg-[#01803b]"
             >
               {updating ? "Mis à jour…" : "Mettre à jour"}
@@ -275,7 +323,6 @@ export default function Wishlist() {
           </div>
         </form>
       </Modal>
-
     </div>
   );
 }

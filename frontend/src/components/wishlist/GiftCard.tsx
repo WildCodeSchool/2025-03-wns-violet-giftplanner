@@ -1,11 +1,11 @@
+import clsx from "clsx";
 import type { Gift } from "../../types/Gift";
 import Icon from "../utils/Icon";
-import clsx from "clsx";
 
 type GiftCardProps = {
   gift: Gift;
   className?: string;
-// optional in case actions are not desired in certain context when GiftCard is re-used
+  // optional in case actions are not desired in certain context when GiftCard is re-used
   onEdit?: (gift: Gift) => void;
   onDelete?: (gift: Gift) => void;
 };
@@ -17,7 +17,7 @@ export default function GiftCard({ gift, className, onEdit, onDelete }: GiftCard
     <div
       className={clsx(
         "group relative h-full bg-[#FDFBF6] rounded-lg shadow overflow-hidden flex flex-col hover:shadow-lg transition",
-        className
+        className,
       )}
     >
       {/* Clickable content */}
@@ -32,9 +32,7 @@ export default function GiftCard({ gift, className, onEdit, onDelete }: GiftCard
           )}
           <div className="p-3 flex-1 flex flex-col">
             <h5 className="text-lg font-semibold text-[#200904] mb-2 leading-tight">{name}</h5>
-            {description && (
-              <p className="text-sm text-[#200904] opacity-80 flex-1">{description}</p>
-            )}
+            {description && <p className="text-sm text-[#200904] opacity-80 flex-1">{description}</p>}
           </div>
         </a>
       ) : (
@@ -48,9 +46,7 @@ export default function GiftCard({ gift, className, onEdit, onDelete }: GiftCard
           )}
           <div className="p-3 flex-1 flex flex-col">
             <h5 className="text-lg font-semibold text-[#200904] mb-2">{name}</h5>
-            {description && (
-              <p className="text-sm text-[#200904] opacity-80 flex-1">{description}</p>
-            )}
+            {description && <p className="text-sm text-[#200904] opacity-80 flex-1">{description}</p>}
           </div>
         </div>
       )}

@@ -80,7 +80,7 @@ export const WISHLIST_ITEMS = gql`
       }
     }
   }
-`
+`;
 
 export const ADD_GIFT = gql`
   mutation AddGift($data: AddGiftInput!) {

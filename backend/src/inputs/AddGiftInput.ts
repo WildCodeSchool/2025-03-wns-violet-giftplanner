@@ -1,4 +1,4 @@
-import { Field, Float, InputType, ID } from "type-graphql";
+import { Field, ID, InputType } from "type-graphql";
 
 @InputType()
 export class AddGiftInput {
@@ -7,9 +7,6 @@ export class AddGiftInput {
 
   @Field({ nullable: true })
   description?: string;
-
-  // @Field(() => Float, { nullable: true })
-  // price?: number;
 
   @Field({ nullable: true })
   imageUrl?: string;
