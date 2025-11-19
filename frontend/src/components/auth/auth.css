@@ -283,3 +283,62 @@ h1 {
   margin-bottom: 24px;
   font-size: 18px;
 }
+
+.homepage-success-notification {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #019645;
+  color: #fdfbf6;
+  padding: 16px 32px;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 700;
+  font-family: "Inter", sans-serif;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* Footer de la HomePage */
+.homepage-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #200904;
+  padding: 12px 40px;
+  text-align: center;
+  z-index: 10;
+}
+
+.homepage-footer-text {
+  color: #fdfbf6;
+  font-size: 16px;
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  margin: 0;
+}
+
+.homepage-footer-link {
+  color: #fdfbf6;
+  font-weight: 700;
+  text-decoration: none;
+  transition: opacity 0.3s ease;
+}
+
+.homepage-footer-link:hover {
+  opacity: 0.8;
+}

@@ -1,0 +1,258 @@
+.admin-container {
+    height: 100%;
+    background-color: #A74228;
+    margin-left: 40px;
+    border-radius: 18px;
+    padding: 40px 8px 40px 40px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.admin-container-scrollable {
+    height: 100%;
+    overflow-y: auto;
+    padding-right: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.admin-btn-ban {
+    background-color: #FFC300;
+    color: #fdfbf6;
+    border: none;
+    border-radius: 20px;
+    padding: 6px 42px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: clamp(12px, 1.5vw, 14px);
+    font-family: "Inter", sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.admin-btn-delete {
+    background-color: #ea4b09;
+    color: #fdfbf6;
+    border: none;
+    border-radius: 20px;
+    padding: 6px 24px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: clamp(12px, 1.5vw, 14px);
+    font-family: "Inter", sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+}
+
+.admin-btn-unban {
+    background-color: #019645;
+    color: #fdfbf6;
+    border: none;
+    border-radius: 20px;
+    padding: 6px 33px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: clamp(12px, 1.5vw, 14px);
+    font-family: "Inter", sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+
+.action-title {
+    display: flex;
+    justify-content: center;
+}
+
+td.admin-actions {
+    margin-bottom: -1px;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding-bottom: 40px;
+}
+
+.admin-title {
+    font-size: clamp(24px, 3vw, 32px);
+    font-weight: 700;
+    color: #fdfbf6;
+    margin: 0;
+    font-family: "Inter", sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+
+.admin-search-section {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.admin-search-input {
+    padding: 6px 20px;
+    border: 2px solid #fdfbf6;
+    border-radius: 12px;
+    font-size: 16px;
+    font-family: "Inter", sans-serif;
+    background-color: transparent;
+    color: #fdfbf6;
+    outline: none;
+    min-width: 250px;
+    transition: all 0.3s ease;
+}
+
+
+.admin-search-icon {
+    font-size: 30px;
+    color: #fdfbf6;
+}
+
+
+.admin-search-input::placeholder {
+    color: #fdfbf6;
+    opacity: 0.6;
+}
+
+.admin-search-input:focus {
+    border-color: #292E96;
+    box-shadow: 0 0 0 3px rgba(234, 75, 9, 0.2);
+}
+
+.admin-table-container {
+    background-color: #fdfbf6;
+    padding: 32px;
+    border-radius: 24px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+
+.admin-table th {
+    padding: 16px;
+    margin-bottom: 16px;
+    font-size: clamp(14px, 1.5vw, 16px);
+    font-weight: 800;
+    font-family: "Inter", sans-serif;
+    text-align: left;
+    color: #fdfbf6;
+}
+
+.admin-table td {
+    padding: 14px;
+    font-size: clamp(14px, 1.5vw, 16px);
+    border-bottom: 2px solid #e2ded5;
+    font-family: "Inter", sans-serif;
+    color: #fdfbf6;
+}
+
+.admin-actions {
+    display: flex;
+    gap: 35px;
+    justify-content: center;
+}
+
+
+@media (max-width: 900px) {
+
+    .admin-table th,
+    .admin-table td {
+        padding: 10px;
+    }
+
+    .admin-actions {
+        flex-direction: column;
+    }
+}
+
+/* Modal styles for admin page (no Tailwind) */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(32, 9, 4, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1200;
+}
+
+.modal-content {
+    background: #ea4b09;
+    border-radius: 14px;
+    max-width: 520px;
+    width: 90%;
+    padding: 22px 24px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+}
+
+.modal-content h2 {
+    margin: 0 0 12px 0;
+    text-align: center;
+    font-size: 20px;
+    color: #fdfbf6;
+    font-weight: 700;
+    font-size: 22px;
+    font-family: "Inter", sans-serif;
+}
+
+.modal-content p {
+    text-align: center;
+    margin: 24px 0;
+    padding-bottom: 16px;
+    color: #fdfbf6;
+    font-size: 18px;
+    font-family: "Inter", sans-serif;
+    line-height: 1.4;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}
+
+.modal-btn-cancel {
+    background: #200904;
+    color: #fdfbf6;
+    border: none;
+    padding: 8px 28px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.modal-btn-confirm {
+    background: #fdfbf6;
+    color: #200904;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.admin-success-message {
+    text-align: center;
+    margin-bottom: 16px;
+    color: #019645;
+    font-size: 18px;
+    font-family: "Inter", sans-serif;
+    font-weight: 800;
+}

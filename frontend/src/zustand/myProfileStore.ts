@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { defaultPictureProfile } from "../data/pictureDefault";
-import type { GetMeProfileQuery } from "../generated/graphql-types";
+import type { GetMyProfileQuery } from "../generated/graphql-types";
 
 type State = {
   userProfile: null | UserProfil;
@@ -8,7 +8,7 @@ type State = {
   clearUserProfile: () => void;
 };
 
-type UserProfil = GetMeProfileQuery["getMeProfile"];
+type UserProfil = GetMyProfileQuery["getMyProfile"];
 
 export const useMyProfileStore = create<State>((set) => ({
   userProfile: null,

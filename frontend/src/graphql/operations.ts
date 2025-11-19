@@ -80,6 +80,15 @@ export const LOGOUT = gql`
   }
 `;
 
+export const DELETE_MY_PROFILE = gql`
+  mutation DeleteMyProfile {
+    deleteMyProfile {
+      success
+      message
+    }
+  }
+`;
+
 //GROUP OPERATIONS
 
 export const CREATE_GROUP = gql`
@@ -101,5 +110,56 @@ export const GET_ALL_MY_GROUPS = gql`
       piggy_bank
       event_type
 }
+  }
+`;
+
+export const GET_ALL_USERS_FOR_ADMIN = gql`
+  query GetAllUsersForAdmin {
+    getAllUsersForAdmin {
+      id
+      email
+      firstName
+      lastName
+      isAdmin
+      isBanned
+      bannedAt
+      createdAt
+      image_url
+    }
+  }
+`;
+
+export const DELETE_USER = gql`
+  mutation DeleteUser($userId: Float!) {
+    deleteUser(userId: $userId) {
+      success
+      message
+    }
+  }
+`;
+
+export const BAN_USER = gql`
+  mutation BanUser($userId: Float!) {
+    banUser(userId: $userId) {
+      success
+      message
+      user {
+        id
+        isBanned
+      }
+    }
+  }
+`;
+
+export const UNBAN_USER = gql`
+  mutation UnbanUser($userId: Float!) {
+    unbanUser(userId: $userId) {
+      success
+      message
+      user {
+        id
+        isBanned
+      }
+    }
   }
 `;

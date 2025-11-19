@@ -1,0 +1,194 @@
+/* Page de contact */
+.contact-background {
+  position: relative;
+  background-color: #ea4b09;
+  min-height: 100dvh;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.contact-logo {
+  width: 200px;
+  padding-left: 16px;
+  padding-top: 16px;
+}
+
+.contact-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80px 108px;
+  min-height: 100vh;
+  justify-content: flex-start;
+  gap: 24px;
+}
+
+.contact-title {
+  font-size: 50px;
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  color: #fdfbf6;
+  margin: 0;
+  text-align: center;
+  margin-top: 16px;
+}
+
+.contact-info-section {
+  background-color: #200904;
+  padding: 48px;
+  border-radius: 24px;
+  max-width: 800px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.contact-description {
+  font-size: 22px;
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  color: #fdfbf6;
+  text-align: center;
+  margin: 0;
+  margin-bottom: 40px;
+}
+
+.contact-team-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 120px;
+  margin: 40px 0;
+}
+
+.contact-team-member {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.contact-member-image {
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 6px solid #200904;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  margin-bottom: 16px;
+}
+
+.contact-member-name {
+  font-size: 24px;
+  font-weight: 700;
+  font-family: "Inter", sans-serif;
+  color: #200904;
+  margin: 0;
+  text-align: center;
+}
+
+.contact-member-email-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #fdfbf6;
+  padding: 8px 16px;
+  border-radius: 8px;
+}
+
+.contact-member-email {
+  font-size: 16px;
+  font-family: "Inter", sans-serif;
+  color: #200904;
+  font-weight: 500;
+}
+
+.contact-copy-button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.contact-copy-button:hover {
+  transform: scale(1.1);
+}
+
+.contact-copy-icon {
+  font-size: 20px;
+  color: #200904;
+}
+
+.contact-back-link {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.button-white-contact {
+  background-color: #200904;
+  color: #fdfbf6;
+  border: none;
+  padding: 14px 48px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: 700;
+  font-family: "Inter", sans-serif;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+  margin-top: 32px;
+}
+
+.button-white-contact:hover {
+  background-color: #463835;
+}
+
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .contact-team-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .contact-content {
+    padding: 40px 20px;
+  }
+
+  .contact-title {
+    font-size: 40px;
+  }
+
+  .contact-info-section {
+    padding: 32px 24px;
+  }
+
+  .contact-description {
+    font-size: 16px;
+  }
+
+  .contact-team-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .contact-member-image {
+    width: 150px;
+    height: 150px;
+  }
+
+  .contact-member-name {
+    font-size: 20px;
+  }
+
+  .contact-member-email {
+    font-size: 14px;
+  }
+}
