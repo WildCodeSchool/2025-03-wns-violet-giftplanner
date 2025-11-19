@@ -1,7 +1,8 @@
 import { gql } from "@apollo/client";
 
-// mutation pour la connexion
-export const LOIGIN = gql`
+//USER OPERATIONS
+
+export const LOGIN = gql`
   mutation Login($data: LoginInput!) {
     login(data: $data){
       id
@@ -20,7 +21,7 @@ export const LOIGIN = gql`
 `;
 
 export const SIGNUP = gql`
-    mutation Signup($data: SignupInput!) {
+  mutation Signup($data: SignupInput!) {
     signup(data: $data) {
       createdAt
       date_of_birth
@@ -37,10 +38,9 @@ export const SIGNUP = gql`
   }
 `;
 
-// query pour récupérer le profil de l'utilisateur connecté
-export const GET_ME_PROFILE = gql`
-  query GetMeProfile {
-    getMeProfile {
+export const GET_MY_PROFILE = gql`
+  query GetMyProfile {
+    getMyProfile {
       id
       firstName
       lastName
@@ -56,11 +56,31 @@ export const GET_ME_PROFILE = gql`
   }
 `;
 
+export const UPDATE_ME_PROFILE = gql`
+  mutation UpdateMyProfile($data: UpdateMyProfileInput!) {
+    UpdateMyProfile(data: $data) {
+      createdAt
+      date_of_birth
+      email
+      firstName
+      id
+      image_url
+      isAdmin
+      isVerified
+      lastName
+      phone_number
+      updatedAt
+    }
+  }
+`;
+
 export const LOGOUT = gql`
   mutation Logout {
     logout
   }
 `;
+
+// WISHLIST OPERATIONS
 
 export const WISHLIST_ITEMS = gql`
   query WishlistItems {
@@ -118,5 +138,29 @@ export const UPDATE_GIFT = gql`
 export const DELETE_GIFT = gql`
   mutation DeleteGift($id: Int!) {
     deleteGift(id: $id)
+  }
+`;
+
+//GROUP OPERATIONS
+
+export const CREATE_GROUP = gql`
+  mutation CreateGroup($data: CreateGroupInput!) {
+    createGroup(data: $data) {
+      id
+      name
+      piggy_bank
+      event_type
+    }
+  }
+`;
+
+export const GET_ALL_MY_GROUPS = gql`
+  query getAllMyGroups {
+    getAllMyGroups {
+      id
+      name
+      piggy_bank
+      event_type
+    }
   }
 `;

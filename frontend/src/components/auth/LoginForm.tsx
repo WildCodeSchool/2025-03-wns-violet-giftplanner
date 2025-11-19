@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useLoginMutation } from "../../generated/graphql-types";
-import consoleErrorDev from "../../hook/erreurMod";
+import consoleErrorDev from "../../hooks/erreurMod";
 import { useMyProfileStore } from "../../zustand/myProfileStore";
+import "../auth/auth.css";
 
 const LoginForm = () => {
   const [form, setForm] = useState({
