@@ -1,169 +1,328 @@
-export default function Wishlist() {
-  // const { data, loading, error } = useWishlistItemsQuery();
+// src/components/Wishlist.tsx
+import { useMutation, useQuery } from "@apollo/client";
+import { useState } from "react";
+import { ADD_GIFT, DELETE_GIFT, UPDATE_GIFT, WISHLIST_ITEMS } from "../graphql/operations";
+import type { Gift } from "../types/Gift";
+import { useMyProfileStore } from "../zustand/myProfileStore";
+import Button from "./utils/Button";
+import Icon from "./utils/Icon";
+import Modal from "./utils/Modal";
+import GiftCard, { GiftCardSkeleton } from "./wishlist/GiftCard";
 
-  const data = {
-    wishlistItems: [
-      {
-        id: "1",
-        name: "Noise-cancelling headphones",
-        description: "Over-ear, comfy for long sessions",
-        imageUrl:
-          "https://cdn.thewirecutter.com/wp-content/media/2023/09/noise-cancelling-headphone-2048px-0876.jpg",
-        listId: "demo-list",
-        userId: "demo-user",
-        createdAt: new Date(),
-        updatedAt: new Date(),
+export default function Wishlist() {
+  const { data, loading, error } = useQuery<{ wishlistItems: Gift[] }>(WISHLIST_ITEMS, {
+    notifyOnNetworkStatusChange: true,
+  });
+  const items = data?.wishlistItems ?? [];
+
+  const user = useMyProfileStore((s) => s.userProfile);
+
+  const [addGift, { loading: creating }] = useMutation(ADD_GIFT);
+
+  const [deleteGift] = useMutation(DELETE_GIFT);
+
+  const [updateGift, { loading: updating }] = useMutation(UPDATE_GIFT);
+  const [editingGift, setEditingGift] = useState<Gift | null>(null);
+  const [isEditModalOpen, setEditModalOpen] = useState(false);
+
+  const [editFormData, setEditFormData] = useState({
+    name: "",
+    description: "",
+    imageUrl: "",
+    url: "",
+  });
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formData, setFormData] = useState({ name: "", description: "", imageUrl: "", url: "" });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user?.id) {
+      console.error("Aucun identifiant utilisateur connecté disponible.");
+      return;
+    }
+    await addGift({
+      variables: {
+        data: {
+          name: formData.name,
+          description: formData.description || undefined,
+          imageUrl: formData.imageUrl || undefined,
+          url: formData.url || undefined,
+          userId: Number(user.id),
+        },
       },
-      {
-        id: "2",
-        name: "Nintendo Switch Console",
-        description: "Neon Blue/Red Joy-Con edition",
-        imageUrl:
-          "https://www.shutterstock.com/image-photo/cheshire-england-august-7th-2018-260nw-1173580291.jpg",
-        listId: "demo-list",
-        userId: "demo-user",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: "3",
-        name: "Mario Kart 8 Deluxe",
-        description: "Multiplayer racing fun for the Switch",
-        imageUrl:
-          "https://cdn.cultura.com/cdn-cgi/image/width=830/media/pim/TITELIVE/12_0045496420246_jm.jpg",
-        listId: "demo-list",
-        userId: "demo-user",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: "4",
-        name: "The Legend of Zelda: Breath of the Wild",
-        description: "Open-world adventure game",
-        imageUrl:
-          "https://i5.walmartimages.com/asr/88fdeff7-b5c7-4dc1-9d30-66217f20f86c.3d08635afa4636f1074ae99ebf602b92.jpeg",
-        listId: "demo-list",
-        userId: "demo-user",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: "5",
-        name: "Nintendo Switch Pro Controller",
-        description: "Ergonomic controller for long gaming sessions",
-        imageUrl: "https://m.media-amazon.com/images/I/71Eeyub6v6L.jpg",
-        listId: "demo-list",
-        userId: "demo-user",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: "6",
-        name: "Kindle Paperwhite",
-        description: "E-reader with adjustable warm light",
-        imageUrl:
-          "https://images.pexels.com/photos/844734/pexels-photo-844734.jpeg?cs=srgb&dl=pexels-ozgur-844734.jpg&fm=jpg",
-        listId: "demo-list",
-        userId: "demo-user",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: "7",
-        name: "Hiking backpack",
-        description: "Good quality, durable, water-resistant",
-        imageUrl: "https://images.unsplash.com/photo-1509762774605-f07235a08f1f?fm=jpg",
-        listId: "demo-list",
-        userId: "demo-user",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: "8",
-        name: "Fender Acoustic Guitar",
-        description: "Beginner-friendly dreadnought with case",
-        imageUrl:
-          "https://images.pexels.com/photos/1407322/pexels-photo-1407322.jpeg?cs=srgb&dl=pexels-42north-1407322.jpg",
-        listId: "demo-list",
-        userId: "demo-user",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: "9",
-        name: "Front-loading clothes washer",
-        description: "Nice clothes washer",
-        imageUrl: "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?fm=jpg",
-        listId: "demo-list",
-        userId: "demo-user",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: "10",
-        name: "Apple Watch Series 9",
-        description: "Smartwatch with fitness and health tracking",
-        imageUrl: "https://images.unsplash.com/photo-1517420879524-86d64ac2f339?fm=jpg",
-        listId: "demo-list",
-        userId: "demo-user",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    ],
+      refetchQueries: [{ query: WISHLIST_ITEMS }],
+      awaitRefetchQueries: true,
+    });
+
+    setFormData({ name: "", description: "", imageUrl: "", url: "" });
+    setIsModalOpen(false);
   };
 
-  // if (loading) return <LoadingHomePage />;
-  // if (error) return <div>Oops: {error.message}</div>;
+  const handleDeleteGift = async (gift: Gift) => {
+    try {
+      await deleteGift({
+        variables: { id: Number(gift.id) },
+        refetchQueries: [{ query: WISHLIST_ITEMS }],
+        awaitRefetchQueries: true,
+      });
+    } catch (err) {
+      console.error("Erreur lors de la suppression du cadeau :", err);
+    }
+  };
 
-  interface WishlistItem {
-    id: string;
-    name: string;
-    description?: string | null;
-    imageUrl?: string | null;
-    price?: number | null;
-  }
+  const handleEditChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+    setEditFormData({ ...editFormData, [e.target.name]: e.target.value });
 
-  const items = data?.wishlistItems ?? [];
-  const PLACEHOLDER =
-    "https://img.freepik.com/free-psd/birthday-colorful-present-box-design_23-2150318126.jpg";
+  const handleEditSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingGift) return;
+
+    await updateGift({
+      variables: {
+        id: Number(editingGift.id),
+        data: {
+          name: editFormData.name,
+          description: editFormData.description || null,
+          imageUrl: editFormData.imageUrl || null,
+          url: editFormData.url || null,
+        },
+      },
+      refetchQueries: [{ query: WISHLIST_ITEMS }],
+      awaitRefetchQueries: true,
+    });
+    setEditModalOpen(false);
+    setEditingGift(null);
+  };
 
   return (
-    <div className="h-full p-4 px-2 flex flex-col mx-auto bg-[#EA4B09] rounded-2xl">
+    <div className="h-full p-3 px-2 flex flex-col mx-auto bg-[#EA4B09] rounded-2xl">
       {/* Header */}
       <div className="flex justify-between text-[#FDFBF6] p-3 pb-6">
         <div className="flex items-center">
-          <span className="mr-1 text-3xl">♥</span>
+          <Icon icon="heart" className="mr-2 text-2xl" />
           <h2 className="text-2xl font-bold tracking-wide">Ma wishlist</h2>
         </div>
-        <button
-          type="button"
-          className="flex items-center gap-2 bg-[#019645] text-[#FDFBF6] font-semibold px-4 p-2 rounded-xl hover:bg-[#01803b] transition"
-        >
-          <span className="flex items-center justify-center w-6 h-6 rounded-full bg-[#FDFBF6] text-[#019645] font-bold">
-            +
-          </span>
-          Nouvelle idée
-        </button>
+        <Button icon="plus" text="Nouvelle idée" colour="green" onClick={() => setIsModalOpen(true)} />
       </div>
 
-      {/* Scrollable content */}
+      {/* Content */}
       <div className="flex-1 min-h-0 overflow-y-auto px-4 pb-5">
-        <ul className="grid gap-5 grid-cols-[repeat(auto-fill,minmax(200px,1fr))]">
-          {items.map((i: WishlistItem) => (
-            <li key={i.id} className="bg-[#FDFBF6] rounded-lg shadow overflow-hidden flex flex-col">
-              {/* card-img-top */}
-              <img src={i.imageUrl ?? PLACEHOLDER} alt={i.name} className="w-full h-50 object-cover" />
+        {error ? (
+          <div className="text-[#FDFBF6] bg-black/20 rounded-xl p-4">Erreur: {error.message}</div>
+        ) : (
+          <ul className="grid gap-5 grid-cols-[repeat(auto-fill,minmax(200px,1fr))] items-stretch">
+            {loading && (
+              <>
+                <li>
+                  <GiftCardSkeleton />
+                </li>
+                <li>
+                  <GiftCardSkeleton />
+                </li>
+                <li>
+                  <GiftCardSkeleton />
+                </li>
+                <li>
+                  <GiftCardSkeleton />
+                </li>
+              </>
+            )}
 
-              {/* card-body */}
-              <div className="p-3 flex-1 flex flex-col">
-                <h5 className="text-lg font-semibold text-[#200904] mb-2">{i.name}</h5>
-                {i.description && <p className="text-sm text-[#200904] opacity-80 flex-1">{i.description}</p>}
-                {i.price && <p className="mt-3 font-medium text-[#200904]">${i.price}</p>}
-              </div>
-            </li>
-          ))}
-        </ul>
+            {!loading && items.length === 0 && (
+              <li className="col-span-full">
+                <div className="flex flex-col items-center justify-center py-16 text-[#FDFBF6]">
+                  <Icon icon="gift" className="text-7xl opacity-80 mb-3" />
+                  <p className="text-lg mb-4">Aucune idée pour l’instant.</p>
+                  <button
+                    type="button"
+                    onClick={() => setIsModalOpen(true)}
+                    className="flex items-center gap-2 bg-[#019645] text-[#FDFBF6] font-semibold px-4 py-2 rounded-xl hover:bg-[#01803b] transition"
+                  >
+                    <Icon icon="plus" />
+                    Ajouter une idée
+                  </button>
+                </div>
+              </li>
+            )}
+
+            {!loading &&
+              items.map((gift) => (
+                <li key={gift.id} className="h-full">
+                  <GiftCard
+                    gift={gift}
+                    onDelete={handleDeleteGift}
+                    onEdit={(gift) => {
+                      setEditingGift(gift);
+                      setEditFormData({
+                        name: gift.name ?? "",
+                        description: gift.description ?? "",
+                        imageUrl: gift.imageUrl ?? "",
+                        url: gift.url ?? "",
+                      });
+                      setEditModalOpen(true);
+                    }}
+                  />
+                </li>
+              ))}
+          </ul>
+        )}
       </div>
+
+      {/* Modal when adding */}
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <h2 className="text-xl font-bold text-[#200904] mb-4">Ajouter une nouvelle idée</h2>
+        <form onSubmit={handleSubmit} className="space-y-3">
+          <div>
+            <label htmlFor="name" className="block text-[#200904] mb-1">
+              Nom
+            </label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+              className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#EA4B09]"
+            />
+          </div>
+          <div>
+            <label htmlFor="description" className="block text-[#200904] mb-1">
+              Description
+            </label>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              rows={2}
+              maxLength={150}
+              className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#EA4B09]"
+            />
+            <div className="text-xs text-gray-600 text-right">{formData.description.length}/150</div>
+          </div>
+          <div>
+            <label htmlFor="imageUrl" className="block text-[#200904] mb-1">
+              Image URL
+            </label>
+            <input
+              type="url"
+              name="imageUrl"
+              value={formData.imageUrl}
+              onChange={handleChange}
+              placeholder="https://example.com/image.jpg"
+              className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#EA4B09]"
+            />
+          </div>
+          <div>
+            <label htmlFor="url" className="block text-[#200904] mb-1">
+              Lien d'achat
+            </label>
+            <input
+              type="url"
+              name="url"
+              value={formData.url}
+              onChange={handleChange}
+              placeholder="https://exemple.com"
+              className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#EA4B09]"
+            />
+          </div>
+          <div className="flex justify-end gap-3 pt-3">
+            <button
+              type="button"
+              onClick={() => setIsModalOpen(false)}
+              className="px-4 py-2 rounded-lg border border-gray-400 text-[#200904] hover:bg-gray-100"
+            >
+              Annuler
+            </button>
+            <button
+              type="submit"
+              disabled={creating}
+              className="px-4 py-2 rounded-lg bg-[#019645] text-[#FDFBF6] font-semibold hover:bg-[#01803b]"
+            >
+              {creating ? "Ajout…" : "Ajouter"}
+            </button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* edit modal */}
+      <Modal isOpen={isEditModalOpen} onClose={() => setEditModalOpen(false)}>
+        <h2 className="text-xl font-bold text-[#200904] mb-4">Modifier le cadeau</h2>
+        <form onSubmit={handleEditSubmit} className="space-y-3">
+          <div>
+            <label htmlFor="name" className="block text-[#200904] mb-1">
+              Nom
+            </label>
+            <input
+              type="text"
+              name="name"
+              value={editFormData.name}
+              onChange={handleEditChange}
+              required
+              className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#EA4B09]"
+            />
+          </div>
+          <div>
+            <label htmlFor="description" className="block text-[#200904] mb-1">
+              Description
+            </label>
+            <textarea
+              name="description"
+              value={editFormData.description}
+              onChange={handleEditChange}
+              rows={2}
+              maxLength={150}
+              className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#EA4B09]"
+            />
+            <div className="text-xs text-gray-600 text-right">{editFormData.description.length}/150</div>
+          </div>
+          <div>
+            <label htmlFor="imageUrl" className="block text-[#200904] mb-1">
+              Image URL
+            </label>
+            <input
+              type="url"
+              name="imageUrl"
+              value={editFormData.imageUrl}
+              onChange={handleEditChange}
+              placeholder="https://example.com/image.jpg"
+              className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#EA4B09]"
+            />
+          </div>
+          <div>
+            <label htmlFor="url" className="block text-[#200904] mb-1">
+              Lien d'achat
+            </label>
+            <input
+              type="url"
+              name="url"
+              value={editFormData.url}
+              onChange={handleEditChange}
+              placeholder="https://exemple.com"
+              className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#EA4B09]"
+            />
+          </div>
+          <div className="flex justify-end gap-3 pt-3">
+            <button
+              type="button"
+              onClick={() => setEditModalOpen(false)}
+              className="px-4 py-2 rounded-lg border border-gray-400 text-[#200904] hover:bg-gray-100"
+            >
+              Annuler
+            </button>
+            <button
+              type="submit"
+              disabled={updating}
+              className="px-4 py-2 rounded-lg bg-[#019645] text-[#FDFBF6] font-semibold hover:bg-[#01803b]"
+            >
+              {updating ? "Mis à jour…" : "Mettre à jour"}
+            </button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 }

@@ -23,6 +23,13 @@ export type BanUserResponse = {
   message: Scalars['String']['output'];
   success: Scalars['Boolean']['output'];
   user?: Maybe<User>;
+export type AddGiftInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  imageUrl?: InputMaybe<Scalars['String']['input']>;
+  listId?: InputMaybe<Scalars['ID']['input']>;
+  name: Scalars['String']['input'];
+  url?: InputMaybe<Scalars['String']['input']>;
+  userId?: InputMaybe<Scalars['ID']['input']>;
 };
 
 export type CreateGroupInput = {
@@ -45,11 +52,11 @@ export type Gift = {
   id: Scalars['ID']['output'];
   imageUrl: Scalars['String']['output'];
   likes: Array<Like>;
-  list: List;
+  list?: Maybe<List>;
   name: Scalars['String']['output'];
   updatedAt: Scalars['DateTimeISO']['output'];
   url: Scalars['String']['output'];
-  user: User;
+  user?: Maybe<User>;
 };
 
 export type Group = {
@@ -124,6 +131,13 @@ export type Mutation = {
   logout: Scalars['Boolean']['output'];
   signup: User;
   unbanUser: BanUserResponse;
+  addGift: Gift;
+  createGroup: Group;
+  deleteGift: Scalars['Int']['output'];
+  login: User;
+  logout: Scalars['Boolean']['output'];
+  signup: User;
+  updateGift: Gift;
 };
 
 
@@ -134,6 +148,8 @@ export type MutationUpdateMyProfileArgs = {
 
 export type MutationBanUserArgs = {
   userId: Scalars['Float']['input'];
+export type MutationAddGiftArgs = {
+  data: AddGiftInput;
 };
 
 
@@ -144,6 +160,8 @@ export type MutationCreateGroupArgs = {
 
 export type MutationDeleteUserArgs = {
   userId: Scalars['Float']['input'];
+export type MutationDeleteGiftArgs = {
+  id: Scalars['Int']['input'];
 };
 
 
@@ -159,6 +177,9 @@ export type MutationSignupArgs = {
 
 export type MutationUnbanUserArgs = {
   userId: Scalars['Float']['input'];
+export type MutationUpdateGiftArgs = {
+  data: UpdateGiftInput;
+  id: Scalars['Int']['input'];
 };
 
 export type Query = {
@@ -175,12 +196,24 @@ export type Query = {
   wishlistItems: Array<Gift>;
 };
 
+
+export type QueryWishlistItemsArgs = {
+  listId?: InputMaybe<Scalars['Int']['input']>;
+};
+
 export type SignupInput = {
   date_of_birth: Scalars['String']['input'];
   email: Scalars['String']['input'];
   firstName: Scalars['String']['input'];
   lastName: Scalars['String']['input'];
   password: Scalars['String']['input'];
+};
+
+export type UpdateGiftInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  imageUrl?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  url?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateMyProfileInput = {
@@ -253,6 +286,32 @@ export type DeleteMyProfileMutationVariables = Exact<{ [key: string]: never; }>;
 
 
 export type DeleteMyProfileMutation = { __typename?: 'Mutation', deleteMyProfile: { __typename?: 'DeleteUserResponse', success: boolean, message: string } };
+export type WishlistItemsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type WishlistItemsQuery = { __typename?: 'Query', wishlistItems: Array<{ __typename?: 'Gift', id: string, name: string, description: string, imageUrl: string, url: string, createdAt: any, updatedAt: any, user?: { __typename?: 'User', id: string } | null, list?: { __typename?: 'List', id: string } | null }> };
+
+export type AddGiftMutationVariables = Exact<{
+  data: AddGiftInput;
+}>;
+
+
+export type AddGiftMutation = { __typename?: 'Mutation', addGift: { __typename?: 'Gift', id: string, name: string, description: string, imageUrl: string, url: string, createdAt: any, updatedAt: any, user?: { __typename?: 'User', id: string } | null, list?: { __typename?: 'List', id: string } | null } };
+
+export type UpdateGiftMutationVariables = Exact<{
+  id: Scalars['Int']['input'];
+  data: UpdateGiftInput;
+}>;
+
+
+export type UpdateGiftMutation = { __typename?: 'Mutation', updateGift: { __typename?: 'Gift', id: string, name: string, description: string, imageUrl: string, url: string, updatedAt: any } };
+
+export type DeleteGiftMutationVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type DeleteGiftMutation = { __typename?: 'Mutation', deleteGift: number };
 
 export type CreateGroupMutationVariables = Exact<{
   data: CreateGroupInput;
@@ -516,6 +575,153 @@ export type DeleteMyProfileMutationFn = Apollo.MutationFunction<DeleteMyProfileM
  *
  * To run a mutation, you first call `useDeleteMyProfileMutation` within a React component and pass it any options that fit your needs.
  * When your component renders, `useDeleteMyProfileMutation` returns a tuple that includes:
+export const WishlistItemsDocument = gql`
+    query WishlistItems {
+  wishlistItems {
+    id
+    name
+    description
+    imageUrl
+    url
+    createdAt
+    updatedAt
+    user {
+      id
+    }
+    list {
+      id
+    }
+  }
+}
+    `;
+
+/**
+ * __useWishlistItemsQuery__
+ *
+ * To run a query within a React component, call `useWishlistItemsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWishlistItemsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useWishlistItemsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useWishlistItemsQuery(baseOptions?: Apollo.QueryHookOptions<WishlistItemsQuery, WishlistItemsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<WishlistItemsQuery, WishlistItemsQueryVariables>(WishlistItemsDocument, options);
+      }
+export function useWishlistItemsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<WishlistItemsQuery, WishlistItemsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<WishlistItemsQuery, WishlistItemsQueryVariables>(WishlistItemsDocument, options);
+        }
+export function useWishlistItemsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<WishlistItemsQuery, WishlistItemsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<WishlistItemsQuery, WishlistItemsQueryVariables>(WishlistItemsDocument, options);
+        }
+export type WishlistItemsQueryHookResult = ReturnType<typeof useWishlistItemsQuery>;
+export type WishlistItemsLazyQueryHookResult = ReturnType<typeof useWishlistItemsLazyQuery>;
+export type WishlistItemsSuspenseQueryHookResult = ReturnType<typeof useWishlistItemsSuspenseQuery>;
+export type WishlistItemsQueryResult = Apollo.QueryResult<WishlistItemsQuery, WishlistItemsQueryVariables>;
+export const AddGiftDocument = gql`
+    mutation AddGift($data: AddGiftInput!) {
+  addGift(data: $data) {
+    id
+    name
+    description
+    imageUrl
+    url
+    createdAt
+    updatedAt
+    user {
+      id
+    }
+    list {
+      id
+    }
+  }
+}
+    `;
+export type AddGiftMutationFn = Apollo.MutationFunction<AddGiftMutation, AddGiftMutationVariables>;
+
+/**
+ * __useAddGiftMutation__
+ *
+ * To run a mutation, you first call `useAddGiftMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddGiftMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addGiftMutation, { data, loading, error }] = useAddGiftMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useAddGiftMutation(baseOptions?: Apollo.MutationHookOptions<AddGiftMutation, AddGiftMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddGiftMutation, AddGiftMutationVariables>(AddGiftDocument, options);
+      }
+export type AddGiftMutationHookResult = ReturnType<typeof useAddGiftMutation>;
+export type AddGiftMutationResult = Apollo.MutationResult<AddGiftMutation>;
+export type AddGiftMutationOptions = Apollo.BaseMutationOptions<AddGiftMutation, AddGiftMutationVariables>;
+export const UpdateGiftDocument = gql`
+    mutation UpdateGift($id: Int!, $data: UpdateGiftInput!) {
+  updateGift(id: $id, data: $data) {
+    id
+    name
+    description
+    imageUrl
+    url
+    updatedAt
+  }
+}
+    `;
+export type UpdateGiftMutationFn = Apollo.MutationFunction<UpdateGiftMutation, UpdateGiftMutationVariables>;
+
+/**
+ * __useUpdateGiftMutation__
+ *
+ * To run a mutation, you first call `useUpdateGiftMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateGiftMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateGiftMutation, { data, loading, error }] = useUpdateGiftMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateGiftMutation(baseOptions?: Apollo.MutationHookOptions<UpdateGiftMutation, UpdateGiftMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateGiftMutation, UpdateGiftMutationVariables>(UpdateGiftDocument, options);
+      }
+export type UpdateGiftMutationHookResult = ReturnType<typeof useUpdateGiftMutation>;
+export type UpdateGiftMutationResult = Apollo.MutationResult<UpdateGiftMutation>;
+export type UpdateGiftMutationOptions = Apollo.BaseMutationOptions<UpdateGiftMutation, UpdateGiftMutationVariables>;
+export const DeleteGiftDocument = gql`
+    mutation DeleteGift($id: Int!) {
+  deleteGift(id: $id)
+}
+    `;
+export type DeleteGiftMutationFn = Apollo.MutationFunction<DeleteGiftMutation, DeleteGiftMutationVariables>;
+
+/**
+ * __useDeleteGiftMutation__
+ *
+ * To run a mutation, you first call `useDeleteGiftMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteGiftMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
@@ -534,6 +740,19 @@ export function useDeleteMyProfileMutation(baseOptions?: Apollo.MutationHookOpti
 export type DeleteMyProfileMutationHookResult = ReturnType<typeof useDeleteMyProfileMutation>;
 export type DeleteMyProfileMutationResult = Apollo.MutationResult<DeleteMyProfileMutation>;
 export type DeleteMyProfileMutationOptions = Apollo.BaseMutationOptions<DeleteMyProfileMutation, DeleteMyProfileMutationVariables>;
+ * const [deleteGiftMutation, { data, loading, error }] = useDeleteGiftMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteGiftMutation(baseOptions?: Apollo.MutationHookOptions<DeleteGiftMutation, DeleteGiftMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteGiftMutation, DeleteGiftMutationVariables>(DeleteGiftDocument, options);
+      }
+export type DeleteGiftMutationHookResult = ReturnType<typeof useDeleteGiftMutation>;
+export type DeleteGiftMutationResult = Apollo.MutationResult<DeleteGiftMutation>;
+export type DeleteGiftMutationOptions = Apollo.BaseMutationOptions<DeleteGiftMutation, DeleteGiftMutationVariables>;
 export const CreateGroupDocument = gql`
     mutation CreateGroup($data: CreateGroupInput!) {
   createGroup(data: $data) {

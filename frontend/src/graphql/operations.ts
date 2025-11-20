@@ -21,7 +21,7 @@ export const LOGIN = gql`
 `;
 
 export const SIGNUP = gql`
-    mutation Signup($data: SignupInput!) {
+  mutation Signup($data: SignupInput!) {
     signup(data: $data) {
       createdAt
       date_of_birth
@@ -58,20 +58,20 @@ export const GET_MY_PROFILE = gql`
 
 export const UPDATE_ME_PROFILE = gql`
   mutation UpdateMyProfile($data: UpdateMyProfileInput!) {
-  UpdateMyProfile(data: $data) {
-    createdAt
-    date_of_birth
-    email
-    firstName
-    id
-    image_url
-    isAdmin
-    isVerified
-    lastName
-    phone_number
-    updatedAt
+    UpdateMyProfile(data: $data) {
+      createdAt
+      date_of_birth
+      email
+      firstName
+      id
+      image_url
+      isAdmin
+      isVerified
+      lastName
+      phone_number
+      updatedAt
+    }
   }
-}
 `;
 
 export const LOGOUT = gql`
@@ -89,17 +89,78 @@ export const DELETE_MY_PROFILE = gql`
   }
 `;
 
+// WISHLIST OPERATIONS
+
+export const WISHLIST_ITEMS = gql`
+  query WishlistItems {
+    wishlistItems {
+      id
+      name
+      description
+      imageUrl
+      url
+      createdAt
+      updatedAt
+      user {
+        id
+      }
+      list {
+        id
+      }
+    }
+  }
+`;
+
+export const ADD_GIFT = gql`
+  mutation AddGift($data: AddGiftInput!) {
+    addGift(data: $data) {
+      id
+      name
+      description
+      imageUrl
+      url
+      createdAt
+      updatedAt
+      user { 
+        id 
+      }
+      list {
+        id 
+      }
+    }
+  }
+`;
+
+export const UPDATE_GIFT = gql`
+  mutation UpdateGift($id: Int!, $data: UpdateGiftInput!) {
+    updateGift(id: $id, data: $data) {
+      id
+      name
+      description
+      imageUrl
+      url
+      updatedAt
+    }
+  }
+`;
+
+export const DELETE_GIFT = gql`
+  mutation DeleteGift($id: Int!) {
+    deleteGift(id: $id)
+  }
+`;
+
 //GROUP OPERATIONS
 
 export const CREATE_GROUP = gql`
-mutation CreateGroup($data: CreateGroupInput!) {
-  createGroup(data: $data) {
-    id
-    name
-    piggy_bank
-    event_type
+  mutation CreateGroup($data: CreateGroupInput!) {
+    createGroup(data: $data) {
+      id
+      name
+      piggy_bank
+      event_type
+    }
   }
-}
 `;
 
 export const GET_ALL_MY_GROUPS = gql`
@@ -109,7 +170,7 @@ export const GET_ALL_MY_GROUPS = gql`
       name
       piggy_bank
       event_type
-}
+    }
   }
 `;
 
