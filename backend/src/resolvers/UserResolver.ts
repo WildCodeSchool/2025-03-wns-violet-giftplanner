@@ -1,10 +1,12 @@
 import argon2 from "argon2";
 import axios from "axios";
-import { Arg, Ctx, Field, InputType, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Ctx, Field, InputType, Mutation, ObjectType, Query, Resolver, UseMiddleware } from "type-graphql";
+import { IsNull } from "typeorm";
 import User from "../entities/User";
 import cookieManager from "../lib/cookieManager/cookieManager";
 import type { ContextType } from "../types/context";
 import { createAndSetToken } from "../utils/jwtUtils";
+import { RoleMiddleware } from "../middleware/RoleMiddleware";
 
 @InputType()
 class SignupInput {
@@ -57,13 +59,33 @@ class LoginInput {
   password!: string;
 }
 
+@ObjectType()
+class DeleteUserResponse {
+  @Field()
+  success!: boolean;
+
+  @Field()
+  message!: string;
+}
+
+@ObjectType()
+class BanUserResponse {
+  @Field()
+  success!: boolean;
+
+  @Field()
+  message!: string;
+
+  @Field(() => User, { nullable: true })
+  user?: User;
+}
+
 @Resolver(User)
 export default class UserResolver {
   @Query(() => [User])
   async getAllUsers() {
     //récupère tout les utilisateurs
-    const allUsers = User.find();
-
+    const allUsers = User.find({ where: { deletedAt: IsNull() } });
     // renvoir tous les utilisateurs
     return allUsers;
   }
@@ -80,18 +102,34 @@ export default class UserResolver {
   @Query(() => User)
   async getMyProfile(@Ctx() ctx: ContextType) {
     if (!ctx.user) throw new Error("Utilisateur non connecté");
-
-    //récupère le profil de l'utilisateur connecté
-    const user = await User.findOne({ where: { id: ctx.user.id } });
-
-    // si l'utilisateur a été supprimé (ou inexistant)
+    const user = await User.findOne({
+      where: {
+        id: ctx.user.id,
+        deletedAt: IsNull()
+      }
+    });
     if (!user) {
-      // supprime le cookie de connexion
       cookieManager.delCookie(ctx, "token", { secure: false });
       throw new Error("Utilisateur supprimé");
     }
-
+    // Vérifier si l'utilisateur est banni
+    if (user.isBanned) {
+      cookieManager.delCookie(ctx, "token", { secure: false });
+      throw new Error("Votre compte a été banni");
+    }
     return user as User;
+  }
+
+  @Query(() => [User])
+  @UseMiddleware(RoleMiddleware(true))
+  async getAllUsersForAdmin(@Ctx() ctx: ContextType) {
+    // Récupérer tous les utilisateurs (y compris les bannis, mais pas les supprimés)
+    const allUsers = await User.find({ 
+      where: { deletedAt: IsNull() },
+      order: { createdAt: "DESC" }
+    });
+
+    return allUsers;
   }
 
   @Mutation(() => User)
@@ -140,6 +178,16 @@ export default class UserResolver {
     const user = await User.findOne({ where: { email: data.email } });
 
     if (!user) throw new Error("Utilisateur introuvable");
+
+    // Vérifier si l'utilisateur est supprimé (soft delete)
+    if (user.deletedAt) {
+      throw new Error("Ce compte a été supprimé");
+    }
+
+    // Vérifier si l'utilisateur est banni
+    if (user.isBanned) {
+      throw new Error("Votre compte a été banni. Vous ne pouvez pas vous connecter.");
+    }
 
     // verifie que le mot de passe est correct (compar le claire avec le hash)
     const isValid = await argon2.verify(user.password_hashed, data.password);
@@ -195,5 +243,207 @@ export default class UserResolver {
     const user = await User.findOne({ where: { id: ctx.user.id } });
 
     return user as User;
+  }
+
+   @Mutation(() => DeleteUserResponse)
+  @UseMiddleware(RoleMiddleware(true))
+  async deleteUser(
+    @Arg("userId") userId: number,
+    @Ctx() ctx: ContextType
+  ): Promise<DeleteUserResponse> {
+    // RoleMiddleware protège déjà l'accès (utilisateur authentifié et admin)
+
+    // Empêcher l'admin de se supprimer lui-même
+    if (ctx.user!.id === userId) {
+      return {
+        success: false,
+        message: "Vous ne pouvez pas vous supprimer vous-même"
+      };
+    }
+
+    // Vérifier que l'utilisateur existe
+    const userToDelete = await User.findOne({ 
+      where: { 
+        id: userId,
+        deletedAt: IsNull() 
+      } 
+    });
+
+    if (!userToDelete) {
+      return {
+        success: false,
+        message: "Utilisateur introuvable ou déjà supprimé"
+      };
+    }
+
+    // Soft delete : mettre à jour le champ deletedAt et modifier l'email pour permettre la réutilisation
+    const deletedEmail = `${userToDelete.email}_deleted_${Date.now()}`;
+    await User.update(
+      { id: userId },
+      {
+        deletedAt: new Date(),
+        email: deletedEmail
+      }
+    );
+
+    return {
+      success: true,
+      message: `Utilisateur ${userToDelete.firstName} ${userToDelete.lastName} supprimé avec succès`
+    };
+  }
+
+  @Mutation(() => BanUserResponse)
+  @UseMiddleware(RoleMiddleware(true))
+  async banUser(
+    @Arg("userId") userId: number,
+    @Ctx() ctx: ContextType
+  ): Promise<BanUserResponse> {
+    // RoleMiddleware protège déjà l'accès (utilisateur authentifié et admin)
+
+    // Empêcher l'admin de se bannir lui-même
+    if (ctx.user!.id === userId) {
+      return {
+        success: false,
+        message: "Vous ne pouvez pas vous bannir vous-même",
+        user: undefined
+      };
+    }
+
+    // Vérifier que l'utilisateur existe
+    const userToBan = await User.findOne({ 
+      where: { 
+        id: userId,
+        deletedAt: IsNull() 
+      } 
+    });
+
+    if (!userToBan) {
+      return {
+        success: false,
+        message: "Utilisateur introuvable",
+        user: undefined
+      };
+    }
+
+    // Vérifier s'il est déjà banni
+    if (userToBan.isBanned) {
+      return {
+        success: false,
+        message: "Cet utilisateur est déjà banni",
+        user: userToBan
+      };
+    }
+
+    // Bannir l'utilisateur
+    await User.update(
+      { id: userId },
+      { 
+        isBanned: true,
+        bannedAt: new Date()
+      }
+    );
+
+    const bannedUser = (await User.findOne({ where: { id: userId } })) ?? undefined;
+
+    return {
+      success: true,
+      message: `Utilisateur ${userToBan.firstName} ${userToBan.lastName} banni définitivement`,
+      user: bannedUser
+    };
+  }
+
+  @Mutation(() => BanUserResponse)
+  @UseMiddleware(RoleMiddleware(true))
+  async unbanUser(
+    @Arg("userId") userId: number,
+    @Ctx() ctx: ContextType
+  ): Promise<BanUserResponse> {
+    // RoleMiddleware protège déjà l'accès (utilisateur authentifié et admin)
+
+    // Vérifier que l'utilisateur existe
+    const userToUnban = await User.findOne({
+      where: {
+        id: userId,
+        deletedAt: IsNull()
+      }
+    });
+
+    if (!userToUnban) {
+      return {
+        success: false,
+        message: "Utilisateur introuvable",
+        user: undefined
+      };
+    }
+
+    // Vérifier s'il n'est pas banni
+    if (!userToUnban.isBanned) {
+      return {
+        success: false,
+        message: "Cet utilisateur n'est pas banni",
+        user: userToUnban
+      };
+    }
+
+    // Débannir l'utilisateur
+    await User.update(
+      { id: userId },
+      {
+        isBanned: false,
+        bannedAt: undefined
+      }
+    );
+
+    const unbannedUser = (await User.findOne({ where: { id: userId } })) ?? undefined;
+
+    return {
+      success: true,
+      message: `Utilisateur ${userToUnban.firstName} ${userToUnban.lastName} débanni avec succès`,
+      user: unbannedUser
+    };
+  }
+
+  @Mutation(() => DeleteUserResponse)
+  async deleteMyProfile(@Ctx() ctx: ContextType): Promise<DeleteUserResponse> {
+    // Vérifier que l'utilisateur est connecté
+    if (!ctx.user) {
+      return {
+        success: false,
+        message: "Vous devez être connecté pour supprimer votre profil"
+      };
+    }
+
+    // Récupérer l'utilisateur
+    const user = await User.findOne({
+      where: {
+        id: ctx.user.id,
+        deletedAt: IsNull()
+      }
+    });
+
+    if (!user) {
+      return {
+        success: false,
+        message: "Utilisateur introuvable ou déjà supprimé"
+      };
+    }
+
+    // Soft delete : mettre à jour le champ deletedAt et modifier l'email pour permettre la réutilisation
+    const deletedEmail = `${user.email}_deleted_${Date.now()}`;
+    await User.update(
+      { id: ctx.user.id },
+      {
+        deletedAt: new Date(),
+        email: deletedEmail
+      }
+    );
+
+    // Supprimer le cookie de session
+    cookieManager.delCookie(ctx, "token", { secure: false });
+
+    return {
+      success: true,
+      message: "Votre profil a été supprimé avec succès"
+    };
   }
 }

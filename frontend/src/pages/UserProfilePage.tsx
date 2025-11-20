@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import "./userprofile.css";
 import Icon from "../components/utils/Icon";
 import { defaultPictureProfile } from "../data/pictureDefault";
-import { useUpdateMyProfileMutation } from "../generated/graphql-types";
+import { useUpdateMyProfileMutation, useDeleteMyProfileMutation } from "../generated/graphql-types";
 import { useMyProfileStore } from "../zustand/myProfileStore";
+import { useNavigate } from "react-router-dom";
 
 function toBase64(file: File) {
   return new Promise((resolve, reject) => {
@@ -16,11 +17,13 @@ function toBase64(file: File) {
 
 const UserProfilePage = () => {
   const { userProfile, setUserProfile } = useMyProfileStore();
+  const navigate = useNavigate();
   const [imageUrl, setImageUrl] = useState(defaultPictureProfile);
   const [image, setImage] = useState<null | File>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [messageError, setMessageError] = useState("");
   const [messageSuccess, setMessageSuccess] = useState("");
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [profile, setProfile] = useState({
     lastName: userProfile?.lastName || "",
     firstName: userProfile?.firstName || "",
@@ -31,8 +34,9 @@ const UserProfilePage = () => {
     password: "",
     passwordConfirmation: "",
   });
-  const [profileBackup, setProfileBackup] = useState(profile);
+  const [profileBackup] = useState(profile);
   const [updateMyProfile] = useUpdateMyProfileMutation();
+  const [deleteMyProfile] = useDeleteMyProfileMutation();
 
   useEffect(() => {
     setTimeout(() => {
@@ -125,7 +129,7 @@ const UserProfilePage = () => {
       },
     });
 
-    // toto cooriger ca
+    // todo corriger ça
     if (!response || !response.data?.UpdateMyProfile) {
       setMessageError("Erreur inattendue lors de la mise à jour du profil");
       return;
@@ -134,6 +138,63 @@ const UserProfilePage = () => {
     setUserProfile(response.data.UpdateMyProfile);
     // setUserProfile(response.data?.updateMyProfile);
     setMessageSuccess("Profil mis à jour avec succès !");
+  };
+
+  const handleDeleteClick = () => {
+    setIsDeleteModalOpen(true);
+    setMessageError("");
+    setMessageSuccess("");
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      const response = await deleteMyProfile();
+
+      if (!response.data?.deleteMyProfile.success) {
+        setMessageError(response.data?.deleteMyProfile.message || "Erreur lors de la suppression");
+        setIsDeleteModalOpen(false);
+        return;
+      }
+
+      setUserProfile(null);
+      navigate("/", { state: { accountDeleted: true } });
+    } catch (error: any) {
+      setMessageError(error.message || "Erreur lors de la suppression du profil");
+      setIsDeleteModalOpen(false);
+    }
+  };
+
+  const ConfirmModal = ({
+    isOpen,
+    onClose,
+    onConfirm,
+    title,
+    message,
+  }: {
+    isOpen: boolean;
+    onClose: () => void;
+    onConfirm: () => void;
+    title?: string;
+    message?: string;
+  }) => {
+    if (!isOpen) return null;
+
+    return (
+      <div className="modal-overlay" onClick={onClose}>
+        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+          <h2>{title}</h2>
+          <p>{message}</p>
+          <div className="modal-actions">
+            <button className="modal-btn-cancel" onClick={onClose}>
+              Annuler
+            </button>
+            <button className="modal-btn-confirm" onClick={onConfirm}>
+              Confirmer
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -280,12 +341,25 @@ const UserProfilePage = () => {
           )}
 
           {!isEditing && (
-            <button type="button" onClick={handleEditClick} className="profile-editer-button">
-              Modifier mes infos
-            </button>
+            <div className="profile-button-group">
+              <button type="button" onClick={handleEditClick} className="profile-editer-button">
+                Modifier mes infos
+              </button>
+              <button type="button" onClick={handleDeleteClick} className="profile-delete-button">
+                Supprimer mon profil
+              </button>
+            </div>
           )}
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title="Supprimer votre profil"
+        message="Êtes-vous sûr de vouloir faire ça ? Cette action est irréversible et toutes vos données seront effacées."
+      />
     </div>
   );
 };

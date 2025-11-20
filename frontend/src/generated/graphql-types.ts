@@ -18,6 +18,11 @@ export type Scalars = {
   DateTimeISO: { input: any; output: any; }
 };
 
+export type BanUserResponse = {
+  __typename?: 'BanUserResponse';
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
+  user?: Maybe<User>;
 export type AddGiftInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   imageUrl?: InputMaybe<Scalars['String']['input']>;
@@ -32,6 +37,12 @@ export type CreateGroupInput = {
   event_type: Scalars['String']['input'];
   name: Scalars['String']['input'];
   piggy_bank: Scalars['Float']['input'];
+};
+
+export type DeleteUserResponse = {
+  __typename?: 'DeleteUserResponse';
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
 };
 
 export type Gift = {
@@ -112,6 +123,14 @@ export type Message = {
 export type Mutation = {
   __typename?: 'Mutation';
   UpdateMyProfile: User;
+  banUser: BanUserResponse;
+  createGroup: Group;
+  deleteMyProfile: DeleteUserResponse;
+  deleteUser: DeleteUserResponse;
+  login: User;
+  logout: Scalars['Boolean']['output'];
+  signup: User;
+  unbanUser: BanUserResponse;
   addGift: Gift;
   createGroup: Group;
   deleteGift: Scalars['Int']['output'];
@@ -127,6 +146,8 @@ export type MutationUpdateMyProfileArgs = {
 };
 
 
+export type MutationBanUserArgs = {
+  userId: Scalars['Float']['input'];
 export type MutationAddGiftArgs = {
   data: AddGiftInput;
 };
@@ -137,6 +158,8 @@ export type MutationCreateGroupArgs = {
 };
 
 
+export type MutationDeleteUserArgs = {
+  userId: Scalars['Float']['input'];
 export type MutationDeleteGiftArgs = {
   id: Scalars['Int']['input'];
 };
@@ -152,6 +175,8 @@ export type MutationSignupArgs = {
 };
 
 
+export type MutationUnbanUserArgs = {
+  userId: Scalars['Float']['input'];
 export type MutationUpdateGiftArgs = {
   data: UpdateGiftInput;
   id: Scalars['Int']['input'];
@@ -163,6 +188,7 @@ export type Query = {
   getAllMyGroups: Array<Group>;
   getAllUsers: Array<User>;
   getAllUsersAdmin: Array<User>;
+  getAllUsersForAdmin: Array<User>;
   getMyProfile: User;
   testAdmin: Scalars['String']['output'];
   testUser: Scalars['String']['output'];
@@ -203,9 +229,11 @@ export type UpdateMyProfileInput = {
 export type User = {
   __typename?: 'User';
   admin_groups: Array<Group>;
+  bannedAt?: Maybe<Scalars['DateTimeISO']['output']>;
   beneficiary_groups: Array<Group>;
   createdAt: Scalars['DateTimeISO']['output'];
   date_of_birth: Scalars['String']['output'];
+  deletedAt?: Maybe<Scalars['DateTimeISO']['output']>;
   email: Scalars['String']['output'];
   firstName: Scalars['String']['output'];
   gifts: Array<Gift>;
@@ -213,6 +241,7 @@ export type User = {
   id: Scalars['ID']['output'];
   image_url?: Maybe<Scalars['String']['output']>;
   isAdmin: Scalars['Boolean']['output'];
+  isBanned: Scalars['Boolean']['output'];
   isVerified: Scalars['Boolean']['output'];
   lastName: Scalars['String']['output'];
   likes: Array<Like>;
@@ -253,6 +282,10 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 export type LogoutMutation = { __typename?: 'Mutation', logout: boolean };
 
+export type DeleteMyProfileMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type DeleteMyProfileMutation = { __typename?: 'Mutation', deleteMyProfile: { __typename?: 'DeleteUserResponse', success: boolean, message: string } };
 export type WishlistItemsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -291,6 +324,32 @@ export type GetAllMyGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetAllMyGroupsQuery = { __typename?: 'Query', getAllMyGroups: Array<{ __typename?: 'Group', id: string, name: string, piggy_bank: number, event_type: string }> };
+
+export type GetAllUsersForAdminQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllUsersForAdminQuery = { __typename?: 'Query', getAllUsersForAdmin: Array<{ __typename?: 'User', id: string, email: string, firstName: string, lastName: string, isAdmin: boolean, isBanned: boolean, bannedAt?: any | null, createdAt: any, image_url?: string | null }> };
+
+export type DeleteUserMutationVariables = Exact<{
+  userId: Scalars['Float']['input'];
+}>;
+
+
+export type DeleteUserMutation = { __typename?: 'Mutation', deleteUser: { __typename?: 'DeleteUserResponse', success: boolean, message: string } };
+
+export type BanUserMutationVariables = Exact<{
+  userId: Scalars['Float']['input'];
+}>;
+
+
+export type BanUserMutation = { __typename?: 'Mutation', banUser: { __typename?: 'BanUserResponse', success: boolean, message: string, user?: { __typename?: 'User', id: string, isBanned: boolean } | null } };
+
+export type UnbanUserMutationVariables = Exact<{
+  userId: Scalars['Float']['input'];
+}>;
+
+
+export type UnbanUserMutation = { __typename?: 'Mutation', unbanUser: { __typename?: 'BanUserResponse', success: boolean, message: string, user?: { __typename?: 'User', id: string, isBanned: boolean } | null } };
 
 
 export const LoginDocument = gql`
@@ -501,6 +560,21 @@ export function useLogoutMutation(baseOptions?: Apollo.MutationHookOptions<Logou
 export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
 export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
 export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
+export const DeleteMyProfileDocument = gql`
+    mutation DeleteMyProfile {
+  deleteMyProfile {
+    success
+    message
+  }
+}
+    `;
+export type DeleteMyProfileMutationFn = Apollo.MutationFunction<DeleteMyProfileMutation, DeleteMyProfileMutationVariables>;
+
+/**
+ * __useDeleteMyProfileMutation__
+ *
+ * To run a mutation, you first call `useDeleteMyProfileMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteMyProfileMutation` returns a tuple that includes:
 export const WishlistItemsDocument = gql`
     query WishlistItems {
   wishlistItems {
@@ -654,6 +728,18 @@ export type DeleteGiftMutationFn = Apollo.MutationFunction<DeleteGiftMutation, D
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
+ * const [deleteMyProfileMutation, { data, loading, error }] = useDeleteMyProfileMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useDeleteMyProfileMutation(baseOptions?: Apollo.MutationHookOptions<DeleteMyProfileMutation, DeleteMyProfileMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteMyProfileMutation, DeleteMyProfileMutationVariables>(DeleteMyProfileDocument, options);
+      }
+export type DeleteMyProfileMutationHookResult = ReturnType<typeof useDeleteMyProfileMutation>;
+export type DeleteMyProfileMutationResult = Apollo.MutationResult<DeleteMyProfileMutation>;
+export type DeleteMyProfileMutationOptions = Apollo.BaseMutationOptions<DeleteMyProfileMutation, DeleteMyProfileMutationVariables>;
  * const [deleteGiftMutation, { data, loading, error }] = useDeleteGiftMutation({
  *   variables: {
  *      id: // value for 'id'
@@ -745,3 +831,160 @@ export type GetAllMyGroupsQueryHookResult = ReturnType<typeof useGetAllMyGroupsQ
 export type GetAllMyGroupsLazyQueryHookResult = ReturnType<typeof useGetAllMyGroupsLazyQuery>;
 export type GetAllMyGroupsSuspenseQueryHookResult = ReturnType<typeof useGetAllMyGroupsSuspenseQuery>;
 export type GetAllMyGroupsQueryResult = Apollo.QueryResult<GetAllMyGroupsQuery, GetAllMyGroupsQueryVariables>;
+export const GetAllUsersForAdminDocument = gql`
+    query GetAllUsersForAdmin {
+  getAllUsersForAdmin {
+    id
+    email
+    firstName
+    lastName
+    isAdmin
+    isBanned
+    bannedAt
+    createdAt
+    image_url
+  }
+}
+    `;
+
+/**
+ * __useGetAllUsersForAdminQuery__
+ *
+ * To run a query within a React component, call `useGetAllUsersForAdminQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllUsersForAdminQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllUsersForAdminQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllUsersForAdminQuery(baseOptions?: Apollo.QueryHookOptions<GetAllUsersForAdminQuery, GetAllUsersForAdminQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllUsersForAdminQuery, GetAllUsersForAdminQueryVariables>(GetAllUsersForAdminDocument, options);
+      }
+export function useGetAllUsersForAdminLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllUsersForAdminQuery, GetAllUsersForAdminQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllUsersForAdminQuery, GetAllUsersForAdminQueryVariables>(GetAllUsersForAdminDocument, options);
+        }
+export function useGetAllUsersForAdminSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetAllUsersForAdminQuery, GetAllUsersForAdminQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllUsersForAdminQuery, GetAllUsersForAdminQueryVariables>(GetAllUsersForAdminDocument, options);
+        }
+export type GetAllUsersForAdminQueryHookResult = ReturnType<typeof useGetAllUsersForAdminQuery>;
+export type GetAllUsersForAdminLazyQueryHookResult = ReturnType<typeof useGetAllUsersForAdminLazyQuery>;
+export type GetAllUsersForAdminSuspenseQueryHookResult = ReturnType<typeof useGetAllUsersForAdminSuspenseQuery>;
+export type GetAllUsersForAdminQueryResult = Apollo.QueryResult<GetAllUsersForAdminQuery, GetAllUsersForAdminQueryVariables>;
+export const DeleteUserDocument = gql`
+    mutation DeleteUser($userId: Float!) {
+  deleteUser(userId: $userId) {
+    success
+    message
+  }
+}
+    `;
+export type DeleteUserMutationFn = Apollo.MutationFunction<DeleteUserMutation, DeleteUserMutationVariables>;
+
+/**
+ * __useDeleteUserMutation__
+ *
+ * To run a mutation, you first call `useDeleteUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteUserMutation, { data, loading, error }] = useDeleteUserMutation({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useDeleteUserMutation(baseOptions?: Apollo.MutationHookOptions<DeleteUserMutation, DeleteUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteUserMutation, DeleteUserMutationVariables>(DeleteUserDocument, options);
+      }
+export type DeleteUserMutationHookResult = ReturnType<typeof useDeleteUserMutation>;
+export type DeleteUserMutationResult = Apollo.MutationResult<DeleteUserMutation>;
+export type DeleteUserMutationOptions = Apollo.BaseMutationOptions<DeleteUserMutation, DeleteUserMutationVariables>;
+export const BanUserDocument = gql`
+    mutation BanUser($userId: Float!) {
+  banUser(userId: $userId) {
+    success
+    message
+    user {
+      id
+      isBanned
+    }
+  }
+}
+    `;
+export type BanUserMutationFn = Apollo.MutationFunction<BanUserMutation, BanUserMutationVariables>;
+
+/**
+ * __useBanUserMutation__
+ *
+ * To run a mutation, you first call `useBanUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useBanUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [banUserMutation, { data, loading, error }] = useBanUserMutation({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useBanUserMutation(baseOptions?: Apollo.MutationHookOptions<BanUserMutation, BanUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<BanUserMutation, BanUserMutationVariables>(BanUserDocument, options);
+      }
+export type BanUserMutationHookResult = ReturnType<typeof useBanUserMutation>;
+export type BanUserMutationResult = Apollo.MutationResult<BanUserMutation>;
+export type BanUserMutationOptions = Apollo.BaseMutationOptions<BanUserMutation, BanUserMutationVariables>;
+export const UnbanUserDocument = gql`
+    mutation UnbanUser($userId: Float!) {
+  unbanUser(userId: $userId) {
+    success
+    message
+    user {
+      id
+      isBanned
+    }
+  }
+}
+    `;
+export type UnbanUserMutationFn = Apollo.MutationFunction<UnbanUserMutation, UnbanUserMutationVariables>;
+
+/**
+ * __useUnbanUserMutation__
+ *
+ * To run a mutation, you first call `useUnbanUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUnbanUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [unbanUserMutation, { data, loading, error }] = useUnbanUserMutation({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useUnbanUserMutation(baseOptions?: Apollo.MutationHookOptions<UnbanUserMutation, UnbanUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UnbanUserMutation, UnbanUserMutationVariables>(UnbanUserDocument, options);
+      }
+export type UnbanUserMutationHookResult = ReturnType<typeof useUnbanUserMutation>;
+export type UnbanUserMutationResult = Apollo.MutationResult<UnbanUserMutation>;
+export type UnbanUserMutationOptions = Apollo.BaseMutationOptions<UnbanUserMutation, UnbanUserMutationVariables>;
