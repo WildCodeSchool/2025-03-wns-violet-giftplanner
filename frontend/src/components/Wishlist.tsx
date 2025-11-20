@@ -99,22 +99,38 @@ export default function Wishlist() {
   };
 
   return (
-    <div className="h-full p-3 px-2 flex flex-col mx-auto bg-[#EA4B09] rounded-2xl">
-      {/* Header */}
-      <div className="flex justify-between text-[#FDFBF6] p-3 pb-6">
-        <div className="flex items-center">
-          <Icon icon="heart" className="mr-2 text-2xl" />
-          <h2 className="text-2xl font-bold tracking-wide">Ma wishlist</h2>
+    <div className="h-full p-10 flex flex-col bg-[#EA4B09] rounded-[18px] ml-10 overflow-hidden">
+      <div className="flex flex-col h-full min-h-0">
+        {/* Header */}
+        <div className="flex justify-between items-start text-[#FDFBF6] mb-8 flex-shrink-0">
+          <div className="flex items-center gap-4">
+            <Icon icon="heart" className="text-[40px]" />
+            <h2 className="text-[32px] font-bold">Ma wishlist</h2>
+          </div>
+          <Button icon="plus" text="Nouvelle idée" colour="green" onClick={() => setIsModalOpen(true)} />
         </div>
-        <Button icon="plus" text="Nouvelle idée" colour="green" onClick={() => setIsModalOpen(true)} />
-      </div>
 
-      {/* Content */}
-      <div className="flex-1 min-h-0 overflow-y-auto px-4 pb-5">
+        {/* Content */}
+        <div className="flex-1 min-h-0 overflow-y-auto">
         {error ? (
           <div className="text-[#FDFBF6] bg-black/20 rounded-xl p-4">Erreur: {error.message}</div>
+        ) : !loading && items.length === 0 ? (
+          <div className="h-full flex items-center justify-center">
+            <div className="flex flex-col items-center justify-center text-[#FDFBF6]">
+              <Icon icon="gift" className="text-7xl opacity-80 mb-3" />
+              <p className="text-lg mb-8">Aucune idée pour l'instant.</p>
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(true)}
+                className="flex items-center gap-2 bg-[#019645] text-[#FDFBF6] font-semibold px-4 py-2 rounded-xl hover:bg-[#01803b] transition"
+              >
+                <Icon icon="plus" />
+                Ajouter une idée
+              </button>
+            </div>
+          </div>
         ) : (
-          <ul className="grid gap-5 grid-cols-[repeat(auto-fill,minmax(200px,1fr))] items-stretch">
+          <ul className="grid gap-5 grid-cols-[repeat(auto-fill,minmax(280px,1fr))] auto-rows-fr">
             {loading && (
               <>
                 <li>
@@ -132,28 +148,12 @@ export default function Wishlist() {
               </>
             )}
 
-            {!loading && items.length === 0 && (
-              <li className="col-span-full">
-                <div className="flex flex-col items-center justify-center py-16 text-[#FDFBF6]">
-                  <Icon icon="gift" className="text-7xl opacity-80 mb-3" />
-                  <p className="text-lg mb-4">Aucune idée pour l’instant.</p>
-                  <button
-                    type="button"
-                    onClick={() => setIsModalOpen(true)}
-                    className="flex items-center gap-2 bg-[#019645] text-[#FDFBF6] font-semibold px-4 py-2 rounded-xl hover:bg-[#01803b] transition"
-                  >
-                    <Icon icon="plus" />
-                    Ajouter une idée
-                  </button>
-                </div>
-              </li>
-            )}
-
             {!loading &&
               items.map((gift) => (
                 <li key={gift.id} className="h-full">
                   <GiftCard
                     gift={gift}
+                    className="h-full"
                     onDelete={handleDeleteGift}
                     onEdit={(gift) => {
                       setEditingGift(gift);
@@ -170,6 +170,7 @@ export default function Wishlist() {
               ))}
           </ul>
         )}
+        </div>
       </div>
 
       {/* Modal when adding */}
