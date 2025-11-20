@@ -18,11 +18,31 @@ export type Scalars = {
   DateTimeISO: { input: any; output: any; }
 };
 
+export type BanUserResponse = {
+  __typename?: 'BanUserResponse';
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
+  user?: Maybe<User>;
+export type AddGiftInput = {
+    description?: InputMaybe<Scalars['String']['input']>;
+    imageUrl?: InputMaybe<Scalars['String']['input']>;
+    listId?: InputMaybe<Scalars['ID']['input']>;
+    name: Scalars['String']['input'];
+    url?: InputMaybe<Scalars['String']['input']>;
+    userId?: InputMaybe<Scalars['ID']['input']>;
+  };
+
 export type CreateGroupInput = {
   deadline: Scalars['DateTimeISO']['input'];
   event_type: Scalars['String']['input'];
   name: Scalars['String']['input'];
   piggy_bank: Scalars['Float']['input'];
+};
+
+export type DeleteUserResponse = {
+  __typename?: 'DeleteUserResponse';
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
 };
 
 export type Gift = {
@@ -32,11 +52,11 @@ export type Gift = {
   id: Scalars['ID']['output'];
   imageUrl: Scalars['String']['output'];
   likes: Array<Like>;
-  list: List;
+  list?: Maybe<List>;
   name: Scalars['String']['output'];
   updatedAt: Scalars['DateTimeISO']['output'];
   url: Scalars['String']['output'];
-  user: User;
+  user?: Maybe<User>;
 };
 
 export type Group = {
@@ -102,13 +122,26 @@ export type Message = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  UpdateMyProfile: User;
   createGroup: Group;
+  deleteGift: Scalars['Int']['output'];
   login: User;
   logout: Scalars['Boolean']['output'];
   sendMessage: Scalars['Boolean']['output'];
   signup: User;
+  updateGift: Gift;
 };
+
+
+export type MutationUpdateMyProfileArgs = {
+  data: UpdateMyProfileInput;
+};
+
+
+export type MutationBanUserArgs = {
+  userId: Scalars['Float']['input'];
+export type MutationAddGiftArgs = {
+    data: AddGiftInput;
+  };
 
 
 export type MutationUpdateMyProfileArgs = {
@@ -119,6 +152,13 @@ export type MutationUpdateMyProfileArgs = {
 export type MutationCreateGroupArgs = {
   data: CreateGroupInput;
 };
+
+
+export type MutationDeleteUserArgs = {
+  userId: Scalars['Float']['input'];
+export type MutationDeleteGiftArgs = {
+    id: Scalars['Int']['input'];
+  };
 
 
 export type MutationLoginArgs = {
@@ -135,11 +175,6 @@ export type MutationSignupArgs = {
   data: SignupInput;
 };
 
-export type NewMessageInput = {
-  groupId: Scalars['Float']['input'];
-  message: Scalars['String']['input'];
-};
-
 export type Query = {
   __typename?: 'Query';
   coucou: Scalars['String']['output'];
@@ -147,11 +182,17 @@ export type Query = {
   getAllMyGroups: Array<Group>;
   getAllUsers: Array<User>;
   getAllUsersAdmin: Array<User>;
+  getAllUsersForAdmin: Array<User>;
   getMyProfile: User;
   testAdmin: Scalars['String']['output'];
   testUser: Scalars['String']['output'];
   welcomeAll: Scalars['String']['output'];
   wishlistItems: Array<Gift>;
+};
+
+
+export type QueryWishlistItemsArgs = {
+  listId?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type SignupInput = {
@@ -160,6 +201,13 @@ export type SignupInput = {
   firstName: Scalars['String']['input'];
   lastName: Scalars['String']['input'];
   password: Scalars['String']['input'];
+};
+
+export type UpdateGiftInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  imageUrl?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  url?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateMyProfileInput = {
@@ -175,9 +223,11 @@ export type UpdateMyProfileInput = {
 export type User = {
   __typename?: 'User';
   admin_groups: Array<Group>;
+  bannedAt?: Maybe<Scalars['DateTimeISO']['output']>;
   beneficiary_groups: Array<Group>;
   createdAt: Scalars['DateTimeISO']['output'];
   date_of_birth: Scalars['String']['output'];
+  deletedAt?: Maybe<Scalars['DateTimeISO']['output']>;
   email: Scalars['String']['output'];
   firstName: Scalars['String']['output'];
   gifts: Array<Gift>;
@@ -185,6 +235,7 @@ export type User = {
   id: Scalars['ID']['output'];
   image_url?: Maybe<Scalars['String']['output']>;
   isAdmin: Scalars['Boolean']['output'];
+  isBanned: Scalars['Boolean']['output'];
   isVerified: Scalars['Boolean']['output'];
   lastName: Scalars['String']['output'];
   likes: Array<Like>;
@@ -225,6 +276,37 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 export type LogoutMutation = { __typename?: 'Mutation', logout: boolean };
 
+export type DeleteMyProfileMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type DeleteMyProfileMutation = { __typename?: 'Mutation', deleteMyProfile: { __typename?: 'DeleteUserResponse', success: boolean, message: string } };
+export type WishlistItemsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type WishlistItemsQuery = { __typename?: 'Query', wishlistItems: Array<{ __typename?: 'Gift', id: string, name: string, description: string, imageUrl: string, url: string, createdAt: any, updatedAt: any, user?: { __typename?: 'User', id: string } | null, list?: { __typename?: 'List', id: string } | null }> };
+
+export type AddGiftMutationVariables = Exact<{
+  data: AddGiftInput;
+}>;
+
+
+export type AddGiftMutation = { __typename?: 'Mutation', addGift: { __typename?: 'Gift', id: string, name: string, description: string, imageUrl: string, url: string, createdAt: any, updatedAt: any, user?: { __typename?: 'User', id: string } | null, list?: { __typename?: 'List', id: string } | null } };
+
+export type UpdateGiftMutationVariables = Exact<{
+  id: Scalars['Int']['input'];
+  data: UpdateGiftInput;
+}>;
+
+
+export type UpdateGiftMutation = { __typename?: 'Mutation', updateGift: { __typename?: 'Gift', id: string, name: string, description: string, imageUrl: string, url: string, updatedAt: any } };
+
+export type DeleteGiftMutationVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type DeleteGiftMutation = { __typename?: 'Mutation', deleteGift: number };
+
 export type CreateGroupMutationVariables = Exact<{
   data: CreateGroupInput;
 }>;
@@ -235,14 +317,7 @@ export type CreateGroupMutation = { __typename?: 'Mutation', createGroup: { __ty
 export type GetAllMyGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllMyGroupsQuery = { __typename?: 'Query', getAllMyGroups: Array<{ __typename?: 'Group', id: string, name: string, createdAt: any, updatedAt: any, event_type: string, piggy_bank: number, deadline: any, messages: Array<{ __typename?: 'Message', id: string, content: string, createdAt: any, isEdited: boolean, user: { __typename?: 'User', id: string, firstName: string, lastName: string, image_url?: string | null, isAdmin: boolean } }> }> };
-
-export type SendMessageMutationVariables = Exact<{
-  data: NewMessageInput;
-}>;
-
-
-export type SendMessageMutation = { __typename?: 'Mutation', sendMessage: boolean };
+export type GetAllMyGroupsQuery = { __typename?: 'Query', getAllMyGroups: Array<{ __typename?: 'Group', id: string, name: string, piggy_bank: number, event_type: string }> };
 
 
 export const LoginDocument = gql`
@@ -282,9 +357,9 @@ export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutati
  * });
  */
 export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginMutation, LoginMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, options);
-      }
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, options);
+}
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
@@ -325,9 +400,9 @@ export type SignupMutationFn = Apollo.MutationFunction<SignupMutation, SignupMut
  * });
  */
 export function useSignupMutation(baseOptions?: Apollo.MutationHookOptions<SignupMutation, SignupMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<SignupMutation, SignupMutationVariables>(SignupDocument, options);
-      }
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<SignupMutation, SignupMutationVariables>(SignupDocument, options);
+}
 export type SignupMutationHookResult = ReturnType<typeof useSignupMutation>;
 export type SignupMutationResult = Apollo.MutationResult<SignupMutation>;
 export type SignupMutationOptions = Apollo.BaseMutationOptions<SignupMutation, SignupMutationVariables>;
@@ -365,17 +440,17 @@ export const GetMyProfileDocument = gql`
  * });
  */
 export function useGetMyProfileQuery(baseOptions?: Apollo.QueryHookOptions<GetMyProfileQuery, GetMyProfileQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetMyProfileQuery, GetMyProfileQueryVariables>(GetMyProfileDocument, options);
-      }
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<GetMyProfileQuery, GetMyProfileQueryVariables>(GetMyProfileDocument, options);
+}
 export function useGetMyProfileLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMyProfileQuery, GetMyProfileQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetMyProfileQuery, GetMyProfileQueryVariables>(GetMyProfileDocument, options);
-        }
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<GetMyProfileQuery, GetMyProfileQueryVariables>(GetMyProfileDocument, options);
+}
 export function useGetMyProfileSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetMyProfileQuery, GetMyProfileQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetMyProfileQuery, GetMyProfileQueryVariables>(GetMyProfileDocument, options);
-        }
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions }
+  return Apollo.useSuspenseQuery<GetMyProfileQuery, GetMyProfileQueryVariables>(GetMyProfileDocument, options);
+}
 export type GetMyProfileQueryHookResult = ReturnType<typeof useGetMyProfileQuery>;
 export type GetMyProfileLazyQueryHookResult = ReturnType<typeof useGetMyProfileLazyQuery>;
 export type GetMyProfileSuspenseQueryHookResult = ReturnType<typeof useGetMyProfileSuspenseQuery>;
@@ -417,9 +492,9 @@ export type UpdateMyProfileMutationFn = Apollo.MutationFunction<UpdateMyProfileM
  * });
  */
 export function useUpdateMyProfileMutation(baseOptions?: Apollo.MutationHookOptions<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>(UpdateMyProfileDocument, options);
-      }
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>(UpdateMyProfileDocument, options);
+}
 export type UpdateMyProfileMutationHookResult = ReturnType<typeof useUpdateMyProfileMutation>;
 export type UpdateMyProfileMutationResult = Apollo.MutationResult<UpdateMyProfileMutation>;
 export type UpdateMyProfileMutationOptions = Apollo.BaseMutationOptions<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>;
@@ -447,12 +522,206 @@ export type LogoutMutationFn = Apollo.MutationFunction<LogoutMutation, LogoutMut
  * });
  */
 export function useLogoutMutation(baseOptions?: Apollo.MutationHookOptions<LogoutMutation, LogoutMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument, options);
-      }
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument, options);
+}
 export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
 export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
 export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
+export const DeleteMyProfileDocument = gql`
+    mutation DeleteMyProfile {
+  deleteMyProfile {
+    success
+    message
+  }
+}
+    `;
+export type DeleteMyProfileMutationFn = Apollo.MutationFunction<DeleteMyProfileMutation, DeleteMyProfileMutationVariables>;
+
+/**
+ * __useDeleteMyProfileMutation__
+ *
+ * To run a mutation, you first call `useDeleteMyProfileMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteMyProfileMutation` returns a tuple that includes:
+export const WishlistItemsDocument = gql`
+    query WishlistItems {
+  wishlistItems {
+    id
+    name
+    description
+    imageUrl
+    url
+    createdAt
+    updatedAt
+    user {
+      id
+    }
+    list {
+      id
+    }
+  }
+}
+    `;
+
+/**
+ * __useWishlistItemsQuery__
+ *
+ * To run a query within a React component, call `useWishlistItemsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWishlistItemsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useWishlistItemsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useWishlistItemsQuery(baseOptions?: Apollo.QueryHookOptions<WishlistItemsQuery, WishlistItemsQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<WishlistItemsQuery, WishlistItemsQueryVariables>(WishlistItemsDocument, options);
+}
+export function useWishlistItemsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<WishlistItemsQuery, WishlistItemsQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<WishlistItemsQuery, WishlistItemsQueryVariables>(WishlistItemsDocument, options);
+}
+export function useWishlistItemsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<WishlistItemsQuery, WishlistItemsQueryVariables>) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions }
+  return Apollo.useSuspenseQuery<WishlistItemsQuery, WishlistItemsQueryVariables>(WishlistItemsDocument, options);
+}
+export type WishlistItemsQueryHookResult = ReturnType<typeof useWishlistItemsQuery>;
+export type WishlistItemsLazyQueryHookResult = ReturnType<typeof useWishlistItemsLazyQuery>;
+export type WishlistItemsSuspenseQueryHookResult = ReturnType<typeof useWishlistItemsSuspenseQuery>;
+export type WishlistItemsQueryResult = Apollo.QueryResult<WishlistItemsQuery, WishlistItemsQueryVariables>;
+export const AddGiftDocument = gql`
+    mutation AddGift($data: AddGiftInput!) {
+  addGift(data: $data) {
+    id
+    name
+    description
+    imageUrl
+    url
+    createdAt
+    updatedAt
+    user {
+      id
+    }
+    list {
+      id
+    }
+  }
+}
+    `;
+export type AddGiftMutationFn = Apollo.MutationFunction<AddGiftMutation, AddGiftMutationVariables>;
+
+/**
+ * __useAddGiftMutation__
+ *
+ * To run a mutation, you first call `useAddGiftMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddGiftMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addGiftMutation, { data, loading, error }] = useAddGiftMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useAddGiftMutation(baseOptions?: Apollo.MutationHookOptions<AddGiftMutation, AddGiftMutationVariables>) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<AddGiftMutation, AddGiftMutationVariables>(AddGiftDocument, options);
+}
+export type AddGiftMutationHookResult = ReturnType<typeof useAddGiftMutation>;
+export type AddGiftMutationResult = Apollo.MutationResult<AddGiftMutation>;
+export type AddGiftMutationOptions = Apollo.BaseMutationOptions<AddGiftMutation, AddGiftMutationVariables>;
+export const UpdateGiftDocument = gql`
+    mutation UpdateGift($id: Int!, $data: UpdateGiftInput!) {
+  updateGift(id: $id, data: $data) {
+    id
+    name
+    description
+    imageUrl
+    url
+    updatedAt
+  }
+}
+    `;
+export type UpdateGiftMutationFn = Apollo.MutationFunction<UpdateGiftMutation, UpdateGiftMutationVariables>;
+
+/**
+ * __useUpdateGiftMutation__
+ *
+ * To run a mutation, you first call `useUpdateGiftMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateGiftMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateGiftMutation, { data, loading, error }] = useUpdateGiftMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateGiftMutation(baseOptions?: Apollo.MutationHookOptions<UpdateGiftMutation, UpdateGiftMutationVariables>) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<UpdateGiftMutation, UpdateGiftMutationVariables>(UpdateGiftDocument, options);
+}
+export type UpdateGiftMutationHookResult = ReturnType<typeof useUpdateGiftMutation>;
+export type UpdateGiftMutationResult = Apollo.MutationResult<UpdateGiftMutation>;
+export type UpdateGiftMutationOptions = Apollo.BaseMutationOptions<UpdateGiftMutation, UpdateGiftMutationVariables>;
+export const DeleteGiftDocument = gql`
+    mutation DeleteGift($id: Int!) {
+  deleteGift(id: $id)
+}
+    `;
+export type DeleteGiftMutationFn = Apollo.MutationFunction<DeleteGiftMutation, DeleteGiftMutationVariables>;
+
+/**
+ * __useDeleteGiftMutation__
+ *
+ * To run a mutation, you first call `useDeleteGiftMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteGiftMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteMyProfileMutation, { data, loading, error }] = useDeleteMyProfileMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useDeleteMyProfileMutation(baseOptions?: Apollo.MutationHookOptions<DeleteMyProfileMutation, DeleteMyProfileMutationVariables>) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<DeleteMyProfileMutation, DeleteMyProfileMutationVariables>(DeleteMyProfileDocument, options);
+}
+export type DeleteMyProfileMutationHookResult = ReturnType<typeof useDeleteMyProfileMutation>;
+export type DeleteMyProfileMutationResult = Apollo.MutationResult<DeleteMyProfileMutation>;
+export type DeleteMyProfileMutationOptions = Apollo.BaseMutationOptions<DeleteMyProfileMutation, DeleteMyProfileMutationVariables>;
+ * const [deleteGiftMutation, { data, loading, error }] = useDeleteGiftMutation({
+  *   variables: {
+ *      id: // value for 'id'
+    *
+},
+ * });
+ */
+export function useDeleteGiftMutation(baseOptions?: Apollo.MutationHookOptions<DeleteGiftMutation, DeleteGiftMutationVariables>) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<DeleteGiftMutation, DeleteGiftMutationVariables>(DeleteGiftDocument, options);
+}
+export type DeleteGiftMutationHookResult = ReturnType<typeof useDeleteGiftMutation>;
+export type DeleteGiftMutationResult = Apollo.MutationResult<DeleteGiftMutation>;
+export type DeleteGiftMutationOptions = Apollo.BaseMutationOptions<DeleteGiftMutation, DeleteGiftMutationVariables>;
 export const CreateGroupDocument = gql`
     mutation CreateGroup($data: CreateGroupInput!) {
   createGroup(data: $data) {
@@ -483,9 +752,9 @@ export type CreateGroupMutationFn = Apollo.MutationFunction<CreateGroupMutation,
  * });
  */
 export function useCreateGroupMutation(baseOptions?: Apollo.MutationHookOptions<CreateGroupMutation, CreateGroupMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateGroupMutation, CreateGroupMutationVariables>(CreateGroupDocument, options);
-      }
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<CreateGroupMutation, CreateGroupMutationVariables>(CreateGroupDocument, options);
+}
 export type CreateGroupMutationHookResult = ReturnType<typeof useCreateGroupMutation>;
 export type CreateGroupMutationResult = Apollo.MutationResult<CreateGroupMutation>;
 export type CreateGroupMutationOptions = Apollo.BaseMutationOptions<CreateGroupMutation, CreateGroupMutationVariables>;
@@ -532,49 +801,18 @@ export const GetAllMyGroupsDocument = gql`
  * });
  */
 export function useGetAllMyGroupsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllMyGroupsQuery, GetAllMyGroupsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetAllMyGroupsQuery, GetAllMyGroupsQueryVariables>(GetAllMyGroupsDocument, options);
-      }
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<GetAllMyGroupsQuery, GetAllMyGroupsQueryVariables>(GetAllMyGroupsDocument, options);
+}
 export function useGetAllMyGroupsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllMyGroupsQuery, GetAllMyGroupsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetAllMyGroupsQuery, GetAllMyGroupsQueryVariables>(GetAllMyGroupsDocument, options);
-        }
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<GetAllMyGroupsQuery, GetAllMyGroupsQueryVariables>(GetAllMyGroupsDocument, options);
+}
 export function useGetAllMyGroupsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetAllMyGroupsQuery, GetAllMyGroupsQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetAllMyGroupsQuery, GetAllMyGroupsQueryVariables>(GetAllMyGroupsDocument, options);
-        }
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions }
+  return Apollo.useSuspenseQuery<GetAllMyGroupsQuery, GetAllMyGroupsQueryVariables>(GetAllMyGroupsDocument, options);
+}
 export type GetAllMyGroupsQueryHookResult = ReturnType<typeof useGetAllMyGroupsQuery>;
 export type GetAllMyGroupsLazyQueryHookResult = ReturnType<typeof useGetAllMyGroupsLazyQuery>;
 export type GetAllMyGroupsSuspenseQueryHookResult = ReturnType<typeof useGetAllMyGroupsSuspenseQuery>;
 export type GetAllMyGroupsQueryResult = Apollo.QueryResult<GetAllMyGroupsQuery, GetAllMyGroupsQueryVariables>;
-export const SendMessageDocument = gql`
-    mutation SendMessage($data: NewMessageInput!) {
-  sendMessage(data: $data)
-}
-    `;
-export type SendMessageMutationFn = Apollo.MutationFunction<SendMessageMutation, SendMessageMutationVariables>;
-
-/**
- * __useSendMessageMutation__
- *
- * To run a mutation, you first call `useSendMessageMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useSendMessageMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [sendMessageMutation, { data, loading, error }] = useSendMessageMutation({
- *   variables: {
- *      data: // value for 'data'
- *   },
- * });
- */
-export function useSendMessageMutation(baseOptions?: Apollo.MutationHookOptions<SendMessageMutation, SendMessageMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<SendMessageMutation, SendMessageMutationVariables>(SendMessageDocument, options);
-      }
-export type SendMessageMutationHookResult = ReturnType<typeof useSendMessageMutation>;
-export type SendMessageMutationResult = Apollo.MutationResult<SendMessageMutation>;
-export type SendMessageMutationOptions = Apollo.BaseMutationOptions<SendMessageMutation, SendMessageMutationVariables>;

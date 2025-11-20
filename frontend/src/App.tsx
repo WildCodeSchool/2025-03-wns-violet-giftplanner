@@ -11,6 +11,9 @@ import RegisterPage from "./pages/RegisterPage";
 import UserProfilePage from "./pages/UserProfilePage";
 import WishListPage from "./pages/WishListPage";
 import { useMyProfileStore } from "./zustand/myProfileStore";
+import AdminPage from "./pages/AdminPage";
+import AdminRoute from "./components/AdminRoute";
+import ContactPage from "./pages/ContactPage";
 
 const App = () => {
   const { data, loading } = useGetMyProfileQuery();
@@ -27,7 +30,7 @@ const App = () => {
     } else if (!loading) {
       setUserProfile(null);
       // si on est pas connecté on redirige forcement vers la page de connexion ou d'inscription
-      if (!["/connexion", "/inscription", "/"].includes(window.location.pathname)) {
+      if (!["/connexion", "/inscription", "/", "/contact"].includes(window.location.pathname)) {
         navigate("/");
       }
     }
@@ -41,6 +44,7 @@ const App = () => {
         <Route index element={<HomePage />} />
         <Route path="connexion" element={<LoginPage />} />
         <Route path="inscription" element={<RegisterPage />} />
+        <Route path="contact" element={<ContactPage />} />
 
         {/* Dashboard with nested routes */}
         <Route path="dashboard" element={<Dashboard />}>
@@ -48,6 +52,14 @@ const App = () => {
           <Route path="conversations" element={<Conversations />} />
           <Route path="profile" element={<UserProfilePage />} />
           <Route path="wishlist" element={<WishListPage />} />
+          <Route
+            path="admin"
+            element={
+              <AdminRoute>
+                <AdminPage />
+              </AdminRoute>
+            }
+          />
         </Route>
 
         <Route path="*" element={<NotFound404Page />} />
