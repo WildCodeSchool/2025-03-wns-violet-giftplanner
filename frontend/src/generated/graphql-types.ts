@@ -25,7 +25,7 @@ export type AddGiftInput = {
   name: Scalars['String']['input'];
   url?: InputMaybe<Scalars['String']['input']>;
   userId?: InputMaybe<Scalars['ID']['input']>;
-}
+};
 
 export type CreateGroupInput = {
   deadline: Scalars['DateTimeISO']['input'];
@@ -111,13 +111,19 @@ export type Message = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  UpdateMyProfile: User;
   addGift: Gift;
-  deleteGift: Scalars['Int']['output'];
   createGroup: Group;
+  deleteGift: Scalars['Int']['output'];
   login: User;
   logout: Scalars['Boolean']['output'];
   signup: User;
   updateGift: Gift;
+};
+
+
+export type MutationUpdateMyProfileArgs = {
+  data: UpdateMyProfileInput;
 };
 
 
@@ -126,13 +132,13 @@ export type MutationAddGiftArgs = {
 };
 
 
-export type MutationDeleteGiftArgs = {
-  id: Scalars['Int']['input'];
+export type MutationCreateGroupArgs = {
+  data: CreateGroupInput;
 };
 
 
-export type MutationCreateGroupArgs = {
-  data: CreateGroupInput;
+export type MutationDeleteGiftArgs = {
+  id: Scalars['Int']['input'];
 };
 
 
@@ -166,7 +172,7 @@ export type Query = {
 
 
 export type QueryWishlistItemsArgs = {
-  listId?: InputMaybe<Scalars['String']['input']>;
+  listId?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type SignupInput = {
@@ -273,6 +279,7 @@ export type DeleteGiftMutationVariables = Exact<{
 
 
 export type DeleteGiftMutation = { __typename?: 'Mutation', deleteGift: number };
+
 export type CreateGroupMutationVariables = Exact<{
   data: CreateGroupInput;
 }>;
@@ -421,6 +428,49 @@ export type GetMyProfileQueryHookResult = ReturnType<typeof useGetMyProfileQuery
 export type GetMyProfileLazyQueryHookResult = ReturnType<typeof useGetMyProfileLazyQuery>;
 export type GetMyProfileSuspenseQueryHookResult = ReturnType<typeof useGetMyProfileSuspenseQuery>;
 export type GetMyProfileQueryResult = Apollo.QueryResult<GetMyProfileQuery, GetMyProfileQueryVariables>;
+export const UpdateMyProfileDocument = gql`
+    mutation UpdateMyProfile($data: UpdateMyProfileInput!) {
+  UpdateMyProfile(data: $data) {
+    createdAt
+    date_of_birth
+    email
+    firstName
+    id
+    image_url
+    isAdmin
+    isVerified
+    lastName
+    phone_number
+    updatedAt
+  }
+}
+    `;
+export type UpdateMyProfileMutationFn = Apollo.MutationFunction<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>;
+
+/**
+ * __useUpdateMyProfileMutation__
+ *
+ * To run a mutation, you first call `useUpdateMyProfileMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateMyProfileMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateMyProfileMutation, { data, loading, error }] = useUpdateMyProfileMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateMyProfileMutation(baseOptions?: Apollo.MutationHookOptions<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>(UpdateMyProfileDocument, options);
+      }
+export type UpdateMyProfileMutationHookResult = ReturnType<typeof useUpdateMyProfileMutation>;
+export type UpdateMyProfileMutationResult = Apollo.MutationResult<UpdateMyProfileMutation>;
+export type UpdateMyProfileMutationOptions = Apollo.BaseMutationOptions<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>;
 export const LogoutDocument = gql`
     mutation Logout {
   logout
@@ -451,26 +501,25 @@ export function useLogoutMutation(baseOptions?: Apollo.MutationHookOptions<Logou
 export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
 export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
 export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
-
 export const WishlistItemsDocument = gql`
-  query WishlistItems {
-    wishlistItems {
+    query WishlistItems {
+  wishlistItems {
+    id
+    name
+    description
+    imageUrl
+    url
+    createdAt
+    updatedAt
+    user {
       id
-      name
-      description
-      imageUrl
-      url
-      createdAt
-      updatedAt
-      user {
-        id
-      }
-      list {
-        id
-      }
+    }
+    list {
+      id
     }
   }
-`;
+}
+    `;
 
 /**
  * __useWishlistItemsQuery__
@@ -487,7 +536,6 @@ export const WishlistItemsDocument = gql`
  *   },
  * });
  */
-
 export function useWishlistItemsQuery(baseOptions?: Apollo.QueryHookOptions<WishlistItemsQuery, WishlistItemsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<WishlistItemsQuery, WishlistItemsQueryVariables>(WishlistItemsDocument, options);
@@ -542,7 +590,6 @@ export type AddGiftMutationFn = Apollo.MutationFunction<AddGiftMutation, AddGift
  *   },
  * });
  */
-
 export function useAddGiftMutation(baseOptions?: Apollo.MutationHookOptions<AddGiftMutation, AddGiftMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useMutation<AddGiftMutation, AddGiftMutationVariables>(AddGiftDocument, options);
@@ -613,7 +660,6 @@ export type DeleteGiftMutationFn = Apollo.MutationFunction<DeleteGiftMutation, D
  *   },
  * });
  */
-
 export function useDeleteGiftMutation(baseOptions?: Apollo.MutationHookOptions<DeleteGiftMutation, DeleteGiftMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useMutation<DeleteGiftMutation, DeleteGiftMutationVariables>(DeleteGiftDocument, options);
@@ -621,9 +667,6 @@ export function useDeleteGiftMutation(baseOptions?: Apollo.MutationHookOptions<D
 export type DeleteGiftMutationHookResult = ReturnType<typeof useDeleteGiftMutation>;
 export type DeleteGiftMutationResult = Apollo.MutationResult<DeleteGiftMutation>;
 export type DeleteGiftMutationOptions = Apollo.BaseMutationOptions<DeleteGiftMutation, DeleteGiftMutationVariables>;
-
-// Group operations
-
 export const CreateGroupDocument = gql`
     mutation CreateGroup($data: CreateGroupInput!) {
   createGroup(data: $data) {
@@ -660,17 +703,16 @@ export function useCreateGroupMutation(baseOptions?: Apollo.MutationHookOptions<
 export type CreateGroupMutationHookResult = ReturnType<typeof useCreateGroupMutation>;
 export type CreateGroupMutationResult = Apollo.MutationResult<CreateGroupMutation>;
 export type CreateGroupMutationOptions = Apollo.BaseMutationOptions<CreateGroupMutation, CreateGroupMutationVariables>;
-
 export const GetAllMyGroupsDocument = gql`
-  query getAllMyGroups {
-    getAllMyGroups {
-      id
-      name
-      piggy_bank
-      event_type
-    }
+    query getAllMyGroups {
+  getAllMyGroups {
+    id
+    name
+    piggy_bank
+    event_type
   }
-`;
+}
+    `;
 
 /**
  * __useGetAllMyGroupsQuery__
@@ -678,14 +720,15 @@ export const GetAllMyGroupsDocument = gql`
  * To run a query within a React component, call `useGetAllMyGroupsQuery` and pass it any options that fit your needs.
  * When your component renders, `useGetAllMyGroupsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
- 
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
  * @example
  * const { data, loading, error } = useGetAllMyGroupsQuery({
  *   variables: {
  *   },
  * });
  */
-
 export function useGetAllMyGroupsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllMyGroupsQuery, GetAllMyGroupsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAllMyGroupsQuery, GetAllMyGroupsQueryVariables>(GetAllMyGroupsDocument, options);
