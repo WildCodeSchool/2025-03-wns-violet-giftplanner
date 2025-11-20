@@ -17,28 +17,17 @@ class NewMessageInput {
 
 @Resolver(Group)
 export default class MessageResolver {
-    // pour récupérer les 20 anciens messages de chaque groupe
-    @UseMiddleware(RoleMiddleware())
-    // @Query(() => [Message])
-    // async fetchRecentMessagesAllGroups(@Ctx() ctx: ContextType) {
-    //     const userId = ctx.user?.id;
-
-    //     if (!userId) throw new Error("Utilisateur non authentifié");
-
-    //     const messages = await Message.find({
-    //         where: { user: { id: userId } },
-    //         order: { createdAt: "DESC" },
-    //         take: 20,
-    //         relations: ["group", "sender"],
-    //     });
-
-    //     return messages;
-    // }
-
     @UseMiddleware(RoleMiddleware())
     // pour récupérer les anciens messages d'un groupe
     @Query(() => String)
     async fetchMessagesByGroup(@Ctx() ctx: ContextType) {
+        const userId = ctx.user?.id;
+
+        if (!userId) throw new Error("Utilisateur non authentifié");
+
+        // const group = await GroupMember.findOne({ where: { user: { id: userId }, group: { id: data.groupId } } });
+        // // verifier que l'utilisateur fait bien partie du groupe
+        // if (!group) throw new Error("Groupe non trouvé");
 
         return "ok";
     }

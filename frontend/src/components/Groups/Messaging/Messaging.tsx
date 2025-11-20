@@ -57,8 +57,8 @@ export default function Messaging({ title, participants, date, groupId, messages
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();       // empêche le saut de ligne
-      handleSendMessage(e);     // ta fonction d’envoi
+      e.preventDefault();
+      handleSendMessage(e);
     }
   };
 

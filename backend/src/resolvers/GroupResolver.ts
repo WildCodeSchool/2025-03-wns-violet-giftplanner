@@ -44,7 +44,7 @@ export default class GroupResolver {
         where: { group: { id: group.id } },
         relations: { user: true },
         order: { createdAt: "DESC" },
-        take: 10,
+        take: 20,
       });
     }
 
