@@ -63,16 +63,16 @@ export class Gift extends BaseEntity {
   @ManyToOne(
     () => List,
     (list) => list.gift,
-    { onDelete: "CASCADE" },
+    { onDelete: "CASCADE", nullable: true },
   )
-  @Field(() => List)
-  list: List;
+  @Field(() => List, { nullable: true })
+  list?: List | null;
 
   @ManyToOne(
     () => User,
     (user) => user.gifts,
-    { onDelete: "CASCADE" },
+    { onDelete: "CASCADE", nullable: true },
   )
-  @Field(() => User)
-  user: User;
+  @Field(() => User, { nullable: true })
+  user?: User | null;
 }
