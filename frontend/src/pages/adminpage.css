@@ -248,11 +248,40 @@ td.admin-actions {
     font-weight: 700;
 }
 
+
+.admin-message-div {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+}
+
 .admin-success-message {
+    display: flex;
     text-align: center;
-    margin-bottom: 16px;
-    color: #019645;
+    color: #fdfbf6;
+    background: #019645;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    padding: 8px 40px;
+    border-radius: 8px;
     font-size: 18px;
     font-family: "Inter", sans-serif;
     font-weight: 800;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+.admin-error-message {
+    display: flex;
+    text-align: center;
+    color: #fdfbf6;
+    background: #ea4b09;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    padding: 8px 40px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-family: "Inter", sans-serif;
+    font-weight: 800;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
 }

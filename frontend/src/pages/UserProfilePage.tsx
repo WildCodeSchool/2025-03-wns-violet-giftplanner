@@ -34,7 +34,7 @@ const UserProfilePage = () => {
     password: "",
     passwordConfirmation: "",
   });
-  const [profileBackup, setProfileBackup] = useState(profile);
+  const [profileBackup] = useState(profile);
   const [updateMyProfile] = useUpdateMyProfileMutation();
   const [deleteMyProfile] = useDeleteMyProfileMutation();
 
@@ -129,7 +129,7 @@ const UserProfilePage = () => {
       },
     });
 
-    // toto cooriger ca
+    // todo corriger ça
     if (!response || !response.data?.UpdateMyProfile) {
       setMessageError("Erreur inattendue lors de la mise à jour du profil");
       return;

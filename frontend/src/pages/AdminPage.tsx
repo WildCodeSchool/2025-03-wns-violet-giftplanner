@@ -195,9 +195,16 @@ const AdminPage = () => {
                 </div>
 
                 <div className="admin-content">
-                    {messageError && <p className="admin-error-message">{messageError}</p>}
+                    {messageError &&
+                        <div className="admin-message-div">
+                            <p className="admin-error-message">{messageError}</p>
+                        </div>
+                    }
                     {messageSuccess && (
-                        <p className="admin-success-message">{messageSuccess}</p>
+                        <div className="admin-message-div">
+                            <p className="admin-success-message">{messageSuccess}</p>
+                        </div>
+
                     )}
 
                     <div className="admin-table-wrapper">
