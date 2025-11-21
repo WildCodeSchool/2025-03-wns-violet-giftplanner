@@ -77,21 +77,31 @@ td.admin-actions {
 .admin-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     flex-wrap: wrap;
     gap: 20px;
     padding-bottom: 40px;
 }
 
 .admin-title {
-    font-size: clamp(24px, 3vw, 32px);
-    font-weight: 700;
-    color: #fdfbf6;
-    margin: 0;
-    font-family: "Inter", sans-serif;
     display: flex;
     align-items: center;
     gap: 16px;
+}
+
+.admin-title-icon {
+    font-size: 40px;
+    color: #fdfbf6;
+}
+
+.admin-title-text {
+    font-size: 32px;
+    font-weight: 700;
+    color: #fdfbf6;
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+    font-family: "Inter", sans-serif;
 }
 
 

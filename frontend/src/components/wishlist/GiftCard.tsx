@@ -1,6 +1,8 @@
 import clsx from "clsx";
 import type { Gift } from "../../types/Gift";
 import Icon from "../utils/Icon";
+import "./giftcard.css";
+
 
 type GiftCardProps = {
   gift: Gift;
@@ -16,13 +18,13 @@ export default function GiftCard({ gift, className, onEdit, onDelete }: GiftCard
   return (
     <div
       className={clsx(
-        "group relative h-full bg-[#FDFBF6] rounded-lg shadow overflow-hidden flex flex-col hover:shadow-lg transition",
+        "group relative bg-[#FDFBF6] rounded-xl shadow overflow-hidden flex flex-col hover:shadow-lg transition",
         className,
       )}
     >
       {/* Clickable content */}
       {url ? (
-        <a href={url} target="_blank" rel="noopener noreferrer" className="block h-full">
+        <a href={url} target="_blank" rel="noopener noreferrer" className="block">
           {imageUrl ? (
             <img src={imageUrl} alt={name} className="w-full h-50 object-cover" />
           ) : (
@@ -36,7 +38,7 @@ export default function GiftCard({ gift, className, onEdit, onDelete }: GiftCard
           </div>
         </a>
       ) : (
-        <div className="h-full">
+        <div>
           {imageUrl ? (
             <img src={imageUrl} alt={name} className="w-full h-50 object-cover" />
           ) : (
@@ -44,7 +46,7 @@ export default function GiftCard({ gift, className, onEdit, onDelete }: GiftCard
               <Icon icon="gift" className="text-9xl text-[#EA4B09] opacity-70" />
             </div>
           )}
-          <div className="p-3 flex-1 flex flex-col">
+          <div className="div-content-giftcard">
             <h5 className="text-lg font-semibold text-[#200904] mb-2">{name}</h5>
             {description && <p className="text-sm text-[#200904] opacity-80 flex-1">{description}</p>}
           </div>
@@ -62,7 +64,7 @@ export default function GiftCard({ gift, className, onEdit, onDelete }: GiftCard
               e.stopPropagation();
               onEdit?.(gift);
             }}
-            className="px-3 py-1 rounded-md bg-white/95 text-[#200904] text-sm shadow hover:bg-white"
+            className="px-3 py-1 rounded-md bg-white/95 text-[#200904] text-sm font-bold shadow hover:bg-white cursor-pointer"
           >
             Modifier
           </button>
@@ -74,7 +76,7 @@ export default function GiftCard({ gift, className, onEdit, onDelete }: GiftCard
               e.stopPropagation();
               onDelete?.(gift);
             }}
-            className="px-3 py-1 rounded-md bg-[#A74228] text-white text-sm shadow hover:bg-[#7A2F1C]"
+            className="px-3 py-1 rounded-md bg-[#A74228] text-white text-sm font-bold shadow cursor-pointer"
           >
             Supprimer
           </button>
@@ -87,7 +89,7 @@ export default function GiftCard({ gift, className, onEdit, onDelete }: GiftCard
 /** Skeleton cards for loading states */
 export function GiftCardSkeleton() {
   return (
-    <div className="bg-[#FDFBF6] rounded-lg shadow overflow-hidden animate-pulse">
+    <div className="bg-[#FDFBF6] rounded-xl shadow overflow-hidden animate-pulse">
       <div className="w-full h-50 bg-gray-200" />
       <div className="p-3">
         <div className="h-5 bg-gray-200 rounded mb-2 w-3/4" />

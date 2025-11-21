@@ -18,11 +18,6 @@ export type Scalars = {
   DateTimeISO: { input: any; output: any; }
 };
 
-export type BanUserResponse = {
-  __typename?: 'BanUserResponse';
-  message: Scalars['String']['output'];
-  success: Scalars['Boolean']['output'];
-  user?: Maybe<User>;
 export type AddGiftInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   imageUrl?: InputMaybe<Scalars['String']['input']>;
@@ -30,6 +25,13 @@ export type AddGiftInput = {
   name: Scalars['String']['input'];
   url?: InputMaybe<Scalars['String']['input']>;
   userId?: InputMaybe<Scalars['ID']['input']>;
+};
+
+export type BanUserResponse = {
+  __typename?: 'BanUserResponse';
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
+  user?: Maybe<User>;
 };
 
 export type CreateGroupInput = {
@@ -123,20 +125,16 @@ export type Message = {
 export type Mutation = {
   __typename?: 'Mutation';
   UpdateMyProfile: User;
+  addGift: Gift;
   banUser: BanUserResponse;
   createGroup: Group;
+  deleteGift: Scalars['Int']['output'];
   deleteMyProfile: DeleteUserResponse;
   deleteUser: DeleteUserResponse;
   login: User;
   logout: Scalars['Boolean']['output'];
   signup: User;
   unbanUser: BanUserResponse;
-  addGift: Gift;
-  createGroup: Group;
-  deleteGift: Scalars['Int']['output'];
-  login: User;
-  logout: Scalars['Boolean']['output'];
-  signup: User;
   updateGift: Gift;
 };
 
@@ -146,10 +144,13 @@ export type MutationUpdateMyProfileArgs = {
 };
 
 
-export type MutationBanUserArgs = {
-  userId: Scalars['Float']['input'];
 export type MutationAddGiftArgs = {
   data: AddGiftInput;
+};
+
+
+export type MutationBanUserArgs = {
+  userId: Scalars['Float']['input'];
 };
 
 
@@ -158,10 +159,13 @@ export type MutationCreateGroupArgs = {
 };
 
 
-export type MutationDeleteUserArgs = {
-  userId: Scalars['Float']['input'];
 export type MutationDeleteGiftArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type MutationDeleteUserArgs = {
+  userId: Scalars['Float']['input'];
 };
 
 
@@ -177,6 +181,9 @@ export type MutationSignupArgs = {
 
 export type MutationUnbanUserArgs = {
   userId: Scalars['Float']['input'];
+};
+
+
 export type MutationUpdateGiftArgs = {
   data: UpdateGiftInput;
   id: Scalars['Int']['input'];
@@ -286,6 +293,7 @@ export type DeleteMyProfileMutationVariables = Exact<{ [key: string]: never; }>;
 
 
 export type DeleteMyProfileMutation = { __typename?: 'Mutation', deleteMyProfile: { __typename?: 'DeleteUserResponse', success: boolean, message: string } };
+
 export type WishlistItemsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -575,6 +583,24 @@ export type DeleteMyProfileMutationFn = Apollo.MutationFunction<DeleteMyProfileM
  *
  * To run a mutation, you first call `useDeleteMyProfileMutation` within a React component and pass it any options that fit your needs.
  * When your component renders, `useDeleteMyProfileMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteMyProfileMutation, { data, loading, error }] = useDeleteMyProfileMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useDeleteMyProfileMutation(baseOptions?: Apollo.MutationHookOptions<DeleteMyProfileMutation, DeleteMyProfileMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteMyProfileMutation, DeleteMyProfileMutationVariables>(DeleteMyProfileDocument, options);
+      }
+export type DeleteMyProfileMutationHookResult = ReturnType<typeof useDeleteMyProfileMutation>;
+export type DeleteMyProfileMutationResult = Apollo.MutationResult<DeleteMyProfileMutation>;
+export type DeleteMyProfileMutationOptions = Apollo.BaseMutationOptions<DeleteMyProfileMutation, DeleteMyProfileMutationVariables>;
 export const WishlistItemsDocument = gql`
     query WishlistItems {
   wishlistItems {
@@ -728,18 +754,6 @@ export type DeleteGiftMutationFn = Apollo.MutationFunction<DeleteGiftMutation, D
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [deleteMyProfileMutation, { data, loading, error }] = useDeleteMyProfileMutation({
- *   variables: {
- *   },
- * });
- */
-export function useDeleteMyProfileMutation(baseOptions?: Apollo.MutationHookOptions<DeleteMyProfileMutation, DeleteMyProfileMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteMyProfileMutation, DeleteMyProfileMutationVariables>(DeleteMyProfileDocument, options);
-      }
-export type DeleteMyProfileMutationHookResult = ReturnType<typeof useDeleteMyProfileMutation>;
-export type DeleteMyProfileMutationResult = Apollo.MutationResult<DeleteMyProfileMutation>;
-export type DeleteMyProfileMutationOptions = Apollo.BaseMutationOptions<DeleteMyProfileMutation, DeleteMyProfileMutationVariables>;
  * const [deleteGiftMutation, { data, loading, error }] = useDeleteGiftMutation({
  *   variables: {
  *      id: // value for 'id'

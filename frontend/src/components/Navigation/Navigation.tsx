@@ -7,7 +7,7 @@ import { useMyProfileStore } from "../../zustand/myProfileStore";
 import Redirect from "./Redirect";
 import "./navigation.css";
 import { LuUserRound } from "react-icons/lu";
-import { LuGift } from "react-icons/lu";
+import { LuHeart } from "react-icons/lu";
 import { LuLogOut } from "react-icons/lu";
 import { LuMessageCircleMore } from "react-icons/lu";
 import { LuShield } from "react-icons/lu";
@@ -70,7 +70,7 @@ export default function Navigation() {
             <Redirect
               link="/dashboard/wishlist"
               icon={
-                <LuGift
+                <LuHeart
                   className={`cursor-pointer transition-bnt-nav ${currentLocation === "/dashboard/wishlist" && "wishlist-icon"}`}
                 />
               }
