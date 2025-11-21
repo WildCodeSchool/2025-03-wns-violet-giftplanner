@@ -1,6 +1,6 @@
 export default function getProfilePictureUrl(imageUrl: string | null): string {
     if (!imageUrl) {
-        return '/images/default-profile.png';
+        return '/images/papier-theme.jpg';
     }
     return `/service/picture/${imageUrl}`;
 }
