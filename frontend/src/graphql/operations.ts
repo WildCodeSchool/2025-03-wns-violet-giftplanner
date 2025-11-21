@@ -153,14 +153,21 @@ export const DELETE_GIFT = gql`
 //GROUP OPERATIONS
 
 export const CREATE_GROUP = gql`
-  mutation CreateGroup($data: CreateGroupInput!) {
-    createGroup(data: $data) {
+mutation CreateGroup($data: CreateGroupInput!) {
+  createGroup(data: $data) {
+    id
+    name
+    event_type
+    piggy_bank
+    deadline
+    createdAt
+    groupMember {
       id
-      name
-      piggy_bank
-      event_type
+      userId
+      groupId
     }
   }
+}
 `;
 
 export const GET_ALL_MY_GROUPS = gql`
