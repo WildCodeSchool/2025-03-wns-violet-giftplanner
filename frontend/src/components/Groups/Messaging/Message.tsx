@@ -1,10 +1,12 @@
+import getProfilePictureUrl from "../../../utils/pictureProfileManager";
+
 type MessageProps = {
   text: string;
-  avatar?: string;
+  imageUrl: string;
   align?: "left" | "right";
 };
 
-export default function Message({ text, avatar, align = "left" }: MessageProps) {
+export default function Message({ text, imageUrl, align = "left" }: MessageProps) {
   const isLeft = align === "left";
 
   return (
@@ -14,14 +16,12 @@ export default function Message({ text, avatar, align = "left" }: MessageProps) 
         <div
           className={`flex ${isLeft ? "justify-start" : "justify-end"} w-[5vw] h-[5vw] min-aspect[1/1] rounded-full `}
         >
-          <img src={`/images/${avatar}.jpg`} alt="Profile" className=" rounded-full object-cover " />
+          <img src={getProfilePictureUrl(imageUrl)} alt="Profile" className="rounded-full object-cover" />
         </div>
 
         {/* Message bubble TO DO: make it a component */}
         <div
-          className={`max-w-xs px-4 py-2 mt-[3rem] rounded-2xl ${
-            isLeft ? "bg-grey rounded-tl-none " : "bg-light-grey rounded-tr-none "
-          }`}
+          className={`max-w-xs px-4 py-2 mt-[3rem] rounded-2xl whitespace-pre-wrap ${isLeft ? "bg-grey rounded-tl-none" : "bg-light-grey rounded-tr-none"}`}
         >
           {text}
         </div>

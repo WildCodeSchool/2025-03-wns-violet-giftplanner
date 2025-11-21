@@ -15,6 +15,7 @@ services:
         condition: service_healthy
     environment:
       VITE_API_URL: ${SERVEUR_URL}
+      VITE_API_MESSAGE: ${SERVICE_MESSAGE_URL}
       VITE_API_URL_DOCKER: ${SERVEUR_URL_DOCKER}
       VITE_MODE: ${MODE}
       CHOKIDAR_USEPOLLING: true
@@ -43,6 +44,7 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       SERVEUR_PORT: ${SERVEUR_PORT}
       MODE: ${MODE}
+      INTERNAL_SECRET_KEY: ${INTERNAL_SECRET_KEY}
 
   picture-service:
     container_name: picture-service-dev
@@ -60,6 +62,22 @@ services:
       BACKEND_URL: ${SERVEUR_URL}
       CLIENT_URL: ${FRONTEND_URL}
       APP_PORT: ${PICTURE_SERVICE_PORT}
+
+  message-service:
+    container_name: message-service-dev
+    restart: always
+    build: ./message-service
+    volumes:
+      - ./message-service/src/:/app/src/
+    # healthcheck:
+    #   test: [ "CMD-SHELL", 'curl --fail --request POST --header ''Content-Type: application/json'' --url ''http://localhost:${MESSAGE_SERVICE_PORT}'' --data ''{"query":"query { __typename }"}'' || exit 1' ]
+    #   interval: 10s
+    #   retries: 5
+    #   start_period: 20s
+    environment:
+      BACKEND_URL: ${SERVEUR_URL}
+      MESSAGE_SERVICE_PORT: ${MESSAGE_SERVICE_PORT}
+      INTERNAL_SECRET_KEY: ${INTERNAL_SECRET_KEY}
 
   database:
     container_name: database-dev
