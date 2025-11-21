@@ -202,10 +202,10 @@ const UserProfilePage = () => {
       <div className="profile-container-scrollable">
         {/* Header avec titre et photo */}
         <div className="profile-header">
-          <h1 className="profile-title">
+          <div className="profile-title">
             <Icon icon="user" className="icon-image" />
-            Mon profil
-          </h1>
+            <h1 className="profile-title-text">Mon profil</h1>
+          </div>
 
           <div className="profile-image-wrapper">
             <img

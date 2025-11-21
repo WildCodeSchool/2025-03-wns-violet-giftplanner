@@ -7,10 +7,19 @@
   padding: 40px;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+}
+
+.profile-container-scrollable {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
 }
 
 .icon-image {
   font-size: 40px;
+  color: #fdfbf6;
 }
 
 /* Header avec titre et photo */
@@ -19,17 +28,23 @@
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 32px;
+  flex-shrink: 0;
 }
 
 .profile-title {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.profile-title-text {
   font-size: 32px;
   font-weight: 700;
   color: #fdfbf6;
   margin: 0;
+  padding: 0;
+  line-height: 1;
   font-family: "Inter", sans-serif;
-  display: flex;
-  align-items: center;
-  gap: 16px;
 }
 
 /* Photo de profil */
@@ -77,13 +92,14 @@
 
 .profile-content {
   background-color: #fdfbf6;
-  padding: 48px;
+  padding: 40px;
   border-radius: 24px;
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .profile-success-message {
@@ -170,7 +186,7 @@
   display: flex;
   justify-content: center;
   gap: 16px;
-  margin-top: 50px;
+  margin-top: 32px;
 }
 
 .profile-editer-button {
@@ -184,7 +200,6 @@
   font-weight: 700;
   font-family: "Inter", sans-serif;
   transition: background-color 0.3s ease;
-  margin-top: 80px;
 }
 
 .profile-save-button {
@@ -226,7 +241,7 @@
   display: flex;
   justify-content: center;
   gap: 16px;
-  margin-top: 80px;
+  margin-top: 72px;
   flex-wrap: wrap;
 }
 
@@ -241,7 +256,6 @@
   font-weight: 700;
   font-family: "Inter", sans-serif;
   transition: background-color 0.3s ease;
-  margin-top: 80px;
 }
 
 .profile-delete-button:hover {

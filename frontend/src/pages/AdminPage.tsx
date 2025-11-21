@@ -178,10 +178,10 @@ const AdminPage = () => {
         <div className="admin-container">
             <div className="admin-container-scrollable">
                 <div className="admin-header">
-                    <h1 className="admin-title">
+                    <div className="admin-title">
                         <LuShield className="admin-title-icon" />
-                        Gestion des utilisateurs
-                    </h1>
+                        <h1 className="admin-title-text">Gestion des utilisateurs</h1>
+                    </div>
                     <div className="admin-search-section">
                         <LuSearch className="admin-search-icon" />
                         <input
