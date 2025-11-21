@@ -2,7 +2,7 @@ import { useId } from "react";
 import Icon from "./Icon";
 import Tag from "./Tag";
 
-interface SearchInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onClick'> {
+interface SearchInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "onClick"> {
   name: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -39,7 +39,7 @@ export default function SearchInput({
       ? " border-dark text-dark focus:border-dark text-dark"
       : "bg-transparent border-white-100 text-white placeholder-white-100 focus:placeholder-white ";
 
-  const errorStyles = error ? "border-orange focus:border-orange" : "";
+  const errorStyles = error ? "border-orange focus:border-orange text-orange" : "";
 
   const id = useId();
 
@@ -79,20 +79,17 @@ export default function SearchInput({
         <button type="button" onClick={handleAddTag} className="absolute right-0 top-0 h-full px-3">
           <Icon
             icon={value ? "plus" : "search"}
-            className={`text-dark text-2xl cursor-pointer`}
+            className={`${error ? "text-orange" : "text-dark"} text-2xl cursor-pointer`}
           />
         </button>
       </div>
       {error && <p className="text-orange font-inter text-sm pt-1">{error}</p>}
       <div className="flex flex-wrap w-full gap-1 mt-2">
-        {items && (
-          items.map(item => (
+        {items &&
+          items.map((item) => (
             <Tag key={item} tag={item} type="dark" className="mt-2" onClick={() => onClick(item)} />
-          ))
-        )}
+          ))}
       </div>
     </div>
   );
 }
-
-

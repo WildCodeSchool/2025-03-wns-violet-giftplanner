@@ -5,14 +5,14 @@ import { useSanitizedForm } from "../../hooks/useSanitizedForm";
 import Button from "../utils/Button";
 import Icon from "../utils/Icon";
 import Input from "../utils/Input";
-import Title from "../utils/Title";
 import SearchInput from "../utils/SearchInput";
+import Title from "../utils/Title";
 
 export default function CreateGroupForm() {
   //TO DO: query recupérer tous les utilisateurs existant du groupe pour les afficher dans le formulaire
 
-  const [query, setQuery] = useState("")
-  const [userError, setUserError] = useState<string>("")
+  const [query, setQuery] = useState("");
+  const [userError, setUserError] = useState<string>("");
   const { formData, handleChange, getSanitizedData, errors, isValid, setFormData, isEmpty } =
     useSanitizedForm(
       {
@@ -134,46 +134,54 @@ export default function CreateGroupForm() {
       </div>
 
       <div className="w-1/2 bg-white h-full flex flex-col rounded-tr-2xl rounded-br-2xl">
+        <div className="flex flex-col gap-4 px-20">
+          {/* Adding users can go here */}
+          <SearchInput
+            placeholder="Ajouter des participants..."
+            theme="dark"
+            name="users"
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setUserError("");
+            }}
+            onClick={(email) => {
+              setFormData({ ...formData, users: formData.users.filter((u) => u !== email) });
+              setUserError("");
+            }}
+            onAddTag={(email) => {
+              // Email regex validation
+              const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-      <div className="flex flex-col gap-4 px-20">
-        {/* Adding users can go here */}
-        <SearchInput
-          placeholder="Ajouter des participants..."
-          theme="dark"
-          name="users"
-          value={query}
-          onChange={(e) => {
-            setQuery(e.target.value);
-            setUserError("");
-          }}
-          onClick={(email) => {
-            setFormData({ ...formData, users: formData.users.filter(u => u !== email) });
-            setUserError("");
-          }}
-          onAddTag={(email) => {
-            // Email regex validation
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            
-            if (!emailRegex.test(email)) {
-              setUserError("Format d'email invalide");
-              return;
-            }
-            
-            if (formData.users.includes(email)) {
-              setUserError("Cet utilisateur est déjà dans le groupe");
-              return;
-            }
-            
-            setFormData({ ...formData, users: [...formData.users, email] });
-            setQuery("");
-            setUserError("");
-          }}
-          items={formData.users}
-          error={userError}
-        />
-      </div>
-        
+              if (!emailRegex.test(email)) {
+                setUserError("Format d'email invalide");
+                return;
+              }
+
+              if (formData.users.includes(email)) {
+                setUserError("Cet utilisateur est déjà dans le groupe");
+                return;
+              }
+
+              setFormData({ ...formData, users: [...formData.users, email] });
+              setQuery("");
+              setUserError("");
+            }}
+            items={formData.users}
+            error={userError}
+          />
+        </div>
       </div>
     </form>
   );
 }
+
+/**
+ * TO DO:
+ * - rendre ça plus lisible
+ * - ajouter la gestion des erreurs pour les utilisateurs (dans les règles de validation)
+ * - version mobile et web ajuster modale
+ * - ajouter un bouton pour générer un QR code pour inviter des utilisateurs (mock pour l'instant)
+ * - refactor pour que ce soit aussi utilisé pour modification du groupe?
+ * - rendre css plus joli
+ */
