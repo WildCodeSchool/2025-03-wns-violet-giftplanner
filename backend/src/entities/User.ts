@@ -75,6 +75,22 @@ class User extends BaseEntity {
   @Field()
   isAdmin: boolean = false;
 
+  // ============= NOUVEAUX CHAMPS =============
+  
+  @Column({ default: false })
+  @Field()
+  isBanned: boolean = false;
+
+  @Column({ type: "timestamptz", nullable: true, default: null })
+  @Field({ nullable: true })
+  bannedAt?: Date;
+
+  @Column({ type: "timestamptz", nullable: true, default: null })
+  @Field({ nullable: true })
+  deletedAt?: Date;
+
+  // ============= RELATIONS =============
+
   @OneToMany(
     () => Like,
     (likes) => likes.user,

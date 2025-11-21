@@ -60,3 +60,5 @@ export class List extends BaseEntity {
   @Field(() => [User])
   user: User[];
 }
+
+export default List;

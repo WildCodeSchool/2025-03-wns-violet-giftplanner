@@ -4,9 +4,13 @@ import { toast } from "react-toastify";
 import { useLogoutMutation } from "../../generated/graphql-types";
 import consoleErrorDev from "../../hooks/erreurMod";
 import { useMyProfileStore } from "../../zustand/myProfileStore";
-import Icon from "../utils/Icon";
 import Redirect from "./Redirect";
 import "./navigation.css";
+import { LuUserRound } from "react-icons/lu";
+import { LuGift } from "react-icons/lu";
+import { LuLogOut } from "react-icons/lu";
+import { LuMessageCircleMore } from "react-icons/lu";
+import { LuShield } from "react-icons/lu";
 
 export default function Navigation() {
   const { userProfile, clearUserProfile } = useMyProfileStore();
@@ -58,8 +62,7 @@ export default function Navigation() {
             <Redirect
               link="/dashboard/conversations"
               icon={
-                <Icon
-                  icon="chat"
+                <LuMessageCircleMore
                   className={`cursor-pointer transition-bnt-nav ${currentLocation === "/dashboard/conversations" && "chat-icon"}`}
                 />
               }
@@ -67,8 +70,7 @@ export default function Navigation() {
             <Redirect
               link="/dashboard/wishlist"
               icon={
-                <Icon
-                  icon="gift"
+                <LuGift
                   className={`cursor-pointer transition-bnt-nav ${currentLocation === "/dashboard/wishlist" && "wishlist-icon"}`}
                 />
               }
@@ -76,12 +78,21 @@ export default function Navigation() {
             <Redirect
               link="/dashboard/profile"
               icon={
-                <Icon
-                  icon="user"
+                <LuUserRound 
                   className={`"cursor-pointer transition-bnt-nav ${currentLocation === "/dashboard/profile" && "profile-icon"}`}
                 />
               }
             />
+            {userProfile?.isAdmin && (
+              <Redirect
+                link="/dashboard/admin"
+                icon={
+                  <LuShield
+                    className={`cursor-pointer transition-bnt-nav ${currentLocation === "/dashboard/admin" && "admin-icon"}`}
+                  />
+                }
+              />
+            )}
           </div>
         </div>
       </div>
@@ -95,7 +106,7 @@ export default function Navigation() {
           justifyContent: "flex-end",
         }}
       >
-        <Redirect onClick={handleLogout} icon={<Icon icon="logout" className="text-4xl cursor-pointer" />} />
+        <Redirect onClick={handleLogout} icon={<LuLogOut className="text-4xl cursor-pointer" />} />
         <p className="font-poppins-extra-bold text-xl">GiftChat.</p>
       </div>
     </div>
