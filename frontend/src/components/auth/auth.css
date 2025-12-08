@@ -445,4 +445,76 @@ h1 {
   .homepage-footer-link {
     font-size: 16px;
   }
+
+  /* Login/Register Pages */
+
+  /* Cacher InfoHome sur mobile */
+  .infohome-background {
+    display: none;
+  }
+
+  .h2-login,
+  .h2-register {
+    font-size: 32px;
+    margin-top: 60px;
+  }
+
+  .form-register-div {
+    padding: 40px 40px;
+    width: 100%;
+  }
+
+  .form-login-div {
+    padding: 100px 40px;
+    width: 100%;
+  }
+
+  .form-login {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .form-login>div,
+  .form-register-div .form-login>div {
+    width: 100%;
+  }
+
+  .input-custom {
+    width: 100% !important;
+    max-width: none !important;
+    font-size: 18px;
+    padding: 8px 24px;
+    margin-bottom: 16px;
+    box-sizing: border-box;
+  }
+
+  .button-black,
+  .button-white {
+    width: auto !important;
+    max-width: none !important;
+    font-size: 18px;
+    padding: 8px 40px;
+    box-sizing: border-box;
+  }
+
+  .paragraph-login {
+    font-size: 16px;
+  }
+
+  .link-login {
+    font-size: 16px;
+  }
+
+  .image-input-button {
+    width: 100% !important;
+    max-width: none !important;
+    font-size: 18px;
+    padding: 16px 20px;
+    box-sizing: border-box;
+  }
+
+  .margin-more {
+    margin-bottom: 40px;
+  }
 }
