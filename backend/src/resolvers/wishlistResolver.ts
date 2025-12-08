@@ -2,7 +2,9 @@ import { Arg, Ctx, Int, Mutation, Query, Resolver } from "type-graphql";
 import { Gift } from "../entities/Gift";
 import List from "../entities/List";
 import User from "../entities/User";
+// biome-ignore lint/style/useImportType: bye passe biom
 import { AddGiftInput } from "../inputs/AddGiftInput";
+// biome-ignore lint/style/useImportType: bye passe biom
 import { UpdateGiftInput } from "../inputs/UpdateGiftInput";
 import type { ContextType } from "../types/context";
 

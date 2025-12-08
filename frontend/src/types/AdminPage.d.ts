@@ -1,6 +1,6 @@
 interface ModalConfig {
   isOpen: boolean;
-  type: "delete" | "ban" | "unban" | null; 
+  type: "delete" | "ban" | "unban" | null;
   title?: string;
   message?: string;
 }

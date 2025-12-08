@@ -1,6 +1,9 @@
 import { useEffect } from "react";
 import { Navigate, Outlet, Route, Routes, useNavigate } from "react-router";
+import AdminRoute from "./components/AdminRoute";
 import { useGetMyProfileQuery } from "./generated/graphql-types";
+import AdminPage from "./pages/AdminPage";
+import ContactPage from "./pages/ContactPage";
 import Conversations from "./pages/Conversations";
 import Dashboard from "./pages/Dashboard";
 import HomePage from "./pages/HomePage";
@@ -11,9 +14,6 @@ import RegisterPage from "./pages/RegisterPage";
 import UserProfilePage from "./pages/UserProfilePage";
 import WishListPage from "./pages/WishListPage";
 import { useMyProfileStore } from "./zustand/myProfileStore";
-import AdminPage from "./pages/AdminPage";
-import AdminRoute from "./components/AdminRoute";
-import ContactPage from "./pages/ContactPage";
 
 const App = () => {
   const { data, loading } = useGetMyProfileQuery();

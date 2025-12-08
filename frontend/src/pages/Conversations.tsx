@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from "react";
-import data from "../components/groups/data/data.json";
 import Groups from "../components/Groups/Groups";
 import Messaging from "../components/Groups/Messaging/Messaging";
-import PiggyBank from "../components/Groups/PiggyBank";
-import Wishlist from "../components/Groups/Wishlist";
 import Button from "../components/utils/Button";
-import type { GroupProps } from "../types/Groups";
-import { useGetAllMyGroupsQuery } from "../generated/graphql-types";
 import type { GetAllMyGroupsQuery } from "../generated/graphql-types";
+import { useGetAllMyGroupsQuery } from "../generated/graphql-types";
 
 export default function Conversations() {
   // const { data: groupData, loading, error } = useGetAllMyGroupsQuery();
-  const [whislist, setWishlist] = React.useState(true);
+  const [_whislist, setWishlist] = React.useState(true);
 
   const { data: groupData } = useGetAllMyGroupsQuery();
   const [groups, setGroups] = useState<GetAllMyGroupsQuery["getAllMyGroups"]>([]);
@@ -30,7 +26,6 @@ export default function Conversations() {
     }
     setActiveGroup(groups.find((g) => Number(g.id) === activeGroupId) || null);
   }, [activeGroupId]);
-
 
   //TO DO: set activeGroup.id in url
 

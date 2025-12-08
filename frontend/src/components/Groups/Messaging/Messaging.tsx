@@ -1,12 +1,11 @@
-import { countdownDate } from "../../../utils/dateCalculator";
-import { useEffect, useRef, useState } from "react";
 import type { FormEvent, KeyboardEvent } from "react";
+import { useEffect, useRef, useState } from "react";
+import { type useGetAllMyGroupsQuery, useSendMessageMutation } from "../../../generated/graphql-types";
+import { countdownDate } from "../../../utils/dateCalculator";
+import { useMyProfileStore } from "../../../zustand/myProfileStore";
 import Button from "../../utils/Button";
 import Icon from "../../utils/Icon";
 import Title from "../../utils/Title";
-import { useSendMessageMutation } from "../../../generated/graphql-types";
-import { useMyProfileStore } from "../../../zustand/myProfileStore";
-import { useGetAllMyGroupsQuery } from "../../../generated/graphql-types";
 import Message from "./Message";
 
 type MessagingProps = {
@@ -14,7 +13,9 @@ type MessagingProps = {
   participants: number;
   date: Date;
   groupId: number;
-  messages: NonNullable<NonNullable<ReturnType<typeof useGetAllMyGroupsQuery>["data"]>["getAllMyGroups"]>[0]["messages"];
+  messages: NonNullable<
+    NonNullable<ReturnType<typeof useGetAllMyGroupsQuery>["data"]>["getAllMyGroups"]
+  >[0]["messages"];
 };
 
 export default function Messaging({ title, participants, date, groupId, messages }: MessagingProps) {
@@ -33,7 +34,6 @@ export default function Messaging({ title, participants, date, groupId, messages
     }
   }, [messages]);
 
-
   const daysLeft = countdownDate(date);
   const expired = daysLeft < 0;
 
@@ -46,7 +46,7 @@ export default function Messaging({ title, participants, date, groupId, messages
           data: {
             groupId: groupId,
             message: messageInput,
-          }
+          },
         },
       });
       setMessageInput("");
@@ -62,7 +62,6 @@ export default function Messaging({ title, participants, date, groupId, messages
     }
   };
 
-  console.log("messages", messages);
   return (
     <div className="rounded-2xl w-full h-full border-grey border-2 border-lg flex flex-col ">
       <div className="relative w-full h-2/12 bg-blue rounded-t-2xl flex-row flex justify-center items-center py-4">
@@ -82,11 +81,19 @@ export default function Messaging({ title, participants, date, groupId, messages
         </div>
       </div>
       <div className="w-full px-4 overflow-auto">
-        {messages?.slice().reverse().map((message) => {
-          return (
-            <Message key={message.id} text={message.content} imageUrl={message.user.image_url ? message.user.image_url : ""} align={message.user.id === userProfile.id ? "right" : "left"} />
-          );
-        })}
+        {messages
+          ?.slice()
+          .reverse()
+          .map((message) => {
+            return (
+              <Message
+                key={message.id}
+                text={message.content}
+                imageUrl={message.user.image_url ? message.user.image_url : ""}
+                align={message.user.id === userProfile.id ? "right" : "left"}
+              />
+            );
+          })}
         <div ref={bottomRef} />
       </div>
       <div className="">
@@ -98,12 +105,7 @@ export default function Messaging({ title, participants, date, groupId, messages
             onChange={(e) => setMessageInput(e.target.value)}
             onKeyDown={handleKeyDown}
           />
-          <Button
-            colour="dark"
-            icon="arrow"
-            rounded
-            type="submit"
-          />
+          <Button colour="dark" icon="arrow" rounded type="submit" />
         </form>
       </div>
     </div>

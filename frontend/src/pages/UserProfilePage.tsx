@@ -1,10 +1,39 @@
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import "./userprofile.css";
+import { useNavigate } from "react-router-dom";
 import Icon from "../components/utils/Icon";
 import { defaultPictureProfile } from "../data/pictureDefault";
-import { useUpdateMyProfileMutation, useDeleteMyProfileMutation } from "../generated/graphql-types";
+import { useDeleteMyProfileMutation, useUpdateMyProfileMutation } from "../generated/graphql-types";
 import { useMyProfileStore } from "../zustand/myProfileStore";
-import { useNavigate } from "react-router-dom";
+
+interface ConfirmModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  title?: string;
+  message?: string;
+}
+
+const ConfirmModal = ({ isOpen, onClose, onConfirm, title, message }: ConfirmModalProps) => {
+  if (!isOpen) return null;
+
+  return (
+    <button type="button" className="modal-overlay" onClick={onClose}>
+      <button type="button" className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <h2>{title}</h2>
+        <p>{message}</p>
+        <div className="modal-actions">
+          <button type="button" className="modal-btn-cancel" onClick={onClose}>
+            Annuler
+          </button>
+          <button type="button" className="modal-btn-confirm" onClick={onConfirm}>
+            Confirmer
+          </button>
+        </div>
+      </button>
+    </button>
+  );
+};
 
 function toBase64(file: File) {
   return new Promise((resolve, reject) => {
@@ -37,6 +66,14 @@ const UserProfilePage = () => {
   const [profileBackup] = useState(profile);
   const [updateMyProfile] = useUpdateMyProfileMutation();
   const [deleteMyProfile] = useDeleteMyProfileMutation();
+  const passwordInputId = useId();
+  const passwordConfirmationInputId = useId();
+  const emailInputId = useId();
+  const firstNameInputId = useId();
+  const lastNameInputId = useId();
+  const phoneNumberInputId = useId();
+  const dateOfBirthInputId = useId();
+  const pictureInputId = useId();
 
   useEffect(() => {
     setTimeout(() => {
@@ -164,39 +201,6 @@ const UserProfilePage = () => {
     }
   };
 
-  const ConfirmModal = ({
-    isOpen,
-    onClose,
-    onConfirm,
-    title,
-    message,
-  }: {
-    isOpen: boolean;
-    onClose: () => void;
-    onConfirm: () => void;
-    title?: string;
-    message?: string;
-  }) => {
-    if (!isOpen) return null;
-
-    return (
-      <div className="modal-overlay" onClick={onClose}>
-        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-          <h2>{title}</h2>
-          <p>{message}</p>
-          <div className="modal-actions">
-            <button className="modal-btn-cancel" onClick={onClose}>
-              Annuler
-            </button>
-            <button className="modal-btn-confirm" onClick={onConfirm}>
-              Confirmer
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div className="profile-container">
       <div className="profile-container-scrollable">
@@ -209,14 +213,15 @@ const UserProfilePage = () => {
 
           <div className="profile-image-wrapper">
             <img
+              onKeyDown={() => document.getElementById(pictureInputId)?.click()}
               src={imageUrl}
               alt="Profile"
               className="profile-image"
-              onClick={() => document.getElementById("file-input")?.click()}
+              onClick={() => document.getElementById(pictureInputId)?.click()}
             />
             {isEditing && <div className="profile-image-edit-icon">✏️</div>}
             <input
-              id="file-input"
+              id={pictureInputId}
               type="file"
               accept="image/*"
               disabled={!isEditing}
@@ -236,8 +241,11 @@ const UserProfilePage = () => {
           <div className="profile-form-grid">
             {/* Prénom */}
             <div className="profile-field">
-              <label className="profile-field-label">Prénom</label>
+              <label htmlFor={firstNameInputId} className="profile-field-label">
+                Prénom
+              </label>
               <input
+                id={firstNameInputId}
                 type="text"
                 value={profile.firstName}
                 onChange={(e) => setProfile({ ...profile, firstName: e.target.value })}
@@ -248,8 +256,11 @@ const UserProfilePage = () => {
 
             {/* Nom */}
             <div className="profile-field">
-              <label className="profile-field-label">Nom</label>
+              <label htmlFor={lastNameInputId} className="profile-field-label">
+                Nom
+              </label>
               <input
+                id={lastNameInputId}
                 type="text"
                 value={profile.lastName}
                 onChange={(e) => setProfile({ ...profile, lastName: e.target.value })}
@@ -260,8 +271,11 @@ const UserProfilePage = () => {
 
             {/* Email */}
             <div className="profile-field">
-              <label className="profile-field-label">Email</label>
+              <label htmlFor={emailInputId} className="profile-field-label">
+                Email
+              </label>
               <input
+                id={emailInputId}
                 type="email"
                 value={profile.email}
                 onChange={(e) => setProfile({ ...profile, email: e.target.value })}
@@ -272,9 +286,12 @@ const UserProfilePage = () => {
 
             {/* Téléphone */}
             <div className="profile-field">
-              <label className="profile-field-label">Téléphone</label>
+              <label htmlFor={phoneNumberInputId} className="profile-field-label">
+                Téléphone
+              </label>
               <input
                 type="text"
+                id={phoneNumberInputId}
                 value={profile.phone_number}
                 onChange={(e) => setProfile({ ...profile, phone_number: e.target.value })}
                 disabled={!isEditing}
@@ -284,8 +301,11 @@ const UserProfilePage = () => {
 
             {/* Date de naissance */}
             <div className="profile-field">
-              <label className="profile-field-label">Date de naissance</label>
+              <label htmlFor={dateOfBirthInputId} className="profile-field-label">
+                Date de naissance
+              </label>
               <input
+                id={dateOfBirthInputId}
                 type={isEditing ? "date" : "text"}
                 value={
                   isEditing
@@ -300,12 +320,21 @@ const UserProfilePage = () => {
 
             {/* Mot de passe */}
             <div className="profile-field">
-              <label className="profile-field-label">Mot de passe</label>
+              <label htmlFor={passwordInputId} className="profile-field-label">
+                Mot de passe
+              </label>
               {!isEditing ? (
-                <input type="text" value="****************" disabled className="profile-input" />
+                <input
+                  id={passwordInputId}
+                  type="text"
+                  value="****************"
+                  disabled
+                  className="profile-input"
+                />
               ) : (
                 <input
                   type="password"
+                  id={passwordInputId}
                   placeholder="Nouveau mot de passe"
                   value={profile.password}
                   onChange={(e) => setProfile({ ...profile, password: e.target.value })}
@@ -317,9 +346,12 @@ const UserProfilePage = () => {
             {/* Confirmation mot de passe (uniquement en édition) */}
             {isEditing && (
               <div className="profile-field profile-field-full">
-                <label className="profile-field-label">Confirmation du mot de passe</label>
+                <label htmlFor={passwordConfirmationInputId} className="profile-field-label">
+                  Confirmation du mot de passe
+                </label>
                 <input
                   type="password"
+                  id={passwordConfirmationInputId}
                   placeholder="Confirmer le mot de passe"
                   value={profile.passwordConfirmation}
                   onChange={(e) => setProfile({ ...profile, passwordConfirmation: e.target.value })}
