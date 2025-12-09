@@ -1,9 +1,9 @@
 import React from "react";
 import data from "../components/groups/data/data.json";
-import Groups from "../components/groups/Groups";
-import Messaging from "../components/groups/Messaging/Messaging";
-import PiggyBank from "../components/groups/PiggyBank";
-import Wishlist from "../components/groups/Wishlist";
+import Groups from "../components/Groups/Groups";
+import Messaging from "../components/Groups/Messaging/Messaging";
+import PiggyBank from "../components/Groups/PiggyBank";
+import Wishlist from "../components/Groups/Wishlist";
 import Button from "../components/utils/Button";
 import type { GroupProps } from "../types/Groups";
 

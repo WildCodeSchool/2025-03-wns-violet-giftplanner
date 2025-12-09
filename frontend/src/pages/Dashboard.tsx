@@ -1,11 +1,11 @@
 import { Outlet } from "react-router-dom";
-import Navigation from "../components/navigation/Navigation";
+import Navigation from "../components/Navigation/Navigation";
 
 export default function Dashboard() {
   return (
-    <div className="h-[100vh] min-aspect-[900/600] flex flex-row p-[2vw] m-auto overflow-hidden">
+    <div className="h-[100vh] min-aspect-[900/600] flex flex-row p-[2vw] m-auto ">
       <Navigation />
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 ">
         <Outlet />
       </div>
     </div>

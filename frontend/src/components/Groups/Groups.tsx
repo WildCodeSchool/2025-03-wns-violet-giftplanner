@@ -19,6 +19,7 @@ export default function Groups({ groups, setActiveGroup }: GroupsProps) {
     setIsOpen(!isOpen);
   }
   return (
+    <>
     <Container
       colour="blue"
       title="Mes Groupes"
@@ -34,22 +35,25 @@ export default function Groups({ groups, setActiveGroup }: GroupsProps) {
               setActiveGroup?.(group.id);
             }}
           >
-            <p className="text-gray-600 text-sm sm:text-base truncate overflow-hidden text-ellipsis whitespace-nowrap">
+            <p className="text-gray-600 text-sm sm:text-base truncate  text-ellipsis whitespace-nowrap">
               <span> Date limite: {group.date} </span> - <span> {group.participants} participants </span>
             </p>
           </Card>
         );
       })}
 
-      {
-        /* Modal */
-
-        isOpen && (
-          <Modal onClose={toggleModal}>
-            <CreateGroupForm />
-          </Modal>
-        )
-      }
     </Container>
+    {
+      /* Modal */
+
+      isOpen && (
+        <Modal onClose={toggleModal} isOpen={isOpen}>
+          <CreateGroupForm />
+        </Modal>
+      )
+      
+    }
+
+</>
   );
 }

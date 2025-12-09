@@ -3,7 +3,7 @@ import { countdownDate } from "../../../utils/dateCalculator";
 import Button from "../../utils/Button";
 import Icon from "../../utils/Icon";
 import Title from "../../utils/Title";
-import Message from "./Message";
+import Message from "../../Groups/Messaging/Message";
 
 type MessagingProps = {
   title: string;
