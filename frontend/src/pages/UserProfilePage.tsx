@@ -1,10 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import "./userprofile.css";
 import Icon from "../components/utils/Icon";
 import { defaultPictureProfile } from "../data/pictureDefault";
-import { useUpdateMyProfileMutation, useDeleteMyProfileMutation } from "../generated/graphql-types";
+import { useUpdateMyProfileMutation, useDeleteMyProfileMutation, useLogoutMutation } from "../generated/graphql-types";
 import { useMyProfileStore } from "../zustand/myProfileStore";
 import { useNavigate } from "react-router-dom";
+import { LuSettings, LuPencil, LuTrash2, LuLogOut } from "react-icons/lu";
+import { useIsMobile } from "../hooks/useIsMobile";
+import { toast } from "react-toastify";
+import consoleErrorDev from "../hooks/erreurMod";
 
 function toBase64(file: File) {
   return new Promise((resolve, reject) => {
@@ -16,14 +20,18 @@ function toBase64(file: File) {
 }
 
 const UserProfilePage = () => {
-  const { userProfile, setUserProfile } = useMyProfileStore();
+  const { userProfile, setUserProfile, clearUserProfile } = useMyProfileStore();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const [imageUrl, setImageUrl] = useState(defaultPictureProfile);
   const [image, setImage] = useState<null | File>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [messageError, setMessageError] = useState("");
   const [messageSuccess, setMessageSuccess] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
   const [profile, setProfile] = useState({
     lastName: userProfile?.lastName || "",
     firstName: userProfile?.firstName || "",
@@ -37,6 +45,7 @@ const UserProfilePage = () => {
   const [profileBackup] = useState(profile);
   const [updateMyProfile] = useUpdateMyProfileMutation();
   const [deleteMyProfile] = useDeleteMyProfileMutation();
+  const [logoutMutation] = useLogoutMutation();
 
   useEffect(() => {
     setTimeout(() => {
@@ -53,6 +62,22 @@ const UserProfilePage = () => {
       setImageUrl(userProfile?.image_url || defaultPictureProfile);
     }, 300);
   }, [userProfile]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    if (isMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isMenuOpen]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -164,6 +189,21 @@ const UserProfilePage = () => {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      const res = await logoutMutation();
+      if (res.data?.logout) {
+        clearUserProfile();
+        navigate("/");
+      } else {
+        toast.error("La déconnexion a échoué");
+      }
+    } catch (err) {
+      toast.error("Erreur lors de la déconnexion");
+      consoleErrorDev("Erreur de déconnexion :", err);
+    }
+  };
+
   const ConfirmModal = ({
     isOpen,
     onClose,
@@ -203,8 +243,58 @@ const UserProfilePage = () => {
         {/* Header avec titre et photo */}
         <div className="profile-header">
           <div className="profile-title">
-            <Icon icon="user" className="icon-image" />
+            <Icon icon="user" className="icon-image max-md:hidden" />
             <h1 className="profile-title-text">Mon profil</h1>
+            {isMobile && (
+              <div className="profile-menu-container" ref={menuRef}>
+                <button
+                  type="button"
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                  className="profile-menu-button"
+                >
+                  <LuSettings />
+                </button>
+                {isMenuOpen && (
+                  <div className="profile-menu-dropdown">
+                    {!isEditing && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsMenuOpen(false);
+                          handleEditClick();
+                        }}
+                        className="profile-menu-item"
+                      >
+                        <LuPencil />
+                        Modifier mes infos
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        setIsDeleteModalOpen(true);
+                      }}
+                      className="profile-menu-item profile-menu-item-danger"
+                    >
+                      <LuTrash2 />
+                      Supprimer mon profil
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        setIsLogoutModalOpen(true);
+                      }}
+                      className="profile-menu-item"
+                    >
+                      <LuLogOut />
+                      Se déconnecter
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="profile-image-wrapper">
@@ -212,9 +302,17 @@ const UserProfilePage = () => {
               src={imageUrl}
               alt="Profile"
               className="profile-image"
-              onClick={() => document.getElementById("file-input")?.click()}
+              onClick={() => isEditing && document.getElementById("file-input")?.click()}
             />
-            {isEditing && <div className="profile-image-edit-icon">✏️</div>}
+            {isEditing && (
+              <button
+                type="button"
+                className="profile-image-edit-icon"
+                onClick={() => document.getElementById("file-input")?.click()}
+              >
+                <LuPencil />
+              </button>
+            )}
             <input
               id="file-input"
               type="file"
@@ -359,6 +457,14 @@ const UserProfilePage = () => {
         onConfirm={handleConfirmDelete}
         title="Supprimer votre profil"
         message="Êtes-vous sûr de vouloir faire ça ? Cette action est irréversible et toutes vos données seront effacées."
+      />
+
+      <ConfirmModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        onConfirm={handleLogout}
+        title="Se déconnecter"
+        message="Êtes-vous sûr de vouloir vous déconnecter ?"
       />
     </div>
   );

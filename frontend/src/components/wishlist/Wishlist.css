@@ -1,0 +1,192 @@
+.div-content-giftcard {
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.div-content-giftcard h5 {
+    line-height: 1.1;
+    text-align: center;
+    margin-bottom: 16px;
+    font-family: "Inter", sans-serif;
+    font-weight: 800;
+    color: #200904;
+}
+
+.div-content-giftcard p {
+    line-height: 1.1;
+    text-align: center;
+    font-size: 14px;
+    font-family: "Inter", sans-serif;
+    color: #776B69;
+    padding-bottom: 16px;
+}
+
+/* Modal desktop styles */
+.modal-mobile-content label {
+    text-align: left;
+    font-size: 18px;
+    font-weight: 600;
+    color: #200904;
+    margin-bottom: 8px;
+    font-family: "Inter", sans-serif;
+}
+
+.modal-mobile-content input,
+.modal-mobile-content textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 3.5px solid #200904;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #200904;
+    font-family: "Inter", sans-serif;
+    outline: none;
+    background-color: #FDFBF6;
+}
+
+.modal-mobile-content input:focus,
+.modal-mobile-content textarea:focus {
+    border-color: #292e96;
+    box-shadow: 0 0 0 2px rgba(41, 46, 150, 0.5);
+}
+
+.modal-mobile-content input::placeholder,
+.modal-mobile-content textarea::placeholder {
+    color: #c4c0b3;
+    font-weight: 700;
+}
+
+/* Hide scrollbar on mobile while keeping scroll functionality */
+@media (max-width: 768px) {
+    .wishlist-content-mobile {
+        -ms-overflow-style: none;
+        /* IE and Edge */
+        scrollbar-width: none;
+        /* Firefox */
+    }
+
+    .wishlist-content-mobile::-webkit-scrollbar {
+        display: none;
+        /* Chrome, Safari and Opera */
+    }
+
+    /* Mobile button styling */
+    .wishlist-mobile-button-container {
+        display: block;
+        position: absolute;
+        bottom: 6.4rem;
+        left: 20px;
+        right: 20px;
+        z-index: 10;
+    }
+
+    .wishlist-mobile-button {
+        width: 100%;
+        justify-content: center;
+        border-radius: 40px;
+        box-shadow: rgba(32, 9, 4, 0.2) 0px 2px 6px;
+    }
+
+    .div-content-giftcard {
+        padding: 16px 18px;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+    }
+
+    .div-content-giftcard h5 {
+        line-height: 1.1;
+        text-align: center;
+        margin-bottom: 16px;
+        font-family: "Inter", sans-serif;
+        font-weight: 800;
+        color: #200904;
+        font-size: 16px;
+    }
+
+    .div-content-giftcard p {
+        line-height: 1.1;
+        text-align: center;
+        font-size: 14px;
+        font-family: "Inter", sans-serif;
+        color: #776B69;
+        padding-bottom: 16px;
+    }
+
+    .modal-mobile-content h2 {
+        font-weight: 900;
+        text-align: center;
+        font-size: 24px;
+        margin-top: 24px;
+        margin-bottom: 40px;
+    }
+
+    .modal-mobile-content form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .modal-mobile-content form > div {
+        width: 100%;
+    }
+
+    .modal-mobile-content label {
+        text-align: left;
+        display: block;
+        font-size: 16px;
+        margin-bottom: 8px;
+        color: #200904;
+        font-weight: 600;
+        font-family: "Inter", sans-serif;
+    }
+
+    .modal-mobile-content input,
+    .modal-mobile-content textarea {
+        width: 100%;
+        padding: 10px 14px;
+        border: 2.5px solid #200904;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 700;
+        color: #200904;
+        font-family: "Inter", sans-serif;
+        outline: none;
+        background-color: #FDFBF6;
+    }
+
+    .modal-mobile-content input:focus,
+    .modal-mobile-content textarea:focus {
+        border-color: #292e96;
+        box-shadow: 0 0 0 2px rgba(41, 46, 150, 0.5);
+    }
+
+    .modal-mobile-content input::placeholder,
+    .modal-mobile-content textarea::placeholder {
+        color: #c4c0b3;
+        font-weight: 700;
+    }
+
+    .modal-mobile-content .modal-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        width: 100%;
+        padding-top: 24px;
+    }
+
+    .modal-mobile-content .modal-buttons button {
+        width: 100%;
+        border-radius: 40px;
+        padding: 10px 20px;
+        box-shadow: rgba(32, 9, 4, 0.2) 0px 2px 6px;
+        font-size: 16px;
+        font-weight: 700;
+        font-family: "Inter", sans-serif;
+    }
+}
+

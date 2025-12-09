@@ -9,26 +9,18 @@ export const useIsMobile = (breakpoint: number = 768): boolean => {
   const [isMobile, setIsMobile] = useState<boolean>(false);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia(`(max-width: ${breakpoint}px)`);
-    
-    const handleChange = (e: MediaQueryListEvent | MediaQueryList) => {
-      setIsMobile(e.matches);
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth <= breakpoint);
     };
 
     // État initial
-    handleChange(mediaQuery);
-    
-    // Écoute des changements
-    mediaQuery.addEventListener('change', handleChange);
+    checkIsMobile();
 
-    return () => mediaQuery.removeEventListener('change', handleChange);
+    // Écoute des changements de taille d'écran
+    window.addEventListener('resize', checkIsMobile);
+
+    return () => window.removeEventListener('resize', checkIsMobile);
   }, [breakpoint]);
 
   return isMobile;
 };
-
-
-/* Explications de Chloé: Pourquoi ce hook ?
-Détection responsive en temps réel
-Réutilisable dans tous les composants
-Gestion du resize de fenêtre automatique */
