@@ -5,6 +5,8 @@ import Card from "../utils/Card";
 import Container from "../utils/Container";
 import Modal from "../utils/Modal";
 import type { GetAllMyGroupsQuery } from "../../generated/graphql-types";
+import { useGetAllMyGroupsQuery } from "../../generated/graphql-types";
+import { formatDate } from "../../utils/dateCalculator";
 
 type GroupsProps = {
   groups: GetAllMyGroupsQuery["getAllMyGroups"];
@@ -12,20 +14,29 @@ type GroupsProps = {
   onClick?: () => void;
 };
 
-export default function Groups({ groups, setActiveGroup }: GroupsProps) {
+export default function Groups({setActiveGroup }: GroupsProps) {
+  const { data, loading, error } = useGetAllMyGroupsQuery();
   const [isOpen, setIsOpen] = useState(false);
 
   function toggleModal() {
     setIsOpen(!isOpen);
   }
+
+  
   return (
     <>
+      
+
+    
     <Container
       colour="blue"
       title="Mes Groupes"
       button={<Button text={"Ajouter un groupe"} icon="plus" colour="green" onClick={toggleModal} />}
     >
-      {groups.map((group) => {
+      {loading && <div>Loading...</div>}
+      {error && <div>Error: {error.message}</div>}
+
+      {data?.getAllMyGroups.map((group) => {
         return (
           <Card
             key={group.id}
@@ -36,7 +47,8 @@ export default function Groups({ groups, setActiveGroup }: GroupsProps) {
             }}
           >
             <p className="text-gray-600 text-sm sm:text-base truncate overflow-hidden text-ellipsis whitespace-nowrap">
-              <span> Date limite: TODO </span> - <span> TODO participants </span>
+              <span> Date limite: {formatDate(new Date(group.deadline))} </span> <br /> 
+              <span> {group.groupMember.length} {group.groupMember.length === 1 ? "participant" : "participants"} </span>
             </p>
           </Card>
         );

@@ -81,9 +81,13 @@ export type Group = {
 
 export type GroupMember = {
   __typename?: 'GroupMember';
+  email?: Maybe<Scalars['String']['output']>;
+  firstName?: Maybe<Scalars['String']['output']>;
   groupId: Scalars['Float']['output'];
   id: Scalars['ID']['output'];
+  isGroupAdmin: Scalars['Boolean']['output'];
   joined_at: Scalars['DateTimeISO']['output'];
+  lastName?: Maybe<Scalars['String']['output']>;
   userId: Scalars['Float']['output'];
 };
 
@@ -344,7 +348,7 @@ export type CreateGroupMutation = { __typename?: 'Mutation', createGroup: { __ty
 export type GetAllMyGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllMyGroupsQuery = { __typename?: 'Query', getAllMyGroups: Array<{ __typename?: 'Group', id: string, name: string, createdAt: any, updatedAt: any, event_type: string, piggy_bank: number, deadline: any, messages: Array<{ __typename?: 'Message', id: string, content: string, createdAt: any, isEdited: boolean, user: { __typename?: 'User', id: string, firstName: string, lastName: string, image_url?: string | null, isAdmin: boolean } }> }> };
+export type GetAllMyGroupsQuery = { __typename?: 'Query', getAllMyGroups: Array<{ __typename?: 'Group', id: string, name: string, createdAt: any, updatedAt: any, event_type: string, piggy_bank: number, deadline: any, messages: Array<{ __typename?: 'Message', id: string, content: string, createdAt: any, isEdited: boolean, user: { __typename?: 'User', id: string, firstName: string, lastName: string, image_url?: string | null, isAdmin: boolean } }>, groupMember: Array<{ __typename?: 'GroupMember', userId: number, lastName?: string | null, joined_at: any, isGroupAdmin: boolean, id: string, groupId: number, firstName?: string | null, email?: string | null }> }> };
 
 export type SendMessageMutationVariables = Exact<{
   data: NewMessageInput;
@@ -853,6 +857,16 @@ export const GetAllMyGroupsDocument = gql`
     event_type
     piggy_bank
     deadline
+    groupMember {
+      userId
+      lastName
+      joined_at
+      isGroupAdmin
+      id
+      groupId
+      firstName
+      email
+    }
   }
 }
     `;

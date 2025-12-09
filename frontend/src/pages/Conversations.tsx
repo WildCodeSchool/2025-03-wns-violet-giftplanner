@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
-import data from "../components/groups/data/data.json";
 import Groups from "../components/Groups/Groups";
 import Messaging from "../components/Groups/Messaging/Messaging";
 import PiggyBank from "../components/Groups/PiggyBank";
 import Wishlist from "../components/Groups/Wishlist";
 import Button from "../components/utils/Button";
-import type { GroupProps } from "../types/Groups";
 import { useGetAllMyGroupsQuery } from "../generated/graphql-types";
 import type { GetAllMyGroupsQuery } from "../generated/graphql-types";
 
@@ -61,22 +59,22 @@ export default function Conversations() {
           />
         </div>
 
-        {/* <div className="h-[calc(50%-2rem)] flex pt-2">
+        <div className="h-[calc(50%-2rem)] flex pt-2">
           {activeGroup &&
             (whislist ? (
-              <Wishlist wishlistItems={activeGroup.wishlist} />
+              <Wishlist />
             ) : (
-              <PiggyBank pot={activeGroup.fund} />
+              <PiggyBank pot={activeGroup.piggy_bank} />
             ))}
-        </div> */}
+        </div>
       </div>
 
       {/* Right Column */}
       <div className="flex flex-1 w-1/2 h-full  mt-0 overflow-y-auto justify-center">
         {activeGroup && (
           <Messaging
-            title="titre todo"
-            participants={2}
+            title={activeGroup.name}
+            participants={activeGroup.groupMember.length}
             date={new Date(activeGroup.deadline)}
             groupId={Number(activeGroup.id)}
             messages={activeGroup.messages}

@@ -3,20 +3,28 @@ import Button from "../utils/Button";
 import Card from "../utils/Card";
 import Container from "../utils/Container";
 
-export default function Wishlist({ wishlistItems }: { wishlistItems: WishlistItemProps[] }) {
+type WishlistProps = {
+  wishlistItems?: WishlistItemProps[];
+};
+
+export default function Wishlist({ wishlistItems = [] }: WishlistProps) {
   return (
     <Container
       colour="orange"
-      title="Whislist"
+      title="Wishlist"
       button={<Button text="Proposition" icon="plus" colour="green" />}
     >
-      {wishlistItems.map((item) => {
+      {wishlistItems.length > 0 ? (
+        wishlistItems.map((item) => {
         return (
           <Card key={item.id} id={item.id} title={item.title} large square>
-            <p className="text-gray-600 text-xs sm:text-sm">{item.description} test test step </p>
+            <p className="text-gray-600 text-xs sm:text-sm">{item.description}</p>
           </Card>
         );
-      })}
+      })
+      ) : (
+        <p className="text-white">Cette liste d'idées est vide. Il va falloir trouver un cadeau...</p>
+      )}
     </Container>
   );
 }

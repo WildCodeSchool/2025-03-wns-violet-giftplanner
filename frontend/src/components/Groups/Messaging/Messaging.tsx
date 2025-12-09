@@ -74,7 +74,7 @@ export default function Messaging({ title, participants, date, groupId, messages
                 ? `Ce groupe a expiré depuis ${Math.abs(daysLeft)} jour(s)`
                 : `${daysLeft} jour(s) restant(s)`}{" "}
             </span>{" "}
-            - <span> {participants} participants </span>
+            - <span> {participants} {participants === 1  ? "participant" : "participants"} </span>
           </p>
         </div>
         <div className="absolute right-0 px-8">
@@ -84,12 +84,12 @@ export default function Messaging({ title, participants, date, groupId, messages
       <div className="w-full px-4 overflow-auto">
         {messages?.slice().reverse().map((message) => {
           return (
-            <Message key={message.id} text={message.content} imageUrl={message.user.image_url ? message.user.image_url : ""} align={message.user.id === userProfile.id ? "right" : "left"} />
+            <Message key={message.id} text={message.content} imageUrl={message.user.image_url ? message.user.image_url : ""} align={message.user.id === userProfile?.id ? "right" : "left"} />
           );
         })}
         <div ref={bottomRef} />
       </div>
-      <div className="">
+      <div className=""> {/* TODO: fix to bottom */}
         <form onSubmit={handleSendMessage} className="flex flex-row justify-around p-4">
           <textarea
             placeholder="Ecrire un message..."

@@ -29,39 +29,38 @@ class CreateGroupInput {
 export default class GroupResolver {
   @Query(() => [Group])
   async getAllMyGroups(@Ctx() ctx: ContextType) {
-    // récupère tout les groupes de l'utilisateur connecté
+    if (!ctx.user) throw new Error("Utilisateur non connecté");
+
+    //Find all the groups of the connected user
     const groups = await Group.find({
-      where: {
-        groupMember: {
-          user: { id: ctx.user?.id }
-        }
-      },
-      relations: {
-        groupMember: { user: true },
-      },
-      order: { id: "DESC" }
+      where: { groupMember: { user: { id: ctx.user.id } } },
+      relations: { groupMember: { user: true } },
+      order: { id: "DESC" },
     });
 
-    // charge les 10 derniers messages de chaque groupe
-    for (const group of groups) {
-      group.messages = await Message.find({
-        where: { group: { id: group.id } },
-        relations: { user: true },
-        order: { createdAt: "DESC" },
-        take: 20,
-      });
-    }
 
     return groups;
   }
 
   @FieldResolver(() => [GroupMember])
   async groupMember(@Root() group: Group) {
-    const members = await GroupMember.find({
+    const groupMembers = await GroupMember.find({
       where: { groupId: group.id }
     });
 
-    return members || []; // >>> jamais null
+    return groupMembers || []; // >>> not null
+  }
+
+  @FieldResolver(() => [Message])
+  async messages(@Root() group: Group) {
+    const messages = await Message.find({
+      where: { group: { id: group.id } },
+      relations: { user: true },
+      order: { createdAt: "DESC" },
+      take: 20,
+    });
+
+    return messages || [];
   }
 
   @Mutation(() => Group)
@@ -89,7 +88,14 @@ export default class GroupResolver {
     });
     await group.save();
 
-    //érer l'ajout des utilisateurs au groupe, mapper users et les ajouter s'ils existent
+    // ajoute automatiquement le créateur comme membre du groupe
+    const creatorMembership = GroupMember.create({
+      userId: ctx.user.id,
+      groupId: group.id,
+    });
+    await creatorMembership.save();
+
+    //gérer l'ajout des utilisateurs au groupe, mapper users et les ajouter s'ils existent
     if (data.users && data.users.length > 0) {
       await Promise.all(
         data.users.map(async (userEmail) => {

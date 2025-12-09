@@ -9,5 +9,11 @@ export function countdownDate(date: Date) {
 
   // use getTime() so subtraction is between numbers (milliseconds)
   const diffMs = lastDay.getTime() - today.getTime();
+
+  console.log(diffMs / MS_PER_DAY);
   return Math.round(diffMs / MS_PER_DAY);
+}
+
+export function formatDate(date: Date) {
+  return date.toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "numeric" });
 }

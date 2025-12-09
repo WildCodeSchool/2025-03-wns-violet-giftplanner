@@ -193,7 +193,17 @@ export const GET_ALL_MY_GROUPS = gql`
     event_type
     piggy_bank
     deadline
-  }
+      groupMember {
+        userId
+        lastName
+        joined_at
+        isGroupAdmin
+        id
+        groupId
+        firstName
+        email
+      }
+    }
   }
 `;
 

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useCreateGroupMutation } from "../../generated/graphql-types";
 import { groupCreationFormValidation } from "../../hooks/formValidationRules";
 import { useSanitizedForm } from "../../hooks/useSanitizedForm";
+import { GET_ALL_MY_GROUPS } from "../../graphql/operations";
 import Button from "../utils/Button";
 import Icon from "../utils/Icon";
 import Input from "../utils/Input";
@@ -27,7 +28,14 @@ export default function CreateGroupForm() {
 
   const [error, setError] = useState<string>("");
 
-  const [createGroup] = useCreateGroupMutation();
+  const [createGroup] = useCreateGroupMutation({
+    awaitRefetchQueries: true,
+    refetchQueries: [
+      {
+        query: GET_ALL_MY_GROUPS,
+      },
+    ],
+  });
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();

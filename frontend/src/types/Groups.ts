@@ -18,6 +18,6 @@ export type GroupProps = {
   date: string;
   participants: number;
   fund: number;
-  wishlist: WishlistItemProps[];
+  wishlist?: WishlistItemProps[];
   messages: MessageProps[];
 };
