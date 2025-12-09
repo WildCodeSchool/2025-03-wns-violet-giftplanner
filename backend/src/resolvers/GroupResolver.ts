@@ -5,6 +5,7 @@ import { RoleMiddleware } from "../middleware/RoleMiddleware";
 import type { ContextType } from "../types/context";
 import User from "../entities/User";
 import { Message } from "../entities/Message";
+import { addMembersToGroup } from "../services/groupMemberService";
 
 @InputType()
 class CreateGroupInput {
@@ -97,22 +98,7 @@ export default class GroupResolver {
 
     //gérer l'ajout des utilisateurs au groupe, mapper users et les ajouter s'ils existent
     if (data.users && data.users.length > 0) {
-      await Promise.all(
-        data.users.map(async (userEmail) => {
-          const userToAdd = await User.findOne({ where: { email: userEmail } });
-          if (!userToAdd) {
-            console.log("Cet utilisateur n'existe pas encore chez nous!");
-            return;
-          }
-
-          const groupMember = GroupMember.create({
-            userId: userToAdd.id,
-            groupId: group.id,
-          });
-
-          await groupMember.save();
-        })
-      );
+      await addMembersToGroup({ userEmails: data.users, groupId: group.id });
     }
 
     return group;
