@@ -5,9 +5,10 @@ import User from "../entities/User";
 import { AddGiftInput } from "../inputs/AddGiftInput";
 import { UpdateGiftInput } from "../inputs/UpdateGiftInput";
 import type { ContextType } from "../types/context";
+import { getOrCreateUserWishlist } from "../utils/getOrCreateUserWishlist";
 
 @Resolver()
-export default class WishlistResolver {
+export default class MyWishlistResolver {
   @Query(() => [Gift])
   async wishlistItems(
     @Ctx() ctx: ContextType,
@@ -50,13 +51,18 @@ export default class WishlistResolver {
     const user = await User.findOneBy({ id: ctx.user.id });
     if (!user) throw new Error("Utilisateur non trouvé");
 
-    let list: List | null = null;
+    let list: List;
     if (data.listId) {
-      list = await List.findOne({
+      const foundList = await List.findOne({
         where: { id: data.listId, user: { id: ctx.user.id } }, // ownership check
         relations: { user: true },
       });
-      if (!list) throw new Error("Liste introuvable ou ne vous appartenant pas");
+      if (!foundList) {
+        throw new Error("Liste introuvable ou ne vous appartenant pas");
+      }
+      list = foundList;
+    } else {
+      list = await getOrCreateUserWishlist(ctx.user.id);
     }
 
     const gift = Gift.create({

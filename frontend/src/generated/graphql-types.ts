@@ -87,6 +87,12 @@ export type GroupMember = {
   userId: Scalars['Float']['output'];
 };
 
+export type GroupWishlistItems = {
+  __typename?: 'GroupWishlistItems';
+  fromGroupList: Array<Gift>;
+  fromWishlist: Array<Gift>;
+};
+
 export type Like = {
   __typename?: 'Like';
   createdAt: Scalars['DateTimeISO']['output'];
@@ -210,10 +216,16 @@ export type Query = {
   getAllUsersAdmin: Array<User>;
   getAllUsersForAdmin: Array<User>;
   getMyProfile: User;
+  groupWishlistItems: GroupWishlistItems;
   testAdmin: Scalars['String']['output'];
   testUser: Scalars['String']['output'];
   welcomeAll: Scalars['String']['output'];
   wishlistItems: Array<Gift>;
+};
+
+
+export type QueryGroupWishlistItemsArgs = {
+  groupId: Scalars['Int']['input'];
 };
 
 
