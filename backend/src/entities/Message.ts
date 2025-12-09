@@ -37,7 +37,7 @@ export class Message extends BaseEntity {
   @Field()
   updatedAt: Date;
 
-  @Column()
+  @Column({ nullable: false, default: false })
   @Field()
   isEdited: boolean;
 

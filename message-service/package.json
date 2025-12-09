@@ -1,0 +1,23 @@
+{
+  "name": "message-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only --poll ./src/main.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.13.2",
+    "dotenv": "^17.2.3",
+    "jsonwebtoken": "^9.0.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.3",
+    "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/ws": "^8.18.1"
+  }
+}

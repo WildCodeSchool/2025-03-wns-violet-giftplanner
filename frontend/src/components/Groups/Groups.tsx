@@ -1,14 +1,14 @@
 import { useState } from "react";
-import type { GroupProps } from "../../types/Groups";
 import CreateGroupForm from "../forms/CreateGroupForm";
 import Button from "../utils/Button";
 import Card from "../utils/Card";
 import Container from "../utils/Container";
 import Modal from "../utils/Modal";
+import type { GetAllMyGroupsQuery } from "../../generated/graphql-types";
 
 type GroupsProps = {
-  groups: GroupProps[];
-  setActiveGroup?: (id: GroupProps["id"]) => void;
+  groups: GetAllMyGroupsQuery["getAllMyGroups"];
+  setActiveGroup: (id: Number) => void;
   onClick?: () => void;
 };
 
@@ -29,14 +29,14 @@ export default function Groups({ groups, setActiveGroup }: GroupsProps) {
         return (
           <Card
             key={group.id}
-            id={group.id}
-            title={group.title}
+            id={Number(group.id)}
+            title={group.name}
             onClick={() => {
-              setActiveGroup?.(group.id);
+              setActiveGroup?.(Number(group.id));
             }}
           >
-            <p className="text-gray-600 text-sm sm:text-base truncate  text-ellipsis whitespace-nowrap">
-              <span> Date limite: {group.date} </span> - <span> {group.participants} participants </span>
+            <p className="text-gray-600 text-sm sm:text-base truncate overflow-hidden text-ellipsis whitespace-nowrap">
+              <span> Date limite: TODO </span> - <span> TODO participants </span>
             </p>
           </Card>
         );
