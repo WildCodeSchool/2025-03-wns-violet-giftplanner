@@ -205,10 +205,21 @@ export type NewMessageInput = {
   message: Scalars['String']['input'];
 };
 
+export type PendingInvitation = {
+  __typename?: 'PendingInvitation';
+  created_at: Scalars['DateTimeISO']['output'];
+  groupId: Scalars['Float']['output'];
+  id: Scalars['ID']['output'];
+  joinedGroup: Scalars['Boolean']['output'];
+  updated_at: Scalars['DateTimeISO']['output'];
+  userEmail: Scalars['String']['output'];
+};
+
 export type Query = {
   __typename?: 'Query';
   coucou: Scalars['String']['output'];
   fetchMessagesByGroup: Scalars['String']['output'];
+  getAllInvitations: Array<PendingInvitation>;
   getAllMyGroups: Array<Group>;
   getAllUsers: Array<User>;
   getAllUsersAdmin: Array<User>;
