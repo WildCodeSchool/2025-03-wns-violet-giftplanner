@@ -29,7 +29,6 @@ const UserProfilePage = () => {
   const [messageError, setMessageError] = useState("");
   const [messageSuccess, setMessageSuccess] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const [profile, setProfile] = useState({
@@ -284,7 +283,7 @@ const UserProfilePage = () => {
                       type="button"
                       onClick={() => {
                         setIsMenuOpen(false);
-                        setIsLogoutModalOpen(true);
+                        handleLogout();
                       }}
                       className="profile-menu-item"
                     >
@@ -426,14 +425,14 @@ const UserProfilePage = () => {
               </div>
             )}
           </div>
-          {/* Bouton Enregistrer */}
+          {/* Boutons d'action */}
           {isEditing && (
             <div className="profile-actions">
-              <button type="button" onClick={handleSaveClick} className="profile-save-button">
-                Enregistrer
-              </button>
               <button type="button" onClick={handleCancelClick} className="profile-cancel-button">
                 Annuler
+              </button>
+              <button type="button" onClick={handleSaveClick} className="profile-save-button">
+                Enregistrer
               </button>
             </div>
           )}
@@ -457,14 +456,6 @@ const UserProfilePage = () => {
         onConfirm={handleConfirmDelete}
         title="Supprimer votre profil"
         message="Êtes-vous sûr de vouloir faire ça ? Cette action est irréversible et toutes vos données seront effacées."
-      />
-
-      <ConfirmModal
-        isOpen={isLogoutModalOpen}
-        onClose={() => setIsLogoutModalOpen(false)}
-        onConfirm={handleLogout}
-        title="Se déconnecter"
-        message="Êtes-vous sûr de vouloir vous déconnecter ?"
       />
     </div>
   );

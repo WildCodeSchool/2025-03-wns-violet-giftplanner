@@ -202,6 +202,11 @@
     grid-template-columns: repeat(2, 1fr);
     row-gap: 64px;
     column-gap: 24px;
+    width: 100%;
+  }
+
+  .contact-team-member {
+    min-width: 0;
   }
 
   .contact-member-image {
@@ -213,17 +218,23 @@
   .contact-member-name {
     font-size: 18px;
     color: #fdfbf6;
+    word-wrap: break-word;
   }
 
   /* Container email avec fond blanc */
   .contact-member-email-container {
     background-color: #fdfbf6;
     padding: 6px 12px;
+    max-width: 100%;
+    overflow: hidden;
   }
 
   .contact-member-email {
     font-size: 13px;
     color: #200904;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .contact-copy-icon {
@@ -233,5 +244,9 @@
   .button-white-contact {
     font-size: 18px;
     padding: 12px 32px;
+  }
+
+  .contact-content {
+    padding: 20px;
   }
 }

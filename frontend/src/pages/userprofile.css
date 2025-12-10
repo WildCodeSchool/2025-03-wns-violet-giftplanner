@@ -50,6 +50,7 @@
 /* Photo de profil */
 .profile-image-wrapper {
   position: relative;
+  margin-bottom: 16px;
 }
 
 .profile-image {
@@ -491,6 +492,10 @@
     background-color: transparent;
     color: #fdfbf6;
     cursor: text;
+  }
+
+  .profile-input.editable::placeholder {
+    color: #e3e2df;
   }
 
   .profile-password-confirm {
