@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import "./userprofile.css";
+import { useNavigate } from "react-router-dom";
 import Icon from "../components/utils/Icon";
 import { defaultPictureProfile } from "../data/pictureDefault";
-import { useUpdateMyProfileMutation, useDeleteMyProfileMutation } from "../generated/graphql-types";
+import { useDeleteMyProfileMutation, useUpdateMyProfileMutation } from "../generated/graphql-types";
 import { useMyProfileStore } from "../zustand/myProfileStore";
-import { useNavigate } from "react-router-dom";
 
 function toBase64(file: File) {
   return new Promise((resolve, reject) => {

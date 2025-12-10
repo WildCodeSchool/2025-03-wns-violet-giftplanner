@@ -1,12 +1,11 @@
-import { countdownDate } from "../../../utils/dateCalculator";
-import { useEffect, useRef, useState } from "react";
 import type { FormEvent, KeyboardEvent } from "react";
+import { useEffect, useRef, useState } from "react";
+import type { useGetAllMyGroupsQuery } from "../../../generated/graphql-types";
+import { countdownDate } from "../../../utils/dateCalculator";
+import { useMyProfileStore } from "../../../zustand/myProfileStore";
 import Button from "../../utils/Button";
 import Icon from "../../utils/Icon";
 import Title from "../../utils/Title";
-import { useSendMessageMutation } from "../../../generated/graphql-types";
-import { useMyProfileStore } from "../../../zustand/myProfileStore";
-import { useGetAllMyGroupsQuery } from "../../../generated/graphql-types";
 import Message from "./Message";
 
 type MessagingProps = {
@@ -14,11 +13,20 @@ type MessagingProps = {
   participants: number;
   date: Date;
   groupId: number;
-  messages: NonNullable<NonNullable<ReturnType<typeof useGetAllMyGroupsQuery>["data"]>["getAllMyGroups"]>[0]["messages"];
+  messages: NonNullable<
+    NonNullable<ReturnType<typeof useGetAllMyGroupsQuery>["data"]>["getAllMyGroups"]
+  >["groups"][0]["messages"];
+  calbackSendMessage: (groupId: number, message: string) => void;
 };
 
-export default function Messaging({ title, participants, date, groupId, messages }: MessagingProps) {
-  const [sendMessage] = useSendMessageMutation();
+export default function Messaging({
+  title,
+  participants,
+  date,
+  groupId,
+  messages,
+  calbackSendMessage,
+}: MessagingProps) {
   const [messageInput, setMessageInput] = useState<string>("");
   const { userProfile } = useMyProfileStore();
 
@@ -33,7 +41,6 @@ export default function Messaging({ title, participants, date, groupId, messages
     }
   }, [messages]);
 
-
   const daysLeft = countdownDate(date);
   const expired = daysLeft < 0;
 
@@ -41,14 +48,15 @@ export default function Messaging({ title, participants, date, groupId, messages
     e.preventDefault();
     if (messageInput.trim() === "") return;
     try {
-      await sendMessage({
-        variables: {
-          data: {
-            groupId: groupId,
-            message: messageInput,
-          }
-        },
-      });
+      await calbackSendMessage(groupId, messageInput);
+      // await sendMessage({
+      //   variables: {
+      //     data: {
+      //       groupId: groupId,
+      //       message: messageInput,
+      //     }
+      //   },
+      // });
       setMessageInput("");
     } catch (error) {
       console.error("Erreur pendant l'envoie du message", error);
@@ -62,7 +70,6 @@ export default function Messaging({ title, participants, date, groupId, messages
     }
   };
 
-  console.log("messages", messages);
   return (
     <div className="rounded-2xl w-full h-full border-grey border-2 border-lg flex flex-col ">
       <div className="relative w-full h-2/12 bg-blue rounded-t-2xl flex-row flex justify-center items-center py-4">
@@ -106,12 +113,7 @@ export default function Messaging({ title, participants, date, groupId, messages
             onChange={(e) => setMessageInput(e.target.value)}
             onKeyDown={handleKeyDown}
           />
-          <Button
-            colour="dark"
-            icon="arrow"
-            rounded
-            type="submit"
-          />
+          <Button colour="dark" icon="arrow" rounded type="submit" />
         </form>
       </div>
     </div>

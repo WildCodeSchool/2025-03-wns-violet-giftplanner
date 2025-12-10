@@ -17,9 +17,7 @@ export const useMyProfileStore = create<State>((set) => ({
       userProfile: newUser
         ? ({
             ...newUser,
-            image_url: newUser.image_url
-              ? `/service/picture/${newUser.image_url}`
-              : defaultPictureProfile,
+            image_url: newUser.image_url ? `/service/picture/${newUser.image_url}` : defaultPictureProfile,
           } as UserProfil)
         : null,
     })),

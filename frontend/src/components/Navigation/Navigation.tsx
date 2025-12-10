@@ -6,11 +6,7 @@ import consoleErrorDev from "../../hooks/erreurMod";
 import { useMyProfileStore } from "../../zustand/myProfileStore";
 import Redirect from "./Redirect";
 import "./navigation.css";
-import { LuUserRound } from "react-icons/lu";
-import { LuGift } from "react-icons/lu";
-import { LuLogOut } from "react-icons/lu";
-import { LuMessageCircleMore } from "react-icons/lu";
-import { LuShield } from "react-icons/lu";
+import { LuGift, LuLogOut, LuMessageCircleMore, LuShield, LuUserRound } from "react-icons/lu";
 
 export default function Navigation() {
   const { userProfile, clearUserProfile } = useMyProfileStore();
@@ -78,7 +74,7 @@ export default function Navigation() {
             <Redirect
               link="/dashboard/profile"
               icon={
-                <LuUserRound 
+                <LuUserRound
                   className={`"cursor-pointer transition-bnt-nav ${currentLocation === "/dashboard/profile" && "profile-icon"}`}
                 />
               }

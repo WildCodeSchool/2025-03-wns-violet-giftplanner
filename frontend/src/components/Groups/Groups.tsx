@@ -1,13 +1,13 @@
 import { useState } from "react";
+import type { GetAllMyGroupsQuery } from "../../generated/graphql-types";
 import CreateGroupForm from "../forms/CreateGroupForm";
 import Button from "../utils/Button";
 import Card from "../utils/Card";
 import Container from "../utils/Container";
 import Modal from "../utils/Modal";
-import type { GetAllMyGroupsQuery } from "../../generated/graphql-types";
 
 type GroupsProps = {
-  groups: GetAllMyGroupsQuery["getAllMyGroups"];
+  groups: GetAllMyGroupsQuery["getAllMyGroups"]["groups"];
   setActiveGroup: (id: Number) => void;
   onClick?: () => void;
 };

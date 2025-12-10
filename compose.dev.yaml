@@ -79,6 +79,7 @@ services:
       CLIENT_URL: ${FRONTEND_URL}
       MESSAGE_SERVICE_PORT: ${MESSAGE_SERVICE_PORT}
       INTERNAL_SECRET_KEY: ${INTERNAL_SECRET_KEY}
+      JWT_SECRET: ${JWT_SECRET}
 
   database:
     container_name: database-dev

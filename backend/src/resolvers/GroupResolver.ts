@@ -1,9 +1,20 @@
-import { Arg, Ctx, Field, InputType, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
+import jwt from "jsonwebtoken";
+import {
+  Arg,
+  Ctx,
+  Field,
+  InputType,
+  Mutation,
+  ObjectType,
+  Query,
+  Resolver,
+  UseMiddleware,
+} from "type-graphql";
 import Group from "../entities/Group";
-import { GroupMember } from "../entities/GroupMember";
+import { Message } from "../entities/Message";
+import { getVariableEnv } from "../lib/envManager/envManager";
 import { RoleMiddleware } from "../middleware/RoleMiddleware";
 import type { ContextType } from "../types/context";
-import { Message } from "../entities/Message";
 
 @InputType()
 class CreateGroupInput {
@@ -20,22 +31,31 @@ class CreateGroupInput {
   deadline!: Date;
 }
 
+@ObjectType()
+export class MyGroupsResponse {
+  @Field(() => [Group])
+  groups!: Group[];
+
+  @Field()
+  groupToken!: string;
+}
+
 @Resolver(Group)
 @UseMiddleware(RoleMiddleware())
 export default class GroupResolver {
-  @Query(() => [Group])
+  @Query(() => MyGroupsResponse)
   async getAllMyGroups(@Ctx() ctx: ContextType) {
     // récupère tout les groupes de l'utilisateur connecté
     const groups = await Group.find({
       where: {
         groupMember: {
-          user: { id: ctx.user?.id }
-        }
+          user: { id: ctx.user?.id },
+        },
       },
       relations: {
         groupMember: { user: true },
       },
-      order: { id: "DESC" }
+      order: { id: "DESC" },
     });
 
     // charge les 10 derniers messages de chaque groupe
@@ -48,7 +68,11 @@ export default class GroupResolver {
       });
     }
 
-    return groups;
+    const payload = { groupsId: groups.map((g) => g.id) };
+    const JWT_SECRET = getVariableEnv("JWT_SECRET");
+    const groupToken = jwt.sign(payload, JWT_SECRET, { expiresIn: "1m" });
+
+    return { groups, groupToken };
   }
 
   @Mutation(() => Group)

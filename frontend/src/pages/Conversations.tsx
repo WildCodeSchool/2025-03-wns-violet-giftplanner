@@ -1,28 +1,78 @@
 import React, { useEffect, useState } from "react";
-import data from "../components/groups/data/data.json";
 import Groups from "../components/Groups/Groups";
 import Messaging from "../components/Groups/Messaging/Messaging";
-import PiggyBank from "../components/Groups/PiggyBank";
-import Wishlist from "../components/Groups/Wishlist";
+// import PiggyBank from "../components/Groups/PiggyBank";
+// import Wishlist from "../components/Groups/Wishlist";
 import Button from "../components/utils/Button";
-import type { GroupProps } from "../types/Groups";
+import type { GetAllMyGroupsQuery } from "../generated/graphql-types";
 import { useGetAllMyGroupsQuery } from "../generated/graphql-types";
 import { useLiveMessages } from "../hooks/useWebSocket";
 
 export default function Conversations() {
   // const { data: groupData, loading, error } = useGetAllMyGroupsQuery();
-  const [whislist, setWishlist] = React.useState(true);
+  const [_whislist, setWishlist] = React.useState(true);
 
   const { data: groupData } = useGetAllMyGroupsQuery();
-  const [groups, setGroups] = useState<GetAllMyGroupsQuery["getAllMyGroups"]>([]);
+  const [groups, setGroups] = useState<GetAllMyGroupsQuery["getAllMyGroups"]["groups"]>([]);
 
   const [activeGroupId, setActiveGroupId] = React.useState<Number | null>(null);
-  const [activeGroup, setActiveGroup] = React.useState<GetAllMyGroupsQuery["getAllMyGroups"][0] | null>(null);
+  const [activeGroup, setActiveGroup] = React.useState<
+    GetAllMyGroupsQuery["getAllMyGroups"]["groups"][0] | null
+  >(null);
 
-  useLiveMessages();
+  const socket = useLiveMessages();
+
+  function sendMessage(groupId: number, message: string) {
+    socket?.emit("send-room-message", {
+      roomId: String(groupId),
+      newMessage: message,
+    });
+  }
 
   useEffect(() => {
-    setGroups(groupData?.getAllMyGroups || []);
+    if (!socket) return;
+
+    const handler = (msg: { newMessage: string }) => {
+      console.log("ok");
+      console.log("Nouveau message reçu via WebSocket :", msg);
+      setGroups((prevGroups) => {
+        if (prevGroups.length === 0) return prevGroups;
+
+        // On clone le tableau
+        const newGroups = [...prevGroups];
+
+        // On clone le groupe qu’on modifie
+        const group = { ...newGroups[0] };
+
+        // On clone les messages
+        const newMessages = [...group.messages];
+
+        // On clone le message concerné
+        const updatedMessage = {
+          ...newMessages[0],
+          content: msg.newMessage,
+        };
+
+        newMessages[0] = updatedMessage;
+
+        group.messages = newMessages;
+        newGroups[0] = group;
+
+        return newGroups;
+      });
+    };
+
+    socket.on("room-new-message", handler);
+
+    return () => {
+      socket.off("room-new-message", handler);
+    };
+  }, [socket, groups, activeGroupId]);
+
+  useEffect(() => {
+    setGroups(groupData?.getAllMyGroups.groups || []);
+    // demande au server de rejoindre les rooms que utilisateur possède
+    socket?.emit("join-groups", { groupsToken: groupData?.getAllMyGroups.groupToken });
   }, [groupData]);
 
   useEffect(() => {
@@ -31,8 +81,7 @@ export default function Conversations() {
       return;
     }
     setActiveGroup(groups.find((g) => Number(g.id) === activeGroupId) || null);
-  }, [activeGroupId]);
-
+  }, [activeGroupId, groups]);
 
   //TO DO: set activeGroup.id in url
 
@@ -82,6 +131,7 @@ export default function Conversations() {
             date={new Date(activeGroup.deadline)}
             groupId={Number(activeGroup.id)}
             messages={activeGroup.messages}
+            calbackSendMessage={sendMessage}
           />
         )}
       </div>
