@@ -1,46 +1,29 @@
-import { useEffect, useRef, useState } from "react";
-
-type WSMessage =
-    | { type: "JOIN_ROOM"; roomId: number }
-    | { type: "LEAVE_ROOM" }
-    | { type: "SEND_MESSAGE"; roomId: number; content: string };
+import { io, Socket } from "socket.io-client";
+import { useEffect, useState } from "react";
 
 
-export function useWebSocket(wsToken: string | null) {
-    const [isReady, setIsReady] = useState(false);
-    const wsRef = useRef<WebSocket | null>(null);
+export function useLiveMessages() {
+    const [socket, setSocket] = useState<Socket | null>(null);
 
     useEffect(() => {
-        if (!wsToken) return;
+        const socket = io("http://localhost:3000", { path: "/service/message/socket.io", transports: ["websocket"] });
 
-        const ws = new WebSocket(`wss://${import.meta.env.VITE_API_MESSAGE}`);
-        wsRef.current = ws;
+        console.log("Aactivation du WebSocket");
+        // l'événement de connexion
+        socket.on("connect", () => {
+            console.log("Connecté :", socket.id);
+        });
 
-        ws.onopen = () => {
-            console.log("WebSocket connected");
-            setIsReady(true);
+        // socket.on("new-message", (msg) => {
+        //     console.log("Message :", msg);
+        // });
+
+        setSocket(socket);
+
+        return () => {
+            socket.disconnect();
         };
+    }, []);
 
-        ws.onclose = () => {
-            console.log("WebSocket closed");
-            setIsReady(false);
-            // auto-reconnect
-            setTimeout(() => window.location.reload(), 1500);
-        };
-
-        ws.onerror = (err) => {
-            console.error("WS Error:", err);
-            ws.close();
-        };
-
-        return () => ws.close();
-    }, [wsToken]);
-
-    function send(data: WSMessage) {
-        if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-            wsRef.current.send(JSON.stringify(data));
-        }
-    }
-
-    return { send, isReady, ws: wsRef.current };
+    return socket;
 }

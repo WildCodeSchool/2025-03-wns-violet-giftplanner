@@ -7,7 +7,7 @@ import Wishlist from "../components/Groups/Wishlist";
 import Button from "../components/utils/Button";
 import type { GroupProps } from "../types/Groups";
 import { useGetAllMyGroupsQuery } from "../generated/graphql-types";
-import type { GetAllMyGroupsQuery } from "../generated/graphql-types";
+import { useLiveMessages } from "../hooks/useWebSocket";
 
 export default function Conversations() {
   // const { data: groupData, loading, error } = useGetAllMyGroupsQuery();
@@ -18,6 +18,8 @@ export default function Conversations() {
 
   const [activeGroupId, setActiveGroupId] = React.useState<Number | null>(null);
   const [activeGroup, setActiveGroup] = React.useState<GetAllMyGroupsQuery["getAllMyGroups"][0] | null>(null);
+
+  useLiveMessages();
 
   useEffect(() => {
     setGroups(groupData?.getAllMyGroups || []);

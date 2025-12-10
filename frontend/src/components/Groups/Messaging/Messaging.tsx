@@ -82,11 +82,19 @@ export default function Messaging({ title, participants, date, groupId, messages
         </div>
       </div>
       <div className="w-full px-4 overflow-auto">
-        {messages?.slice().reverse().map((message) => {
-          return (
-            <Message key={message.id} text={message.content} imageUrl={message.user.image_url ? message.user.image_url : ""} align={message.user.id === userProfile.id ? "right" : "left"} />
-          );
-        })}
+        {messages
+          ?.slice()
+          .reverse()
+          .map((message) => {
+            return (
+              <Message
+                key={message.id}
+                text={message.content}
+                imageUrl={message.user.image_url ? message.user.image_url : ""}
+                align={message.user.id === userProfile?.id ? "right" : "left"}
+              />
+            );
+          })}
         <div ref={bottomRef} />
       </div>
       <div className="">
