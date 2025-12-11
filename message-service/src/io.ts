@@ -19,7 +19,7 @@ const io = new Server(httpServer, {
 });
 
 io.on("connection", (socket) => {
-    console.log("Client connecté :", socket.id);
+    console.info("Client connecté :", socket.id);
 
     // rejoin des rooms
     socket.on("join-groups", ({ groupsToken }: { groupsToken: string }) => {
@@ -35,7 +35,6 @@ io.on("connection", (socket) => {
 
             // ajoute user aux rooms dont il est membre
             socket.join(rooms);
-            console.log(`Client ${socket.id} a rejoint les rooms :`, rooms);
         } catch (error) {
             console.info("Erreur lors de la vérification du token de groupe :", error);
             return;
@@ -44,36 +43,63 @@ io.on("connection", (socket) => {
 
     socket.on("send-room-message", async ({ roomId, newMessage }: { roomId: number, newMessage: string }) => {
         try {
-            console.log(`Message reçu pour la room ${roomId} : ${newMessage}`);
-            // // récupère le token de l'utilisateur
-            console.log("Cookies reçus :", socket.request.headers.cookie);
             const cookies = parse(socket.request.headers.cookie || "");
-            // const token = cookies.token;
-            // if (!token) return;
+            const token = cookies.token;
+
+            if (!token) return;
+
             // envoie le message au backend pour le sauvegarder
-            // try {
-            //     const body = {
-            //         name: "Coco",
-            //         email: "coco@example.com",
-            //     };
+            try {
+                const mutation = `
+                mutation SendMessage($data: NewMessageInput!) {
+                    sendMessage(data: $data) {
+                        id
+                        content
+                        createdAt
+                        updatedAt
+                        isEdited
+                        user {
+                            id
+                            firstName
+                            lastName
+                            image_url
+                            isAdmin
+                        }
+                    }
+                }
+                `;
 
-            //     const response = await axios.post("https://api.example.com/users", body);
+                const variable = {
+                    data: {
+                        groupId: Number(roomId),
+                        message: newMessage,
+                        secretServeur: process.env.INTERNAL_SECRET_KEY,
+                        userToken: token,
+                    }
+                };
 
-            //     console.log("Utilisateur créé :", response.data);
-            // } catch (error) {
-            //     console.error("Erreur API :", error);
-            // }
-            io.to(`group-${roomId}`).emit("room-new-message", {
-                newMessage,
-            });
-            console.log(`Message diffusé à la room group-${roomId}`);
+                const response = await axios.post(
+                    "http://backend:3310/graphql",
+                    { query: mutation, variables: variable },
+                    { headers: { "Content-Type": "application/json" } }
+                );
+
+                // renvoie le message à tous les membres de la room
+                io.to(`group-${roomId}`).emit("room-new-message", {
+                    newMessage: response.data.data.sendMessage,
+                    groupId: roomId
+                });
+            } catch (error: any) {
+                console.error("Erreur de graphQL :", error.response?.data);
+            }
+
         } catch (error) {
             console.error("Erreur lors de l'envoi du message :", error);
         }
     });
 
     socket.on("disconnect", () => {
-        console.log("Client déconnecté :", socket.id);
+        console.info("Client déconnecté :", socket.id);
     });
 });
 

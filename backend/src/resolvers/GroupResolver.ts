@@ -58,19 +58,9 @@ export default class GroupResolver {
       order: { id: "DESC" },
     });
 
-    // charge les 10 derniers messages de chaque groupe
-    for (const group of groups) {
-      group.messages = await Message.find({
-        where: { group: { id: group.id } },
-        relations: { user: true },
-        order: { createdAt: "DESC" },
-        take: 20,
-      });
-    }
-
     const payload = { groupsId: groups.map((g) => g.id) };
     const JWT_SECRET = getVariableEnv("JWT_SECRET");
-    const groupToken = jwt.sign(payload, JWT_SECRET, { expiresIn: "1m" });
+    const groupToken = jwt.sign(payload, JWT_SECRET, { expiresIn: "50m" });
 
     return { groups, groupToken };
   }

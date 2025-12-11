@@ -86,6 +86,12 @@ export type GroupMember = {
   user: User;
 };
 
+export type GroupMessagesOutput = {
+  __typename?: 'GroupMessagesOutput';
+  groupId: Scalars['Float']['output'];
+  messages: Array<Message>;
+};
+
 export type Like = {
   __typename?: 'Like';
   createdAt: Scalars['DateTimeISO']['output'];
@@ -133,7 +139,7 @@ export type Mutation = {
   deleteUser: DeleteUserResponse;
   login: User;
   logout: Scalars['Boolean']['output'];
-  sendMessage: Scalars['Boolean']['output'];
+  sendMessage: Message;
   signup: User;
   unbanUser: BanUserResponse;
   updateGift: Gift;
@@ -204,11 +210,14 @@ export type MyGroupsResponse = {
 export type NewMessageInput = {
   groupId: Scalars['Float']['input'];
   message: Scalars['String']['input'];
+  secretServeur: Scalars['String']['input'];
+  userToken: Scalars['String']['input'];
 };
 
 export type Query = {
   __typename?: 'Query';
   coucou: Scalars['String']['output'];
+  getAllMessageMyGroups: Array<GroupMessagesOutput>;
   getAllMyGroups: MyGroupsResponse;
   getAllUsers: Array<User>;
   getAllUsersAdmin: Array<User>;
@@ -348,7 +357,12 @@ export type CreateGroupMutation = { __typename?: 'Mutation', createGroup: { __ty
 export type GetAllMyGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllMyGroupsQuery = { __typename?: 'Query', getAllMyGroups: { __typename?: 'MyGroupsResponse', groupToken: string, groups: Array<{ __typename?: 'Group', id: string, name: string, createdAt: any, updatedAt: any, event_type: string, piggy_bank: number, deadline: any, messages: Array<{ __typename?: 'Message', id: string, content: string, createdAt: any, isEdited: boolean, user: { __typename?: 'User', id: string, firstName: string, lastName: string, image_url?: string | null, isAdmin: boolean } }> }> } };
+export type GetAllMyGroupsQuery = { __typename?: 'Query', getAllMyGroups: { __typename?: 'MyGroupsResponse', groupToken: string, groups: Array<{ __typename?: 'Group', id: string, name: string, createdAt: any, updatedAt: any, event_type: string, piggy_bank: number, deadline: any }> } };
+
+export type GetAllMessageMyGroupsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllMessageMyGroupsQuery = { __typename?: 'Query', getAllMessageMyGroups: Array<{ __typename?: 'GroupMessagesOutput', groupId: number, messages: Array<{ __typename?: 'Message', id: string, content: string, createdAt: any, updatedAt: any, isEdited: boolean, user: { __typename?: 'User', id: string, firstName: string, lastName: string, image_url?: string | null, isAdmin: boolean } }> }> };
 
 export type GetAllUsersForAdminQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -823,20 +837,8 @@ export type CreateGroupMutationOptions = Apollo.BaseMutationOptions<CreateGroupM
 export const GetAllMyGroupsDocument = gql`
     query getAllMyGroups {
   getAllMyGroups {
+    groupToken
     groups {
-      messages {
-        id
-        content
-        createdAt
-        isEdited
-        user {
-          id
-          firstName
-          lastName
-          image_url
-          isAdmin
-        }
-      }
       id
       name
       createdAt
@@ -845,7 +847,6 @@ export const GetAllMyGroupsDocument = gql`
       piggy_bank
       deadline
     }
-    groupToken
   }
 }
     `;
@@ -881,6 +882,59 @@ export type GetAllMyGroupsQueryHookResult = ReturnType<typeof useGetAllMyGroupsQ
 export type GetAllMyGroupsLazyQueryHookResult = ReturnType<typeof useGetAllMyGroupsLazyQuery>;
 export type GetAllMyGroupsSuspenseQueryHookResult = ReturnType<typeof useGetAllMyGroupsSuspenseQuery>;
 export type GetAllMyGroupsQueryResult = Apollo.QueryResult<GetAllMyGroupsQuery, GetAllMyGroupsQueryVariables>;
+export const GetAllMessageMyGroupsDocument = gql`
+    query getAllMessageMyGroups {
+  getAllMessageMyGroups {
+    groupId
+    messages {
+      id
+      content
+      createdAt
+      updatedAt
+      isEdited
+      user {
+        id
+        firstName
+        lastName
+        image_url
+        isAdmin
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAllMessageMyGroupsQuery__
+ *
+ * To run a query within a React component, call `useGetAllMessageMyGroupsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllMessageMyGroupsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllMessageMyGroupsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllMessageMyGroupsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllMessageMyGroupsQuery, GetAllMessageMyGroupsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllMessageMyGroupsQuery, GetAllMessageMyGroupsQueryVariables>(GetAllMessageMyGroupsDocument, options);
+      }
+export function useGetAllMessageMyGroupsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllMessageMyGroupsQuery, GetAllMessageMyGroupsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllMessageMyGroupsQuery, GetAllMessageMyGroupsQueryVariables>(GetAllMessageMyGroupsDocument, options);
+        }
+export function useGetAllMessageMyGroupsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetAllMessageMyGroupsQuery, GetAllMessageMyGroupsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllMessageMyGroupsQuery, GetAllMessageMyGroupsQueryVariables>(GetAllMessageMyGroupsDocument, options);
+        }
+export type GetAllMessageMyGroupsQueryHookResult = ReturnType<typeof useGetAllMessageMyGroupsQuery>;
+export type GetAllMessageMyGroupsLazyQueryHookResult = ReturnType<typeof useGetAllMessageMyGroupsLazyQuery>;
+export type GetAllMessageMyGroupsSuspenseQueryHookResult = ReturnType<typeof useGetAllMessageMyGroupsSuspenseQuery>;
+export type GetAllMessageMyGroupsQueryResult = Apollo.QueryResult<GetAllMessageMyGroupsQuery, GetAllMessageMyGroupsQueryVariables>;
 export const GetAllUsersForAdminDocument = gql`
     query GetAllUsersForAdmin {
   getAllUsersForAdmin {

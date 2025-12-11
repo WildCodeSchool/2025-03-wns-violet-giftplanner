@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { io, type Socket } from "socket.io-client";
 
-export function useLiveMessages() {
+
+export function useLive() {
   const [socket, setSocket] = useState<Socket | null>(null);
 
   useEffect(() => {
@@ -10,14 +11,16 @@ export function useLiveMessages() {
       transports: ["websocket"],
     });
 
+
     // l'événement de connexion
     socket.on("connect", () => {
-      console.log("Connecté :", socket.id);
+      // console.log("Connecté :", socket.id);
     });
 
     setSocket(socket);
 
     return () => {
+      // console.log("Client déconncté")
       socket.disconnect();
     };
   }, []);

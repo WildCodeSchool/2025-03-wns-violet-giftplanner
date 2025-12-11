@@ -166,29 +166,38 @@ export const CREATE_GROUP = gql`
 export const GET_ALL_MY_GROUPS = gql`
   query getAllMyGroups {
     getAllMyGroups {
-      groups {
-        messages {
-          id
-          content
-          createdAt
-          isEdited
-          user {
-            id
-            firstName
-            lastName
-            image_url
-            isAdmin
-          }
-        }
+    groupToken
+    groups {
+      id
+      name
+      createdAt
+      updatedAt
+      event_type
+      piggy_bank
+      deadline
+    }
+  }
+  }
+`;
+
+export const GET_ALL_MESSAGE_MY_GROUPS = gql`
+  query getAllMessageMyGroups {
+    getAllMessageMyGroups {
+      groupId
+      messages {
         id
-        name
+        content
         createdAt
         updatedAt
-        event_type
-        piggy_bank
-        deadline
+        isEdited
+        user {
+          id
+          firstName
+          lastName
+          image_url
+          isAdmin
+        }
       }
-      groupToken
     }
   }
 `;

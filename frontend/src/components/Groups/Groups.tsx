@@ -8,11 +8,11 @@ import Modal from "../utils/Modal";
 
 type GroupsProps = {
   groups: GetAllMyGroupsQuery["getAllMyGroups"]["groups"];
-  setActiveGroup: (id: Number) => void;
+  calbackSetActiveGroupId: (id: Number) => void;
   onClick?: () => void;
 };
 
-export default function Groups({ groups, setActiveGroup }: GroupsProps) {
+export default function Groups({ groups, calbackSetActiveGroupId }: GroupsProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   function toggleModal() {
@@ -31,7 +31,7 @@ export default function Groups({ groups, setActiveGroup }: GroupsProps) {
             id={Number(group.id)}
             title={group.name}
             onClick={() => {
-              setActiveGroup?.(Number(group.id));
+              calbackSetActiveGroupId?.(Number(group.id));
             }}
           >
             <p className="text-gray-600 text-sm sm:text-base truncate overflow-hidden text-ellipsis whitespace-nowrap">
