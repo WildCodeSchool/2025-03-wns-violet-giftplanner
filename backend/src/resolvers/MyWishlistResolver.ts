@@ -9,38 +9,20 @@ import { getOrCreateUserWishlist } from "../utils/getOrCreateUserWishlist";
 
 @Resolver()
 export default class MyWishlistResolver {
+
   @Query(() => [Gift])
-  async wishlistItems(
-    @Ctx() ctx: ContextType,
-    @Arg("listId", () => Int, { nullable: true }) listId?: number,
-  ): Promise<Gift[]> {
+  async myWishlistItems(
+    @Ctx() ctx: ContextType): Promise<Gift[]> {
     if (!ctx.user) throw new Error("Utilisateur non connecté");
 
-    // If a listId is provided → fetch gifts for that specific list
-    if (listId != null) {
-      return Gift.find({
-        where: {
-          list: { id: listId },
-        },
-        relations: { user: true, list: true },
-      });
-    }
+    const list = await getOrCreateUserWishlist(ctx.user.id);
 
-    // Otherwise → fetch gifts created by the current user
+    // fetch gifts created by the current user
     return Gift.find({
-      where: {
-        user: { id: ctx.user.id },
-      },
+      where: { list: { id: list.id } },
       relations: { user: true, list: true },
     });
 
-    // // récupère tout les cadeaux - ancienne version
-    // const allGifts = await Gift.find({
-    //   where: { user: { id: ctx.user.id } },
-    //   relations: { user: true, list: true },
-    // });
-
-    // return allGifts;
   }
 
   @Mutation(() => Gift)

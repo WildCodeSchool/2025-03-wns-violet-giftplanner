@@ -1,10 +1,11 @@
-import { Arg, Ctx, Field, Int, ObjectType, Query, Resolver } from "type-graphql";
+import { Arg, Ctx, Field, Int, Mutation, ObjectType, Query, Resolver } from "type-graphql";
 import { Gift } from "../entities/Gift";
 import { GroupMember } from "../entities/GroupMember";
 import type { ContextType } from "../types/context";
 import Group from "../entities/Group";
 import List from "../entities/List";
 import { getOrCreateUserWishlist } from "../utils/getOrCreateUserWishlist";
+import { AddGiftInput } from "../inputs/AddGiftInput";
 
 @ObjectType()
 class GroupWishlistItems {
@@ -17,6 +18,7 @@ class GroupWishlistItems {
 
 @Resolver()
 export default class GroupWishlistResolver {
+
     @Query(() => GroupWishlistItems)
     async groupWishlistItems(
         @Arg("groupId", () => Int) groupId: number,
@@ -41,7 +43,7 @@ export default class GroupWishlistResolver {
         // load group with beneficiary + group wishlist
         const group = await Group.findOne({
             where: { id: groupId },
-            relations: ["user_beneficiary", "list_group"],
+            relations: { user_beneficiary: true, list_group: true },
         });
 
         if (!group) {
@@ -70,5 +72,53 @@ export default class GroupWishlistResolver {
             fromWishlist,
             fromGroupList,
         };
+    }
+
+    @Mutation(() => Gift)
+    async addGiftToGroupList(
+        @Arg("groupId", () => Int) groupId: number,
+        @Arg("data") data: AddGiftInput,
+        @Ctx() ctx: ContextType,
+    ): Promise<Gift> {
+        if (!ctx.user) {
+            throw new Error("Utilisateur non connecté");
+        }
+
+        // check that current user is member of this group
+        const membership = await GroupMember.findOne({
+            where: { userId: ctx.user.id, groupId },
+        });
+
+        if (!membership) {
+            throw new Error("Vous n'êtes pas membre de ce groupe.");
+        }
+
+        // load group along with its list_group
+        const group = await Group.findOne({
+            where: { id: groupId },
+            relations: { list_group: true },
+        });
+
+        if (!group) {
+            throw new Error("Groupe introuvable");
+        }
+
+        if (!group.list_group) {
+            throw new Error("Ce groupe n'a pas encore de liste associée.");
+            // use utils function here ?
+        }
+
+        // create gift, ignoring any userId/listId coming from the client
+        const gift = Gift.create({
+            name: data.name,
+            description: data.description ?? "",
+            imageUrl: data.imageUrl ?? "",
+            url: data.url ?? "",
+            user: { id: ctx.user.id } as any,
+            list: { id: group.list_group.id } as any,
+        });
+
+        await gift.save();
+        return gift;
     }
 }

@@ -1,7 +1,7 @@
 // src/components/Wishlist.tsx
 import { useMutation, useQuery } from "@apollo/client";
 import { useState } from "react";
-import { ADD_GIFT, DELETE_GIFT, UPDATE_GIFT, WISHLIST_ITEMS } from "../graphql/operations";
+import { ADD_GIFT, DELETE_GIFT, UPDATE_GIFT, MY_WISHLIST_ITEMS } from "../graphql/operations";
 import type { Gift } from "../types/Gift";
 import { useMyProfileStore } from "../zustand/myProfileStore";
 import Button from "./utils/Button";
@@ -10,10 +10,13 @@ import Modal from "./utils/Modal";
 import GiftCard, { GiftCardSkeleton } from "./wishlist/GiftCard";
 
 export default function Wishlist() {
-  const { data, loading, error } = useQuery<{ wishlistItems: Gift[] }>(WISHLIST_ITEMS, {
-    notifyOnNetworkStatusChange: true,
-  });
-  const items = data?.wishlistItems ?? [];
+
+  const { data, loading, error } = useQuery<{ myWishlistItems: Gift[] }>(
+    MY_WISHLIST_ITEMS,
+    { notifyOnNetworkStatusChange: true }
+  );
+
+  const items = data?.myWishlistItems ?? [];
 
   const user = useMyProfileStore((s) => s.userProfile);
 
@@ -54,7 +57,7 @@ export default function Wishlist() {
           userId: Number(user.id),
         },
       },
-      refetchQueries: [{ query: WISHLIST_ITEMS }],
+      refetchQueries: [{ query: MY_WISHLIST_ITEMS }],
       awaitRefetchQueries: true,
     });
 
@@ -66,7 +69,7 @@ export default function Wishlist() {
     try {
       await deleteGift({
         variables: { id: Number(gift.id) },
-        refetchQueries: [{ query: WISHLIST_ITEMS }],
+        refetchQueries: [{ query: MY_WISHLIST_ITEMS }],
         awaitRefetchQueries: true,
       });
     } catch (err) {
@@ -91,7 +94,7 @@ export default function Wishlist() {
           url: editFormData.url || null,
         },
       },
-      refetchQueries: [{ query: WISHLIST_ITEMS }],
+      refetchQueries: [{ query: MY_WISHLIST_ITEMS }],
       awaitRefetchQueries: true,
     });
     setEditModalOpen(false);

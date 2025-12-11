@@ -106,7 +106,8 @@ export default class UserResolver {
       where: {
         id: ctx.user.id,
         deletedAt: IsNull()
-      }
+      },
+      relations: ["lists"],
     });
     if (!user) {
       cookieManager.delCookie(ctx, "token", { secure: false });
@@ -175,7 +176,7 @@ export default class UserResolver {
   @Mutation(() => User)
   async login(@Arg("data") data: LoginInput, @Ctx() ctx: ContextType) {
     // essaye de trouver l'utilisateur grace a son mail
-    const user = await User.findOne({ where: { email: data.email } });
+    const user = await User.findOne({ where: { email: data.email }, relations: ["lists"], });
 
     if (!user) throw new Error("Utilisateur introuvable");
 

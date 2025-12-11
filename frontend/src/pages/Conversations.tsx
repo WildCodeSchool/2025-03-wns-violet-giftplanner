@@ -8,10 +8,11 @@ import Button from "../components/utils/Button";
 import type { GroupProps } from "../types/Groups";
 import { useGetAllMyGroupsQuery } from "../generated/graphql-types";
 import type { GetAllMyGroupsQuery } from "../generated/graphql-types";
+import { useGroupWishlistItemsQuery } from "../generated/graphql-types";
 
 export default function Conversations() {
   // const { data: groupData, loading, error } = useGetAllMyGroupsQuery();
-  const [whislist, setWishlist] = React.useState(true);
+  const [wishlist, setWishlist] = React.useState(true);
 
   const { data: groupData } = useGetAllMyGroupsQuery();
   const [groups, setGroups] = useState<GetAllMyGroupsQuery["getAllMyGroups"]>([]);
@@ -30,6 +31,20 @@ export default function Conversations() {
     }
     setActiveGroup(groups.find((g) => Number(g.id) === activeGroupId) || null);
   }, [activeGroupId]);
+
+    const activeGroupIdNumber = activeGroup ? Number(activeGroup.id) : undefined;
+
+  const {
+    data: groupWishlistData,
+    // loading: groupWishlistLoading,
+    // error: groupWishlistError,
+  } = useGroupWishlistItemsQuery({
+    variables: { groupId: activeGroupIdNumber ?? 0 },
+    skip: !activeGroupIdNumber, // don't call the query when no group is selected
+  });
+
+  const beneficiaryItems = groupWishlistData?.groupWishlistItems.fromWishlist ?? [];
+  const groupItems = groupWishlistData?.groupWishlistItems.fromGroupList ?? [];
 
 
   //TO DO: set activeGroup.id in url
@@ -61,9 +76,18 @@ export default function Conversations() {
           />
         </div>
 
+        {activeGroup && wishlist && (
+          <Wishlist
+            beneficiaryItems={beneficiaryItems} // you’ll fill this in after the query
+            groupItems={groupItems}
+            onAddIdea={() => console.log("Open modal later")}
+          />
+        )}
+
+
         {/* <div className="h-[calc(50%-2rem)] flex pt-2">
           {activeGroup &&
-            (whislist ? (
+            (wishlist ? (
               <Wishlist wishlistItems={activeGroup.wishlist} />
             ) : (
               <PiggyBank pot={activeGroup.fund} />
