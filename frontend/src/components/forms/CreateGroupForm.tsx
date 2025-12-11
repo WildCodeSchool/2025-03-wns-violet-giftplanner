@@ -15,7 +15,6 @@ import ResponsiveImage from "../utils/ResponsiveImage";
 import SearchSelectInput from "../utils/SearchSelectInput";
 
 export default function CreateGroupForm() {
-  //TO DO: query recupérer tous les utilisateurs existant du groupe pour les afficher dans le formulaire
 
   const options = [
     {
@@ -35,8 +34,8 @@ export default function CreateGroupForm() {
       value:"Pot de départ"
     },
     {
-      label: "Noel",
-      value:"Noel"
+      label: "Noël",
+      value:"Noël"
     },
   ]
 
@@ -50,8 +49,8 @@ export default function CreateGroupForm() {
         event_type: "",
         piggy_bank: 0,
         deadline: "",
-        beneficiary:"",
         users: [] as string[],
+        user_beneficiary: ""
       },
       groupCreationFormValidation,
     );
@@ -71,7 +70,7 @@ export default function CreateGroupForm() {
     e.preventDefault();
     if (isEmpty) {
       console.info("Form is empty.");
-      setError("Etre bref c'est bien, mais il faut quand même remplir le formulaire");
+      setError("Être bref c'est bien, mais il faut quand même remplir le formulaire");
       return;
     }
     if (isValid) {
@@ -99,16 +98,16 @@ export default function CreateGroupForm() {
           piggy_bank: 0,
           deadline: "",
           users: [],
-          beneficiary:"", //Do not reset users here instead show the list of existing users
+          user_beneficiary: "" //Do not reset users here instead show the list of existing users
         });
         // TO DO: fermer la modale après création puis afficher le nouveau groupe dans la liste des groupes
       } catch (error) {
         console.error("Error creating group:", error);
+        setError(error.message)
       }
     }
 
     console.error("Form has errors, cannot submit.", errors);
-    setError("Etre bref c'est bien, mais il faut quand même remplir le formulaire");
   }
 
   return (
@@ -158,10 +157,11 @@ export default function CreateGroupForm() {
           <InputWithToggle 
             checked={checked}
             onCheckedChange={()=>{setChecked(!checked)}} 
-            name="beneficiary" 
-            value={formData.beneficiary} 
+            name="user_beneficiary" 
+            value={formData.user_beneficiary} 
             onChange={handleChange}
-            label="Ajouter un destinataire"
+            label="Le nom du destinataire"
+            question="Voulez-vous ajouter un destinataire? "
             
           />
 

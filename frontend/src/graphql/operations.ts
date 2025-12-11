@@ -161,6 +161,18 @@ mutation CreateGroup($data: CreateGroupInput!) {
     piggy_bank
     deadline
     createdAt
+    user_beneficiary {
+      id
+      firstName
+      lastName
+      email
+    }
+    user_admin {
+      id
+      firstName
+      lastName
+      email
+    }
     groupMember {
       id
       userId
@@ -193,6 +205,18 @@ export const GET_ALL_MY_GROUPS = gql`
     event_type
     piggy_bank
     deadline
+    user_beneficiary {
+      id
+      firstName
+      lastName
+      email
+    }
+    user_admin {
+      id
+      firstName
+      lastName
+      email
+    }
       groupMember {
         userId
         lastName

@@ -32,7 +32,7 @@ export default function SearchInput({
   ...props
 }: SearchInputProps) {
   const baseStyles =
-    "w-full px-4 py-2 border-2 rounded-lg font-inter font-bold text-md outline-none transition-colors duration-200";
+    "w-full px-4 py-2 border-2 focus:border-3 rounded-lg font-inter font-bold text-md outline-none transition-colors duration-200";
 
   const themeStyles =
     theme === "dark"

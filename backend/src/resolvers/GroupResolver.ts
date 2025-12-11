@@ -1,4 +1,4 @@
-import { Arg, Ctx, Field, InputType, Mutation, Query, Resolver, UseMiddleware, FieldResolver, Root } from "type-graphql";
+import { Arg, Ctx, Field, InputType, Mutation, Query, Resolver, UseMiddleware, FieldResolver, Root, Authorized } from "type-graphql";
 import Group from "../entities/Group";
 import { GroupMember } from "../entities/GroupMember";
 import { RoleMiddleware } from "../middleware/RoleMiddleware";
@@ -23,19 +23,24 @@ class CreateGroupInput {
 
   @Field(() => [String], { nullable: true })
   users?: string[];
+
+  @Field({ nullable: true })
+  user_beneficiary?: string;
 }
 
 @Resolver(Group)
 @UseMiddleware(RoleMiddleware())
 export default class GroupResolver {
   @Query(() => [Group])
+  // @Authorized()
   async getAllMyGroups(@Ctx() ctx: ContextType) {
-    if (!ctx.user) throw new Error("Utilisateur non connecté");
+    
+    if (!ctx.user) throw new Error("Utilisateur non connecté"); //TO do: changer avec le context authorized ci-dessus  @Authorized()
 
     //Find all the groups of the connected user
     const groups = await Group.find({
       where: { groupMember: { user: { id: ctx.user.id } } },
-      relations: { groupMember: { user: true } },
+      relations: { groupMember: true, user_admin: true, user_beneficiary: true },
       order: { id: "DESC" },
     });
 
@@ -66,11 +71,11 @@ export default class GroupResolver {
 
   @Mutation(() => Group)
   async createGroup(@Arg("data") data: CreateGroupInput, @Ctx() ctx: ContextType) {
-
+    console.log(ctx)
     //TO DO: vérifier les inputs et les nettoyer
     if (!ctx.user) throw new Error("Utilisateur non connecté");
 
-    //TO DO: ajouter l'utilisateur créant le groupe comme admin du groupe
+    //ajouter l'utilisateur créant le groupe comme admin du groupe
     let userAdmin;
     try {
       userAdmin = await User.findOneOrFail({ where: { id: ctx.user.id } });
@@ -78,14 +83,21 @@ export default class GroupResolver {
       throw new Error("Utilisateur introuvable");
     }
 
-    
- 
+    //Will need to change the logic to handle inviting the user
+    let beneficiaryUser: User | null = null;
+    if (data.user_beneficiary) {
+      beneficiaryUser = await User.findOne({
+        where: { email: data.user_beneficiary },
+      });
+    }
+
     const group = Group.create({
       user_admin: userAdmin,
       name: data.name,
       event_type: data.event_type,
       piggy_bank: data.piggy_bank,
       deadline: data.deadline,
+      user_beneficiary: beneficiaryUser ?? undefined,
     });
     await group.save();
 
@@ -101,6 +113,12 @@ export default class GroupResolver {
       await addMembersToGroup({ userEmails: data.users, groupId: group.id });
     }
 
-    return group;
+    // Reload with relations so user_admin and user_beneficiary are resolved in the response
+    const loadedGroup = await Group.findOne({
+      where: { id: group.id },
+      relations: { user_admin: true, user_beneficiary: true, groupMember: true },
+    });
+
+    return loadedGroup ?? group;
   }
 }

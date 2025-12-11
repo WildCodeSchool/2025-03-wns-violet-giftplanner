@@ -18,7 +18,7 @@ export default function Modal({ isOpen, onClose, children, className }: ModalPro
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-3 right-3 text-[#200904] text-2xl font-bold hover:text-[#EA4B09]"
+          className="absolute top-3 right-3 text-dark text-2xl font-bold hover:text-orange"
         >
           &times;
         </button>
