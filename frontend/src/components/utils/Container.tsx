@@ -1,8 +1,9 @@
 import type React from "react";
 import Title from "./Title";
+import type { ColourScheme }  from "../../types/ColourScheme";
 
 type ContainerProps = {
-  colour: "blue" | "green" | "red" | "orange" | "yellow";
+  colour: ColourScheme["colour"];
   title: string;
   button?: React.ReactNode;
   children?: React.ReactNode;

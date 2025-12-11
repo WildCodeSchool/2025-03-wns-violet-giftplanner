@@ -1,3 +1,4 @@
+import type React from "react";
 import { useState } from "react";
 import { useCreateGroupMutation } from "../../generated/graphql-types";
 import { groupCreationFormValidation } from "../../hooks/formValidationRules";
@@ -8,11 +9,39 @@ import Icon from "../utils/Icon";
 import Input from "../utils/Input";
 import SearchInput from "../utils/SearchInput";
 import Title from "../utils/Title";
+import InputWithToggle from "../utils/InputWithToggle";
+import GroupLink from "./GroupLink";
+import ResponsiveImage from "../utils/ResponsiveImage";
+import SearchSelectInput from "../utils/SearchSelectInput";
 
 export default function CreateGroupForm() {
   //TO DO: query recupérer tous les utilisateurs existant du groupe pour les afficher dans le formulaire
 
+  const options = [
+    {
+      label: "Anniversaire",
+      value:"Anniversaire"
+    },
+    {
+      label: "Marriage",
+      value:"Marriage"
+    },
+    {
+      label: "Naissance",
+      value:"Naissance"
+    },
+    {
+      label: "Pot de départ",
+      value:"Pot de départ"
+    },
+    {
+      label: "Noel",
+      value:"Noel"
+    },
+  ]
+
   const [query, setQuery] = useState("");
+  const [checked, setChecked] = useState(false)
   const [userError, setUserError] = useState<string>("");
   const { formData, handleChange, getSanitizedData, errors, isValid, setFormData, isEmpty } =
     useSanitizedForm(
@@ -21,6 +50,7 @@ export default function CreateGroupForm() {
         event_type: "",
         piggy_bank: 0,
         deadline: "",
+        beneficiary:"",
         users: [] as string[],
       },
       groupCreationFormValidation,
@@ -68,7 +98,8 @@ export default function CreateGroupForm() {
           event_type: "",
           piggy_bank: 0,
           deadline: "",
-          users: [], //Do not reset users here instead show the list of existing users
+          users: [],
+          beneficiary:"", //Do not reset users here instead show the list of existing users
         });
         // TO DO: fermer la modale après création puis afficher le nouveau groupe dans la liste des groupes
       } catch (error) {
@@ -99,14 +130,19 @@ export default function CreateGroupForm() {
             icon="doubleChat"
           />
 
-          <Input //TODO: faire un select avec des options types d'événements
+          <SearchSelectInput
             name="event_type"
-            type="text"
             value={formData.event_type}
-            onChange={handleChange}
+            onChange={(val) =>
+              handleChange({
+                target: { name: "event_type", value: val },
+              } as React.ChangeEvent<HTMLInputElement>)
+            }
             placeholder="Quel est l'événement ?"
             error={errors.event_type}
             icon="gift"
+            options = {options}
+            theme="light"
           />
 
           <Input
@@ -119,15 +155,24 @@ export default function CreateGroupForm() {
             icon="dollar"
           />
 
-          <Input //TODO: Afficher le date aujourd'hui par defaut
+          <InputWithToggle 
+            checked={checked}
+            onCheckedChange={()=>{setChecked(!checked)}} 
+            name="beneficiary" 
+            value={formData.beneficiary} 
+            onChange={handleChange}
+            label="Ajouter un destinataire"
+            
+          />
+
+          <Input
             name="deadline"
             type="date"
             value={formData.deadline}
             onChange={handleChange}
             error={errors.deadline}
           />
-
-          {/* Ajouter l'option d'ajouter le destinataire*/}
+        
         </div>
         <Button
           type="submit"
@@ -142,8 +187,18 @@ export default function CreateGroupForm() {
       </div>
 
       <div className="w-1/2 bg-white h-full flex flex-col rounded-tr-2xl rounded-br-2xl">
-        <div className="flex flex-col gap-4 px-20">
+        <div className="flex flex-col gap-4 px-20 m-auto">
           {/* Adding users can go here */}
+          <div className="flex flex-row items-center w-full border border-blue">
+            <GroupLink />
+            <ResponsiveImage 
+              src={`/images/papier-theme.jpg`}
+              alt="QR Code"
+              maxWidth="w-64"
+              rounded
+            />
+          </div>
+
           <SearchInput
             placeholder="Ajouter des participants..."
             theme="dark"
