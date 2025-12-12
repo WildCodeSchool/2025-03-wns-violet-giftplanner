@@ -1,14 +1,18 @@
-import { useEffect, useId, useState, useRef } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import "./userprofile.css";
+import { LuLogOut, LuPencil, LuSettings, LuTrash2 } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import Icon from "../components/utils/Icon";
 import { defaultPictureProfile } from "../data/pictureDefault";
-import { useDeleteMyProfileMutation, useUpdateMyProfileMutation, useLogoutMutation } from "../generated/graphql-types";
-import { useMyProfileStore } from "../zustand/myProfileStore";
-import { LuSettings, LuPencil, LuTrash2, LuLogOut } from "react-icons/lu";
-import { useIsMobile } from "../hooks/useIsMobile";
-import { toast } from "react-toastify";
+import {
+  useDeleteMyProfileMutation,
+  useLogoutMutation,
+  useUpdateMyProfileMutation,
+} from "../generated/graphql-types";
 import consoleErrorDev from "../hooks/erreurMod";
+import { useIsMobile } from "../hooks/useIsMobile";
+import { useMyProfileStore } from "../zustand/myProfileStore";
 
 interface ConfirmModalProps {
   isOpen: boolean;
@@ -256,15 +260,15 @@ const UserProfilePage = () => {
     if (!isOpen) return null;
 
     return (
-      <div className="modal-overlay" onClick={onClose}>
-        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+      <div className="modal-overlay" /*onClick={onClose}*/>
+        <div className="modal-content" /*onClick={(e) => e.stopPropagation()}*/>
           <h2>{title}</h2>
           <p>{message}</p>
           <div className="modal-actions">
-            <button className="modal-btn-cancel" onClick={onClose}>
+            <button type="button" className="modal-btn-cancel" onClick={onClose}>
               Annuler
             </button>
-            <button className="modal-btn-confirm" onClick={onConfirm}>
+            <button type="button" className="modal-btn-confirm" onClick={onConfirm}>
               Confirmer
             </button>
           </div>

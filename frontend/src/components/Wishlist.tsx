@@ -108,7 +108,13 @@ export default function Wishlist() {
             <Icon icon="heart" className="text-[40px] max-md:hidden" />
             <h2 className="text-[32px] font-bold max-md:text-[24px]">Ma wishlist</h2>
           </div>
-          <Button icon="plus" text="Nouvelle idée" colour="green" onClick={() => setIsModalOpen(true)} className="max-md:hidden" />
+          <Button
+            icon="plus"
+            text="Nouvelle idée"
+            colour="green"
+            onClick={() => setIsModalOpen(true)}
+            className="max-md:hidden"
+          />
         </div>
 
         {/* Content */}
@@ -176,7 +182,13 @@ export default function Wishlist() {
 
       {/* Mobile button - positioned at bottom */}
       <div className="hidden max-md:block wishlist-mobile-button-container">
-        <Button icon="plus" text="Nouvelle idée" colour="green" onClick={() => setIsModalOpen(true)} className="wishlist-mobile-button" />
+        <Button
+          icon="plus"
+          text="Nouvelle idée"
+          colour="green"
+          onClick={() => setIsModalOpen(true)}
+          className="wishlist-mobile-button"
+        />
       </div>
 
       {/* Modal when adding */}

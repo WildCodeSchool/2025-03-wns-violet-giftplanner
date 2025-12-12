@@ -156,11 +156,9 @@
   }
 }
 
-
 /* VERSION MOBILE */
 
 @media (max-width: 768px) {
-
   /* Masquer le logo sur mobile */
   .contact-logo {
     display: none;
