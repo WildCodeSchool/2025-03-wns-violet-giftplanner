@@ -6,7 +6,6 @@ import type List from "../entities/List";
 import { AddGiftInput } from "../inputs/AddGiftInput";
 import type { ContextType } from "../types/context";
 import { getOrCreateUserWishlist } from "../utils/getOrCreateUserWishlist";
-import User from "../entities/User";
 
 @ObjectType()
 class GroupWishlistItems {
@@ -50,30 +49,54 @@ export default class GroupWishlistResolver {
       throw new Error("Groupe introuvable");
     }
 
-    let beneficiaryUser: User | null = null;
-    if (beneficiaryUser) {
-      beneficiaryUser = await User.findOne({
-        where: { email: beneficiaryUser.email },
-      });
-    }
+    // let beneficiaryUser: User | null = null;
+    // if (beneficiaryUser) {
+    //   beneficiaryUser = await User.findOne({
+    //     where: { email: beneficiaryUser.email },
+    //   });
+    // }
 
-    // get beneficiary's wishlist using helper function
+    // // get beneficiary's wishlist using helper function
+    // const beneficiaryId = group.user_beneficiary.id;
+    // const beneficiaryWishlist: List = await getOrCreateUserWishlist(beneficiaryId);
+
+    // // fetch gifts from beneficiary's wishlist
+    // const fromWishlist = await Gift.find({
+    //   where: { list: { id: beneficiaryWishlist.id } },
+    //   relations: { user: true, list: true },
+    //   order: { createdAt: "DESC" },
+    // });
+
+    // // fetch gifts from group list
+    // const fromGroupList = await Gift.find({
+    //   where: { list: { id: group.list_group.id } },
+    //   relations: { user: true, list: true },
+    //   order: { createdAt: "DESC" },
+    // });
+
+
+  //Updated with chatGPT, tell me if this is ok for you Wolfgang
+  let fromWishlist: Gift[] = [];
+
+  // if the group has a beneficiary, load their wishlist + items
+  if (group.user_beneficiary) {
     const beneficiaryId = group.user_beneficiary.id;
-    const beneficiaryWishlist: List = await getOrCreateUserWishlist(beneficiaryId);
 
-    // fetch gifts from beneficiary's wishlist
-    const fromWishlist = await Gift.find({
+    const beneficiaryWishlist = await getOrCreateUserWishlist(beneficiaryId);
+
+    fromWishlist = await Gift.find({
       where: { list: { id: beneficiaryWishlist.id } },
       relations: { user: true, list: true },
       order: { createdAt: "DESC" },
     });
+  }
 
-    // fetch gifts from group list
-    const fromGroupList = await Gift.find({
-      where: { list: { id: group.list_group.id } },
-      relations: { user: true, list: true },
-      order: { createdAt: "DESC" },
-    });
+  // fetch gifts from the group list (always)
+  const fromGroupList = await Gift.find({
+    where: { list: { id: group.list_group.id } },
+    relations: { user: true, list: true },
+    order: { createdAt: "DESC" },
+  });
 
     return {
       fromWishlist,

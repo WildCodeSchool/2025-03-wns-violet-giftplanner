@@ -4,10 +4,6 @@ import { toast } from "react-toastify";
 import { useLogoutMutation } from "../../generated/graphql-types";
 import consoleErrorDev from "../../hooks/erreurMod";
 import { useMyProfileStore } from "../../zustand/myProfileStore";
-<<<<<<< HEAD:frontend/src/components/Navigation/Navigation.tsx
-import Redirect from "../Navigation/Redirect";
-import "../Navigation/navigation.css";
-=======
 import Redirect from "./Redirect";
 import "./navigation.css";
 import { LuHeart, LuLogOut, LuMessageCircleMore, LuShield, LuUserRound } from "react-icons/lu";
