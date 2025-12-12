@@ -86,7 +86,11 @@ export default function Messaging({
   };
 
   const orderedMessages = useMemo(() => {
-    return messages.slice().reverse();
+    const sortMessages = messages.slice().reverse()
+
+    return sortMessages//.reduce((acc, message) => {
+    //   return [...acc, message];
+    // }, [] as typeof messages)
   }, [messages]);
 
 

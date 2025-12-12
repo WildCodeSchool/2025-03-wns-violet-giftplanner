@@ -19,7 +19,7 @@ export default function Conversations() {
   const [groups, setGroups] = useState<GetAllMyGroupsQuery["getAllMyGroups"]["groups"]>([]);
   const [messages, setMessages] = useState<MessageType>({});
 
-  const [indexGroups, setIndexGroup] = useState<number>(-1);
+  const [indexGroups, setIndexGroup] = useState<number>(0);
 
   const contenairMessageRef = useRef<HTMLDivElement | null>(null);
 
@@ -106,7 +106,7 @@ export default function Conversations() {
 
       {/* Right Column */}
       <div className="flex flex-1 w-1/2 h-full  mt-0 justify-center">
-        {indexGroups !== -1 && groups.length > 0 && (
+        {indexGroups !== -1 && groups.length > 0 && messages[Number(groups[indexGroups].id)] !== undefined && (
           <Messaging
             title={groups[indexGroups].name}
             participants={2}
