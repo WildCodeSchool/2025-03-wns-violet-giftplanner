@@ -96,7 +96,7 @@ export default function Messaging({
 
   return (
     <div className="rounded-2xl w-full h-full border-grey border-2 border-lg flex flex-col">
-      <div className="relative w-full h-2/12 bg-blue rounded-t-2xl flex-row flex justify-center items-center py-4">
+      <div className="relative w-full h-[80px] bg-blue rounded-t-2xl flex-row flex justify-center items-center py-4">
         <div className="flex flex-col w-full items-center">
           <Title>{title}</Title>
           <p className="text-white text-xs sm:text-sm place-self-center">
