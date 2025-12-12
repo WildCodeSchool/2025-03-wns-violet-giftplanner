@@ -5,6 +5,7 @@ import Wishlist from "../components/groups/Wishlist";
 import Button from "../components/utils/Button";
 import type { GetAllMyGroupsQuery } from "../generated/graphql-types";
 import { useGetAllMyGroupsQuery, useGroupWishlistItemsQuery } from "../generated/graphql-types";
+import PiggyBank from "../components/groups/PiggyBank";
 
 export default function Conversations() {
   const { data, loading, error } = useGetAllMyGroupsQuery();
@@ -74,12 +75,8 @@ export default function Conversations() {
           />
         </div>
 
-        {activeGroup && wishlist && (
-          <Wishlist beneficiaryItems={beneficiaryItems} groupItems={groupItems} onAddIdea={() => {}} />
-        )}
-
         <div className="h-[calc(50%-2rem)] flex pt-2">
-          {activeGroup && (wishlist ? <Wishlist /> : <PiggyBank pot={activeGroup.piggy_bank} />)}
+          {activeGroup && (wishlist ? <Wishlist beneficiaryItems={beneficiaryItems} groupItems={groupItems} onAddIdea={() => {}} /> : <PiggyBank pot={activeGroup.piggy_bank} />)}
         </div>
       </div>
 

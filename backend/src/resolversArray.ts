@@ -8,18 +8,12 @@ import UserResolver from "./resolvers/UserResolver";
 import Welcome from "./resolvers/welcome";
 
 const resolverArray = [
-  
   Welcome,
- 
   UserResolver,
- 
   MyWishlistResolver,
- 
   GroupResolver,
- 
   MessageResolver,
   GroupWishlistResolver,
-,
   InvitationResolver,
 ] as NonEmptyArray<Function>;
 

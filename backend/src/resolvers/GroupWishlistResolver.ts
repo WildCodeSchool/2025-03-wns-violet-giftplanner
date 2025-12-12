@@ -6,6 +6,7 @@ import type List from "../entities/List";
 import { AddGiftInput } from "../inputs/AddGiftInput";
 import type { ContextType } from "../types/context";
 import { getOrCreateUserWishlist } from "../utils/getOrCreateUserWishlist";
+import User from "../entities/User";
 
 @ObjectType()
 class GroupWishlistItems {
@@ -47,6 +48,13 @@ export default class GroupWishlistResolver {
 
     if (!group) {
       throw new Error("Groupe introuvable");
+    }
+
+    let beneficiaryUser: User | null = null;
+    if (beneficiaryUser) {
+      beneficiaryUser = await User.findOne({
+        where: { email: beneficiaryUser.email },
+      });
     }
 
     // get beneficiary's wishlist using helper function

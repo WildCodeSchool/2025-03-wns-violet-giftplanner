@@ -170,8 +170,8 @@ const AdminPage = () => {
   });
 
   return (
-    < className="admin-container">
-      < className="admin-container-scrollable">
+    <div className="admin-container">
+      <div className="admin-container-scrollable">
         <div className="admin-header">
           <div className="admin-title">
             <LuShield className="admin-title-icon max-md:hidden" />
@@ -225,6 +225,7 @@ const AdminPage = () => {
                   <th className="action-title">Actions</th>
                 </tr>
               </thead>
+            </table>
           <div className="admin-table-wrapper">
             <table className="admin-table">
               <thead>
@@ -326,6 +327,8 @@ const AdminPage = () => {
           title={modalConfig.title}
           message={modalConfig.message}
         />
+      </div>
+    </div>
       </div>
     </div>
   );
