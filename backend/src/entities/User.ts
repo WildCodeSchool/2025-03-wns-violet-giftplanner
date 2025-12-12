@@ -76,7 +76,7 @@ class User extends BaseEntity {
   isAdmin: boolean = false;
 
   // ============= NOUVEAUX CHAMPS =============
-  
+
   @Column({ default: false })
   @Field()
   isBanned: boolean = false;
