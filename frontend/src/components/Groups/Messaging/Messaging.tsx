@@ -1,6 +1,6 @@
-import type { FormEvent, KeyboardEvent } from "react";
+import type { FormEvent, KeyboardEvent, RefObject } from "react";
 import { useEffect, useRef, useState } from "react";
-import type { useGetAllMyGroupsQuery } from "../../../generated/graphql-types";
+import type { GetAllMessageMyGroupsQuery } from "../../../generated/graphql-types";
 import { countdownDate } from "../../../utils/dateCalculator";
 import { useMyProfileStore } from "../../../zustand/myProfileStore";
 import { FaLocationArrow } from "react-icons/fa";
@@ -14,10 +14,9 @@ type MessagingProps = {
   participants: number;
   date: Date;
   groupId: number;
-  messages: NonNullable<
-    NonNullable<ReturnType<typeof useGetAllMyGroupsQuery>["data"]>["getAllMyGroups"]
-  >["groups"][0]["messages"];
+  messages: GetAllMessageMyGroupsQuery["getAllMessageMyGroups"][number]["messages"];
   calbackSendMessage: (groupId: number, message: string) => void;
+  contenairMessageRef: RefObject<HTMLDivElement | null>;
 };
 
 export default function Messaging({
@@ -27,6 +26,7 @@ export default function Messaging({
   groupId,
   messages,
   calbackSendMessage,
+  contenairMessageRef
 }: MessagingProps) {
   const [messageInput, setMessageInput] = useState<string>("");
   const { userProfile } = useMyProfileStore();
@@ -104,7 +104,7 @@ export default function Messaging({
         </div>
       </div>
       <div className="container-body-messaging">
-        <div className="container-messages">
+        <div ref={contenairMessageRef} className="container-messages">
           {messages
             ?.slice()
             .reverse()

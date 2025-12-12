@@ -1,34 +1,50 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Groups from "../components/Groups/Groups";
 import Messaging from "../components/Groups/Messaging/Messaging";
 // import PiggyBank from "../components/Groups/PiggyBank";
 // import Wishlist from "../components/Groups/Wishlist";
 import Button from "../components/utils/Button";
-import type { GetAllMyGroupsQuery } from "../generated/graphql-types";
+import type { GetAllMessageMyGroupsQuery, GetAllMyGroupsQuery } from "../generated/graphql-types";
 import { useGetAllMyGroupsQuery, useGetAllMessageMyGroupsQuery } from "../generated/graphql-types";
 import { useLiveChat } from "../hooks/useChat";
 import type { MessageType } from "../types/Groups";
 
+type message = GetAllMessageMyGroupsQuery["getAllMessageMyGroups"][number]["messages"][number];
+
 export default function Conversations() {
   const [_whislist, setWishlist] = useState(true);
 
-  const { data: groupData, refetch: refetchGroups } = useGetAllMyGroupsQuery({ fetchPolicy: "no-cache", nextFetchPolicy: "no-cache" });
-  const { data: messageData, refetch: refetchMessage } = useGetAllMessageMyGroupsQuery({ fetchPolicy: "no-cache", nextFetchPolicy: "no-cache" });
+  const { data: groupData } = useGetAllMyGroupsQuery({ fetchPolicy: "no-cache", nextFetchPolicy: "no-cache" });
+  const { data: messageData } = useGetAllMessageMyGroupsQuery({ fetchPolicy: "no-cache", nextFetchPolicy: "no-cache" });
   const [groups, setGroups] = useState<GetAllMyGroupsQuery["getAllMyGroups"]["groups"]>([]);
   const [messages, setMessages] = useState<MessageType>({});
 
   const [indexGroups, setIndexGroup] = useState<number>(-1);
 
-  const chat = useLiveChat(setMessages);
+  const contenairMessageRef = useRef<HTMLDivElement | null>(null);
+
+  const handlerNewMessage = (response: {
+    newMessage: message,
+    groupId: number
+  }) => {
+    setMessages(prev => {
+      const clone = structuredClone(prev);
+      clone[response.groupId]?.unshift(response.newMessage);
+      return clone;
+    });
+  };
+
+
+  // scrolle vers le bas quand le rerendu est fait
+  useLayoutEffect(() => {
+    contenairMessageRef.current?.scrollTo(0, contenairMessageRef.current.scrollHeight);
+  }, [messages]);
+
+  const chat = useLiveChat(handlerNewMessage);
 
   function calbackSetActiveGroupId(id: Number) {
     setIndexGroup(groups.findIndex((g) => Number(g.id) === Number(id)));
   }
-
-  // useEffect(() => {
-  //   refetchMessage();
-  //   refetchGroups();
-  // }, []);
 
   // pour set les groups
   useEffect(() => {
@@ -98,6 +114,7 @@ export default function Conversations() {
             groupId={Number(groups[indexGroups].id)}
             messages={messages[Number(groups[indexGroups].id)]}
             calbackSendMessage={chat.sendMessage}
+            contenairMessageRef={contenairMessageRef}
           />
         )}
       </div>

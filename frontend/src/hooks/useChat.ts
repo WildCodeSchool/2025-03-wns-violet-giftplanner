@@ -5,7 +5,7 @@ import { useLive } from "./useWebSocket";
 
 type message = GetAllMessageMyGroupsQuery["getAllMessageMyGroups"][number]["messages"][number];
 
-export function useLiveChat(setMessages: React.Dispatch<React.SetStateAction<MessageType>>) {
+export function useLiveChat(setMessages: (response: { newMessage: message, groupId: number }) => void) {
     const socket = useLive();
 
     function connectToRoom(token: string | undefined) {
@@ -22,21 +22,10 @@ export function useLiveChat(setMessages: React.Dispatch<React.SetStateAction<Mes
     useEffect(() => {
         if (!socket) return;
 
-        const handler = (response: {
-            newMessage: message,
-            groupId: number
-        }) => {
-            setMessages(prev => {
-                const clone = structuredClone(prev);
-                clone[response.groupId]?.unshift(response.newMessage);
-                return clone;
-            });
-        };
-
-        socket.on("room-new-message", handler);
+        socket.on("room-new-message", setMessages);
 
         return () => {
-            socket.off("room-new-message", handler);
+            socket.off("room-new-message", setMessages);
         };
     }, [socket]);
 
