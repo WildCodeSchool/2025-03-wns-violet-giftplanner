@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import Groups from "../components/Groups/Groups";
-import Messaging from "../components/Groups/Messaging/Messaging";
-import PiggyBank from "../components/Groups/PiggyBank";
-import Wishlist from "../components/Groups/Wishlist";
+import Groups from "../components/groups/Groups";
+import Messaging from "../components/groups/Messaging/Messaging";
+import PiggyBank from "../components/groups/PiggyBank";
+import Wishlist from "../components/groups/Wishlist";
 import Button from "../components/utils/Button";
 import type { GetAllMyGroupsQuery } from "../generated/graphql-types";
 import { useGetAllMyGroupsQuery } from "../generated/graphql-types";

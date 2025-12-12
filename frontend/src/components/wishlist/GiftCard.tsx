@@ -2,6 +2,8 @@ import clsx from "clsx";
 import type { Gift } from "../../types/Gift";
 import Icon from "../utils/Icon";
 import "./giftcard.css";
+import "./Wishlist.css";
+
 
 type GiftCardProps = {
   gift: Gift;
@@ -25,9 +27,9 @@ export default function GiftCard({ gift, className, onEdit, onDelete }: GiftCard
       {url ? (
         <a href={url} target="_blank" rel="noopener noreferrer" className="block">
           {imageUrl ? (
-            <img src={imageUrl} alt={name} className="w-full h-50 object-cover" />
+            <img src={imageUrl} alt={name} className="w-full h-40 object-cover" />
           ) : (
-            <div className="flex items-center justify-center w-full h-50 bg-[#FDFBF6]">
+            <div className="flex items-center justify-center w-full h-40 bg-[#FDFBF6]">
               <Icon icon="gift" className="text-9xl text-[#EA4B09] opacity-70" />
             </div>
           )}
@@ -39,9 +41,9 @@ export default function GiftCard({ gift, className, onEdit, onDelete }: GiftCard
       ) : (
         <div>
           {imageUrl ? (
-            <img src={imageUrl} alt={name} className="w-full h-50 object-cover" />
+            <img src={imageUrl} alt={name} className="w-full h-40 object-cover" />
           ) : (
-            <div className="flex items-center justify-center w-full h-50 bg-[#FDFBF6]">
+            <div className="flex items-center justify-center w-full h-40 bg-[#FDFBF6]">
               <Icon icon="gift" className="text-9xl text-[#EA4B09] opacity-70" />
             </div>
           )}
@@ -89,7 +91,7 @@ export default function GiftCard({ gift, className, onEdit, onDelete }: GiftCard
 export function GiftCardSkeleton() {
   return (
     <div className="bg-[#FDFBF6] rounded-xl shadow overflow-hidden animate-pulse">
-      <div className="w-full h-50 bg-gray-200" />
+      <div className="w-full h-40 bg-gray-200" />
       <div className="p-3">
         <div className="h-5 bg-gray-200 rounded mb-2 w-3/4" />
         <div className="h-4 bg-gray-200 rounded w-5/6" />

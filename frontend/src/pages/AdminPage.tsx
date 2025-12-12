@@ -1,14 +1,50 @@
 import { useState } from "react";
 import "./adminpage.css";
 import { LuBan, LuSearch, LuShield, LuShieldCheck, LuTrash2 } from "react-icons/lu";
+import { LuBan, LuSearch, LuShield, LuShieldCheck, LuTrash2 } from "react-icons/lu";
 import {
+  useBanUserMutation,
+  useDeleteUserMutation,
+  useGetAllUsersForAdminQuery,
+  useUnbanUserMutation, // ← Ajoute cette import après avoir régénéré les types
   useBanUserMutation,
   useDeleteUserMutation,
   useGetAllUsersForAdminQuery,
   useUnbanUserMutation, // ← Ajoute cette import après avoir régénéré les types
 } from "../generated/graphql-types";
 import type { ModalConfig, User } from "../types/AdminPage";
+import type { ModalConfig, User } from "../types/AdminPage";
 import { useMyProfileStore } from "../zustand/myProfileStore";
+
+interface ConfirmModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  title?: string;
+  message?: string;
+}
+
+// Local ConfirmModal using page CSS (no Tailwind)
+const ConfirmModal = ({ isOpen, onClose, onConfirm, title, message }: ConfirmModalProps) => {
+  if (!isOpen) return null;
+
+  return (
+    <button type="button" className="modal-overlay" onClick={onClose}>
+      <button type="button" className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <h2>{title}</h2>
+        <p>{message}</p>
+        <div className="modal-actions">
+          <button type="button" className="modal-btn-cancel" onClick={onClose}>
+            Annuler
+          </button>
+          <button type="button" className="modal-btn-confirm" onClick={onConfirm}>
+            Confirmer
+          </button>
+        </div>
+      </button>
+    </button>
+  );
+};
 
 const AdminPage = () => {
   const { data, loading, error, refetch } = useGetAllUsersForAdminQuery();
@@ -175,7 +211,7 @@ const AdminPage = () => {
       <div className="admin-container-scrollable">
         <div className="admin-header">
           <div className="admin-title">
-            <LuShield className="admin-title-icon" />
+            <LuShield className="admin-title-icon max-md:hidden" />
             <h1 className="admin-title-text">Gestion des utilisateurs</h1>
           </div>
           <div className="admin-search-section">
@@ -201,7 +237,31 @@ const AdminPage = () => {
               <p className="admin-success-message">{messageSuccess}</p>
             </div>
           )}
+        <div className="admin-content">
+          {messageError && (
+            <div className="admin-message-div">
+              <p className="admin-error-message">{messageError}</p>
+            </div>
+          )}
+          {messageSuccess && (
+            <div className="admin-message-div">
+              <p className="admin-success-message">{messageSuccess}</p>
+            </div>
+          )}
 
+          <div className="admin-table-wrapper">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Profil</th>
+                  <th>Nom</th>
+                  <th>Email</th>
+                  <th>Rôle</th>
+                  <th>Statut</th>
+                  <th>Création</th>
+                  <th className="action-title">Actions</th>
+                </tr>
+              </thead>
           <div className="admin-table-wrapper">
             <table className="admin-table">
               <thead>
@@ -222,9 +282,14 @@ const AdminPage = () => {
                     <td>
                       <img src={u.image_url || "/default.png"} className="admin-user-img" alt="profile" />
                     </td>
-                    <td>{u.firstName + " " + u.lastName}</td>
+                    <td>{`${u.firstName} ${u.lastName}`}</td>
                     <td>{u.email}</td>
 
+                    <td>
+                      <span className={`admin-role ${u.isAdmin ? "admin-role-admin" : ""}`}>
+                        {u.isAdmin ? "ADMIN" : "USER"}
+                      </span>
+                    </td>
                     <td>
                       <span className={`admin-role ${u.isAdmin ? "admin-role-admin" : ""}`}>
                         {u.isAdmin ? "ADMIN" : "USER"}
@@ -238,13 +303,22 @@ const AdminPage = () => {
                         <span className="admin-status-active">Actif</span>
                       )}
                     </td>
+                    <td>
+                      {u.isBanned ? (
+                        <span className="admin-status-banned">Banni</span>
+                      ) : (
+                        <span className="admin-status-active">Actif</span>
+                      )}
+                    </td>
 
+                    <td>{new Date(u.createdAt).toLocaleDateString("fr-FR")}</td>
                     <td>{new Date(u.createdAt).toLocaleDateString("fr-FR")}</td>
 
                     <td className="admin-actions">
                       {/* ← Modifier cette partie */}
                       {u.isBanned ? (
                         <button
+                          type="button"
                           className="admin-btn-unban"
                           onClick={() => openModal("unban", u)}
                           style={{ visibility: u.id === userProfile?.id ? "hidden" : "visible" }}
@@ -254,6 +328,7 @@ const AdminPage = () => {
                         </button>
                       ) : (
                         <button
+                          type="button"
                           className="admin-btn-ban"
                           onClick={() => openModal("ban", u)}
                           style={{ visibility: u.id === userProfile?.id ? "hidden" : "visible" }}
@@ -264,6 +339,7 @@ const AdminPage = () => {
                       )}
 
                       <button
+                        type="button"
                         className="admin-btn-delete"
                         onClick={() => openModal("delete", u)}
                         style={{ visibility: u.id === userProfile?.id ? "hidden" : "visible" }}

@@ -10,6 +10,18 @@ import {
   Root,
   UseMiddleware,
 } from "type-graphql";
+import {
+  Arg,
+  Ctx,
+  Field,
+  FieldResolver,
+  InputType,
+  Mutation,
+  Query,
+  Resolver,
+  Root,
+  UseMiddleware,
+} from "type-graphql";
 import Group from "../entities/Group";
 import { GroupMember } from "../entities/GroupMember";
 import { Message } from "../entities/Message";
@@ -54,6 +66,15 @@ export default class GroupResolver {
       order: { id: "DESC" },
     });
 
+    // charge les 10 derniers messages de chaque groupe
+    for (const group of groups) {
+      group.messages = await Message.find({
+        where: { group: { id: group.id } },
+        relations: { user: true },
+        order: { createdAt: "DESC" },
+        take: 20,
+      });
+    }
     return groups;
   }
 
@@ -118,15 +139,23 @@ export default class GroupResolver {
 
     //gérer l'ajout des utilisateurs au groupe, mapper users et les ajouter s'ils existent
     if (data.users && data.users.length > 0) {
-      await addMembersToGroup({ userEmails: data.users, groupId: group.id });
+      await Promise.all(
+        data.users.map(async (userEmail) => {
+          const userToAdd = await User.findOne({ where: { email: userEmail } });
+          if (!userToAdd) {
+            return;
+          }
+
+          const groupMember = GroupMember.create({
+            userId: userToAdd.id,
+            groupId: group.id,
+          });
+
+          await groupMember.save();
+        }),
+      );
     }
 
-    // Reload with relations so user_admin and user_beneficiary are resolved in the response
-    const loadedGroup = await Group.findOne({
-      where: { id: group.id },
-      relations: { user_admin: true, user_beneficiary: true, groupMember: true },
-    });
-
-    return loadedGroup ?? group;
+    return group;
   }
 }

@@ -120,7 +120,7 @@ export default class UserResolver {
 
   @Query(() => [User])
   @UseMiddleware(RoleMiddleware(true))
-  async getAllUsersForAdmin(@Ctx() ctx: ContextType) {
+  async getAllUsersForAdmin(@Ctx() _ctx: ContextType) {
     // Récupérer tous les utilisateurs (y compris les bannis, mais pas les supprimés)
     const allUsers = await User.find({
       where: { deletedAt: IsNull() },
@@ -244,7 +244,7 @@ export default class UserResolver {
         urlImage = await axios.post("http://picture-service:3410/service/picture/uploads", {
           imageBase64: data.pictureBase64,
         });
-      } catch (error) {
+      } catch (_error) {
         throw new Error("Erreur lors de l'upload de l'image");
       }
     }
@@ -371,7 +371,7 @@ export default class UserResolver {
 
   @Mutation(() => BanUserResponse)
   @UseMiddleware(RoleMiddleware(true))
-  async unbanUser(@Arg("userId") userId: number, @Ctx() ctx: ContextType): Promise<BanUserResponse> {
+  async unbanUser(@Arg("userId") userId: number, @Ctx() _ctx: ContextType): Promise<BanUserResponse> {
     // RoleMiddleware protège déjà l'accès (utilisateur authentifié et admin)
 
     // Vérifier que l'utilisateur existe
