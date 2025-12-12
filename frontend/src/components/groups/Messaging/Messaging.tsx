@@ -62,6 +62,10 @@ export default function Messaging({ title, participants, date, groupId, messages
     }
   };
 
+<<<<<<< HEAD:frontend/src/components/Groups/Messaging/Messaging.tsx
+  console.info("messages", messages);
+=======
+>>>>>>> 82131b8a6efc56c28c1fc2d80735de567fbe0296:frontend/src/components/groups/Messaging/Messaging.tsx
   return (
     <div className="rounded-2xl w-full h-full border-grey border-2 border-lg flex flex-col ">
       <div className="relative w-full h-2/12 bg-blue rounded-t-2xl flex-row flex justify-center items-center py-4">
@@ -73,7 +77,11 @@ export default function Messaging({ title, participants, date, groupId, messages
                 ? `Ce groupe a expiré depuis ${Math.abs(daysLeft)} jour(s)`
                 : `${daysLeft} jour(s) restant(s)`}{" "}
             </span>{" "}
-            - <span> {participants} participants </span>
+            -{" "}
+            <span>
+              {" "}
+              {participants} {participants === 1 ? "participant" : "participants"}{" "}
+            </span>
           </p>
         </div>
         <div className="absolute right-0 px-8">
@@ -90,13 +98,19 @@ export default function Messaging({ title, participants, date, groupId, messages
                 key={message.id}
                 text={message.content}
                 imageUrl={message.user.image_url ? message.user.image_url : ""}
+<<<<<<< HEAD:frontend/src/components/Groups/Messaging/Messaging.tsx
+                align={message.user.id === userProfile?.id ? "right" : "left"}
+=======
                 align={message.user.id === userProfile.id ? "right" : "left"}
+>>>>>>> 82131b8a6efc56c28c1fc2d80735de567fbe0296:frontend/src/components/groups/Messaging/Messaging.tsx
               />
             );
           })}
         <div ref={bottomRef} />
       </div>
       <div className="">
+        {" "}
+        {/* TODO: fix to bottom */}
         <form onSubmit={handleSendMessage} className="flex flex-row justify-around p-4">
           <textarea
             placeholder="Ecrire un message..."

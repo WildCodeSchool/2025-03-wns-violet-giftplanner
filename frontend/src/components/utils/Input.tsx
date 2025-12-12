@@ -28,12 +28,12 @@ export default function Input({
   ...props
 }: InputProps) {
   const baseStyles =
-    "w-full px-4 py-2 border-2 rounded-lg font-inter font-bold text-md outline-none transition-colors duration-200";
+    "w-full px-4 py-2 border-2 rounded-lg font-inter font-bold text-md outline-none transition-colors duration-200 focus:border-4";
 
   const themeStyles =
     theme === "dark"
-      ? " border-dark text-dark focus:border-blue"
-      : "bg-transparent border-white-100 text-white placeholder-white-100 focus:placeholder-white ";
+      ? " border-dark text-dark focus:border-dark"
+      : "bg-transparent border-white text-white placeholder-white-100 focus:placeholder-white";
 
   const errorStyles = error ? "border-orange focus:border-orange" : "";
 

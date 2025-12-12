@@ -70,9 +70,10 @@ export class Group extends BaseEntity {
   @ManyToOne(
     () => Users,
     (user_beneficiary) => user_beneficiary.beneficiary_groups,
+    { nullable: true },
   )
-  @Field(() => Users)
-  user_beneficiary: Users;
+  @Field(() => Users, { nullable: true })
+  user_beneficiary?: Users | null;
 
   @ManyToOne(
     () => List,
