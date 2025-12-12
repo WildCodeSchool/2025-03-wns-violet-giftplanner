@@ -12,9 +12,7 @@ export default function Modal({ isOpen, onClose, children, className }: ModalPro
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75">
-      <div 
-        className={`bg-[#FDFBF6] rounded-2xl shadow-xl w-10/12 h-10/12 mx-4 relative ${className || ""}`}
-      >
+      <div className={`bg-[#FDFBF6] rounded-2xl shadow-xl w-10/12 h-10/12 mx-4 relative ${className || ""}`}>
         <button
           type="button"
           onClick={onClose}

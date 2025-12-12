@@ -4,8 +4,8 @@ import Messaging from "../components/Groups/Messaging/Messaging";
 import PiggyBank from "../components/Groups/PiggyBank";
 import Wishlist from "../components/Groups/Wishlist";
 import Button from "../components/utils/Button";
-import { useGetAllMyGroupsQuery } from "../generated/graphql-types";
 import type { GetAllMyGroupsQuery } from "../generated/graphql-types";
+import { useGetAllMyGroupsQuery } from "../generated/graphql-types";
 
 export default function Conversations() {
   const { data, loading, error } = useGetAllMyGroupsQuery();
@@ -16,7 +16,6 @@ export default function Conversations() {
   useEffect(() => {
     // waiting for data to load
     if (!data?.getAllMyGroups) return;
-    
 
     if (data.getAllMyGroups.length === 0) {
       setActiveGroup(null);
@@ -33,7 +32,6 @@ export default function Conversations() {
     setActiveGroup(existing ?? data.getAllMyGroups[0]);
   }, [data, activeGroup]);
 
-
   //TO DO: set activeGroup.id in url
 
   return (
@@ -41,12 +39,7 @@ export default function Conversations() {
       {/* Left Column */}
       <div className="flex flex-col mx-[2vw] h-full min-h-0 justify-between">
         <div className="h-[calc(50%-2rem)] flex pb-2 ">
-          <Groups
-            groups={groups}
-            setActiveGroup={setActiveGroup}
-            loading={loading}
-            error={error?.message}
-          />
+          <Groups groups={groups} setActiveGroup={setActiveGroup} loading={loading} error={error?.message} />
         </div>
 
         <div className="flex flex-row gap-2 pb-2 absolute top-[calc(50%)]">
@@ -69,12 +62,7 @@ export default function Conversations() {
         </div>
 
         <div className="h-[calc(50%-2rem)] flex pt-2">
-          {activeGroup &&
-            (whislist ? (
-              <Wishlist />
-            ) : (
-              <PiggyBank pot={activeGroup.piggy_bank} />
-            ))}
+          {activeGroup && (whislist ? <Wishlist /> : <PiggyBank pot={activeGroup.piggy_bank} />)}
         </div>
       </div>
 

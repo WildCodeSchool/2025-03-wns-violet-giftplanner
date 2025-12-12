@@ -1,6 +1,6 @@
 import type React from "react";
+import type { ColourScheme } from "../../types/ColourScheme";
 import Title from "./Title";
-import type { ColourScheme }  from "../../types/ColourScheme";
 
 type ContainerProps = {
   colour: ColourScheme["colour"];

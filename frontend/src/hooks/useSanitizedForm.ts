@@ -35,7 +35,9 @@ export function sanitizeObject<T extends Record<string, any>>(obj: T): T {
   return sanitized;
 }
 
-type ValidatorFn<T, E extends Record<string, string | undefined> = Partial<Record<keyof T, string>>> = (values: T) => E;
+type ValidatorFn<T, E extends Record<string, string | undefined> = Partial<Record<keyof T, string>>> = (
+  values: T,
+) => E;
 
 /**
  * Hook for managing and sanitizing form data.
@@ -43,10 +45,10 @@ type ValidatorFn<T, E extends Record<string, string | undefined> = Partial<Recor
  */
 export function useSanitizedForm<
   T extends Record<string, any>,
-  E extends Record<string, string | undefined> = Partial<Record<keyof T, string>>
+  E extends Record<string, string | undefined> = Partial<Record<keyof T, string>>,
 >(initialState: T, validate?: ValidatorFn<T, E>) {
   const [formData, setFormData] = useState<T>(initialState);
-  const [errors, setErrors] = useState<E>(() => ({} as E)); //The type here means “an object whose keys are the same as the keys of T, and whose values are strings.”, all keys optional because of Partial
+  const [errors, setErrors] = useState<E>(() => ({}) as E); //The type here means “an object whose keys are the same as the keys of T, and whose values are strings.”, all keys optional because of Partial
 
   // Handle controlled input changes
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {

@@ -1,6 +1,6 @@
+import type { ColourScheme } from "../../types/ColourScheme";
 import type { IconProps } from "./Icon";
 import Icon from "./Icon";
-import type { ColourScheme } from "../../types/ColourScheme";
 
 type ButtonType = HTMLButtonElement["type"];
 type ButtonProps = {
@@ -33,7 +33,7 @@ export default function Button({
     yellow: "bg-yellow",
     dark: "bg-dark",
     white: "bg-white",
-    light: "bg-light"
+    light: "bg-light",
   };
 
   const backgroundColour = backgroundColours[colour] || backgroundColours.green;

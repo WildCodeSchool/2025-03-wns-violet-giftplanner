@@ -1,5 +1,5 @@
-import { PendingInvitation } from "../entities/PendingInvitation";
 import { Query, Resolver } from "type-graphql";
+import { PendingInvitation } from "../entities/PendingInvitation";
 
 @Resolver(PendingInvitation)
 export default class InvitationResolver {

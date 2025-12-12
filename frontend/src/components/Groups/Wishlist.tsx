@@ -16,12 +16,12 @@ export default function Wishlist({ wishlistItems = [] }: WishlistProps) {
     >
       {wishlistItems.length > 0 ? (
         wishlistItems.map((item) => {
-        return (
-          <Card key={item.id} id={item.id} title={item.title} large square>
-            <p className="text-gray-600 text-xs sm:text-sm">{item.description}</p>
-          </Card>
-        );
-      })
+          return (
+            <Card key={item.id} id={item.id} title={item.title} large square>
+              <p className="text-gray-600 text-xs sm:text-sm">{item.description}</p>
+            </Card>
+          );
+        })
       ) : (
         <p className="text-white">Cette liste d'idées est vide. Il va falloir trouver un cadeau...</p>
       )}

@@ -1,11 +1,22 @@
-import { Arg, Ctx, Field, InputType, Mutation, Query, Resolver, UseMiddleware, FieldResolver, Root, Authorized } from "type-graphql";
+import {
+  Arg,
+  Ctx,
+  Field,
+  FieldResolver,
+  InputType,
+  Mutation,
+  Query,
+  Resolver,
+  Root,
+  UseMiddleware,
+} from "type-graphql";
 import Group from "../entities/Group";
 import { GroupMember } from "../entities/GroupMember";
-import { RoleMiddleware } from "../middleware/RoleMiddleware";
-import type { ContextType } from "../types/context";
-import User from "../entities/User";
 import { Message } from "../entities/Message";
+import User from "../entities/User";
+import { RoleMiddleware } from "../middleware/RoleMiddleware";
 import { addMembersToGroup } from "../services/groupMemberService";
+import type { ContextType } from "../types/context";
 
 @InputType()
 class CreateGroupInput {
@@ -34,7 +45,6 @@ export default class GroupResolver {
   @Query(() => [Group])
   // @Authorized()
   async getAllMyGroups(@Ctx() ctx: ContextType) {
-    
     if (!ctx.user) throw new Error("Utilisateur non connecté"); //TO do: changer avec le context authorized ci-dessus  @Authorized()
 
     //Find all the groups of the connected user
@@ -44,14 +54,13 @@ export default class GroupResolver {
       order: { id: "DESC" },
     });
 
-
     return groups;
   }
 
   @FieldResolver(() => [GroupMember])
   async groupMember(@Root() group: Group) {
     const groupMembers = await GroupMember.find({
-      where: { groupId: group.id }
+      where: { groupId: group.id },
     });
 
     return groupMembers || []; // >>> not null
@@ -71,12 +80,11 @@ export default class GroupResolver {
 
   @Mutation(() => Group)
   async createGroup(@Arg("data") data: CreateGroupInput, @Ctx() ctx: ContextType) {
-    console.log(ctx)
     //TO DO: vérifier les inputs et les nettoyer
     if (!ctx.user) throw new Error("Utilisateur non connecté");
 
     //ajouter l'utilisateur créant le groupe comme admin du groupe
-    let userAdmin;
+    let userAdmin: User;
     try {
       userAdmin = await User.findOneOrFail({ where: { id: ctx.user.id } });
     } catch {

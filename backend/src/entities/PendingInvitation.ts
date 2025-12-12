@@ -4,13 +4,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-  JoinColumn
 } from "typeorm";
 import { Group } from "./Group";
-
 
 @Entity()
 @ObjectType()
@@ -33,20 +32,22 @@ export class PendingInvitation extends BaseEntity {
   @Field()
   updated_at: Date;
 
-  @Column({nullable : false, default: false})
+  @Column({ nullable: false, default: false })
   @Field()
-  joinedGroup : boolean;
+  joinedGroup: boolean;
 
   @Column()
   @Field()
-  groupId: number
+  groupId: number;
 
   @Column()
   @Field()
-  userEmail: string
+  userEmail: string;
 
-  @ManyToOne(() => Group, (group)=> group.groupMember)
-  @JoinColumn({name: "groupId"})
+  @ManyToOne(
+    () => Group,
+    (group) => group.groupMember,
+  )
+  @JoinColumn({ name: "groupId" })
   group: Group;
-
 }

@@ -1,51 +1,48 @@
 import type React from "react";
 import { useState } from "react";
 import { useCreateGroupMutation } from "../../generated/graphql-types";
+import { GET_ALL_MY_GROUPS } from "../../graphql/operations";
 import { groupCreationFormValidation } from "../../hooks/formValidationRules";
 import { useSanitizedForm } from "../../hooks/useSanitizedForm";
-import useVerifyEmail from "../../hooks/useVerifyEmail";
-import { GET_ALL_MY_GROUPS } from "../../graphql/operations";
 import Button from "../utils/Button";
 import Icon from "../utils/Icon";
 import Input from "../utils/Input";
-import SearchInput from "../utils/SearchInput";
-import Title from "../utils/Title";
 import InputWithToggle from "../utils/InputWithToggle";
-import GroupLink from "./GroupLink";
 import ResponsiveImage from "../utils/ResponsiveImage";
 import SearchSelectInput from "../utils/SearchSelectInput";
+import Title from "../utils/Title";
+import GroupLink from "./GroupLink";
 
 type CreateGroupFormProps = {
-  onSuccess?: () => void; 
+  onSuccess?: () => void;
 };
 
 export default function CreateGroupForm({ onSuccess }: CreateGroupFormProps) {
-
   const options = [
     {
       label: "Anniversaire",
-      value:"Anniversaire"
+      value: "Anniversaire",
     },
     {
       label: "Marriage",
-      value:"Marriage"
+      value: "Marriage",
     },
     {
       label: "Naissance",
-      value:"Naissance"
+      value: "Naissance",
     },
     {
       label: "Pot de départ",
-      value:"Pot de départ"
+      value: "Pot de départ",
     },
     {
       label: "Noël",
-      value:"Noël"
+      value: "Noël",
     },
-  ]
+  ];
 
   const [query, setQuery] = useState("");
-  const [checked, setChecked] = useState(false)
+  const [checked, setChecked] = useState(false);
 
   const { formData, handleChange, getSanitizedData, errors, isValid, setFormData, isEmpty } =
     useSanitizedForm(
@@ -55,7 +52,7 @@ export default function CreateGroupForm({ onSuccess }: CreateGroupFormProps) {
         piggy_bank: 0,
         deadline: "",
         users: [] as string[],
-        user_beneficiary: ""
+        user_beneficiary: "",
       },
       groupCreationFormValidation,
     );
@@ -103,14 +100,13 @@ export default function CreateGroupForm({ onSuccess }: CreateGroupFormProps) {
           piggy_bank: 0,
           deadline: "",
           users: [],
-          user_beneficiary: "" //Do not reset users here instead show the list of existing users
+          user_beneficiary: "", //Do not reset users here instead show the list of existing users
         });
 
         setChecked(false);
 
         // Close the parent modal if provided
         if (onSuccess) onSuccess();
-
       } catch (error: unknown) {
         console.error("Error creating group:", error);
         if (error instanceof Error) {
@@ -127,7 +123,6 @@ export default function CreateGroupForm({ onSuccess }: CreateGroupFormProps) {
   return (
     <form className=" flex w-full h-full rounded-2xl" onSubmit={handleSubmit} autoComplete="off">
       <div className="bg-green w-1/2 h-full flex flex-col justify-center pt-10 pb-5 rounded-tl-2xl rounded-bl-2xl">
-        
         {/* Form to create a new group */}
         <Title className="text-center text-2xl">Créer un groupe</Title>
         <div className="text-white text-8xl m-auto">
@@ -155,7 +150,7 @@ export default function CreateGroupForm({ onSuccess }: CreateGroupFormProps) {
             placeholder="Quel est l'événement ?"
             error={errors.event_type}
             icon="gift"
-            options = {options}
+            options={options}
             theme="light"
           />
 
@@ -169,16 +164,17 @@ export default function CreateGroupForm({ onSuccess }: CreateGroupFormProps) {
             icon="dollar"
           />
 
-          <InputWithToggle 
+          <InputWithToggle
             checked={checked}
-            onCheckedChange={()=>{setChecked(!checked)}} 
-            name="user_beneficiary" 
-            value={formData.user_beneficiary} 
+            onCheckedChange={() => {
+              setChecked(!checked);
+            }}
+            name="user_beneficiary"
+            value={formData.user_beneficiary}
             onChange={handleChange}
             label="Le nom du destinataire"
             question="Voulez-vous ajouter un destinataire? "
             error={errors.user_beneficiary}
-            
           />
 
           <Input
@@ -188,7 +184,6 @@ export default function CreateGroupForm({ onSuccess }: CreateGroupFormProps) {
             onChange={handleChange}
             error={errors.deadline}
           />
-        
         </div>
         <Button
           type="submit"
@@ -205,19 +200,12 @@ export default function CreateGroupForm({ onSuccess }: CreateGroupFormProps) {
 
       <div className="w-1/2 bg-white h-full flex flex-col rounded-tr-2xl rounded-br-2xl">
         <div className="flex flex-col gap-4 px-20 m-auto">
-          
           {/* Adding users can go here */}
           <div className="flex flex-row items-center w-full border border-blue">
             <GroupLink />
-            <ResponsiveImage 
-              src={`/images/papier-theme.jpg`}
-              alt="QR Code"
-              maxWidth="w-64"
-              rounded
-            />
+            <ResponsiveImage src={`/images/papier-theme.jpg`} alt="QR Code" maxWidth="w-64" rounded />
           </div>
 
-          
           {/* TO DO: reintegrer le user input
           <SearchInput
             placeholder="Ajouter des participants..."
@@ -242,5 +230,3 @@ export default function CreateGroupForm({ onSuccess }: CreateGroupFormProps) {
     </form>
   );
 }
-
-

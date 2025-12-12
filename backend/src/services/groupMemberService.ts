@@ -21,10 +21,10 @@ export async function addMembersToGroup({ userEmails, groupId }: AddMembersInput
         // if the user does not exist in the db, add it to the pendinginvitationList
         const pendingInvitation = PendingInvitation.create({
           userEmail: userEmail,
-          groupId
-        })
+          groupId,
+        });
 
-        await pendingInvitation.save()
+        await pendingInvitation.save();
         return;
       }
 
@@ -34,7 +34,6 @@ export async function addMembersToGroup({ userEmails, groupId }: AddMembersInput
       });
 
       await groupMember.save();
-    })
+    }),
   );
 }
-

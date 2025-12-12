@@ -7,33 +7,24 @@ interface ToggleProps {
   mode?: "light" | "dark";
 }
 
-const colourClasses: Record<string, string> = {
-  orange: "bg-red",
-  blue: "bg-blue",
-  green: "bg-green",
-  yellow: "bg-yellow",
-  light: "bg-light-gray"
+// const colourClasses: Record<string, string> = {
+//   orange: "bg-red",
+//   blue: "bg-blue",
+//   green: "bg-green",
+//   yellow: "bg-yellow",
+//   light: "bg-light-gray",
 
-  // add more as needed
-};
+//   // add more as needed
+// };
 
-export default function ToggleSwitch({
-  checked,
-  onChange,
-  colour = "light",
-  mode = "light",
-}: ToggleProps) {
-
-  const borderColour =
-    mode === "dark" ? "border-gray-300" : "border-white";
-
-  const bulletColour =
-    mode === "dark" ? "bg-gray-200" : "bg-white";
+export default function ToggleSwitch({ checked, onChange, mode = "light" }: ToggleProps) {
+  const borderColour = mode === "dark" ? "border-gray-300" : "border-white";
+  const bulletColour = mode === "dark" ? "bg-gray-200" : "bg-white";
 
   return (
     <div
       onClick={() => onChange(!checked)}
-      role="switch"
+      aria-role="switch"
       className={`
         shrink-0
         basis-auto

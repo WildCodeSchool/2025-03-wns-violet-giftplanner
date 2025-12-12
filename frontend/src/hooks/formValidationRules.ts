@@ -23,33 +23,36 @@ export function groupCreationFormValidation(values: CreateGroupInput) {
     errors.deadline = "La date ne peut pas être dans le passé";
 
   //If all values are empty
-  if (!values.deadline && !values.event_type && !values.name && !values.piggy_bank && !values.user_beneficiary) {
-    errors.main = "Les champs doivent être rempli"
+  if (
+    !values.deadline &&
+    !values.event_type &&
+    !values.name &&
+    !values.piggy_bank &&
+    !values.user_beneficiary
+  ) {
+    errors.main = "Les champs doivent être rempli";
   }
 
   if (values.user_beneficiary && values.users) {
     //verify beneficiary is not in users
     if (values.users?.find((user) => user === values.user_beneficiary)) {
-      errors.user_beneficiary = "Le bénéficiaire ne peut pas être un membre du groupe."
-      errors.users = "Le bénéficiaire ne peut pas être un membre du groupe."
+      errors.user_beneficiary = "Le bénéficiaire ne peut pas être un membre du groupe.";
+      errors.users = "Le bénéficiaire ne peut pas être un membre du groupe.";
     }
   }
 
   if (values.user_beneficiary) {
-    if (verifyEmail(values.user_beneficiary)) errors.user_beneficiary = "L'adresse email n'est pas valide"
+    if (verifyEmail(values.user_beneficiary)) errors.user_beneficiary = "L'adresse email n'est pas valide";
   }
 
   if (values.users && values.users.length > 0) {
     const uniqueUsers = new Set(values.users);
     //Set makes a copy of unique values
-  
+
     if (uniqueUsers.size !== values.users.length) {
       errors.users = "L'utilisateur existe déjà dans ce groupe.";
     }
   }
-
-
-
 
   return errors;
 }

@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState } from "react";
-import Icon from "./Icon";
 import type { IconTypes } from "./Icon";
+import Icon from "./Icon";
 
 interface Option {
   label: string;
@@ -39,9 +39,7 @@ export default function SearchSelectInput({
   const [focusedIndex, setFocusedIndex] = useState<number>(-1);
 
   // Filter options
-  const filtered = options.filter((opt) =>
-    opt.label.toLowerCase().includes(query.toLowerCase())
-  );
+  const filtered = options.filter((opt) => opt.label.toLowerCase().includes(query.toLowerCase()));
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -61,9 +59,7 @@ export default function SearchSelectInput({
 
     if (e.key === "ArrowDown") {
       e.preventDefault();
-      setFocusedIndex((prev) =>
-        prev < filtered.length - 1 ? prev + 1 : prev
-      );
+      setFocusedIndex((prev) => (prev < filtered.length - 1 ? prev + 1 : prev));
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
       setFocusedIndex((prev) => (prev > 0 ? prev - 1 : prev));
@@ -91,9 +87,7 @@ export default function SearchSelectInput({
   const errorInput = error ? "border-orange focus:border-orange" : "";
 
   const dropdownStyles =
-    theme === "dark"
-      ? "bg-black border-white text-white" 
-      : "bg-white border-white border-4 text-dark";
+    theme === "dark" ? "bg-black border-white text-white" : "bg-white border-white border-4 text-dark";
 
   return (
     <div ref={containerRef} className="flex flex-col w-full" onKeyDown={handleKeyDown}>
@@ -112,17 +106,10 @@ export default function SearchSelectInput({
             onClick={() => setOpen(true)}
           >
             <span className={value ? "" : "opacity-50"}>
-              {value
-                ? options.find((o) => o.value === value)?.label
-                : placeholder}
+              {value ? options.find((o) => o.value === value)?.label : placeholder}
             </span>
 
-            {icon && (
-              <Icon
-                icon={icon}
-                className={`text-2xl ${error ? "text-orange" : "text-white"}`}
-              />
-            )}
+            {icon && <Icon icon={icon} className={`text-2xl ${error ? "text-orange" : "text-white"}`} />}
           </div>
         )}
 
@@ -151,9 +138,7 @@ export default function SearchSelectInput({
             `}
           >
             {/* OPTIONS */}
-            {filtered.length === 0 && (
-              <div className="p-3 opacity-60 italic">Pas de résultats...</div>
-            )}
+            {filtered.length === 0 && <div className="p-3 opacity-60 italic">Pas de résultats...</div>}
 
             {filtered.map((option, index) => {
               const selected = option.value === value;

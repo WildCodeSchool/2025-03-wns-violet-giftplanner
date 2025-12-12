@@ -2,8 +2,8 @@ import { Arg, Ctx, Int, Mutation, Query, Resolver } from "type-graphql";
 import { Gift } from "../entities/Gift";
 import List from "../entities/List";
 import User from "../entities/User";
-import { AddGiftInput } from "../inputs/AddGiftInput";
-import { UpdateGiftInput } from "../inputs/UpdateGiftInput";
+import type { AddGiftInput } from "../inputs/AddGiftInput";
+import type { UpdateGiftInput } from "../inputs/UpdateGiftInput";
 import type { ContextType } from "../types/context";
 
 @Resolver()

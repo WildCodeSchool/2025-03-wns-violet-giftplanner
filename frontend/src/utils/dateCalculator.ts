@@ -9,8 +9,6 @@ export function countdownDate(date: Date) {
 
   // use getTime() so subtraction is between numbers (milliseconds)
   const diffMs = lastDay.getTime() - today.getTime();
-
-  console.log(diffMs / MS_PER_DAY);
   return Math.round(diffMs / MS_PER_DAY);
 }
 
