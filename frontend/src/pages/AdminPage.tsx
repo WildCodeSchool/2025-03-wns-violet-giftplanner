@@ -1,51 +1,14 @@
 import { useState } from "react";
 import "./adminpage.css";
 import { LuBan, LuSearch, LuShield, LuShieldCheck, LuTrash2 } from "react-icons/lu";
-import { LuBan, LuSearch, LuShield, LuShieldCheck, LuTrash2 } from "react-icons/lu";
 import {
-  useBanUserMutation,
-  useDeleteUserMutation,
-  useGetAllUsersForAdminQuery,
-  useUnbanUserMutation, // ← Ajoute cette import après avoir régénéré les types
   useBanUserMutation,
   useDeleteUserMutation,
   useGetAllUsersForAdminQuery,
   useUnbanUserMutation, // ← Ajoute cette import après avoir régénéré les types
 } from "../generated/graphql-types";
 import type { ModalConfig, User } from "../types/AdminPage";
-import type { ModalConfig, User } from "../types/AdminPage";
 import { useMyProfileStore } from "../zustand/myProfileStore";
-
-interface ConfirmModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-  title?: string;
-  message?: string;
-}
-
-// Local ConfirmModal using page CSS (no Tailwind)
-const ConfirmModal = ({ isOpen, onClose, onConfirm, title, message }: ConfirmModalProps) => {
-  if (!isOpen) return null;
-
-  return (
-    <button type="button" className="modal-overlay" onClick={onClose}>
-      <button type="button" className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <h2>{title}</h2>
-        <p>{message}</p>
-        <div className="modal-actions">
-          <button type="button" className="modal-btn-cancel" onClick={onClose}>
-            Annuler
-          </button>
-          <button type="button" className="modal-btn-confirm" onClick={onConfirm}>
-            Confirmer
-          </button>
-        </div>
-      </button>
-    </button>
-  );
-};
-
 const AdminPage = () => {
   const { data, loading, error, refetch } = useGetAllUsersForAdminQuery();
 
@@ -262,6 +225,7 @@ const AdminPage = () => {
                   <th className="action-title">Actions</th>
                 </tr>
               </thead>
+            </table>
           <div className="admin-table-wrapper">
             <table className="admin-table">
               <thead>
@@ -363,6 +327,8 @@ const AdminPage = () => {
           title={modalConfig.title}
           message={modalConfig.message}
         />
+      </div>
+    </div>
       </div>
     </div>
   );

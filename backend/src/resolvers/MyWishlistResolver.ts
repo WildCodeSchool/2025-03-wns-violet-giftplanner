@@ -7,41 +7,21 @@ import { AddGiftInput } from "../inputs/AddGiftInput";
 // biome-ignore lint/style/useImportType: bye passe biom
 import { UpdateGiftInput } from "../inputs/UpdateGiftInput";
 import type { ContextType } from "../types/context";
+import { getOrCreateUserWishlist } from "../utils/getOrCreateUserWishlist";
 
 @Resolver()
-export default class WishlistResolver {
+export default class MyWishlistResolver {
   @Query(() => [Gift])
-  async wishlistItems(
-    @Ctx() ctx: ContextType,
-    @Arg("listId", () => Int, { nullable: true }) listId?: number,
-  ): Promise<Gift[]> {
+  async myWishlistItems(@Ctx() ctx: ContextType): Promise<Gift[]> {
     if (!ctx.user) throw new Error("Utilisateur non connecté");
 
-    // If a listId is provided → fetch gifts for that specific list
-    if (listId != null) {
-      return Gift.find({
-        where: {
-          list: { id: listId },
-        },
-        relations: { user: true, list: true },
-      });
-    }
+    const list = await getOrCreateUserWishlist(ctx.user.id);
 
-    // Otherwise → fetch gifts created by the current user
+    // fetch gifts created by the current user
     return Gift.find({
-      where: {
-        user: { id: ctx.user.id },
-      },
+      where: { list: { id: list.id } },
       relations: { user: true, list: true },
     });
-
-    // // récupère tout les cadeaux - ancienne version
-    // const allGifts = await Gift.find({
-    //   where: { user: { id: ctx.user.id } },
-    //   relations: { user: true, list: true },
-    // });
-
-    // return allGifts;
   }
 
   @Mutation(() => Gift)
@@ -52,13 +32,18 @@ export default class WishlistResolver {
     const user = await User.findOneBy({ id: ctx.user.id });
     if (!user) throw new Error("Utilisateur non trouvé");
 
-    let list: List | null = null;
+    let list: List;
     if (data.listId) {
-      list = await List.findOne({
+      const foundList = await List.findOne({
         where: { id: data.listId, user: { id: ctx.user.id } }, // ownership check
         relations: { user: true },
       });
-      if (!list) throw new Error("Liste introuvable ou ne vous appartenant pas");
+      if (!foundList) {
+        throw new Error("Liste introuvable ou ne vous appartenant pas");
+      }
+      list = foundList;
+    } else {
+      list = await getOrCreateUserWishlist(ctx.user.id);
     }
 
     const gift = Gift.create({

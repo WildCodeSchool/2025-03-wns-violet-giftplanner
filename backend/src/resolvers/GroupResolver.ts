@@ -49,7 +49,7 @@ export default class GroupResolver {
 
     //Find all the groups of the connected user
     const groups = await Group.find({
-      where: { groupMember: { user: { id: ctx.user.id } } },
+      where: { groupMember: { user: { id: ctx.user?.id } } },
       relations: { groupMember: true, user_admin: true, user_beneficiary: true },
       order: { id: "DESC" },
     });

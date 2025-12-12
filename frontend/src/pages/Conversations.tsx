@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import Groups from "../components/groups/Groups";
 import Messaging from "../components/groups/Messaging/Messaging";
-import PiggyBank from "../components/groups/PiggyBank";
 import Wishlist from "../components/groups/Wishlist";
 import Button from "../components/utils/Button";
 import type { GetAllMyGroupsQuery } from "../generated/graphql-types";
-import { useGetAllMyGroupsQuery } from "../generated/graphql-types";
+import { useGetAllMyGroupsQuery, useGroupWishlistItemsQuery } from "../generated/graphql-types";
+import PiggyBank from "../components/groups/PiggyBank";
 
 export default function Conversations() {
   const { data, loading, error } = useGetAllMyGroupsQuery();
-  const [whislist, setWishlist] = React.useState(true);
+  const [wishlist, setWishlist] = React.useState(true);
   const [groups, setGroups] = useState<GetAllMyGroupsQuery["getAllMyGroups"]>([]);
   const [activeGroup, setActiveGroup] = React.useState<GetAllMyGroupsQuery["getAllMyGroups"][0] | null>(null);
 
@@ -31,6 +31,20 @@ export default function Conversations() {
 
     setActiveGroup(existing ?? data.getAllMyGroups[0]);
   }, [data, activeGroup]);
+
+  const activeGroupIdNumber = activeGroup ? Number(activeGroup.id) : undefined;
+
+  const {
+    data: groupWishlistData,
+    // loading: groupWishlistLoading,
+    // error: groupWishlistError,
+  } = useGroupWishlistItemsQuery({
+    variables: { groupId: activeGroupIdNumber ?? 0 },
+    skip: !activeGroupIdNumber, // don't call the query when no group is selected
+  });
+
+  const beneficiaryItems = groupWishlistData?.groupWishlistItems.fromWishlist ?? [];
+  const groupItems = groupWishlistData?.groupWishlistItems.fromGroupList ?? [];
 
   //TO DO: set activeGroup.id in url
 
@@ -62,7 +76,7 @@ export default function Conversations() {
         </div>
 
         <div className="h-[calc(50%-2rem)] flex pt-2">
-          {activeGroup && (whislist ? <Wishlist /> : <PiggyBank pot={activeGroup.piggy_bank} />)}
+          {activeGroup && (wishlist ? <Wishlist beneficiaryItems={beneficiaryItems} groupItems={groupItems} onAddIdea={() => {}} /> : <PiggyBank pot={activeGroup.piggy_bank} />)}
         </div>
       </div>
 

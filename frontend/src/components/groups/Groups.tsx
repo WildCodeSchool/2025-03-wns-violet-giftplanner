@@ -1,9 +1,6 @@
 import { useState } from "react";
 import type { GetAllMyGroupsQuery } from "../../generated/graphql-types";
-<<<<<<< HEAD:frontend/src/components/Groups/Groups.tsx
 import { formatDate } from "../../utils/dateCalculator";
-=======
->>>>>>> 82131b8a6efc56c28c1fc2d80735de567fbe0296:frontend/src/components/groups/Groups.tsx
 import CreateGroupForm from "../forms/CreateGroupForm";
 import Button from "../utils/Button";
 import Card from "../utils/Card";

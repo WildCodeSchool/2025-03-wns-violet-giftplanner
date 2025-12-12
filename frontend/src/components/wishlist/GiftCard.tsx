@@ -4,7 +4,6 @@ import Icon from "../utils/Icon";
 import "./giftcard.css";
 import "./Wishlist.css";
 
-
 type GiftCardProps = {
   gift: Gift;
   className?: string;
