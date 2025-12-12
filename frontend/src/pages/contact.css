@@ -156,9 +156,30 @@
   }
 }
 
+/* VERSION MOBILE */
+
 @media (max-width: 768px) {
+  /* Masquer le logo sur mobile */
+  .contact-logo {
+    display: none;
+  }
+
+  /* Masquer les décorations uniquement sur la page Contact */
+  .contact-background .infohome-serpentin,
+  .contact-background .infohome-carre,
+  .contact-background .infohome-etoile,
+  .contact-background .infohome-cotillon {
+    display: none;
+  }
+
   .contact-content {
-    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px;
+    min-height: 100vh;
+    /* gap: 24px; */
+    justify-content: flex-start;
   }
 
   .contact-title {
@@ -169,25 +190,61 @@
     padding: 32px 24px;
   }
 
+  /* Masquer la description sur mobile */
   .contact-description {
-    font-size: 16px;
+    display: none;
   }
 
+  /* Grille 2x2 sur mobile */
   .contact-team-grid {
-    grid-template-columns: 1fr;
-    gap: 40px;
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 64px;
+    column-gap: 24px;
+    width: 100%;
+  }
+
+  .contact-team-member {
+    min-width: 0;
   }
 
   .contact-member-image {
-    width: 150px;
-    height: 150px;
+    width: 120px;
+    height: 120px;
   }
 
+  /* Textes en blanc sur mobile */
   .contact-member-name {
-    font-size: 20px;
+    font-size: 18px;
+    color: #fdfbf6;
+    word-wrap: break-word;
+  }
+
+  /* Container email avec fond blanc */
+  .contact-member-email-container {
+    background-color: #fdfbf6;
+    padding: 6px 12px;
+    max-width: 100%;
+    overflow: hidden;
   }
 
   .contact-member-email {
-    font-size: 14px;
+    font-size: 13px;
+    color: #200904;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .contact-copy-icon {
+    color: #200904;
+  }
+
+  .button-white-contact {
+    font-size: 18px;
+    padding: 12px 32px;
+  }
+
+  .contact-content {
+    padding: 20px;
   }
 }

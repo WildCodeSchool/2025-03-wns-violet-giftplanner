@@ -286,3 +286,136 @@ td.admin-actions {
   align-items: center;
   align-content: center;
 }
+
+/* VERSION MOBILE */
+
+@media (max-width: 768px) {
+  .admin-container {
+    margin-left: 0;
+    border-radius: 0;
+    padding: 24px 8px 80px 24px;
+  }
+
+  .admin-container-scrollable {
+    padding-right: 12px;
+  }
+
+  .admin-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding-bottom: 24px;
+    margin-top: 16px;
+  }
+
+  .admin-title {
+    gap: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 4px;
+    margin-bottom: 80px;
+  }
+
+  .admin-title-icon {
+    font-size: 32px;
+  }
+
+  .admin-title-text {
+    font-size: 24px;
+    text-align: left;
+  }
+
+  .admin-search-section {
+    width: 100%;
+    gap: 10px;
+  }
+
+  .admin-search-input {
+    flex: 1;
+    min-width: 0;
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+
+  .admin-search-icon {
+    font-size: 24px;
+  }
+
+  .admin-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .admin-table {
+    min-width: 600px;
+  }
+
+  .admin-table th,
+  .admin-table td {
+    padding: 8px;
+    font-size: 12px;
+  }
+
+  .admin-user-img {
+    width: 30px !important;
+    height: 30px !important;
+  }
+
+  .admin-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .admin-btn-ban,
+  .admin-btn-delete,
+  .admin-btn-unban {
+    padding: 6px 16px;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  .admin-role {
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+
+  .admin-status-banned,
+  .admin-status-active {
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+
+  .admin-message-div {
+    margin-bottom: 16px;
+  }
+
+  .admin-success-message,
+  .admin-error-message {
+    padding: 8px 20px;
+    font-size: 14px;
+  }
+
+  .modal-content {
+    width: 95%;
+    padding: 18px 20px;
+  }
+
+  .modal-content h2 {
+    font-size: 18px;
+  }
+
+  .modal-content p {
+    font-size: 16px;
+    margin: 16px 0;
+  }
+
+  .modal-actions {
+    gap: 12px;
+  }
+
+  .modal-btn-cancel,
+  .modal-btn-confirm {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+}

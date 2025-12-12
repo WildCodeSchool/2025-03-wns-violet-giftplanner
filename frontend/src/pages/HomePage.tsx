@@ -38,10 +38,10 @@ const HomePage = () => {
         </h1>
 
         <div className="div-bouton-homepage">
-          <a href="/connexion" className="button-white-home">
+          <a href="/connexion" className="button-white-home" type="button">
             Connexion
           </a>
-          <a href="/inscription" className="button-black-home">
+          <a href="/inscription" className="button-black-home" type="button">
             Inscription
           </a>
         </div>

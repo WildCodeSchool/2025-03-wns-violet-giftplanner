@@ -171,7 +171,7 @@ const AdminPage = () => {
       <div className="admin-container-scrollable">
         <div className="admin-header">
           <div className="admin-title">
-            <LuShield className="admin-title-icon" />
+            <LuShield className="admin-title-icon max-md:hidden" />
             <h1 className="admin-title-text">Gestion des utilisateurs</h1>
           </div>
           <div className="admin-search-section">
