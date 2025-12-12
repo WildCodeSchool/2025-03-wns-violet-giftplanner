@@ -54,7 +54,7 @@ export default function Groups({ groups, setActiveGroup, loading, error }: Group
       </Container>
       {isOpen && (
         <Modal onClose={toggleModal} isOpen={isOpen}>
-          <CreateGroupForm />
+          <CreateGroupForm onSuccess={toggleModal} />
         </Modal>
       )}
     </>

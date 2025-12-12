@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useCreateGroupMutation } from "../../generated/graphql-types";
 import { groupCreationFormValidation } from "../../hooks/formValidationRules";
 import { useSanitizedForm } from "../../hooks/useSanitizedForm";
+import useVerifyEmail from "../../hooks/useVerifyEmail";
 import { GET_ALL_MY_GROUPS } from "../../graphql/operations";
 import Button from "../utils/Button";
 import Icon from "../utils/Icon";
@@ -14,7 +15,11 @@ import GroupLink from "./GroupLink";
 import ResponsiveImage from "../utils/ResponsiveImage";
 import SearchSelectInput from "../utils/SearchSelectInput";
 
-export default function CreateGroupForm() {
+type CreateGroupFormProps = {
+  onSuccess?: () => void; 
+};
+
+export default function CreateGroupForm({ onSuccess }: CreateGroupFormProps) {
 
   const options = [
     {
@@ -41,7 +46,7 @@ export default function CreateGroupForm() {
 
   const [query, setQuery] = useState("");
   const [checked, setChecked] = useState(false)
-  const [userError, setUserError] = useState<string>("");
+
   const { formData, handleChange, getSanitizedData, errors, isValid, setFormData, isEmpty } =
     useSanitizedForm(
       {
@@ -100,10 +105,19 @@ export default function CreateGroupForm() {
           users: [],
           user_beneficiary: "" //Do not reset users here instead show the list of existing users
         });
-        // TO DO: fermer la modale après création puis afficher le nouveau groupe dans la liste des groupes
-      } catch (error) {
+
+        setChecked(false);
+
+        // Close the parent modal if provided
+        if (onSuccess) onSuccess();
+
+      } catch (error: unknown) {
         console.error("Error creating group:", error);
-        setError(error.message)
+        if (error instanceof Error) {
+          setError(error.message);
+        } else {
+          setError("Une erreur est survenue");
+        }
       }
     }
 
@@ -113,6 +127,7 @@ export default function CreateGroupForm() {
   return (
     <form className=" flex w-full h-full rounded-2xl" onSubmit={handleSubmit} autoComplete="off">
       <div className="bg-green w-1/2 h-full flex flex-col justify-center pt-10 pb-5 rounded-tl-2xl rounded-bl-2xl">
+        
         {/* Form to create a new group */}
         <Title className="text-center text-2xl">Créer un groupe</Title>
         <div className="text-white text-8xl m-auto">
@@ -162,6 +177,7 @@ export default function CreateGroupForm() {
             onChange={handleChange}
             label="Le nom du destinataire"
             question="Voulez-vous ajouter un destinataire? "
+            error={errors.user_beneficiary}
             
           />
 
@@ -184,10 +200,12 @@ export default function CreateGroupForm() {
           Créer
         </Button>
         {error && <p className="text-orange font-inter text-sm pt-1 text-center">{error}</p>}
+        {errors.main && <p className="text-orange font-inter text-sm pt-1 text-center">{errors.main}</p>}
       </div>
 
       <div className="w-1/2 bg-white h-full flex flex-col rounded-tr-2xl rounded-br-2xl">
         <div className="flex flex-col gap-4 px-20 m-auto">
+          
           {/* Adding users can go here */}
           <div className="flex flex-row items-center w-full border border-blue">
             <GroupLink />
@@ -199,52 +217,30 @@ export default function CreateGroupForm() {
             />
           </div>
 
+          
+          {/* TO DO: reintegrer le user input
           <SearchInput
             placeholder="Ajouter des participants..."
             theme="dark"
             name="users"
             value={query}
-            onChange={(e) => {
-              setQuery(e.target.value);
-              setUserError("");
-            }}
+            onChange={handleChange}
             onClick={(email) => {
-              setFormData({ ...formData, users: formData.users.filter((u) => u !== email) });
-              setUserError("");
+              setFormData({ ...formData, users: formData.users.filter((user) => user !== email) });
+
             }}
             onAddTag={(email) => {
-              // Email regex validation
-              const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-              if (!emailRegex.test(email)) {
-                setUserError("Format d'email invalide");
-                return;
-              }
-
-              if (formData.users.includes(email)) {
-                setUserError("Cet utilisateur est déjà dans le groupe");
-                return;
-              }
-
-              setFormData({ ...formData, users: [...formData.users, email] });
+              setFormData({ ...formData, users: formData.users.filter((user) => user !== email) });
               setQuery("");
-              setUserError("");
+              
             }}
             items={formData.users}
-            error={userError}
-          />
+            error={errors.users}
+          /> */}
         </div>
       </div>
     </form>
   );
 }
 
-/**
- * TO DO:
- * - rendre ça plus lisible
- * - ajouter la gestion des erreurs pour les utilisateurs (dans les règles de validation)
- * - version mobile et web ajuster modale
- * - ajouter un bouton pour générer un QR code pour inviter des utilisateurs (mock pour l'instant)
- * - refactor pour que ce soit aussi utilisé pour modification du groupe?
- * - rendre css plus joli
- */
+
