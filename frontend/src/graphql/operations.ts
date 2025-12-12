@@ -194,7 +194,7 @@ export const ADD_GIFT_TO_GROUP_LIST = gql`
       }
     }
   }
-`
+`;
 
 export const UPDATE_GIFT = gql`
   mutation UpdateGift($id: Int!, $data: UpdateGiftInput!) {

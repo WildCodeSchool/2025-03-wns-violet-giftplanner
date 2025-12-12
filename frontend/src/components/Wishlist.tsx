@@ -1,7 +1,7 @@
 // src/components/Wishlist.tsx
 import { useMutation, useQuery } from "@apollo/client";
 import { useState } from "react";
-import { ADD_GIFT, DELETE_GIFT, UPDATE_GIFT, MY_WISHLIST_ITEMS } from "../graphql/operations";
+import { ADD_GIFT, DELETE_GIFT, MY_WISHLIST_ITEMS, UPDATE_GIFT } from "../graphql/operations";
 import type { Gift } from "../types/Gift";
 import { useMyProfileStore } from "../zustand/myProfileStore";
 import Button from "./utils/Button";
@@ -10,11 +10,9 @@ import Modal from "./utils/Modal";
 import GiftCard, { GiftCardSkeleton } from "./wishlist/GiftCard";
 
 export default function Wishlist() {
-
-  const { data, loading, error } = useQuery<{ myWishlistItems: Gift[] }>(
-    MY_WISHLIST_ITEMS,
-    { notifyOnNetworkStatusChange: true }
-  );
+  const { data, loading, error } = useQuery<{ myWishlistItems: Gift[] }>(MY_WISHLIST_ITEMS, {
+    notifyOnNetworkStatusChange: true,
+  });
 
   const items = data?.myWishlistItems ?? [];
 
@@ -115,64 +113,64 @@ export default function Wishlist() {
 
         {/* Content */}
         <div className="flex-1 min-h-0 overflow-y-auto">
-        {error ? (
-          <div className="text-[#FDFBF6] bg-black/20 rounded-xl p-4">Erreur: {error.message}</div>
-        ) : !loading && items.length === 0 ? (
-          <div className="h-full flex items-center justify-center">
-            <div className="flex flex-col items-center justify-center text-[#FDFBF6]">
-              <Icon icon="gift" className="text-7xl opacity-80 mb-3" />
-              <p className="text-lg mb-8">Aucune idée pour l'instant.</p>
-              <button
-                type="button"
-                onClick={() => setIsModalOpen(true)}
-                className="flex items-center gap-2 bg-[#019645] text-[#FDFBF6] font-semibold px-4 py-2 rounded-xl hover:bg-[#01803b] transition"
-              >
-                <Icon icon="plus" />
-                Ajouter une idée
-              </button>
+          {error ? (
+            <div className="text-[#FDFBF6] bg-black/20 rounded-xl p-4">Erreur: {error.message}</div>
+          ) : !loading && items.length === 0 ? (
+            <div className="h-full flex items-center justify-center">
+              <div className="flex flex-col items-center justify-center text-[#FDFBF6]">
+                <Icon icon="gift" className="text-7xl opacity-80 mb-3" />
+                <p className="text-lg mb-8">Aucune idée pour l'instant.</p>
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(true)}
+                  className="flex items-center gap-2 bg-[#019645] text-[#FDFBF6] font-semibold px-4 py-2 rounded-xl hover:bg-[#01803b] transition"
+                >
+                  <Icon icon="plus" />
+                  Ajouter une idée
+                </button>
+              </div>
             </div>
-          </div>
-        ) : (
-          <ul className="grid gap-5 grid-cols-[repeat(auto-fill,minmax(280px,1fr))] auto-rows-fr">
-            {loading && (
-              <>
-                <li>
-                  <GiftCardSkeleton />
-                </li>
-                <li>
-                  <GiftCardSkeleton />
-                </li>
-                <li>
-                  <GiftCardSkeleton />
-                </li>
-                <li>
-                  <GiftCardSkeleton />
-                </li>
-              </>
-            )}
+          ) : (
+            <ul className="grid gap-5 grid-cols-[repeat(auto-fill,minmax(280px,1fr))] auto-rows-fr">
+              {loading && (
+                <>
+                  <li>
+                    <GiftCardSkeleton />
+                  </li>
+                  <li>
+                    <GiftCardSkeleton />
+                  </li>
+                  <li>
+                    <GiftCardSkeleton />
+                  </li>
+                  <li>
+                    <GiftCardSkeleton />
+                  </li>
+                </>
+              )}
 
-            {!loading &&
-              items.map((gift) => (
-                <li key={gift.id} className="h-full">
-                  <GiftCard
-                    gift={gift}
-                    className="h-full"
-                    onDelete={handleDeleteGift}
-                    onEdit={(gift) => {
-                      setEditingGift(gift);
-                      setEditFormData({
-                        name: gift.name ?? "",
-                        description: gift.description ?? "",
-                        imageUrl: gift.imageUrl ?? "",
-                        url: gift.url ?? "",
-                      });
-                      setEditModalOpen(true);
-                    }}
-                  />
-                </li>
-              ))}
-          </ul>
-        )}
+              {!loading &&
+                items.map((gift) => (
+                  <li key={gift.id} className="h-full">
+                    <GiftCard
+                      gift={gift}
+                      className="h-full"
+                      onDelete={handleDeleteGift}
+                      onEdit={(gift) => {
+                        setEditingGift(gift);
+                        setEditFormData({
+                          name: gift.name ?? "",
+                          description: gift.description ?? "",
+                          imageUrl: gift.imageUrl ?? "",
+                          url: gift.url ?? "",
+                        });
+                        setEditModalOpen(true);
+                      }}
+                    />
+                  </li>
+                ))}
+            </ul>
+          )}
         </div>
       </div>
 

@@ -1,5 +1,14 @@
 import { Field, ID, ObjectType } from "type-graphql";
-import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique } from "typeorm";
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  Unique,
+} from "typeorm";
 import { Group } from "./Group";
 import User from "./User";
 
@@ -26,11 +35,17 @@ export class GroupMember extends BaseEntity {
   @Field()
   joined_at: Date;
 
-  @ManyToOne(() => User, (user) => user.groupMember)
+  @ManyToOne(
+    () => User,
+    (user) => user.groupMember,
+  )
   @JoinColumn({ name: "userId" })
   user: User;
 
-  @ManyToOne(() => Group, (group) => group.groupMember)
+  @ManyToOne(
+    () => Group,
+    (group) => group.groupMember,
+  )
   @JoinColumn({ name: "groupId" })
   group: Group;
 }

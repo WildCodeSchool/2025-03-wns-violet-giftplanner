@@ -1,10 +1,21 @@
-import { Arg, Ctx, Field, InputType, Mutation, Query, Resolver, UseMiddleware, FieldResolver, Root } from "type-graphql";
+import {
+  Arg,
+  Ctx,
+  Field,
+  FieldResolver,
+  InputType,
+  Mutation,
+  Query,
+  Resolver,
+  Root,
+  UseMiddleware,
+} from "type-graphql";
 import Group from "../entities/Group";
 import { GroupMember } from "../entities/GroupMember";
+import { Message } from "../entities/Message";
+import User from "../entities/User";
 import { RoleMiddleware } from "../middleware/RoleMiddleware";
 import type { ContextType } from "../types/context";
-import User from "../entities/User";
-import { Message } from "../entities/Message";
 
 @InputType()
 class CreateGroupInput {
@@ -33,13 +44,13 @@ export default class GroupResolver {
     const groups = await Group.find({
       where: {
         groupMember: {
-          user: { id: ctx.user?.id }
-        }
+          user: { id: ctx.user?.id },
+        },
       },
       relations: {
         groupMember: { user: true },
       },
-      order: { id: "DESC" }
+      order: { id: "DESC" },
     });
 
     // charge les 10 derniers messages de chaque groupe
@@ -58,7 +69,7 @@ export default class GroupResolver {
   @FieldResolver(() => [GroupMember])
   async groupMember(@Root() group: Group) {
     const members = await GroupMember.find({
-      where: { groupId: group.id }
+      where: { groupId: group.id },
     });
 
     return members || []; // >>> jamais null
@@ -66,7 +77,6 @@ export default class GroupResolver {
 
   @Mutation(() => Group)
   async createGroup(@Arg("data") data: CreateGroupInput, @Ctx() ctx: ContextType) {
-
     //TO DO: vérifier les inputs et les nettoyer
     if (!ctx.user) throw new Error("Utilisateur non connecté");
 
@@ -78,8 +88,6 @@ export default class GroupResolver {
       throw new Error("Utilisateur introuvable");
     }
 
-    
- 
     const group = Group.create({
       user_admin: userAdmin,
       name: data.name,
@@ -105,7 +113,7 @@ export default class GroupResolver {
           });
 
           await groupMember.save();
-        })
+        }),
       );
     }
 

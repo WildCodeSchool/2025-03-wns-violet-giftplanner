@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from "react";
-import data from "../components/groups/data/data.json";
-import Groups from "../components/Groups/Groups";
-import Messaging from "../components/Groups/Messaging/Messaging";
-import PiggyBank from "../components/Groups/PiggyBank";
-import Wishlist from "../components/Groups/Wishlist";
+import Groups from "../components/groups/Groups";
+import Messaging from "../components/groups/Messaging/Messaging";
+import Wishlist from "../components/groups/Wishlist";
 import Button from "../components/utils/Button";
-import type { GroupProps } from "../types/Groups";
-import { useGetAllMyGroupsQuery } from "../generated/graphql-types";
 import type { GetAllMyGroupsQuery } from "../generated/graphql-types";
-import { useGroupWishlistItemsQuery } from "../generated/graphql-types";
+import { useGetAllMyGroupsQuery, useGroupWishlistItemsQuery } from "../generated/graphql-types";
 
 export default function Conversations() {
   // const { data: groupData, loading, error } = useGetAllMyGroupsQuery();
@@ -32,7 +28,7 @@ export default function Conversations() {
     setActiveGroup(groups.find((g) => Number(g.id) === activeGroupId) || null);
   }, [activeGroupId]);
 
-    const activeGroupIdNumber = activeGroup ? Number(activeGroup.id) : undefined;
+  const activeGroupIdNumber = activeGroup ? Number(activeGroup.id) : undefined;
 
   const {
     data: groupWishlistData,
@@ -45,7 +41,6 @@ export default function Conversations() {
 
   const beneficiaryItems = groupWishlistData?.groupWishlistItems.fromWishlist ?? [];
   const groupItems = groupWishlistData?.groupWishlistItems.fromGroupList ?? [];
-
 
   //TO DO: set activeGroup.id in url
 
@@ -77,13 +72,8 @@ export default function Conversations() {
         </div>
 
         {activeGroup && wishlist && (
-          <Wishlist
-            beneficiaryItems={beneficiaryItems} // you’ll fill this in after the query
-            groupItems={groupItems}
-            onAddIdea={() => console.log("Open modal later")}
-          />
+          <Wishlist beneficiaryItems={beneficiaryItems} groupItems={groupItems} onAddIdea={() => {}} />
         )}
-
 
         {/* <div className="h-[calc(50%-2rem)] flex pt-2">
           {activeGroup &&

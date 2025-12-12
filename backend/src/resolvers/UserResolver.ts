@@ -1,12 +1,22 @@
 import argon2 from "argon2";
 import axios from "axios";
-import { Arg, Ctx, Field, InputType, Mutation, ObjectType, Query, Resolver, UseMiddleware } from "type-graphql";
+import {
+  Arg,
+  Ctx,
+  Field,
+  InputType,
+  Mutation,
+  ObjectType,
+  Query,
+  Resolver,
+  UseMiddleware,
+} from "type-graphql";
 import { IsNull } from "typeorm";
 import User from "../entities/User";
 import cookieManager from "../lib/cookieManager/cookieManager";
+import { RoleMiddleware } from "../middleware/RoleMiddleware";
 import type { ContextType } from "../types/context";
 import { createAndSetToken } from "../utils/jwtUtils";
-import { RoleMiddleware } from "../middleware/RoleMiddleware";
 
 @InputType()
 class SignupInput {
@@ -105,7 +115,7 @@ export default class UserResolver {
     const user = await User.findOne({
       where: {
         id: ctx.user.id,
-        deletedAt: IsNull()
+        deletedAt: IsNull(),
       },
       relations: ["lists"],
     });
@@ -125,9 +135,9 @@ export default class UserResolver {
   @UseMiddleware(RoleMiddleware(true))
   async getAllUsersForAdmin(@Ctx() ctx: ContextType) {
     // Récupérer tous les utilisateurs (y compris les bannis, mais pas les supprimés)
-    const allUsers = await User.find({ 
+    const allUsers = await User.find({
       where: { deletedAt: IsNull() },
-      order: { createdAt: "DESC" }
+      order: { createdAt: "DESC" },
     });
 
     return allUsers;
@@ -176,7 +186,7 @@ export default class UserResolver {
   @Mutation(() => User)
   async login(@Arg("data") data: LoginInput, @Ctx() ctx: ContextType) {
     // essaye de trouver l'utilisateur grace a son mail
-    const user = await User.findOne({ where: { email: data.email }, relations: ["lists"], });
+    const user = await User.findOne({ where: { email: data.email }, relations: ["lists"] });
 
     if (!user) throw new Error("Utilisateur introuvable");
 
@@ -246,34 +256,31 @@ export default class UserResolver {
     return user as User;
   }
 
-   @Mutation(() => DeleteUserResponse)
+  @Mutation(() => DeleteUserResponse)
   @UseMiddleware(RoleMiddleware(true))
-  async deleteUser(
-    @Arg("userId") userId: number,
-    @Ctx() ctx: ContextType
-  ): Promise<DeleteUserResponse> {
+  async deleteUser(@Arg("userId") userId: number, @Ctx() ctx: ContextType): Promise<DeleteUserResponse> {
     // RoleMiddleware protège déjà l'accès (utilisateur authentifié et admin)
 
     // Empêcher l'admin de se supprimer lui-même
     if (ctx.user!.id === userId) {
       return {
         success: false,
-        message: "Vous ne pouvez pas vous supprimer vous-même"
+        message: "Vous ne pouvez pas vous supprimer vous-même",
       };
     }
 
     // Vérifier que l'utilisateur existe
-    const userToDelete = await User.findOne({ 
-      where: { 
+    const userToDelete = await User.findOne({
+      where: {
         id: userId,
-        deletedAt: IsNull() 
-      } 
+        deletedAt: IsNull(),
+      },
     });
 
     if (!userToDelete) {
       return {
         success: false,
-        message: "Utilisateur introuvable ou déjà supprimé"
+        message: "Utilisateur introuvable ou déjà supprimé",
       };
     }
 
@@ -283,22 +290,19 @@ export default class UserResolver {
       { id: userId },
       {
         deletedAt: new Date(),
-        email: deletedEmail
-      }
+        email: deletedEmail,
+      },
     );
 
     return {
       success: true,
-      message: `Utilisateur ${userToDelete.firstName} ${userToDelete.lastName} supprimé avec succès`
+      message: `Utilisateur ${userToDelete.firstName} ${userToDelete.lastName} supprimé avec succès`,
     };
   }
 
   @Mutation(() => BanUserResponse)
   @UseMiddleware(RoleMiddleware(true))
-  async banUser(
-    @Arg("userId") userId: number,
-    @Ctx() ctx: ContextType
-  ): Promise<BanUserResponse> {
+  async banUser(@Arg("userId") userId: number, @Ctx() ctx: ContextType): Promise<BanUserResponse> {
     // RoleMiddleware protège déjà l'accès (utilisateur authentifié et admin)
 
     // Empêcher l'admin de se bannir lui-même
@@ -306,23 +310,23 @@ export default class UserResolver {
       return {
         success: false,
         message: "Vous ne pouvez pas vous bannir vous-même",
-        user: undefined
+        user: undefined,
       };
     }
 
     // Vérifier que l'utilisateur existe
-    const userToBan = await User.findOne({ 
-      where: { 
+    const userToBan = await User.findOne({
+      where: {
         id: userId,
-        deletedAt: IsNull() 
-      } 
+        deletedAt: IsNull(),
+      },
     });
 
     if (!userToBan) {
       return {
         success: false,
         message: "Utilisateur introuvable",
-        user: undefined
+        user: undefined,
       };
     }
 
@@ -331,17 +335,17 @@ export default class UserResolver {
       return {
         success: false,
         message: "Cet utilisateur est déjà banni",
-        user: userToBan
+        user: userToBan,
       };
     }
 
     // Bannir l'utilisateur
     await User.update(
       { id: userId },
-      { 
+      {
         isBanned: true,
-        bannedAt: new Date()
-      }
+        bannedAt: new Date(),
+      },
     );
 
     const bannedUser = (await User.findOne({ where: { id: userId } })) ?? undefined;
@@ -349,31 +353,28 @@ export default class UserResolver {
     return {
       success: true,
       message: `Utilisateur ${userToBan.firstName} ${userToBan.lastName} banni définitivement`,
-      user: bannedUser
+      user: bannedUser,
     };
   }
 
   @Mutation(() => BanUserResponse)
   @UseMiddleware(RoleMiddleware(true))
-  async unbanUser(
-    @Arg("userId") userId: number,
-    @Ctx() ctx: ContextType
-  ): Promise<BanUserResponse> {
+  async unbanUser(@Arg("userId") userId: number, @Ctx() ctx: ContextType): Promise<BanUserResponse> {
     // RoleMiddleware protège déjà l'accès (utilisateur authentifié et admin)
 
     // Vérifier que l'utilisateur existe
     const userToUnban = await User.findOne({
       where: {
         id: userId,
-        deletedAt: IsNull()
-      }
+        deletedAt: IsNull(),
+      },
     });
 
     if (!userToUnban) {
       return {
         success: false,
         message: "Utilisateur introuvable",
-        user: undefined
+        user: undefined,
       };
     }
 
@@ -382,7 +383,7 @@ export default class UserResolver {
       return {
         success: false,
         message: "Cet utilisateur n'est pas banni",
-        user: userToUnban
+        user: userToUnban,
       };
     }
 
@@ -391,8 +392,8 @@ export default class UserResolver {
       { id: userId },
       {
         isBanned: false,
-        bannedAt: undefined
-      }
+        bannedAt: undefined,
+      },
     );
 
     const unbannedUser = (await User.findOne({ where: { id: userId } })) ?? undefined;
@@ -400,7 +401,7 @@ export default class UserResolver {
     return {
       success: true,
       message: `Utilisateur ${userToUnban.firstName} ${userToUnban.lastName} débanni avec succès`,
-      user: unbannedUser
+      user: unbannedUser,
     };
   }
 
@@ -410,7 +411,7 @@ export default class UserResolver {
     if (!ctx.user) {
       return {
         success: false,
-        message: "Vous devez être connecté pour supprimer votre profil"
+        message: "Vous devez être connecté pour supprimer votre profil",
       };
     }
 
@@ -418,14 +419,14 @@ export default class UserResolver {
     const user = await User.findOne({
       where: {
         id: ctx.user.id,
-        deletedAt: IsNull()
-      }
+        deletedAt: IsNull(),
+      },
     });
 
     if (!user) {
       return {
         success: false,
-        message: "Utilisateur introuvable ou déjà supprimé"
+        message: "Utilisateur introuvable ou déjà supprimé",
       };
     }
 
@@ -435,8 +436,8 @@ export default class UserResolver {
       { id: ctx.user.id },
       {
         deletedAt: new Date(),
-        email: deletedEmail
-      }
+        email: deletedEmail,
+      },
     );
 
     // Supprimer le cookie de session
@@ -444,7 +445,7 @@ export default class UserResolver {
 
     return {
       success: true,
-      message: "Votre profil a été supprimé avec succès"
+      message: "Votre profil a été supprimé avec succès",
     };
   }
 }

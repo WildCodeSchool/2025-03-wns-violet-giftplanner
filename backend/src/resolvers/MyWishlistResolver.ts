@@ -9,10 +9,8 @@ import { getOrCreateUserWishlist } from "../utils/getOrCreateUserWishlist";
 
 @Resolver()
 export default class MyWishlistResolver {
-
   @Query(() => [Gift])
-  async myWishlistItems(
-    @Ctx() ctx: ContextType): Promise<Gift[]> {
+  async myWishlistItems(@Ctx() ctx: ContextType): Promise<Gift[]> {
     if (!ctx.user) throw new Error("Utilisateur non connecté");
 
     const list = await getOrCreateUserWishlist(ctx.user.id);
@@ -22,7 +20,6 @@ export default class MyWishlistResolver {
       where: { list: { id: list.id } },
       relations: { user: true, list: true },
     });
-
   }
 
   @Mutation(() => Gift)

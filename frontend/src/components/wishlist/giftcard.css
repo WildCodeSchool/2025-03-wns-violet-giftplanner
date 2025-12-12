@@ -1,24 +1,24 @@
 .div-content-giftcard {
-    padding: 32px;
-    display: flex;
-    flex-direction: column;
-    flex: 1;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .div-content-giftcard h5 {
-    line-height: 1.1;
-    text-align: center;
-    margin-bottom: 16px;
-    font-family: "Inter", sans-serif;
-    font-weight: 800;
-    color: #200904;
+  line-height: 1.1;
+  text-align: center;
+  margin-bottom: 16px;
+  font-family: "Inter", sans-serif;
+  font-weight: 800;
+  color: #200904;
 }
 
 .div-content-giftcard p {
-    line-height: 1.1;
-    text-align: center;
-    font-size: 14px;
-    font-family: "Inter", sans-serif;
-    color: #776B69;
-    padding-bottom: 16px;
+  line-height: 1.1;
+  text-align: center;
+  font-size: 14px;
+  font-family: "Inter", sans-serif;
+  color: #776b69;
+  padding-bottom: 16px;
 }

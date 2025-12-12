@@ -8,27 +8,18 @@ type Props = {
   beneficiaryItems: Gift[];
   groupItems: Gift[];
   onAddIdea?: () => void; // later for opening modal ?
-}
+};
 
 export default function Wishlist({ beneficiaryItems, groupItems, onAddIdea }: Props) {
   return (
     <Container
       colour="orange"
       title="Wishlist du groupe"
-      button={
-        <Button
-          text="Proposer une idée"
-          icon="plus"
-          colour="green"
-          onClick={onAddIdea}
-        />
-      }
+      button={<Button text="Proposer une idée" icon="plus" colour="green" onClick={onAddIdea} />}
     >
       {/* Beneficiary wishlist */}
       <section className="mb-6">
-        <h3 className="text-md font-semibold mb-2 text-[#200904]">
-          Idées du bénéficiaire
-        </h3>
+        <h3 className="text-md font-semibold mb-2 text-[#200904]">Idées du bénéficiaire</h3>
 
         {beneficiaryItems.length === 0 ? (
           <p className="text-gray-600 text-sm">Aucune idée ajoutée par le bénéficiaire.</p>
@@ -45,9 +36,7 @@ export default function Wishlist({ beneficiaryItems, groupItems, onAddIdea }: Pr
 
       {/* Group suggestions */}
       <section>
-        <h3 className="text-md font-semibold mb-2 text-[#200904]">
-          Idées proposées par le groupe
-        </h3>
+        <h3 className="text-md font-semibold mb-2 text-[#200904]">Idées proposées par le groupe</h3>
 
         {groupItems.length === 0 ? (
           <p className="text-gray-600 text-sm">Aucune idée proposée pour le moment.</p>

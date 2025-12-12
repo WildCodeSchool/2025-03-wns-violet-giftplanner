@@ -1,124 +1,123 @@
 import { Arg, Ctx, Field, Int, Mutation, ObjectType, Query, Resolver } from "type-graphql";
 import { Gift } from "../entities/Gift";
-import { GroupMember } from "../entities/GroupMember";
-import type { ContextType } from "../types/context";
 import Group from "../entities/Group";
-import List from "../entities/List";
-import { getOrCreateUserWishlist } from "../utils/getOrCreateUserWishlist";
+import { GroupMember } from "../entities/GroupMember";
+import type List from "../entities/List";
 import { AddGiftInput } from "../inputs/AddGiftInput";
+import type { ContextType } from "../types/context";
+import { getOrCreateUserWishlist } from "../utils/getOrCreateUserWishlist";
 
 @ObjectType()
 class GroupWishlistItems {
-    @Field(() => [Gift])
-    fromWishlist!: Gift[];
+  @Field(() => [Gift])
+  fromWishlist!: Gift[];
 
-    @Field(() => [Gift])
-    fromGroupList!: Gift[];
+  @Field(() => [Gift])
+  fromGroupList!: Gift[];
 }
 
 @Resolver()
 export default class GroupWishlistResolver {
-
-    @Query(() => GroupWishlistItems)
-    async groupWishlistItems(
-        @Arg("groupId", () => Int) groupId: number,
-        @Ctx() ctx: ContextType,
-    ): Promise<GroupWishlistItems> {
-        if (!ctx.user) {
-            throw new Error("Utilisateur non connecté");
-        }
-
-        // check that current user is member of this group
-        const membership = await GroupMember.findOne({
-            where: {
-                userId: ctx.user.id,
-                groupId,
-            },
-        });
-
-        if (!membership) {
-            throw new Error("Vous n'êtes pas membre de ce groupe.");
-        }
-
-        // load group with beneficiary + group wishlist
-        const group = await Group.findOne({
-            where: { id: groupId },
-            relations: { user_beneficiary: true, list_group: true },
-        });
-
-        if (!group) {
-            throw new Error("Groupe introuvable");
-        }
-
-        // get beneficiary's wishlist using helper function
-        const beneficiaryId = group.user_beneficiary.id;
-        const beneficiaryWishlist: List = await getOrCreateUserWishlist(beneficiaryId);
-
-        // fetch gifts from beneficiary's wishlist
-        const fromWishlist = await Gift.find({
-            where: { list: { id: beneficiaryWishlist.id } },
-            relations: { user: true, list: true },
-            order: { createdAt: "DESC" },
-        });
-
-        // fetch gifts from group list
-        const fromGroupList = await Gift.find({
-            where: { list: { id: group.list_group.id } },
-            relations: { user: true, list: true },
-            order: { createdAt: "DESC" },
-        });
-
-        return {
-            fromWishlist,
-            fromGroupList,
-        };
+  @Query(() => GroupWishlistItems)
+  async groupWishlistItems(
+    @Arg("groupId", () => Int) groupId: number,
+    @Ctx() ctx: ContextType,
+  ): Promise<GroupWishlistItems> {
+    if (!ctx.user) {
+      throw new Error("Utilisateur non connecté");
     }
 
-    @Mutation(() => Gift)
-    async addGiftToGroupList(
-        @Arg("groupId", () => Int) groupId: number,
-        @Arg("data") data: AddGiftInput,
-        @Ctx() ctx: ContextType,
-    ): Promise<Gift> {
-        if (!ctx.user) {
-            throw new Error("Utilisateur non connecté");
-        }
+    // check that current user is member of this group
+    const membership = await GroupMember.findOne({
+      where: {
+        userId: ctx.user.id,
+        groupId,
+      },
+    });
 
-        // check that current user is member of this group
-        const membership = await GroupMember.findOne({
-            where: { userId: ctx.user.id, groupId },
-        });
-
-        if (!membership) {
-            throw new Error("Vous n'êtes pas membre de ce groupe.");
-        }
-
-        // load group along with its list_group
-        const group = await Group.findOne({
-            where: { id: groupId },
-            relations: { list_group: true },
-        });
-
-        if (!group) {
-            throw new Error("Groupe introuvable");
-        }
-
-        if (!group.list_group) {
-            throw new Error("Ce groupe n'a pas encore de liste associée.");
-            // use utils function here ?
-        }
-
-        // create gift, ignoring any userId/listId coming from the client
-        const gift = Gift.create({
-            name: data.name,
-            description: data.description ?? "",
-            imageUrl: data.imageUrl ?? "",
-            url: data.url ?? "",
-            user: { id: ctx.user.id } as any,
-            list: { id: group.list_group.id } as any,
-        });
-
-        await gift.save();
-        return gift;
+    if (!membership) {
+      throw new Error("Vous n'êtes pas membre de ce groupe.");
     }
+
+    // load group with beneficiary + group wishlist
+    const group = await Group.findOne({
+      where: { id: groupId },
+      relations: { user_beneficiary: true, list_group: true },
+    });
+
+    if (!group) {
+      throw new Error("Groupe introuvable");
+    }
+
+    // get beneficiary's wishlist using helper function
+    const beneficiaryId = group.user_beneficiary.id;
+    const beneficiaryWishlist: List = await getOrCreateUserWishlist(beneficiaryId);
+
+    // fetch gifts from beneficiary's wishlist
+    const fromWishlist = await Gift.find({
+      where: { list: { id: beneficiaryWishlist.id } },
+      relations: { user: true, list: true },
+      order: { createdAt: "DESC" },
+    });
+
+    // fetch gifts from group list
+    const fromGroupList = await Gift.find({
+      where: { list: { id: group.list_group.id } },
+      relations: { user: true, list: true },
+      order: { createdAt: "DESC" },
+    });
+
+    return {
+      fromWishlist,
+      fromGroupList,
+    };
+  }
+
+  @Mutation(() => Gift)
+  async addGiftToGroupList(
+    @Arg("groupId", () => Int) groupId: number,
+    @Arg("data") data: AddGiftInput,
+    @Ctx() ctx: ContextType,
+  ): Promise<Gift> {
+    if (!ctx.user) {
+      throw new Error("Utilisateur non connecté");
+    }
+
+    // check that current user is member of this group
+    const membership = await GroupMember.findOne({
+      where: { userId: ctx.user.id, groupId },
+    });
+
+    if (!membership) {
+      throw new Error("Vous n'êtes pas membre de ce groupe.");
+    }
+
+    // load group along with its list_group
+    const group = await Group.findOne({
+      where: { id: groupId },
+      relations: { list_group: true },
+    });
+
+    if (!group) {
+      throw new Error("Groupe introuvable");
+    }
+
+    if (!group.list_group) {
+      throw new Error("Ce groupe n'a pas encore de liste associée.");
+      // use utils function here ?
+    }
+
+    // create gift, ignoring any userId/listId coming from the client
+    const gift = Gift.create({
+      name: data.name,
+      description: data.description ?? "",
+      imageUrl: data.imageUrl ?? "",
+      url: data.url ?? "",
+      user: { id: ctx.user.id } as any,
+      list: { id: group.list_group.id } as any,
+    });
+
+    await gift.save();
+    return gift;
+  }
 }

@@ -29,9 +29,7 @@ const HomePage = () => {
       <img className="infohome-cotillon" src="/images/cotillon-bleu.png" alt="Cotillon rouge" />
 
       {showDeleteMessage && (
-        <div className="homepage-success-notification">
-          Votre profil a bien été supprimé.
-        </div>
+        <div className="homepage-success-notification">Votre profil a bien été supprimé.</div>
       )}
 
       <div className="infohome-content">
