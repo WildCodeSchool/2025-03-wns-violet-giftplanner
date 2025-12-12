@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 /**
  * Hook pour détecter si l'écran est en mode mobile
@@ -17,9 +17,9 @@ export const useIsMobile = (breakpoint: number = 768): boolean => {
     checkIsMobile();
 
     // Écoute des changements de taille d'écran
-    window.addEventListener('resize', checkIsMobile);
+    window.addEventListener("resize", checkIsMobile);
 
-    return () => window.removeEventListener('resize', checkIsMobile);
+    return () => window.removeEventListener("resize", checkIsMobile);
   }, [breakpoint]);
 
   return isMobile;

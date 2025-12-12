@@ -180,7 +180,6 @@
 
 .profile-input::placeholder {
   color: #c4c0b3;
-  font-weight: normal;
   font-weight: 700;
 }
 
@@ -293,7 +292,6 @@
 .modal-content h2 {
   margin: 0 0 12px 0;
   text-align: center;
-  font-size: 20px;
   color: #fdfbf6;
   font-weight: 700;
   font-size: 22px;

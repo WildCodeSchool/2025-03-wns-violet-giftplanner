@@ -10,10 +10,26 @@ const LoginPage = () => {
       </div>
       <div className="flex-1 default-background auth-page-mobile-wrapper">
         {/* Décorations mobiles */}
-        <img className="auth-mobile-decoration auth-mobile-serpentin" src="/images/serpentin-jaune.png" alt="Serpentin Jaune" />
-        <img className="auth-mobile-decoration auth-mobile-carre" src="/images/carre-vert.png" alt="Carré vert" />
-        <img className="auth-mobile-decoration auth-mobile-etoile" src="/images/etoile-rose.png" alt="Etoile rose" />
-        <img className="auth-mobile-decoration auth-mobile-cotillon" src="/images/cotillon-bleu.png" alt="Cotillon bleu" />
+        <img
+          className="auth-mobile-decoration auth-mobile-serpentin"
+          src="/images/serpentin-jaune.png"
+          alt="Serpentin Jaune"
+        />
+        <img
+          className="auth-mobile-decoration auth-mobile-carre"
+          src="/images/carre-vert.png"
+          alt="Carré vert"
+        />
+        <img
+          className="auth-mobile-decoration auth-mobile-etoile"
+          src="/images/etoile-rose.png"
+          alt="Etoile rose"
+        />
+        <img
+          className="auth-mobile-decoration auth-mobile-cotillon"
+          src="/images/cotillon-bleu.png"
+          alt="Cotillon bleu"
+        />
 
         <LoginForm />
       </div>

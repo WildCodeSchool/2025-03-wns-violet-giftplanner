@@ -29,9 +29,7 @@ const HomePage = () => {
       <img className="infohome-cotillon" src="/images/cotillon-bleu.png" alt="Cotillon rouge" />
 
       {showDeleteMessage && (
-        <div className="homepage-success-notification">
-          Votre profil a bien été supprimé.
-        </div>
+        <div className="homepage-success-notification">Votre profil a bien été supprimé.</div>
       )}
 
       <div className="infohome-content">
@@ -40,10 +38,10 @@ const HomePage = () => {
         </h1>
 
         <div className="div-bouton-homepage">
-          <a href="/connexion" className="button-white-home" type="button" >
+          <a href="/connexion" className="button-white-home" type="button">
             Connexion
           </a>
-          <a href="/inscription" className="button-black-home"  type="button" >
+          <a href="/inscription" className="button-black-home" type="button">
             Inscription
           </a>
         </div>

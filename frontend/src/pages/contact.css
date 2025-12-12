@@ -148,7 +148,6 @@
   background-color: #463835;
 }
 
-
 /* Responsive */
 @media (max-width: 1200px) {
   .contact-team-grid {
@@ -161,6 +160,7 @@
 /* VERSION MOBILE */
 
 @media (max-width: 768px) {
+
   /* Masquer le logo sur mobile */
   .contact-logo {
     display: none;

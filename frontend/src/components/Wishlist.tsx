@@ -113,64 +113,64 @@ export default function Wishlist() {
 
         {/* Content */}
         <div className="flex-1 min-h-0 overflow-y-auto wishlist-content-mobile">
-        {error ? (
-          <div className="text-[#FDFBF6] bg-black/20 rounded-xl p-4">Erreur: {error.message}</div>
-        ) : !loading && items.length === 0 ? (
-          <div className="h-full flex items-center justify-center">
-            <div className="flex flex-col items-center justify-center text-[#FDFBF6]">
-              <Icon icon="gift" className="text-7xl opacity-80 mb-3" />
-              <p className="text-lg mb-8">Aucune idée pour l'instant.</p>
-              <button
-                type="button"
-                onClick={() => setIsModalOpen(true)}
-                className="flex items-center gap-2 bg-[#019645] text-[#FDFBF6] font-semibold px-4 py-2 rounded-xl hover:bg-[#01803b] transition"
-              >
-                <Icon icon="plus" />
-                Ajouter une idée
-              </button>
+          {error ? (
+            <div className="text-[#FDFBF6] bg-black/20 rounded-xl p-4">Erreur: {error.message}</div>
+          ) : !loading && items.length === 0 ? (
+            <div className="h-full flex items-center justify-center">
+              <div className="flex flex-col items-center justify-center text-[#FDFBF6]">
+                <Icon icon="gift" className="text-7xl opacity-80 mb-3" />
+                <p className="text-lg mb-8">Aucune idée pour l'instant.</p>
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(true)}
+                  className="flex items-center gap-2 bg-[#019645] text-[#FDFBF6] font-semibold px-4 py-2 rounded-xl hover:bg-[#01803b] transition"
+                >
+                  <Icon icon="plus" />
+                  Ajouter une idée
+                </button>
+              </div>
             </div>
-          </div>
-        ) : (
-          <ul className="grid gap-5 grid-cols-[repeat(auto-fill,minmax(280px,1fr))] auto-rows-fr max-md:grid-cols-2">
-            {loading && (
-              <>
-                <li>
-                  <GiftCardSkeleton />
-                </li>
-                <li>
-                  <GiftCardSkeleton />
-                </li>
-                <li className="max-md:hidden">
-                  <GiftCardSkeleton />
-                </li>
-                <li className="max-md:hidden">
-                  <GiftCardSkeleton />
-                </li>
-              </>
-            )}
+          ) : (
+            <ul className="grid gap-5 grid-cols-[repeat(auto-fill,minmax(280px,1fr))] auto-rows-fr max-md:grid-cols-2">
+              {loading && (
+                <>
+                  <li>
+                    <GiftCardSkeleton />
+                  </li>
+                  <li>
+                    <GiftCardSkeleton />
+                  </li>
+                  <li className="max-md:hidden">
+                    <GiftCardSkeleton />
+                  </li>
+                  <li className="max-md:hidden">
+                    <GiftCardSkeleton />
+                  </li>
+                </>
+              )}
 
-            {!loading &&
-              items.map((gift) => (
-                <li key={gift.id} className="h-full">
-                  <GiftCard
-                    gift={gift}
-                    className="h-full"
-                    onDelete={handleDeleteGift}
-                    onEdit={(gift) => {
-                      setEditingGift(gift);
-                      setEditFormData({
-                        name: gift.name ?? "",
-                        description: gift.description ?? "",
-                        imageUrl: gift.imageUrl ?? "",
-                        url: gift.url ?? "",
-                      });
-                      setEditModalOpen(true);
-                    }}
-                  />
-                </li>
-              ))}
-          </ul>
-        )}
+              {!loading &&
+                items.map((gift) => (
+                  <li key={gift.id} className="h-full">
+                    <GiftCard
+                      gift={gift}
+                      className="h-full"
+                      onDelete={handleDeleteGift}
+                      onEdit={(gift) => {
+                        setEditingGift(gift);
+                        setEditFormData({
+                          name: gift.name ?? "",
+                          description: gift.description ?? "",
+                          imageUrl: gift.imageUrl ?? "",
+                          url: gift.url ?? "",
+                        });
+                        setEditModalOpen(true);
+                      }}
+                    />
+                  </li>
+                ))}
+            </ul>
+          )}
         </div>
       </div>
 
@@ -184,76 +184,76 @@ export default function Wishlist() {
         <div className="modal-mobile-content">
           <h2 className="text-xl font-bold text-[#200904] mb-4">Ajouter une nouvelle idée</h2>
           <form onSubmit={handleSubmit} className="space-y-3">
-          <div>
-            <label htmlFor="name" className="block text-[#200904] mb-1">
-              Nom
-            </label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-              className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#EA4B09]"
-            />
-          </div>
-          <div>
-            <label htmlFor="description" className="block text-[#200904] mb-1">
-              Description
-            </label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              rows={2}
-              maxLength={150}
-              className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#EA4B09]"
-            />
-            <div className="text-xs text-gray-600 text-right">{formData.description.length}/150</div>
-          </div>
-          <div>
-            <label htmlFor="imageUrl" className="block text-[#200904] mb-1">
-              Image URL
-            </label>
-            <input
-              type="url"
-              name="imageUrl"
-              value={formData.imageUrl}
-              onChange={handleChange}
-              placeholder="https://example.com/image.jpg"
-              className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#EA4B09]"
-            />
-          </div>
-          <div>
-            <label htmlFor="url" className="block text-[#200904] mb-1">
-              Lien d'achat
-            </label>
-            <input
-              type="url"
-              name="url"
-              value={formData.url}
-              onChange={handleChange}
-              placeholder="https://exemple.com"
-              className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#EA4B09]"
-            />
-          </div>
-          <div className="flex justify-end gap-3 pt-3 modal-buttons">
-            <button
-              type="submit"
-              disabled={creating}
-              className="px-4 py-2 rounded-[10px] bg-[#019645] text-[#FDFBF6] font-semibold hover:bg-[#01803b]"
-            >
-              {creating ? "Ajout…" : "Ajouter"}
-            </button>
-            <button
-              type="button"
-              onClick={() => setIsModalOpen(false)}
-              className="px-4 py-2 rounded-[10px] bg-[#200904] text-[#FDFBF6] font-semibold hover:bg-[#463835]"
-            >
-              Annuler
-            </button>
-          </div>
-        </form>
+            <div>
+              <label htmlFor="name" className="block text-[#200904] mb-1">
+                Nom
+              </label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#EA4B09]"
+              />
+            </div>
+            <div>
+              <label htmlFor="description" className="block text-[#200904] mb-1">
+                Description
+              </label>
+              <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                rows={2}
+                maxLength={150}
+                className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#EA4B09]"
+              />
+              <div className="text-xs text-gray-600 text-right">{formData.description.length}/150</div>
+            </div>
+            <div>
+              <label htmlFor="imageUrl" className="block text-[#200904] mb-1">
+                Image URL
+              </label>
+              <input
+                type="url"
+                name="imageUrl"
+                value={formData.imageUrl}
+                onChange={handleChange}
+                placeholder="https://example.com/image.jpg"
+                className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#EA4B09]"
+              />
+            </div>
+            <div>
+              <label htmlFor="url" className="block text-[#200904] mb-1">
+                Lien d'achat
+              </label>
+              <input
+                type="url"
+                name="url"
+                value={formData.url}
+                onChange={handleChange}
+                placeholder="https://exemple.com"
+                className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#EA4B09]"
+              />
+            </div>
+            <div className="flex justify-end gap-3 pt-3 modal-buttons">
+              <button
+                type="submit"
+                disabled={creating}
+                className="px-4 py-2 rounded-[10px] bg-[#019645] text-[#FDFBF6] font-semibold hover:bg-[#01803b]"
+              >
+                {creating ? "Ajout…" : "Ajouter"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(false)}
+                className="px-4 py-2 rounded-[10px] bg-[#200904] text-[#FDFBF6] font-semibold hover:bg-[#463835]"
+              >
+                Annuler
+              </button>
+            </div>
+          </form>
         </div>
       </Modal>
 
@@ -262,76 +262,76 @@ export default function Wishlist() {
         <div className="modal-mobile-content">
           <h2 className="text-xl font-bold text-[#200904] mb-4">Modifier le cadeau</h2>
           <form onSubmit={handleEditSubmit} className="space-y-3">
-          <div>
-            <label htmlFor="name" className="block text-[#200904] mb-1">
-              Nom
-            </label>
-            <input
-              type="text"
-              name="name"
-              value={editFormData.name}
-              onChange={handleEditChange}
-              required
-              className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#EA4B09]"
-            />
-          </div>
-          <div>
-            <label htmlFor="description" className="block text-[#200904] mb-1">
-              Description
-            </label>
-            <textarea
-              name="description"
-              value={editFormData.description}
-              onChange={handleEditChange}
-              rows={2}
-              maxLength={150}
-              className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#EA4B09]"
-            />
-            <div className="text-xs text-gray-600 text-right">{editFormData.description.length}/150</div>
-          </div>
-          <div>
-            <label htmlFor="imageUrl" className="block text-[#200904] mb-1">
-              Image URL
-            </label>
-            <input
-              type="url"
-              name="imageUrl"
-              value={editFormData.imageUrl}
-              onChange={handleEditChange}
-              placeholder="https://example.com/image.jpg"
-              className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#EA4B09]"
-            />
-          </div>
-          <div>
-            <label htmlFor="url" className="block text-[#200904] mb-1">
-              Lien d'achat
-            </label>
-            <input
-              type="url"
-              name="url"
-              value={editFormData.url}
-              onChange={handleEditChange}
-              placeholder="https://exemple.com"
-              className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#EA4B09]"
-            />
-          </div>
-          <div className="flex justify-end gap-3 pt-3 modal-buttons">
-            <button
-              type="submit"
-              disabled={updating}
-              className="px-4 py-2 rounded-[10px] bg-[#019645] text-[#FDFBF6] font-semibold hover:bg-[#01803b]"
-            >
-              {updating ? "Mis à jour…" : "Mettre à jour"}
-            </button>
-            <button
-              type="button"
-              onClick={() => setEditModalOpen(false)}
-              className="px-4 py-2 rounded-[10px] bg-[#200904] text-[#FDFBF6] font-semibold hover:bg-[#463835]"
-            >
-              Annuler
-            </button>
-          </div>
-        </form>
+            <div>
+              <label htmlFor="name" className="block text-[#200904] mb-1">
+                Nom
+              </label>
+              <input
+                type="text"
+                name="name"
+                value={editFormData.name}
+                onChange={handleEditChange}
+                required
+                className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#EA4B09]"
+              />
+            </div>
+            <div>
+              <label htmlFor="description" className="block text-[#200904] mb-1">
+                Description
+              </label>
+              <textarea
+                name="description"
+                value={editFormData.description}
+                onChange={handleEditChange}
+                rows={2}
+                maxLength={150}
+                className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#EA4B09]"
+              />
+              <div className="text-xs text-gray-600 text-right">{editFormData.description.length}/150</div>
+            </div>
+            <div>
+              <label htmlFor="imageUrl" className="block text-[#200904] mb-1">
+                Image URL
+              </label>
+              <input
+                type="url"
+                name="imageUrl"
+                value={editFormData.imageUrl}
+                onChange={handleEditChange}
+                placeholder="https://example.com/image.jpg"
+                className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#EA4B09]"
+              />
+            </div>
+            <div>
+              <label htmlFor="url" className="block text-[#200904] mb-1">
+                Lien d'achat
+              </label>
+              <input
+                type="url"
+                name="url"
+                value={editFormData.url}
+                onChange={handleEditChange}
+                placeholder="https://exemple.com"
+                className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#EA4B09]"
+              />
+            </div>
+            <div className="flex justify-end gap-3 pt-3 modal-buttons">
+              <button
+                type="submit"
+                disabled={updating}
+                className="px-4 py-2 rounded-[10px] bg-[#019645] text-[#FDFBF6] font-semibold hover:bg-[#01803b]"
+              >
+                {updating ? "Mis à jour…" : "Mettre à jour"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setEditModalOpen(false)}
+                className="px-4 py-2 rounded-[10px] bg-[#200904] text-[#FDFBF6] font-semibold hover:bg-[#463835]"
+              >
+                Annuler
+              </button>
+            </div>
+          </form>
         </div>
       </Modal>
     </div>

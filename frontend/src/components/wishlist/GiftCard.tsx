@@ -3,7 +3,6 @@ import type { Gift } from "../../types/Gift";
 import Icon from "../utils/Icon";
 import "./Wishlist.css";
 
-
 type GiftCardProps = {
   gift: Gift;
   className?: string;

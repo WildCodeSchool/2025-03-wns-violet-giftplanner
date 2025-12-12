@@ -341,9 +341,6 @@
   opacity: 0.8;
 }
 
-
-
-
 /* VERSION MOBILE */
 
 @media (max-width: 768px) {
@@ -369,7 +366,7 @@
     padding-left: 24px;
     padding-right: 24px;
     gap: 80px;
-    height: 90%
+    height: 90%;
   }
 
   /* Logo centré et plus gros */
@@ -472,8 +469,8 @@
     margin: 0 auto;
   }
 
-  .form-login>div,
-  .form-register-div .form-login>div {
+  .form-login > div,
+  .form-register-div .form-login > div {
     width: 100%;
   }
 

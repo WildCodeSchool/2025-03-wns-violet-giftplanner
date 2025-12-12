@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
-import Navigation from "../components/navigation/Navigation";
 import BottomNavigation from "../components/navigation/BottomNavigation";
+import Navigation from "../components/navigation/Navigation";
 import { useIsMobile } from "../hooks/useIsMobile";
 
 export default function Dashboard() {
