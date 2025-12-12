@@ -2,7 +2,7 @@
   position: relative;
   /* Ajouté -> pour contenir les enfants absolus */
   background-color: #292e96;
-  height: 100dvh;
+  height: 100%;
   overflow: hidden;
   z-index: 0;
   /* Les images ne dépasseront plus */
@@ -33,12 +33,12 @@
   padding-top: 16px;
 }
 
-h1 {
-  font-size: 90px;
+.infohome-background h1 {
+  font-size: 75px;
   font-family: "Inter", sans-serif;
   font-weight: 400;
   color: #fdfbf6;
-  line-height: 80px;
+  line-height: 70px;
   margin-top: 0;
 }
 
@@ -49,7 +49,8 @@ h1 {
   padding-left: 108px;
   padding-right: 108px;
   height: 100%;
-  justify-content: center;
+  justify-content: flex-start;
+  margin-top: 35%;
   gap: 104px;
 }
 
@@ -69,6 +70,7 @@ h1 {
 .infohome-serpentin {
   width: 600px;
   top: 10px;
+  left: -96px;
 }
 
 .infohome-carre {
@@ -85,11 +87,11 @@ h1 {
 .infohome-cotillon {
   width: 600px;
   top: 700px;
-  right: 20px;
+  right: -100px;
 }
 
 .h2-login {
-  font-size: 50px;
+  font-size: 40px;
   font-family: "Inter", sans-serif;
   font-weight: 600;
   color: #200904;
@@ -97,7 +99,7 @@ h1 {
 }
 
 .h2-register {
-  font-size: 50px;
+  font-size: 40px;
   font-family: "Inter", sans-serif;
   font-weight: 600;
   color: #200904;
@@ -110,7 +112,7 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: space-evenly;
-  height: 100vh;
+  height: 100%;
   padding: 0 20px;
 }
 
@@ -119,8 +121,9 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  height: 100vh;
+  height: 100%;
   padding: 0 20px;
+  margin-bottom: 5%;
 }
 
 .div-bouton-homepage {
@@ -210,17 +213,11 @@ h1 {
 .input-custom {
   width: 400px;
   padding: 8px 8px;
-  /* équivalent px-5 py-4 */
   border: 3.5px solid #200904;
-  /* grosses bordures noires */
   border-radius: 8px;
-  /* coins arrondis */
   font-weight: bold;
-  /* texte gras */
   font-size: 1.125rem;
-  /* ~ text-lg */
   color: #200904;
-  /* texte noir par défaut */
   outline: none;
   margin-bottom: 24px;
 }
@@ -306,6 +303,7 @@ h1 {
     opacity: 0;
     transform: translateX(-50%) translateY(-20px);
   }
+
   to {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
@@ -341,4 +339,262 @@ h1 {
 
 .homepage-footer-link:hover {
   opacity: 0.8;
+}
+
+/* VERSION MOBILE */
+
+@media (max-width: 768px) {
+  /* HomePage */
+
+  .infohome-content-text-home {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    text-align: left;
+  }
+
+  /* H1 spécifique à la HomePage uniquement */
+  .infohome-content-text-home h1,
+  .infohome-background-red h1 {
+    font-size: 50px;
+    line-height: 50px;
+    padding-right: 18%;
+    padding-left: 5%;
+  }
+
+  .infohome-content {
+    padding-left: 24px;
+    padding-right: 24px;
+    gap: 80px;
+    height: 90%;
+  }
+
+  /* Logo centré et plus gros */
+  .infohome-logo {
+    width: 200px;
+    display: block;
+    margin: 0 auto;
+    padding-left: 0;
+    padding-top: 40px;
+  }
+
+  /* Réduire les décorations */
+  .infohome-serpentin {
+    width: 300px;
+  }
+
+  .infohome-carre {
+    width: 100px;
+    top: 150px;
+  }
+
+  .infohome-etoile {
+    width: 150px;
+    top: auto;
+    bottom: 100px;
+  }
+
+  .infohome-cotillon {
+    width: 300px;
+    top: auto;
+    bottom: 80px;
+  }
+
+  /* Boutons HomePage empilés et centrés */
+  .div-bouton-homepage {
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    max-width: 300px;
+    align-items: center;
+  }
+
+  .button-white-home,
+  .button-black-home {
+    width: auto;
+    font-size: 22px;
+    padding: 8px 24px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Footer - texte raccourci sur mobile */
+  .homepage-footer {
+    padding: 8px 20px;
+  }
+
+  /* Masquer le texte avant le lien */
+  .homepage-footer-text::before {
+    content: "";
+    display: none;
+  }
+
+  /* Masquer tout sauf le lien */
+  .homepage-footer-text {
+    font-size: 0;
+  }
+
+  .homepage-footer-link {
+    font-size: 16px;
+  }
+
+  /* Login/Register Pages */
+
+  /* Cacher InfoHome sur mobile */
+  .infohome-background {
+    display: none;
+  }
+
+  .h2-login,
+  .h2-register {
+    font-size: 32px;
+    margin-top: 60px;
+  }
+
+  .form-register-div {
+    padding: 40px 40px;
+    width: 100%;
+  }
+
+  .form-login-div {
+    padding: 100px 40px;
+    width: 100%;
+  }
+
+  .form-login {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .form-login > div,
+  .form-register-div .form-login > div {
+    width: 100%;
+  }
+
+  .input-custom {
+    width: 100% !important;
+    max-width: none !important;
+    font-size: 18px;
+    padding: 8px 24px;
+    margin-bottom: 16px;
+    box-sizing: border-box;
+  }
+
+  .button-black,
+  .button-white {
+    width: auto !important;
+    max-width: none !important;
+    font-size: 18px;
+    padding: 8px 40px;
+    box-sizing: border-box;
+  }
+
+  .paragraph-login {
+    font-size: 16px;
+  }
+
+  .link-login {
+    font-size: 16px;
+  }
+
+  .image-input-button {
+    width: 100% !important;
+    max-width: none !important;
+    font-size: 18px;
+    padding: 12px 20px;
+    box-sizing: border-box;
+  }
+
+  .margin-more {
+    margin-bottom: 40px;
+  }
+}
+
+/* Décorations mobiles - cachées par défaut */
+.auth-mobile-decoration {
+  display: none;
+}
+
+/* VERSION MOBILE - Décorations */
+@media (max-width: 768px) {
+  /* Wrapper pour les décorations mobiles */
+  .auth-page-mobile-wrapper {
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Afficher les décorations en mobile */
+  .auth-mobile-decoration {
+    display: block;
+    position: absolute;
+    z-index: 1;
+  }
+
+  /* Page Login */
+  .auth-mobile-serpentin {
+    width: 250px;
+    top: 20px;
+    left: -50px;
+    transform: rotate(-15deg);
+  }
+
+  .auth-mobile-carre {
+    width: 80px;
+    top: 120px;
+    right: 20px;
+  }
+
+  .auth-mobile-etoile {
+    width: 100px;
+    bottom: 150px;
+    left: 30px;
+  }
+
+  .auth-mobile-cotillon {
+    width: 200px;
+    bottom: 40px;
+    right: -30px;
+    transform: rotate(20deg);
+  }
+
+  /* Page Register - positions différentes */
+  .auth-mobile-serpentin-register {
+    width: 200px;
+    top: -64px;
+    right: -60px;
+    transform: rotate(25deg);
+  }
+
+  .auth-mobile-carre-register {
+    width: 70px;
+    top: 150px;
+    left: -10px;
+  }
+
+  .auth-mobile-etoile-register {
+    width: 120px;
+    bottom: 180px;
+    right: -15px;
+  }
+
+  .auth-mobile-cotillon-register {
+    width: 200px;
+    bottom: 40px;
+    left: -50px;
+    transform: rotate(-15deg);
+  }
+
+  /* S'assurer que le formulaire reste au-dessus */
+  .form-login-div,
+  .form-register-div {
+    position: relative;
+    z-index: 10;
+  }
+
+  .h2-register {
+    margin-bottom: 32px;
+  }
 }

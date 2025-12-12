@@ -39,6 +39,8 @@ export type CreateGroupInput = {
   event_type: Scalars['String']['input'];
   name: Scalars['String']['input'];
   piggy_bank: Scalars['Float']['input'];
+  user_beneficiary?: InputMaybe<Scalars['String']['input']>;
+  users?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 export type DeleteUserResponse = {
@@ -75,15 +77,25 @@ export type Group = {
   piggy_bank: Scalars['Float']['output'];
   updatedAt: Scalars['DateTimeISO']['output'];
   user_admin: User;
-  user_beneficiary: User;
+  user_beneficiary?: Maybe<User>;
 };
 
 export type GroupMember = {
   __typename?: 'GroupMember';
-  group: Group;
+  email?: Maybe<Scalars['String']['output']>;
+  firstName?: Maybe<Scalars['String']['output']>;
+  groupId: Scalars['Float']['output'];
   id: Scalars['ID']['output'];
+  isGroupAdmin: Scalars['Boolean']['output'];
   joined_at: Scalars['DateTimeISO']['output'];
-  user: User;
+  lastName?: Maybe<Scalars['String']['output']>;
+  userId: Scalars['Float']['output'];
+};
+
+export type GroupWishlistItems = {
+  __typename?: 'GroupWishlistItems';
+  fromGroupList: Array<Gift>;
+  fromWishlist: Array<Gift>;
 };
 
 export type GroupMessagesOutput = {
@@ -132,6 +144,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   UpdateMyProfile: User;
   addGift: Gift;
+  addGiftToGroupList: Gift;
   banUser: BanUserResponse;
   createGroup: Group;
   deleteGift: Scalars['Int']['output'];
@@ -153,6 +166,12 @@ export type MutationUpdateMyProfileArgs = {
 
 export type MutationAddGiftArgs = {
   data: AddGiftInput;
+};
+
+
+export type MutationAddGiftToGroupListArgs = {
+  data: AddGiftInput;
+  groupId: Scalars['Int']['input'];
 };
 
 
@@ -214,24 +233,41 @@ export type NewMessageInput = {
   userToken: Scalars['String']['input'];
 };
 
+export type PendingInvitation = {
+  __typename?: 'PendingInvitation';
+  created_at: Scalars['DateTimeISO']['output'];
+  groupId: Scalars['Float']['output'];
+  id: Scalars['ID']['output'];
+  joinedGroup: Scalars['Boolean']['output'];
+  updated_at: Scalars['DateTimeISO']['output'];
+  userEmail: Scalars['String']['output'];
+};
+
 export type Query = {
   __typename?: 'Query';
   coucou: Scalars['String']['output'];
+<<<<<<< HEAD
   getAllMessageMyGroups: Array<GroupMessagesOutput>;
   getAllMyGroups: MyGroupsResponse;
+=======
+  fetchMessagesByGroup: Scalars['String']['output'];
+  getAllInvitations: Array<PendingInvitation>;
+  getAllMyGroups: Array<Group>;
+>>>>>>> dev
   getAllUsers: Array<User>;
   getAllUsersAdmin: Array<User>;
   getAllUsersForAdmin: Array<User>;
   getMyProfile: User;
+  groupWishlistItems: GroupWishlistItems;
+  myWishlistItems: Array<Gift>;
   testAdmin: Scalars['String']['output'];
   testUser: Scalars['String']['output'];
   welcomeAll: Scalars['String']['output'];
-  wishlistItems: Array<Gift>;
 };
 
 
-export type QueryWishlistItemsArgs = {
-  listId?: InputMaybe<Scalars['Int']['input']>;
+export type QueryGroupWishlistItemsArgs = {
+  groupId: Scalars['Int']['input'];
 };
 
 export type SignupInput = {
@@ -289,7 +325,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, phone_number?: string | null, date_of_birth: string, createdAt: any, updatedAt: any, image_url?: string | null, isVerified: boolean, isAdmin: boolean } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, phone_number?: string | null, date_of_birth: string, createdAt: any, updatedAt: any, image_url?: string | null, isVerified: boolean, isAdmin: boolean, lists: Array<{ __typename?: 'List', id: string, name: string }> } };
 
 export type SignupMutationVariables = Exact<{
   data: SignupInput;
@@ -301,7 +337,7 @@ export type SignupMutation = { __typename?: 'Mutation', signup: { __typename?: '
 export type GetMyProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetMyProfileQuery = { __typename?: 'Query', getMyProfile: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, phone_number?: string | null, date_of_birth: string, createdAt: any, updatedAt: any, image_url?: string | null, isVerified: boolean, isAdmin: boolean } };
+export type GetMyProfileQuery = { __typename?: 'Query', getMyProfile: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, phone_number?: string | null, date_of_birth: string, createdAt: any, updatedAt: any, image_url?: string | null, isVerified: boolean, isAdmin: boolean, lists: Array<{ __typename?: 'List', id: string, name: string }> } };
 
 export type UpdateMyProfileMutationVariables = Exact<{
   data: UpdateMyProfileInput;
@@ -320,10 +356,17 @@ export type DeleteMyProfileMutationVariables = Exact<{ [key: string]: never; }>;
 
 export type DeleteMyProfileMutation = { __typename?: 'Mutation', deleteMyProfile: { __typename?: 'DeleteUserResponse', success: boolean, message: string } };
 
-export type WishlistItemsQueryVariables = Exact<{ [key: string]: never; }>;
+export type MyWishlistItemsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type WishlistItemsQuery = { __typename?: 'Query', wishlistItems: Array<{ __typename?: 'Gift', id: string, name: string, description: string, imageUrl: string, url: string, createdAt: any, updatedAt: any, user?: { __typename?: 'User', id: string } | null, list?: { __typename?: 'List', id: string } | null }> };
+export type MyWishlistItemsQuery = { __typename?: 'Query', myWishlistItems: Array<{ __typename?: 'Gift', id: string, name: string, description: string, imageUrl: string, url: string, createdAt: any, updatedAt: any, user?: { __typename?: 'User', id: string } | null, list?: { __typename?: 'List', id: string } | null }> };
+
+export type GroupWishlistItemsQueryVariables = Exact<{
+  groupId: Scalars['Int']['input'];
+}>;
+
+
+export type GroupWishlistItemsQuery = { __typename?: 'Query', groupWishlistItems: { __typename?: 'GroupWishlistItems', fromWishlist: Array<{ __typename?: 'Gift', id: string, name: string, description: string, imageUrl: string, url: string, createdAt: any, updatedAt: any, user?: { __typename?: 'User', id: string } | null, list?: { __typename?: 'List', id: string } | null }>, fromGroupList: Array<{ __typename?: 'Gift', id: string, name: string, description: string, imageUrl: string, url: string, createdAt: any, updatedAt: any, user?: { __typename?: 'User', id: string } | null, list?: { __typename?: 'List', id: string } | null }> } };
 
 export type AddGiftMutationVariables = Exact<{
   data: AddGiftInput;
@@ -331,6 +374,14 @@ export type AddGiftMutationVariables = Exact<{
 
 
 export type AddGiftMutation = { __typename?: 'Mutation', addGift: { __typename?: 'Gift', id: string, name: string, description: string, imageUrl: string, url: string, createdAt: any, updatedAt: any, user?: { __typename?: 'User', id: string } | null, list?: { __typename?: 'List', id: string } | null } };
+
+export type AddGiftToGroupListMutationVariables = Exact<{
+  groupId: Scalars['Int']['input'];
+  data: AddGiftInput;
+}>;
+
+
+export type AddGiftToGroupListMutation = { __typename?: 'Mutation', addGiftToGroupList: { __typename?: 'Gift', id: string, name: string, description: string, imageUrl: string, url: string, createdAt: any, updatedAt: any, user?: { __typename?: 'User', id: string } | null, list?: { __typename?: 'List', id: string } | null } };
 
 export type UpdateGiftMutationVariables = Exact<{
   id: Scalars['Int']['input'];
@@ -352,12 +403,16 @@ export type CreateGroupMutationVariables = Exact<{
 }>;
 
 
-export type CreateGroupMutation = { __typename?: 'Mutation', createGroup: { __typename?: 'Group', id: string, name: string, piggy_bank: number, event_type: string } };
+export type CreateGroupMutation = { __typename?: 'Mutation', createGroup: { __typename?: 'Group', id: string, name: string, event_type: string, piggy_bank: number, deadline: any, createdAt: any, user_beneficiary?: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string } | null, groupMember: Array<{ __typename?: 'GroupMember', id: string, userId: number, groupId: number }> } };
 
 export type GetAllMyGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
+<<<<<<< HEAD
 export type GetAllMyGroupsQuery = { __typename?: 'Query', getAllMyGroups: { __typename?: 'MyGroupsResponse', groupToken: string, groups: Array<{ __typename?: 'Group', id: string, name: string, createdAt: any, updatedAt: any, event_type: string, piggy_bank: number, deadline: any }> } };
+=======
+export type GetAllMyGroupsQuery = { __typename?: 'Query', getAllMyGroups: Array<{ __typename?: 'Group', id: string, name: string, createdAt: any, updatedAt: any, event_type: string, piggy_bank: number, deadline: any, messages: Array<{ __typename?: 'Message', id: string, content: string, createdAt: any, isEdited: boolean, user: { __typename?: 'User', id: string, firstName: string, lastName: string, image_url?: string | null, isAdmin: boolean } }>, user_beneficiary?: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string } | null, groupMember: Array<{ __typename?: 'GroupMember', userId: number, lastName?: string | null, joined_at: any, isGroupAdmin: boolean, id: string, groupId: number, firstName?: string | null, email?: string | null }> }> };
+>>>>>>> dev
 
 export type GetAllMessageMyGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -405,6 +460,10 @@ export const LoginDocument = gql`
     image_url
     isVerified
     isAdmin
+    lists {
+      id
+      name
+    }
   }
 }
     `;
@@ -491,6 +550,10 @@ export const GetMyProfileDocument = gql`
     image_url
     isVerified
     isAdmin
+    lists {
+      id
+      name
+    }
   }
 }
     `;
@@ -632,9 +695,9 @@ export function useDeleteMyProfileMutation(baseOptions?: Apollo.MutationHookOpti
 export type DeleteMyProfileMutationHookResult = ReturnType<typeof useDeleteMyProfileMutation>;
 export type DeleteMyProfileMutationResult = Apollo.MutationResult<DeleteMyProfileMutation>;
 export type DeleteMyProfileMutationOptions = Apollo.BaseMutationOptions<DeleteMyProfileMutation, DeleteMyProfileMutationVariables>;
-export const WishlistItemsDocument = gql`
-    query WishlistItems {
-  wishlistItems {
+export const MyWishlistItemsDocument = gql`
+    query MyWishlistItems {
+  myWishlistItems {
     id
     name
     description
@@ -653,36 +716,105 @@ export const WishlistItemsDocument = gql`
     `;
 
 /**
- * __useWishlistItemsQuery__
+ * __useMyWishlistItemsQuery__
  *
- * To run a query within a React component, call `useWishlistItemsQuery` and pass it any options that fit your needs.
- * When your component renders, `useWishlistItemsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useMyWishlistItemsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMyWishlistItemsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useWishlistItemsQuery({
+ * const { data, loading, error } = useMyWishlistItemsQuery({
  *   variables: {
  *   },
  * });
  */
-export function useWishlistItemsQuery(baseOptions?: Apollo.QueryHookOptions<WishlistItemsQuery, WishlistItemsQueryVariables>) {
+export function useMyWishlistItemsQuery(baseOptions?: Apollo.QueryHookOptions<MyWishlistItemsQuery, MyWishlistItemsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<WishlistItemsQuery, WishlistItemsQueryVariables>(WishlistItemsDocument, options);
+        return Apollo.useQuery<MyWishlistItemsQuery, MyWishlistItemsQueryVariables>(MyWishlistItemsDocument, options);
       }
-export function useWishlistItemsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<WishlistItemsQuery, WishlistItemsQueryVariables>) {
+export function useMyWishlistItemsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MyWishlistItemsQuery, MyWishlistItemsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<WishlistItemsQuery, WishlistItemsQueryVariables>(WishlistItemsDocument, options);
+          return Apollo.useLazyQuery<MyWishlistItemsQuery, MyWishlistItemsQueryVariables>(MyWishlistItemsDocument, options);
         }
-export function useWishlistItemsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<WishlistItemsQuery, WishlistItemsQueryVariables>) {
+export function useMyWishlistItemsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<MyWishlistItemsQuery, MyWishlistItemsQueryVariables>) {
           const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<WishlistItemsQuery, WishlistItemsQueryVariables>(WishlistItemsDocument, options);
+          return Apollo.useSuspenseQuery<MyWishlistItemsQuery, MyWishlistItemsQueryVariables>(MyWishlistItemsDocument, options);
         }
-export type WishlistItemsQueryHookResult = ReturnType<typeof useWishlistItemsQuery>;
-export type WishlistItemsLazyQueryHookResult = ReturnType<typeof useWishlistItemsLazyQuery>;
-export type WishlistItemsSuspenseQueryHookResult = ReturnType<typeof useWishlistItemsSuspenseQuery>;
-export type WishlistItemsQueryResult = Apollo.QueryResult<WishlistItemsQuery, WishlistItemsQueryVariables>;
+export type MyWishlistItemsQueryHookResult = ReturnType<typeof useMyWishlistItemsQuery>;
+export type MyWishlistItemsLazyQueryHookResult = ReturnType<typeof useMyWishlistItemsLazyQuery>;
+export type MyWishlistItemsSuspenseQueryHookResult = ReturnType<typeof useMyWishlistItemsSuspenseQuery>;
+export type MyWishlistItemsQueryResult = Apollo.QueryResult<MyWishlistItemsQuery, MyWishlistItemsQueryVariables>;
+export const GroupWishlistItemsDocument = gql`
+    query GroupWishlistItems($groupId: Int!) {
+  groupWishlistItems(groupId: $groupId) {
+    fromWishlist {
+      id
+      name
+      description
+      imageUrl
+      url
+      createdAt
+      updatedAt
+      user {
+        id
+      }
+      list {
+        id
+      }
+    }
+    fromGroupList {
+      id
+      name
+      description
+      imageUrl
+      url
+      createdAt
+      updatedAt
+      user {
+        id
+      }
+      list {
+        id
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGroupWishlistItemsQuery__
+ *
+ * To run a query within a React component, call `useGroupWishlistItemsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGroupWishlistItemsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGroupWishlistItemsQuery({
+ *   variables: {
+ *      groupId: // value for 'groupId'
+ *   },
+ * });
+ */
+export function useGroupWishlistItemsQuery(baseOptions: Apollo.QueryHookOptions<GroupWishlistItemsQuery, GroupWishlistItemsQueryVariables> & ({ variables: GroupWishlistItemsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GroupWishlistItemsQuery, GroupWishlistItemsQueryVariables>(GroupWishlistItemsDocument, options);
+      }
+export function useGroupWishlistItemsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GroupWishlistItemsQuery, GroupWishlistItemsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GroupWishlistItemsQuery, GroupWishlistItemsQueryVariables>(GroupWishlistItemsDocument, options);
+        }
+export function useGroupWishlistItemsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GroupWishlistItemsQuery, GroupWishlistItemsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GroupWishlistItemsQuery, GroupWishlistItemsQueryVariables>(GroupWishlistItemsDocument, options);
+        }
+export type GroupWishlistItemsQueryHookResult = ReturnType<typeof useGroupWishlistItemsQuery>;
+export type GroupWishlistItemsLazyQueryHookResult = ReturnType<typeof useGroupWishlistItemsLazyQuery>;
+export type GroupWishlistItemsSuspenseQueryHookResult = ReturnType<typeof useGroupWishlistItemsSuspenseQuery>;
+export type GroupWishlistItemsQueryResult = Apollo.QueryResult<GroupWishlistItemsQuery, GroupWishlistItemsQueryVariables>;
 export const AddGiftDocument = gql`
     mutation AddGift($data: AddGiftInput!) {
   addGift(data: $data) {
@@ -728,6 +860,52 @@ export function useAddGiftMutation(baseOptions?: Apollo.MutationHookOptions<AddG
 export type AddGiftMutationHookResult = ReturnType<typeof useAddGiftMutation>;
 export type AddGiftMutationResult = Apollo.MutationResult<AddGiftMutation>;
 export type AddGiftMutationOptions = Apollo.BaseMutationOptions<AddGiftMutation, AddGiftMutationVariables>;
+export const AddGiftToGroupListDocument = gql`
+    mutation AddGiftToGroupList($groupId: Int!, $data: AddGiftInput!) {
+  addGiftToGroupList(groupId: $groupId, data: $data) {
+    id
+    name
+    description
+    imageUrl
+    url
+    createdAt
+    updatedAt
+    user {
+      id
+    }
+    list {
+      id
+    }
+  }
+}
+    `;
+export type AddGiftToGroupListMutationFn = Apollo.MutationFunction<AddGiftToGroupListMutation, AddGiftToGroupListMutationVariables>;
+
+/**
+ * __useAddGiftToGroupListMutation__
+ *
+ * To run a mutation, you first call `useAddGiftToGroupListMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddGiftToGroupListMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addGiftToGroupListMutation, { data, loading, error }] = useAddGiftToGroupListMutation({
+ *   variables: {
+ *      groupId: // value for 'groupId'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useAddGiftToGroupListMutation(baseOptions?: Apollo.MutationHookOptions<AddGiftToGroupListMutation, AddGiftToGroupListMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddGiftToGroupListMutation, AddGiftToGroupListMutationVariables>(AddGiftToGroupListDocument, options);
+      }
+export type AddGiftToGroupListMutationHookResult = ReturnType<typeof useAddGiftToGroupListMutation>;
+export type AddGiftToGroupListMutationResult = Apollo.MutationResult<AddGiftToGroupListMutation>;
+export type AddGiftToGroupListMutationOptions = Apollo.BaseMutationOptions<AddGiftToGroupListMutation, AddGiftToGroupListMutationVariables>;
 export const UpdateGiftDocument = gql`
     mutation UpdateGift($id: Int!, $data: UpdateGiftInput!) {
   updateGift(id: $id, data: $data) {
@@ -803,8 +981,21 @@ export const CreateGroupDocument = gql`
   createGroup(data: $data) {
     id
     name
-    piggy_bank
     event_type
+    piggy_bank
+    deadline
+    createdAt
+    user_beneficiary {
+      id
+      firstName
+      lastName
+      email
+    }
+    groupMember {
+      id
+      userId
+      groupId
+    }
   }
 }
     `;
@@ -847,6 +1038,32 @@ export const GetAllMyGroupsDocument = gql`
       piggy_bank
       deadline
     }
+<<<<<<< HEAD
+=======
+    id
+    name
+    createdAt
+    updatedAt
+    event_type
+    piggy_bank
+    deadline
+    user_beneficiary {
+      id
+      firstName
+      lastName
+      email
+    }
+    groupMember {
+      userId
+      lastName
+      joined_at
+      isGroupAdmin
+      id
+      groupId
+      firstName
+      email
+    }
+>>>>>>> dev
   }
 }
     `;

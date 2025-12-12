@@ -1,8 +1,8 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Groups from "../components/Groups/Groups";
 import Messaging from "../components/Groups/Messaging/Messaging";
-// import PiggyBank from "../components/Groups/PiggyBank";
-// import Wishlist from "../components/Groups/Wishlist";
+import PiggyBank from "../components/Groups/PiggyBank";
+import Wishlist from "../components/Groups/Wishlist";
 import Button from "../components/utils/Button";
 import type { GetAllMessageMyGroupsQuery, GetAllMyGroupsQuery } from "../generated/graphql-types";
 import { useGetAllMyGroupsQuery, useGetAllMessageMyGroupsQuery } from "../generated/graphql-types";
@@ -48,11 +48,31 @@ export default function Conversations() {
 
   // pour set les groups
   useEffect(() => {
+     // if (!data?.getAllMyGroups) return;
     setGroups(groupData?.getAllMyGroups.groups || []);
 
     // demande au server de rejoindre les rooms que utilisateur possède
     chat.connectToRoom(groupData?.getAllMyGroups.groupToken)
   }, [groupData, chat]);
+
+  useEffect(() => {
+    // waiting for data to load
+    if (!data?.getAllMyGroups) return;
+
+    if (data.getAllMyGroups.length === 0) {
+      setActiveGroup(null);
+      return;
+    }
+
+    setGroups(data.getAllMyGroups);
+
+    //keep active group in sync or default to first during refetch
+    const existing = activeGroup
+      ? data.getAllMyGroups.find((group) => Number(group.id) === Number(activeGroup.id))
+      : null;
+
+    setActiveGroup(existing ?? data.getAllMyGroups[0]);
+  }, [data, activeGroup]);
 
   // pour set les messages
   useEffect(() => {
@@ -65,6 +85,17 @@ export default function Conversations() {
     setMessages(messagesMap);
   }, [messageData]);
 
+ 
+
+  useEffect(() => {
+    if (activeGroupId === null) {
+      setActiveGroup(null);
+      return;
+    }
+    setActiveGroup(groups.find((g) => Number(g.id) === activeGroupId) || null);
+  }, [activeGroupId]);
+
+
   //TO DO: set activeGroup.id in url
 
   return (
@@ -72,7 +103,7 @@ export default function Conversations() {
       {/* Left Column */}
       <div className="flex flex-col mx-[2vw] h-full min-h-0 justify-between">
         <div className="h-[calc(50%-2rem)] flex pb-2 ">
-          {groups && <Groups groups={groups} calbackSetActiveGroupId={calbackSetActiveGroupId} />}
+          {groups && <Groups groups={groups} calbackSetActiveGroupId={calbackSetActiveGroupId} loading={loading} error={error?.message} />}
         </div>
 
         <div className="flex flex-row gap-2 pb-2 absolute top-[calc(50%)]">
@@ -94,14 +125,9 @@ export default function Conversations() {
           />
         </div>
 
-        {/* <div className="h-[calc(50%-2rem)] flex pt-2">
-          {activeGroup &&
-            (whislist ? (
-              <Wishlist wishlistItems={activeGroup.wishlist} />
-            ) : (
-              <PiggyBank pot={activeGroup.fund} />
-            ))}
-        </div> */}
+        <div className="h-[calc(50%-2rem)] flex pt-2">
+          {activeGroup && (wishlist ? <Wishlist beneficiaryItems={beneficiaryItems} groupItems={groupItems} onAddIdea={() => {}} /> : <PiggyBank pot={activeGroup.piggy_bank} />)}
+        </div>
       </div>
 
       {/* Right Column */}

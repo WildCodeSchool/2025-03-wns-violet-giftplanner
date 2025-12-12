@@ -6,7 +6,11 @@ import consoleErrorDev from "../../hooks/erreurMod";
 import { useMyProfileStore } from "../../zustand/myProfileStore";
 import Redirect from "./Redirect";
 import "./navigation.css";
+<<<<<<< HEAD:frontend/src/components/Navigation/Navigation.tsx
 import { LuGift, LuLogOut, LuMessageCircleMore, LuShield, LuUserRound } from "react-icons/lu";
+=======
+import { LuHeart, LuLogOut, LuMessageCircleMore, LuShield, LuUserRound } from "react-icons/lu";
+>>>>>>> dev:frontend/src/components/navigation/Navigation.tsx
 
 export default function Navigation() {
   const { userProfile, clearUserProfile } = useMyProfileStore();
@@ -66,7 +70,7 @@ export default function Navigation() {
             <Redirect
               link="/dashboard/wishlist"
               icon={
-                <LuGift
+                <LuHeart
                   className={`cursor-pointer transition-bnt-nav ${currentLocation === "/dashboard/wishlist" && "wishlist-icon"}`}
                 />
               }
