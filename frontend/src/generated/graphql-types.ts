@@ -39,6 +39,7 @@ export type CreateGroupInput = {
   event_type: Scalars['String']['input'];
   name: Scalars['String']['input'];
   piggy_bank: Scalars['Float']['input'];
+  user_beneficiary?: InputMaybe<Scalars['String']['input']>;
   users?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
@@ -76,14 +77,18 @@ export type Group = {
   piggy_bank: Scalars['Float']['output'];
   updatedAt: Scalars['DateTimeISO']['output'];
   user_admin: User;
-  user_beneficiary: User;
+  user_beneficiary?: Maybe<User>;
 };
 
 export type GroupMember = {
   __typename?: 'GroupMember';
+  email?: Maybe<Scalars['String']['output']>;
+  firstName?: Maybe<Scalars['String']['output']>;
   groupId: Scalars['Float']['output'];
   id: Scalars['ID']['output'];
+  isGroupAdmin: Scalars['Boolean']['output'];
   joined_at: Scalars['DateTimeISO']['output'];
+  lastName?: Maybe<Scalars['String']['output']>;
   userId: Scalars['Float']['output'];
 };
 
@@ -214,10 +219,21 @@ export type NewMessageInput = {
   message: Scalars['String']['input'];
 };
 
+export type PendingInvitation = {
+  __typename?: 'PendingInvitation';
+  created_at: Scalars['DateTimeISO']['output'];
+  groupId: Scalars['Float']['output'];
+  id: Scalars['ID']['output'];
+  joinedGroup: Scalars['Boolean']['output'];
+  updated_at: Scalars['DateTimeISO']['output'];
+  userEmail: Scalars['String']['output'];
+};
+
 export type Query = {
   __typename?: 'Query';
   coucou: Scalars['String']['output'];
   fetchMessagesByGroup: Scalars['String']['output'];
+  getAllInvitations: Array<PendingInvitation>;
   getAllMyGroups: Array<Group>;
   getAllUsers: Array<User>;
   getAllUsersAdmin: Array<User>;
@@ -368,12 +384,12 @@ export type CreateGroupMutationVariables = Exact<{
 }>;
 
 
-export type CreateGroupMutation = { __typename?: 'Mutation', createGroup: { __typename?: 'Group', id: string, name: string, event_type: string, piggy_bank: number, deadline: any, createdAt: any, groupMember: Array<{ __typename?: 'GroupMember', id: string, userId: number, groupId: number }> } };
+export type CreateGroupMutation = { __typename?: 'Mutation', createGroup: { __typename?: 'Group', id: string, name: string, event_type: string, piggy_bank: number, deadline: any, createdAt: any, user_beneficiary?: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string } | null, groupMember: Array<{ __typename?: 'GroupMember', id: string, userId: number, groupId: number }> } };
 
 export type GetAllMyGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllMyGroupsQuery = { __typename?: 'Query', getAllMyGroups: Array<{ __typename?: 'Group', id: string, name: string, createdAt: any, updatedAt: any, event_type: string, piggy_bank: number, deadline: any, messages: Array<{ __typename?: 'Message', id: string, content: string, createdAt: any, isEdited: boolean, user: { __typename?: 'User', id: string, firstName: string, lastName: string, image_url?: string | null, isAdmin: boolean } }> }> };
+export type GetAllMyGroupsQuery = { __typename?: 'Query', getAllMyGroups: Array<{ __typename?: 'Group', id: string, name: string, createdAt: any, updatedAt: any, event_type: string, piggy_bank: number, deadline: any, messages: Array<{ __typename?: 'Message', id: string, content: string, createdAt: any, isEdited: boolean, user: { __typename?: 'User', id: string, firstName: string, lastName: string, image_url?: string | null, isAdmin: boolean } }>, user_beneficiary?: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string } | null, groupMember: Array<{ __typename?: 'GroupMember', userId: number, lastName?: string | null, joined_at: any, isGroupAdmin: boolean, id: string, groupId: number, firstName?: string | null, email?: string | null }> }> };
 
 export type SendMessageMutationVariables = Exact<{
   data: NewMessageInput;
@@ -948,6 +964,12 @@ export const CreateGroupDocument = gql`
     piggy_bank
     deadline
     createdAt
+    user_beneficiary {
+      id
+      firstName
+      lastName
+      email
+    }
     groupMember {
       id
       userId
@@ -1005,6 +1027,22 @@ export const GetAllMyGroupsDocument = gql`
     event_type
     piggy_bank
     deadline
+    user_beneficiary {
+      id
+      firstName
+      lastName
+      email
+    }
+    groupMember {
+      userId
+      lastName
+      joined_at
+      isGroupAdmin
+      id
+      groupId
+      firstName
+      email
+    }
   }
 }
     `;

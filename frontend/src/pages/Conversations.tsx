@@ -7,26 +7,29 @@ import type { GetAllMyGroupsQuery } from "../generated/graphql-types";
 import { useGetAllMyGroupsQuery, useGroupWishlistItemsQuery } from "../generated/graphql-types";
 
 export default function Conversations() {
-  // const { data: groupData, loading, error } = useGetAllMyGroupsQuery();
+  const { data, loading, error } = useGetAllMyGroupsQuery();
   const [wishlist, setWishlist] = React.useState(true);
-
-  const { data: groupData } = useGetAllMyGroupsQuery();
   const [groups, setGroups] = useState<GetAllMyGroupsQuery["getAllMyGroups"]>([]);
-
-  const [activeGroupId, setActiveGroupId] = React.useState<Number | null>(null);
   const [activeGroup, setActiveGroup] = React.useState<GetAllMyGroupsQuery["getAllMyGroups"][0] | null>(null);
 
   useEffect(() => {
-    setGroups(groupData?.getAllMyGroups || []);
-  }, [groupData]);
+    // waiting for data to load
+    if (!data?.getAllMyGroups) return;
 
-  useEffect(() => {
-    if (activeGroupId === null) {
+    if (data.getAllMyGroups.length === 0) {
       setActiveGroup(null);
       return;
     }
-    setActiveGroup(groups.find((g) => Number(g.id) === activeGroupId) || null);
-  }, [activeGroupId]);
+
+    setGroups(data.getAllMyGroups);
+
+    //keep active group in sync or default to first during refetch
+    const existing = activeGroup
+      ? data.getAllMyGroups.find((group) => Number(group.id) === Number(activeGroup.id))
+      : null;
+
+    setActiveGroup(existing ?? data.getAllMyGroups[0]);
+  }, [data, activeGroup]);
 
   const activeGroupIdNumber = activeGroup ? Number(activeGroup.id) : undefined;
 
@@ -49,7 +52,7 @@ export default function Conversations() {
       {/* Left Column */}
       <div className="flex flex-col mx-[2vw] h-full min-h-0 justify-between">
         <div className="h-[calc(50%-2rem)] flex pb-2 ">
-          {groups && <Groups groups={groups} setActiveGroup={setActiveGroupId} />}
+          <Groups groups={groups} setActiveGroup={setActiveGroup} loading={loading} error={error?.message} />
         </div>
 
         <div className="flex flex-row gap-2 pb-2 absolute top-[calc(50%)]">
@@ -75,22 +78,17 @@ export default function Conversations() {
           <Wishlist beneficiaryItems={beneficiaryItems} groupItems={groupItems} onAddIdea={() => {}} />
         )}
 
-        {/* <div className="h-[calc(50%-2rem)] flex pt-2">
-          {activeGroup &&
-            (wishlist ? (
-              <Wishlist wishlistItems={activeGroup.wishlist} />
-            ) : (
-              <PiggyBank pot={activeGroup.fund} />
-            ))}
-        </div> */}
+        <div className="h-[calc(50%-2rem)] flex pt-2">
+          {activeGroup && (wishlist ? <Wishlist /> : <PiggyBank pot={activeGroup.piggy_bank} />)}
+        </div>
       </div>
 
       {/* Right Column */}
       <div className="flex flex-1 w-1/2 h-full  mt-0 overflow-y-auto justify-center">
         {activeGroup && (
           <Messaging
-            title="titre todo"
-            participants={2}
+            title={activeGroup.name}
+            participants={activeGroup.groupMember.length}
             date={new Date(activeGroup.deadline)}
             groupId={Number(activeGroup.id)}
             messages={activeGroup.messages}

@@ -1,18 +1,49 @@
+import type React from "react";
 import { useState } from "react";
 import { useCreateGroupMutation } from "../../generated/graphql-types";
+import { GET_ALL_MY_GROUPS } from "../../graphql/operations";
 import { groupCreationFormValidation } from "../../hooks/formValidationRules";
 import { useSanitizedForm } from "../../hooks/useSanitizedForm";
 import Button from "../utils/Button";
 import Icon from "../utils/Icon";
 import Input from "../utils/Input";
-import SearchInput from "../utils/SearchInput";
+import InputWithToggle from "../utils/InputWithToggle";
+import ResponsiveImage from "../utils/ResponsiveImage";
+import SearchSelectInput from "../utils/SearchSelectInput";
 import Title from "../utils/Title";
+import GroupLink from "./GroupLink";
 
-export default function CreateGroupForm() {
-  //TO DO: query recupérer tous les utilisateurs existant du groupe pour les afficher dans le formulaire
+type CreateGroupFormProps = {
+  onSuccess?: () => void;
+};
 
-  const [query, setQuery] = useState("");
-  const [userError, setUserError] = useState<string>("");
+export default function CreateGroupForm({ onSuccess }: CreateGroupFormProps) {
+  const options = [
+    {
+      label: "Anniversaire",
+      value: "Anniversaire",
+    },
+    {
+      label: "Marriage",
+      value: "Marriage",
+    },
+    {
+      label: "Naissance",
+      value: "Naissance",
+    },
+    {
+      label: "Pot de départ",
+      value: "Pot de départ",
+    },
+    {
+      label: "Noël",
+      value: "Noël",
+    },
+  ];
+
+  // const [query, setQuery] = useState("");
+  const [checked, setChecked] = useState(false);
+
   const { formData, handleChange, getSanitizedData, errors, isValid, setFormData, isEmpty } =
     useSanitizedForm(
       {
@@ -21,19 +52,27 @@ export default function CreateGroupForm() {
         piggy_bank: 0,
         deadline: "",
         users: [] as string[],
+        user_beneficiary: "",
       },
       groupCreationFormValidation,
     );
 
   const [error, setError] = useState<string>("");
 
-  const [createGroup] = useCreateGroupMutation();
+  const [createGroup] = useCreateGroupMutation({
+    awaitRefetchQueries: true,
+    refetchQueries: [
+      {
+        query: GET_ALL_MY_GROUPS,
+      },
+    ],
+  });
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (isEmpty) {
       console.info("Form is empty.");
-      setError("Etre bref c'est bien, mais il faut quand même remplir le formulaire");
+      setError("Être bref c'est bien, mais il faut quand même remplir le formulaire");
       return;
     }
     if (isValid) {
@@ -60,16 +99,25 @@ export default function CreateGroupForm() {
           event_type: "",
           piggy_bank: 0,
           deadline: "",
-          users: [], //Do not reset users here instead show the list of existing users
+          users: [],
+          user_beneficiary: "", //Do not reset users here instead show the list of existing users
         });
-        // TO DO: fermer la modale après création puis afficher le nouveau groupe dans la liste des groupes
-      } catch (error) {
+
+        setChecked(false);
+
+        // Close the parent modal if provided
+        if (onSuccess) onSuccess();
+      } catch (error: unknown) {
         console.error("Error creating group:", error);
+        if (error instanceof Error) {
+          setError(error.message);
+        } else {
+          setError("Une erreur est survenue");
+        }
       }
     }
 
     console.error("Form has errors, cannot submit.", errors);
-    setError("Etre bref c'est bien, mais il faut quand même remplir le formulaire");
   }
 
   return (
@@ -91,14 +139,19 @@ export default function CreateGroupForm() {
             icon="doubleChat"
           />
 
-          <Input //TODO: faire un select avec des options types d'événements
+          <SearchSelectInput
             name="event_type"
-            type="text"
             value={formData.event_type}
-            onChange={handleChange}
+            onChange={(val) =>
+              handleChange({
+                target: { name: "event_type", value: val },
+              } as React.ChangeEvent<HTMLInputElement>)
+            }
             placeholder="Quel est l'événement ?"
             error={errors.event_type}
             icon="gift"
+            options={options}
+            theme="light"
           />
 
           <Input
@@ -111,15 +164,26 @@ export default function CreateGroupForm() {
             icon="dollar"
           />
 
-          <Input //TODO: Afficher le date aujourd'hui par defaut
+          <InputWithToggle
+            checked={checked}
+            onCheckedChange={() => {
+              setChecked(!checked);
+            }}
+            name="user_beneficiary"
+            value={formData.user_beneficiary}
+            onChange={handleChange}
+            label="Le nom du destinataire"
+            question="Voulez-vous ajouter un destinataire? "
+            error={errors.user_beneficiary}
+          />
+
+          <Input
             name="deadline"
             type="date"
             value={formData.deadline}
             onChange={handleChange}
             error={errors.deadline}
           />
-
-          {/* Ajouter l'option d'ajouter le destinataire*/}
         </div>
         <Button
           type="submit"
@@ -131,57 +195,38 @@ export default function CreateGroupForm() {
           Créer
         </Button>
         {error && <p className="text-orange font-inter text-sm pt-1 text-center">{error}</p>}
+        {errors.main && <p className="text-orange font-inter text-sm pt-1 text-center">{errors.main}</p>}
       </div>
 
       <div className="w-1/2 bg-white h-full flex flex-col rounded-tr-2xl rounded-br-2xl">
-        <div className="flex flex-col gap-4 px-20">
+        <div className="flex flex-col gap-4 px-20 m-auto">
           {/* Adding users can go here */}
+          <div className="flex flex-row items-center w-full border border-blue">
+            <GroupLink />
+            <ResponsiveImage src={`/images/papier-theme.jpg`} alt="QR Code" maxWidth="w-64" rounded />
+          </div>
+
+          {/* TO DO: reintegrer le user input
           <SearchInput
             placeholder="Ajouter des participants..."
             theme="dark"
             name="users"
             value={query}
-            onChange={(e) => {
-              setQuery(e.target.value);
-              setUserError("");
-            }}
+            onChange={handleChange}
             onClick={(email) => {
-              setFormData({ ...formData, users: formData.users.filter((u) => u !== email) });
-              setUserError("");
+              setFormData({ ...formData, users: formData.users.filter((user) => user !== email) });
+
             }}
             onAddTag={(email) => {
-              // Email regex validation
-              const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-              if (!emailRegex.test(email)) {
-                setUserError("Format d'email invalide");
-                return;
-              }
-
-              if (formData.users.includes(email)) {
-                setUserError("Cet utilisateur est déjà dans le groupe");
-                return;
-              }
-
-              setFormData({ ...formData, users: [...formData.users, email] });
+              setFormData({ ...formData, users: formData.users.filter((user) => user !== email) });
               setQuery("");
-              setUserError("");
+              
             }}
             items={formData.users}
-            error={userError}
-          />
+            error={errors.users}
+          /> */}
         </div>
       </div>
     </form>
   );
 }
-
-/**
- * TO DO:
- * - rendre ça plus lisible
- * - ajouter la gestion des erreurs pour les utilisateurs (dans les règles de validation)
- * - version mobile et web ajuster modale
- * - ajouter un bouton pour générer un QR code pour inviter des utilisateurs (mock pour l'instant)
- * - refactor pour que ce soit aussi utilisé pour modification du groupe?
- * - rendre css plus joli
- */

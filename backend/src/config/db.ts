@@ -5,6 +5,7 @@ import { GroupMember } from "../entities/GroupMember";
 import { Like } from "../entities/Like";
 import { List } from "../entities/List";
 import { Message } from "../entities/Message";
+import { PendingInvitation } from "../entities/PendingInvitation";
 import User from "../entities/User";
 import { getVariableEnvMulti } from "../lib/envManager/envManager";
 
@@ -22,7 +23,7 @@ const dataSource = new DataSource({
   password: DB_PASSWORD,
   database: DB_DATABASE,
 
-  entities: [User, Gift, GroupMember, Group, Like, List, Message],
+  entities: [User, Gift, GroupMember, Group, Like, List, Message, PendingInvitation],
   synchronize: true,
   logging: ["error"],
   // "query"

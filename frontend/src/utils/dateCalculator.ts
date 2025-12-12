@@ -11,3 +11,7 @@ export function countdownDate(date: Date) {
   const diffMs = lastDay.getTime() - today.getTime();
   return Math.round(diffMs / MS_PER_DAY);
 }
+
+export function formatDate(date: Date) {
+  return date.toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "numeric" });
+}

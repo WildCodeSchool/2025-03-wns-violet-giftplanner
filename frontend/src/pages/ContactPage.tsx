@@ -34,6 +34,7 @@ const ContactPage = () => {
             <div className="contact-member-email-container">
               <span className="contact-member-email">clement@giftchat.com</span>
               <button
+                type="button"
                 onClick={() => copyEmail("clement@giftchat.com")}
                 className="contact-copy-button"
                 title="Copier l'email"
@@ -53,6 +54,7 @@ const ContactPage = () => {
             <div className="contact-member-email-container">
               <span className="contact-member-email">evelyne@giftchat.com</span>
               <button
+                type="button"
                 onClick={() => copyEmail("evelyne@giftchat.com")}
                 className="contact-copy-button"
                 title="Copier l'email"
@@ -72,6 +74,7 @@ const ContactPage = () => {
             <div className="contact-member-email-container">
               <span className="contact-member-email">wolfgang@giftchat.com</span>
               <button
+                type="button"
                 onClick={() => copyEmail("wolfgang@giftchat.com")}
                 className="contact-copy-button"
                 title="Copier l'email"
@@ -91,6 +94,7 @@ const ContactPage = () => {
             <div className="contact-member-email-container">
               <span className="contact-member-email">chloe@giftchat.com</span>
               <button
+                type="button"
                 onClick={() => copyEmail("chloe@giftchat.com")}
                 className="contact-copy-button"
                 title="Copier l'email"

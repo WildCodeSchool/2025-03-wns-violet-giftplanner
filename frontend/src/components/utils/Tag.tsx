@@ -5,6 +5,10 @@ interface TagProps {
   type?: "info" | "warning" | "success" | "dark";
   className?: string;
   onClick: () => void;
+  tag: string;
+  type?: "info" | "warning" | "success" | "dark";
+  className?: string;
+  onClick: () => void;
 }
 
 const tagStyles = {
@@ -22,6 +26,7 @@ export default function Tag({ tag, type = "info", onClick, className }: TagProps
       <span>{tag}</span>
 
       <button
+        type="button"
         className="flex items-center justify-center w-5 h-5 rounded-full hover:bg-white/20 transition"
         onClick={onClick}
       >

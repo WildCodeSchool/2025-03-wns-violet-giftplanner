@@ -1,22 +1,58 @@
 import type { CreateGroupInput } from "../generated/graphql-types";
 import { countdownDate } from "../utils/dateCalculator";
+import { verifyEmail } from "./verifyEmail";
+
+export type GroupFormErrors = Partial<Record<keyof CreateGroupInput, string>> & {
+  main?: string;
+};
 
 export function groupCreationFormValidation(values: CreateGroupInput) {
-  const errors: Partial<Record<keyof CreateGroupInput, string>> = {};
+  const errors: GroupFormErrors = {};
 
-  if (!values.event_type) errors.event_type = "What is the occasion?";
-  else if (values.name.length < 6) errors.event_type = "Too short...";
+  if (!values.event_type) errors.event_type = "Veuillez-sélectionner le type d'évènement";
 
-  if (!values.name) errors.name = "Group Name is required.";
-  else if (values.name.length < 6) errors.name = "Group name must be at least 6 characters.";
+  if (!values.name) errors.name = "Le nom du groupe est requis";
+  else if (values.name.length < 6) errors.name = "Le nom du groupe doit faire au moins 6 charactères de long";
 
-  if (!values.piggy_bank) errors.piggy_bank = "Budget is required.";
+  if (!values.piggy_bank) errors.piggy_bank = "Veuillez définir une cagnotte";
   else if (Number.isNaN(Number(values.piggy_bank)) || Number(values.piggy_bank) <= 0)
-    errors.piggy_bank = "Budget must be a positive number.";
+    errors.piggy_bank = "La cagnotte ne peut pas être négative";
 
-  if (!values.deadline) errors.deadline = "Event Date is required.";
+  if (!values.deadline) errors.deadline = "La date butoire de l'évènement est requise";
   else if (countdownDate(new Date(values.deadline)) < 0)
-    errors.deadline = "Event date cannot be in the past.";
+    errors.deadline = "La date ne peut pas être dans le passé";
+
+  //If all values are empty
+  if (
+    !values.deadline &&
+    !values.event_type &&
+    !values.name &&
+    !values.piggy_bank &&
+    !values.user_beneficiary
+  ) {
+    errors.main = "Les champs doivent être rempli";
+  }
+
+  if (values.user_beneficiary && values.users) {
+    //verify beneficiary is not in users
+    if (values.users?.find((user) => user === values.user_beneficiary)) {
+      errors.user_beneficiary = "Le bénéficiaire ne peut pas être un membre du groupe.";
+      errors.users = "Le bénéficiaire ne peut pas être un membre du groupe.";
+    }
+  }
+
+  if (values.user_beneficiary) {
+    if (verifyEmail(values.user_beneficiary)) errors.user_beneficiary = "L'adresse email n'est pas valide";
+  }
+
+  if (values.users && values.users.length > 0) {
+    const uniqueUsers = new Set(values.users);
+    //Set makes a copy of unique values
+
+    if (uniqueUsers.size !== values.users.length) {
+      errors.users = "L'utilisateur existe déjà dans ce groupe.";
+    }
+  }
 
   return errors;
 }

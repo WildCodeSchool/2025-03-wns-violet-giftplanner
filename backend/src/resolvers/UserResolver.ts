@@ -12,9 +12,11 @@ import {
   UseMiddleware,
 } from "type-graphql";
 import { IsNull } from "typeorm";
+import { PendingInvitation } from "../entities/PendingInvitation";
 import User from "../entities/User";
 import cookieManager from "../lib/cookieManager/cookieManager";
 import { RoleMiddleware } from "../middleware/RoleMiddleware";
+import { addMembersToGroup } from "../services/groupMemberService";
 import type { ContextType } from "../types/context";
 import { createAndSetToken } from "../utils/jwtUtils";
 
@@ -22,16 +24,12 @@ import { createAndSetToken } from "../utils/jwtUtils";
 class SignupInput {
   @Field()
   email!: string;
-
   @Field()
   password!: string;
-
   @Field()
   firstName!: string;
-
   @Field()
   lastName!: string;
-
   @Field()
   date_of_birth!: string;
 }
@@ -40,22 +38,16 @@ class SignupInput {
 class UpdateMyProfileInput {
   @Field()
   email!: string;
-
   @Field()
   password!: string;
-
   @Field()
   firstName!: string;
-
   @Field()
   lastName!: string;
-
   @Field()
   date_of_birth!: string;
-
   @Field()
   phone_number!: string;
-
   @Field(() => String, { nullable: true })
   pictureBase64?: string;
 }
@@ -64,7 +56,6 @@ class UpdateMyProfileInput {
 class LoginInput {
   @Field()
   email!: string;
-
   @Field()
   password!: string;
 }
@@ -73,7 +64,6 @@ class LoginInput {
 class DeleteUserResponse {
   @Field()
   success!: boolean;
-
   @Field()
   message!: string;
 }
@@ -82,10 +72,8 @@ class DeleteUserResponse {
 class BanUserResponse {
   @Field()
   success!: boolean;
-
   @Field()
   message!: string;
-
   @Field(() => User, { nullable: true })
   user?: User;
 }
@@ -133,7 +121,7 @@ export default class UserResolver {
 
   @Query(() => [User])
   @UseMiddleware(RoleMiddleware(true))
-  async getAllUsersForAdmin(@Ctx() ctx: ContextType) {
+  async getAllUsersForAdmin(@Ctx() _ctx: ContextType) {
     // Récupérer tous les utilisateurs (y compris les bannis, mais pas les supprimés)
     const allUsers = await User.find({
       where: { deletedAt: IsNull() },
@@ -173,11 +161,36 @@ export default class UserResolver {
     // crée le nouvel utilisateur
     const user = User.create({ ...data, password_hashed });
     //sauvegarde le nouvel utilisateur dans la bdd
-    await user.save();
+    try {
+      await user.save();
+    } catch (error: any) {
+      // code Postgres de violation d'unicité
+      if (error?.code === "23505") {
+        throw new Error("Un utilisateur existe déjà avec cet email");
+      }
+      throw error;
+    }
 
     // Crée le token & set le cookie
     const payload = { id: user.id, isAdmin: user.isAdmin };
     createAndSetToken(ctx, payload);
+
+    // On vérifie si l'utilisateur a des invitations en attente
+    const pendingInvitations = await PendingInvitation.find({
+      where: { userEmail: user.email, joinedGroup: false },
+    });
+
+    if (pendingInvitations.length > 0) {
+      for (const invitation of pendingInvitations) {
+        await addMembersToGroup({
+          userEmails: [invitation.userEmail],
+          groupId: invitation.groupId,
+        });
+
+        invitation.joinedGroup = true;
+        await invitation.save();
+      }
+    }
 
     // return le user;
     return user;
@@ -232,7 +245,7 @@ export default class UserResolver {
         urlImage = await axios.post("http://picture-service:3410/service/picture/uploads", {
           imageBase64: data.pictureBase64,
         });
-      } catch (error) {
+      } catch (_error) {
         throw new Error("Erreur lors de l'upload de l'image");
       }
     }
@@ -359,7 +372,7 @@ export default class UserResolver {
 
   @Mutation(() => BanUserResponse)
   @UseMiddleware(RoleMiddleware(true))
-  async unbanUser(@Arg("userId") userId: number, @Ctx() ctx: ContextType): Promise<BanUserResponse> {
+  async unbanUser(@Arg("userId") userId: number, @Ctx() _ctx: ContextType): Promise<BanUserResponse> {
     // RoleMiddleware protège déjà l'accès (utilisateur authentifié et admin)
 
     // Vérifier que l'utilisateur existe
