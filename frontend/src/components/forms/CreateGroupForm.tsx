@@ -41,7 +41,7 @@ export default function CreateGroupForm({ onSuccess }: CreateGroupFormProps) {
     },
   ];
 
-  const [query, setQuery] = useState("");
+  // const [query, setQuery] = useState("");
   const [checked, setChecked] = useState(false);
 
   const { formData, handleChange, getSanitizedData, errors, isValid, setFormData, isEmpty } =

@@ -21,7 +21,7 @@ interface SearchableSelectProps {
 }
 
 export default function SearchSelectInput({
-  name,
+  // name,
   value,
   onChange,
   options,
@@ -116,7 +116,6 @@ export default function SearchSelectInput({
         {/* WHEN OPEN → show SEARCH BAR in place of the input */}
         {open && (
           <input
-            autoFocus
             type="text"
             value={query}
             onChange={(e) => {
