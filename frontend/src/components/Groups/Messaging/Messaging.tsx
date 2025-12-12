@@ -1,5 +1,5 @@
 import type { FormEvent, KeyboardEvent, RefObject } from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { GetAllMessageMyGroupsQuery } from "../../../generated/graphql-types";
 import { countdownDate } from "../../../utils/dateCalculator";
 import { useMyProfileStore } from "../../../zustand/myProfileStore";
@@ -85,6 +85,11 @@ export default function Messaging({
     el.style.height = "100%";
   };
 
+  const orderedMessages = useMemo(() => {
+    return messages.slice().reverse();
+  }, [messages]);
+
+
   return (
     <div className="rounded-2xl w-full h-full border-grey border-2 border-lg flex flex-col">
       <div className="relative w-full h-2/12 bg-blue rounded-t-2xl flex-row flex justify-center items-center py-4">
@@ -105,9 +110,7 @@ export default function Messaging({
       </div>
       <div className="container-body-messaging">
         <div ref={contenairMessageRef} className="container-messages">
-          {messages
-            ?.slice()
-            .reverse()
+          {orderedMessages
             .map((message) => {
               return (
                 <Message

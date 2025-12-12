@@ -14,7 +14,7 @@ export default function Message({ text, imageUrl, align = "left" }: MessageProps
       <div className={`flex  ${isLeft ? "flex-row" : "flex-row-reverse"}`}>
         {/* Avatar */}
         <div
-          className={`flex ${isLeft ? "justify-start" : "justify-end"} w-[5vw] h-[5vw] min-aspect[1/1] rounded-full `}
+          className={`flex ${isLeft ? "justify-start" : "justify-end"} w-[70px] h-[70px] min-aspect[1/1] rounded-full `}
         >
           <img src={getProfilePictureUrl(imageUrl)} alt="Profile" className="rounded-full object-cover" />
         </div>
