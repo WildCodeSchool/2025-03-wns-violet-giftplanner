@@ -9,16 +9,6 @@ import {
   PrimaryGeneratedColumn,
   Unique,
 } from "typeorm";
-import {
-  BaseEntity,
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  Unique,
-} from "typeorm";
 import { Group } from "./Group";
 import User from "./User";
 
