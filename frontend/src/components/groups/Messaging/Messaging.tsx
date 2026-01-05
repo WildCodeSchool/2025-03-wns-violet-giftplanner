@@ -95,7 +95,7 @@ export default function Messaging({ title, participants, date, groupId, messages
                 key={message.id}
                 text={message.content}
                 imageUrl={message.user.image_url ? message.user.image_url : ""}
-                align={message.user.id === userProfile.id ? "right" : "left"}
+                align={message.user.id === userProfile?.id ? "right" : "left"}
               />
             );
           })}
