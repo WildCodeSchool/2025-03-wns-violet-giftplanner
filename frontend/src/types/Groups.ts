@@ -1,3 +1,5 @@
+import type { GetAllMessageMyGroupsQuery } from "../generated/graphql-types";
+
 export type MessageProps = {
   text: string;
   avatar: string;
@@ -21,3 +23,6 @@ export type GroupProps = {
   wishlist?: WishlistItemProps[];
   messages: MessageProps[];
 };
+
+
+export type MessageType = Record<number, GetAllMessageMyGroupsQuery["getAllMessageMyGroups"][number]["messages"]>

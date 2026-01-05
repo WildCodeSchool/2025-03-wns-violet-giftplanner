@@ -82,6 +82,11 @@ td.admin-actions {
 }
 
 .admin-title {
+  font-size: clamp(24px, 3vw, 32px);
+  font-weight: 700;
+  color: #fdfbf6;
+  margin: 0;
+  font-family: "Inter", sans-serif;
   display: flex;
   align-items: center;
   gap: 16px;
@@ -214,6 +219,13 @@ td.admin-actions {
 }
 
 .modal-content p {
+  text-align: center;
+  margin: 24px 0;
+  padding-bottom: 16px;
+  color: #fdfbf6;
+  font-size: 18px;
+  font-family: "Inter", sans-serif;
+  line-height: 1.4;
   text-align: center;
   margin: 24px 0;
   padding-bottom: 16px;

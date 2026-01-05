@@ -92,6 +92,12 @@ export type GroupMember = {
   userId: Scalars['Float']['output'];
 };
 
+export type GroupMessagesOutput = {
+  __typename?: 'GroupMessagesOutput';
+  groupId: Scalars['Float']['output'];
+  messages: Array<Message>;
+};
+
 export type GroupWishlistItems = {
   __typename?: 'GroupWishlistItems';
   fromGroupList: Array<Gift>;
@@ -146,7 +152,7 @@ export type Mutation = {
   deleteUser: DeleteUserResponse;
   login: User;
   logout: Scalars['Boolean']['output'];
-  sendMessage: Scalars['Boolean']['output'];
+  sendMessage: Message;
   signup: User;
   unbanUser: BanUserResponse;
   updateGift: Gift;
@@ -214,9 +220,17 @@ export type MutationUpdateGiftArgs = {
   id: Scalars['Int']['input'];
 };
 
+export type MyGroupsResponse = {
+  __typename?: 'MyGroupsResponse';
+  groupToken: Scalars['String']['output'];
+  groups: Array<Group>;
+};
+
 export type NewMessageInput = {
   groupId: Scalars['Float']['input'];
   message: Scalars['String']['input'];
+  secretServeur: Scalars['String']['input'];
+  userToken: Scalars['String']['input'];
 };
 
 export type PendingInvitation = {
@@ -232,9 +246,9 @@ export type PendingInvitation = {
 export type Query = {
   __typename?: 'Query';
   coucou: Scalars['String']['output'];
-  fetchMessagesByGroup: Scalars['String']['output'];
   getAllInvitations: Array<PendingInvitation>;
-  getAllMyGroups: Array<Group>;
+  getAllMessageMyGroups: Array<GroupMessagesOutput>;
+  getAllMyGroups: MyGroupsResponse;
   getAllUsers: Array<User>;
   getAllUsersAdmin: Array<User>;
   getAllUsersForAdmin: Array<User>;
@@ -384,19 +398,17 @@ export type CreateGroupMutationVariables = Exact<{
 }>;
 
 
-export type CreateGroupMutation = { __typename?: 'Mutation', createGroup: { __typename?: 'Group', id: string, name: string, event_type: string, piggy_bank: number, deadline: any, createdAt: any, user_beneficiary?: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string } | null, groupMember: Array<{ __typename?: 'GroupMember', id: string, userId: number, groupId: number }> } };
+export type CreateGroupMutation = { __typename?: 'Mutation', createGroup: { __typename?: 'Group', id: string, name: string, event_type: string, piggy_bank: number, deadline: any, createdAt: any, user_beneficiary?: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string } | null, user_admin: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string }, groupMember: Array<{ __typename?: 'GroupMember', id: string, userId: number, groupId: number }> } };
 
 export type GetAllMyGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllMyGroupsQuery = { __typename?: 'Query', getAllMyGroups: Array<{ __typename?: 'Group', id: string, name: string, createdAt: any, updatedAt: any, event_type: string, piggy_bank: number, deadline: any, messages: Array<{ __typename?: 'Message', id: string, content: string, createdAt: any, isEdited: boolean, user: { __typename?: 'User', id: string, firstName: string, lastName: string, image_url?: string | null, isAdmin: boolean } }>, user_beneficiary?: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string } | null, groupMember: Array<{ __typename?: 'GroupMember', userId: number, lastName?: string | null, joined_at: any, isGroupAdmin: boolean, id: string, groupId: number, firstName?: string | null, email?: string | null }> }> };
+export type GetAllMyGroupsQuery = { __typename?: 'Query', getAllMyGroups: { __typename?: 'MyGroupsResponse', groupToken: string, groups: Array<{ __typename?: 'Group', id: string, name: string, createdAt: any, updatedAt: any, event_type: string, piggy_bank: number, deadline: any, groupMember: Array<{ __typename?: 'GroupMember', id: string, userId: number, groupId: number }> }> } };
 
-export type SendMessageMutationVariables = Exact<{
-  data: NewMessageInput;
-}>;
+export type GetAllMessageMyGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type SendMessageMutation = { __typename?: 'Mutation', sendMessage: boolean };
+export type GetAllMessageMyGroupsQuery = { __typename?: 'Query', getAllMessageMyGroups: Array<{ __typename?: 'GroupMessagesOutput', groupId: number, messages: Array<{ __typename?: 'Message', id: string, content: string, createdAt: any, updatedAt: any, isEdited: boolean, user: { __typename?: 'User', id: string, firstName: string, lastName: string, image_url?: string | null, isAdmin: boolean } }> }> };
 
 export type GetAllUsersForAdminQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -970,6 +982,12 @@ export const CreateGroupDocument = gql`
       lastName
       email
     }
+    user_admin {
+      id
+      firstName
+      lastName
+      email
+    }
     groupMember {
       id
       userId
@@ -1007,41 +1025,20 @@ export type CreateGroupMutationOptions = Apollo.BaseMutationOptions<CreateGroupM
 export const GetAllMyGroupsDocument = gql`
     query getAllMyGroups {
   getAllMyGroups {
-    messages {
+    groupToken
+    groups {
       id
-      content
+      name
       createdAt
-      isEdited
-      user {
+      updatedAt
+      event_type
+      piggy_bank
+      deadline
+      groupMember {
         id
-        firstName
-        lastName
-        image_url
-        isAdmin
+        userId
+        groupId
       }
-    }
-    id
-    name
-    createdAt
-    updatedAt
-    event_type
-    piggy_bank
-    deadline
-    user_beneficiary {
-      id
-      firstName
-      lastName
-      email
-    }
-    groupMember {
-      userId
-      lastName
-      joined_at
-      isGroupAdmin
-      id
-      groupId
-      firstName
-      email
     }
   }
 }
@@ -1078,37 +1075,59 @@ export type GetAllMyGroupsQueryHookResult = ReturnType<typeof useGetAllMyGroupsQ
 export type GetAllMyGroupsLazyQueryHookResult = ReturnType<typeof useGetAllMyGroupsLazyQuery>;
 export type GetAllMyGroupsSuspenseQueryHookResult = ReturnType<typeof useGetAllMyGroupsSuspenseQuery>;
 export type GetAllMyGroupsQueryResult = Apollo.QueryResult<GetAllMyGroupsQuery, GetAllMyGroupsQueryVariables>;
-export const SendMessageDocument = gql`
-    mutation SendMessage($data: NewMessageInput!) {
-  sendMessage(data: $data)
+export const GetAllMessageMyGroupsDocument = gql`
+    query getAllMessageMyGroups {
+  getAllMessageMyGroups {
+    groupId
+    messages {
+      id
+      content
+      createdAt
+      updatedAt
+      isEdited
+      user {
+        id
+        firstName
+        lastName
+        image_url
+        isAdmin
+      }
+    }
+  }
 }
     `;
-export type SendMessageMutationFn = Apollo.MutationFunction<SendMessageMutation, SendMessageMutationVariables>;
 
 /**
- * __useSendMessageMutation__
+ * __useGetAllMessageMyGroupsQuery__
  *
- * To run a mutation, you first call `useSendMessageMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useSendMessageMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
+ * To run a query within a React component, call `useGetAllMessageMyGroupsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllMessageMyGroupsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
  *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const [sendMessageMutation, { data, loading, error }] = useSendMessageMutation({
+ * const { data, loading, error } = useGetAllMessageMyGroupsQuery({
  *   variables: {
- *      data: // value for 'data'
  *   },
  * });
  */
-export function useSendMessageMutation(baseOptions?: Apollo.MutationHookOptions<SendMessageMutation, SendMessageMutationVariables>) {
+export function useGetAllMessageMyGroupsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllMessageMyGroupsQuery, GetAllMessageMyGroupsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<SendMessageMutation, SendMessageMutationVariables>(SendMessageDocument, options);
+        return Apollo.useQuery<GetAllMessageMyGroupsQuery, GetAllMessageMyGroupsQueryVariables>(GetAllMessageMyGroupsDocument, options);
       }
-export type SendMessageMutationHookResult = ReturnType<typeof useSendMessageMutation>;
-export type SendMessageMutationResult = Apollo.MutationResult<SendMessageMutation>;
-export type SendMessageMutationOptions = Apollo.BaseMutationOptions<SendMessageMutation, SendMessageMutationVariables>;
+export function useGetAllMessageMyGroupsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllMessageMyGroupsQuery, GetAllMessageMyGroupsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllMessageMyGroupsQuery, GetAllMessageMyGroupsQueryVariables>(GetAllMessageMyGroupsDocument, options);
+        }
+export function useGetAllMessageMyGroupsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetAllMessageMyGroupsQuery, GetAllMessageMyGroupsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllMessageMyGroupsQuery, GetAllMessageMyGroupsQueryVariables>(GetAllMessageMyGroupsDocument, options);
+        }
+export type GetAllMessageMyGroupsQueryHookResult = ReturnType<typeof useGetAllMessageMyGroupsQuery>;
+export type GetAllMessageMyGroupsLazyQueryHookResult = ReturnType<typeof useGetAllMessageMyGroupsLazyQuery>;
+export type GetAllMessageMyGroupsSuspenseQueryHookResult = ReturnType<typeof useGetAllMessageMyGroupsSuspenseQuery>;
+export type GetAllMessageMyGroupsQueryResult = Apollo.QueryResult<GetAllMessageMyGroupsQuery, GetAllMessageMyGroupsQueryVariables>;
 export const GetAllUsersForAdminDocument = gql`
     query GetAllUsersForAdmin {
   getAllUsersForAdmin {

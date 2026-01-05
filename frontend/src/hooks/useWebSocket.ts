@@ -1,45 +1,29 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import { io, type Socket } from "socket.io-client";
 
-type WSMessage =
-  | { type: "JOIN_ROOM"; roomId: number }
-  | { type: "LEAVE_ROOM" }
-  | { type: "SEND_MESSAGE"; roomId: number; content: string };
 
-export function useWebSocket(wsToken: string | null) {
-  const [isReady, setIsReady] = useState(false);
-  const wsRef = useRef<WebSocket | null>(null);
+export function useLive() {
+  const [socket, setSocket] = useState<Socket | null>(null);
 
   useEffect(() => {
-    if (!wsToken) return;
+    const socket = io("http://localhost:3000", {
+      path: "/service/message/socket.io",
+      transports: ["websocket"],
+    });
 
-    const ws = new WebSocket(`wss://${import.meta.env.VITE_API_MESSAGE}`);
-    wsRef.current = ws;
 
-    ws.onopen = () => {
-      console.log("WebSocket connected");
-      setIsReady(true);
+    // l'événement de connexion
+    socket.on("connect", () => {
+      // console.log("Connecté :", socket.id);
+    });
+
+    setSocket(socket);
+
+    return () => {
+      // console.log("Client déconncté")
+      socket.disconnect();
     };
+  }, []);
 
-    ws.onclose = () => {
-      console.log("WebSocket closed");
-      setIsReady(false);
-      // auto-reconnect
-      setTimeout(() => window.location.reload(), 1500);
-    };
-
-    ws.onerror = (err) => {
-      console.error("WS Error:", err);
-      ws.close();
-    };
-
-    return () => ws.close();
-  }, [wsToken]);
-
-  function send(data: WSMessage) {
-    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      wsRef.current.send(JSON.stringify(data));
-    }
-  }
-
-  return { send, isReady, ws: wsRef.current };
+  return socket;
 }

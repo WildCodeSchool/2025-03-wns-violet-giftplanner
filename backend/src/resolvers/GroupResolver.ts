@@ -9,13 +9,16 @@ import {
   Resolver,
   Root,
   UseMiddleware,
+  ObjectType
 } from "type-graphql";
 import Group from "../entities/Group";
 import { GroupMember } from "../entities/GroupMember";
 import { Message } from "../entities/Message";
 import User from "../entities/User";
+import { getVariableEnv } from "../lib/envManager/envManager";
 import { RoleMiddleware } from "../middleware/RoleMiddleware";
 import { addMembersToGroup } from "../services/groupMemberService";
+import  jwt  from "jsonwebtoken";
 import type { ContextType } from "../types/context";
 
 @InputType()
@@ -31,7 +34,6 @@ class CreateGroupInput {
 
   @Field()
   deadline!: Date;
-
   @Field(() => [String], { nullable: true })
   users?: string[];
 
@@ -39,31 +41,38 @@ class CreateGroupInput {
   user_beneficiary?: string;
 }
 
+@ObjectType()
+export class MyGroupsResponse {
+  @Field(() => [Group])
+  groups!: Group[];
+
+  @Field()
+  groupToken!: string;
+}
+
 @Resolver(Group)
 @UseMiddleware(RoleMiddleware())
 export default class GroupResolver {
-  @Query(() => [Group])
-  // @Authorized()
+  @Query(() => MyGroupsResponse)
   async getAllMyGroups(@Ctx() ctx: ContextType) {
     if (!ctx.user) throw new Error("Utilisateur non connecté"); //TO do: changer avec le context authorized ci-dessus  @Authorized()
 
     //Find all the groups of the connected user
     const groups = await Group.find({
-      where: { groupMember: { user: { id: ctx.user?.id } } },
+      where: {
+        groupMember: {
+          user: { id: ctx.user?.id },
+        },
+      },
       relations: { groupMember: true, user_admin: true, user_beneficiary: true },
       order: { id: "DESC" },
     });
 
-    // charge les 10 derniers messages de chaque groupe
-    for (const group of groups) {
-      group.messages = await Message.find({
-        where: { group: { id: group.id } },
-        relations: { user: true },
-        order: { createdAt: "DESC" },
-        take: 20,
-      });
-    }
-    return groups;
+    const payload = { groupsId: groups.map((g) => g.id) };
+    const JWT_SECRET = getVariableEnv("JWT_SECRET");
+    const groupToken = jwt.sign(payload, JWT_SECRET, { expiresIn: "1m" });
+
+    return { groups, groupToken };
   }
 
   @FieldResolver(() => [GroupMember])
@@ -127,6 +136,8 @@ export default class GroupResolver {
 
     //gérer l'ajout des utilisateurs au groupe, mapper users et les ajouter s'ils existent
     if (data.users && data.users.length > 0) {
+
+      //à remplacer par le service add members to group
       await Promise.all(
         data.users.map(async (userEmail) => {
           const userToAdd = await User.findOne({ where: { email: userEmail } });
