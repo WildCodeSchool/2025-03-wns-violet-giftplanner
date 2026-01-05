@@ -100,6 +100,7 @@
     "outDir": "dist",
     "rootDir": "src"
   },
+  "exclude": ["tests", "node_modules", "dist"]
   // "exclude": [
   //   "node_modules",
   //   "tests",

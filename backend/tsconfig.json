@@ -94,4 +94,5 @@
     "outDir": "dist",
     "rootDir": "src"
   },
+  "exclude": ["tests", "node_modules", "dist"]
 }
