@@ -22,7 +22,7 @@ RUN sed -i '/LoadModule rewrite_module/s/^#//g' /usr/local/apache2/conf/httpd.co
 
 # Autorise .htaccess dans le dossier htdocs
 RUN sed -i '/<Directory "\/usr\/local\/apache2\/htdocs">/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /usr/local/apache2/conf/httpd.conf
-COPY ./deployement/.htaccess /usr/local/apache2/htdocs/
+COPY ./.htaccess /usr/local/apache2/htdocs/
 COPY --from=builder /app/dist/ /usr/local/apache2/htdocs/
 
 CMD ["httpd-foreground"]
