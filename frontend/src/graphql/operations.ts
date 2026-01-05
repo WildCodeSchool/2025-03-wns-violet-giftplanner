@@ -38,6 +38,10 @@ export const SIGNUP = gql`
       lastName
       phone_number
       updatedAt
+      lists {
+        id
+        name
+      }
     }
   }
 `;
@@ -78,6 +82,10 @@ export const UPDATE_ME_PROFILE = gql`
       lastName
       phone_number
       updatedAt
+      lists {
+        id
+        name
+      }
     }
   }
 `;
