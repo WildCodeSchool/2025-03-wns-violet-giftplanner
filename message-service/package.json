@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only --poll ./src/main.ts"
+    "dev": "ts-node-dev --respawn --transpile-only --poll ./src/main.ts",
+    "build": "tsc"
   },
   "author": "",
   "license": "ISC",
