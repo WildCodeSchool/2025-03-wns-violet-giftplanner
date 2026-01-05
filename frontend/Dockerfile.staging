@@ -1,0 +1,28 @@
+FROM node:lts-alpine AS builder
+WORKDIR /app
+
+COPY *.json .
+RUN npm i
+COPY *.ts .
+COPY public public
+COPY index.html .
+COPY src src    
+
+RUN echo "VITE_MODE=prod" >> .env
+RUN npm run build
+
+FROM httpd:2.4-alpine
+WORKDIR /app
+
+# Installation de curl pour le healthcheck (car pas automatique)
+RUN apk --no-cache add curl
+
+# Active mod_rewrite
+RUN sed -i '/LoadModule rewrite_module/s/^#//g' /usr/local/apache2/conf/httpd.conf
+
+# Autorise .htaccess dans le dossier htdocs
+RUN sed -i '/<Directory "\/usr\/local\/apache2\/htdocs">/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /usr/local/apache2/conf/httpd.conf
+COPY ./deployement/.htaccess /usr/local/apache2/htdocs/
+COPY --from=builder /app/dist/ /usr/local/apache2/htdocs/
+
+CMD ["httpd-foreground"]
