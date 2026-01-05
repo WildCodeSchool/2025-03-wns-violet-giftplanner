@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only --poll ./src/main.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "start": "node ./dist/main.js"
   },
   "author": "",
   "license": "ISC",

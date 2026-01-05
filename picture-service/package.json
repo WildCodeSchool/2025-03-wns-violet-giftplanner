@@ -4,7 +4,8 @@
   "description": "",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only --poll ./src/main",
-    "build": "tsc"
+    "build": "tsc",
+    "start": "node ./dist/main.js"
   },
   "author": "",
   "license": "ISC",
