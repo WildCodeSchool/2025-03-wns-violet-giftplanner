@@ -18,6 +18,7 @@ import User from "../entities/User";
 import { getVariableEnv } from "../lib/envManager/envManager";
 import { RoleMiddleware } from "../middleware/RoleMiddleware";
 import { addMembersToGroup } from "../services/groupMemberService";
+import  jwt  from "jsonwebtoken";
 import type { ContextType } from "../types/context";
 
 @InputType()
@@ -38,15 +39,6 @@ class CreateGroupInput {
 
   @Field({ nullable: true })
   user_beneficiary?: string;
-}
-
-@ObjectType()
-export class MyGroupsResponse {
-  @Field(() => [Group])
-  groups!: Group[];
-
-  @Field()
-  groupToken!: string;
 }
 
 @ObjectType()
@@ -144,6 +136,8 @@ export default class GroupResolver {
 
     //gérer l'ajout des utilisateurs au groupe, mapper users et les ajouter s'ils existent
     if (data.users && data.users.length > 0) {
+
+      //à remplacer par le service add members to group
       await Promise.all(
         data.users.map(async (userEmail) => {
           const userToAdd = await User.findOne({ where: { email: userEmail } });

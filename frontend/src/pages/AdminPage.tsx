@@ -1,29 +1,48 @@
 import { useState } from "react";
 import "./adminpage.css";
 import { LuBan, LuSearch, LuShield, LuShieldCheck, LuTrash2 } from "react-icons/lu";
-import { LuBan, LuSearch, LuShield, LuShieldCheck, LuTrash2 } from "react-icons/lu";
 import {
-  useBanUserMutation,
-  useDeleteUserMutation,
-  useGetAllUsersForAdminQuery,
-  useUnbanUserMutation, // ← Ajoute cette import après avoir régénéré les types
   useBanUserMutation,
   useDeleteUserMutation,
   useGetAllUsersForAdminQuery,
   useUnbanUserMutation, // ← Ajoute cette import après avoir régénéré les types
 } from "../generated/graphql-types";
 import type { ModalConfig, User } from "../types/AdminPage";
-import type { ModalConfig, User } from "../types/AdminPage";
 import { useMyProfileStore } from "../zustand/myProfileStore";
+
+interface ConfirmModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  title?: string;
+  message?: string;
+}
+
+// Local ConfirmModal using page CSS (no Tailwind)
+const ConfirmModal = ({ isOpen, onClose, onConfirm, title, message }: ConfirmModalProps) => {
+  if (!isOpen) return null;
+
+  return (
+    <button type="button" className="modal-overlay" onClick={onClose}>
+      <button type="button" className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <h2>{title}</h2>
+        <p>{message}</p>
+        <div className="modal-actions">
+          <button type="button" className="modal-btn-cancel" onClick={onClose}>
+            Annuler
+          </button>
+          <button type="button" className="modal-btn-confirm" onClick={onConfirm}>
+            Confirmer
+          </button>
+        </div>
+      </button>
+    </button>
+  );
+};
 
 const AdminPage = () => {
   const { data, loading, error, refetch } = useGetAllUsersForAdminQuery();
-  const { data, loading, error, refetch } = useGetAllUsersForAdminQuery();
 
-  const [deleteUser] = useDeleteUserMutation();
-  const [banUser] = useBanUserMutation();
-  const [unbanUser] = useUnbanUserMutation(); // ← Nouvelle mutation
-  const { userProfile } = useMyProfileStore();
   const [deleteUser] = useDeleteUserMutation();
   const [banUser] = useBanUserMutation();
   const [unbanUser] = useUnbanUserMutation(); // ← Nouvelle mutation
@@ -34,107 +53,18 @@ const AdminPage = () => {
     type: null,
   });
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [modalConfig, setModalConfig] = useState<ModalConfig>({
-    isOpen: false,
-    type: null,
-  });
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   const [messageError, setMessageError] = useState("");
   const [messageSuccess, setMessageSuccess] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [messageError, setMessageError] = useState("");
-  const [messageSuccess, setMessageSuccess] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
 
-  // Local ConfirmModal using page CSS (no Tailwind)
-  const ConfirmModal = ({
-    isOpen,
-    onClose,
-    onConfirm,
-    title,
-    message,
-  }: {
-    isOpen: boolean;
-    onClose: () => void;
-    onConfirm: () => void;
-    title?: string;
-    message?: string;
-  }) => {
-    if (!isOpen) return null;
-  // Local ConfirmModal using page CSS (no Tailwind)
-  const ConfirmModal = ({
-    isOpen,
-    onClose,
-    onConfirm,
-    title,
-    message,
-  }: {
-    isOpen: boolean;
-    onClose: () => void;
-    onConfirm: () => void;
-    title?: string;
-    message?: string;
-  }) => {
-    if (!isOpen) return null;
-
-    return (
-      <div className="modal-overlay" onClick={onClose}>
-        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-          <h2>{title}</h2>
-          <p>{message}</p>
-          <div className="modal-actions">
-            <button className="modal-btn-cancel" onClick={onClose}>
-              Annuler
-            </button>
-            <button className="modal-btn-confirm" onClick={onConfirm}>
-              Confirmer
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
-    return (
-      <div className="modal-overlay" onClick={onClose}>
-        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-          <h2>{title}</h2>
-          <p>{message}</p>
-          <div className="modal-actions">
-            <button className="modal-btn-cancel" onClick={onClose}>
-              Annuler
-            </button>
-            <button className="modal-btn-confirm" onClick={onConfirm}>
-              Confirmer
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  // ← Modifier cette fonction pour accepter "unban"
-  const openModal = (type: "delete" | "ban" | "unban", user: User) => {
-    setSelectedUser(user);
   // ← Modifier cette fonction pour accepter "unban"
   const openModal = (type: "delete" | "ban" | "unban", user: User) => {
     setSelectedUser(user);
 
     let title = "";
     let message = "";
-    let title = "";
-    let message = "";
 
-    if (type === "delete") {
-      title = "Supprimer l'utilisateur";
-      message = `Voulez-vous supprimer définitivement ${user.firstName} ${user.lastName} ?`;
-    } else if (type === "ban") {
-      title = "Bannir l'utilisateur";
-      message = `Voulez-vous bannir ${user.firstName} ${user.lastName} ?`;
-    } else if (type === "unban") {
-      title = "Débannir l'utilisateur";
-      message = `Voulez-vous débannir ${user.firstName} ${user.lastName} ? Il pourra à nouveau se connecter.`;
-    }
     if (type === "delete") {
       title = "Supprimer l'utilisateur";
       message = `Voulez-vous supprimer définitivement ${user.firstName} ${user.lastName} ?`;
@@ -152,16 +82,7 @@ const AdminPage = () => {
       title,
       message,
     });
-    setModalConfig({
-      isOpen: true,
-      type,
-      title,
-      message,
-    });
 
-    setMessageError("");
-    setMessageSuccess("");
-  };
     setMessageError("");
     setMessageSuccess("");
   };
@@ -170,21 +91,10 @@ const AdminPage = () => {
     setModalConfig({ isOpen: false, type: null });
     setSelectedUser(null);
   };
-  const closeModal = () => {
-    setModalConfig({ isOpen: false, type: null });
-    setSelectedUser(null);
-  };
 
   const handleConfirm = async () => {
     if (!selectedUser || !modalConfig.type) return;
-  const handleConfirm = async () => {
-    if (!selectedUser || !modalConfig.type) return;
 
-    try {
-      if (modalConfig.type === "delete") {
-        const res = await deleteUser({
-          variables: { userId: parseFloat(selectedUser.id) },
-        });
     try {
       if (modalConfig.type === "delete") {
         const res = await deleteUser({
@@ -197,28 +107,12 @@ const AdminPage = () => {
           setMessageSuccess("Utilisateur supprimé !");
         }
       }
-        if (!res.data?.deleteUser.success) {
-          setMessageError(res.data?.deleteUser.message || "Erreur inconnue");
-        } else {
-          setMessageSuccess("Utilisateur supprimé !");
-        }
-      }
 
       if (modalConfig.type === "ban") {
         const res = await banUser({
           variables: { userId: parseFloat(selectedUser.id) },
         });
-      if (modalConfig.type === "ban") {
-        const res = await banUser({
-          variables: { userId: parseFloat(selectedUser.id) },
-        });
 
-        if (!res.data?.banUser.success) {
-          setMessageError(res.data?.banUser.message || "Erreur inconnue");
-        } else {
-          setMessageSuccess("Utilisateur banni !");
-        }
-      }
         if (!res.data?.banUser.success) {
           setMessageError(res.data?.banUser.message || "Erreur inconnue");
         } else {
@@ -231,18 +125,7 @@ const AdminPage = () => {
         const res = await unbanUser({
           variables: { userId: parseFloat(selectedUser.id) },
         });
-      // ← Nouveau bloc pour débannir
-      if (modalConfig.type === "unban") {
-        const res = await unbanUser({
-          variables: { userId: parseFloat(selectedUser.id) },
-        });
 
-        if (!res.data?.unbanUser.success) {
-          setMessageError(res.data?.unbanUser.message || "Erreur inconnue");
-        } else {
-          setMessageSuccess("Utilisateur débanni !");
-        }
-      }
         if (!res.data?.unbanUser.success) {
           setMessageError(res.data?.unbanUser.message || "Erreur inconnue");
         } else {
@@ -254,18 +137,10 @@ const AdminPage = () => {
     } catch (e: any) {
       setMessageError(e.message);
     }
-      refetch();
-    } catch (e: any) {
-      setMessageError(e.message);
-    }
 
     closeModal();
   };
-    closeModal();
-  };
 
-  if (loading) return <div className="admin-loading">Chargement...</div>;
-  if (error) return <div className="admin-error">Erreur : {error.message}</div>;
   if (loading) return <div className="admin-loading">Chargement...</div>;
   if (error) return <div className="admin-error">Erreur : {error.message}</div>;
 
@@ -280,27 +155,7 @@ const AdminPage = () => {
     createdAt: u.createdAt,
     image_url: u.image_url ?? undefined,
   }));
-  const users: User[] = (data?.getAllUsersForAdmin || []).map((u) => ({
-    id: u.id,
-    email: u.email,
-    firstName: u.firstName,
-    lastName: u.lastName,
-    isAdmin: u.isAdmin,
-    isBanned: u.isBanned,
-    bannedAt: u.bannedAt,
-    createdAt: u.createdAt,
-    image_url: u.image_url ?? undefined,
-  }));
 
-  // Filtrer les utilisateurs en fonction du terme de recherche
-  const filteredUsers = users.filter((u) => {
-    const searchLower = searchTerm.toLowerCase();
-    return (
-      u.firstName.toLowerCase().includes(searchLower) ||
-      u.lastName.toLowerCase().includes(searchLower) ||
-      u.email.toLowerCase().includes(searchLower)
-    );
-  });
   // Filtrer les utilisateurs en fonction du terme de recherche
   const filteredUsers = users.filter((u) => {
     const searchLower = searchTerm.toLowerCase();
@@ -315,10 +170,10 @@ const AdminPage = () => {
     <div className="admin-container">
       <div className="admin-container-scrollable">
         <div className="admin-header">
-          <h1 className="admin-title">
-            <LuShield className="admin-title-icon" />
-            Gestion des utilisateurs
-          </h1>
+          <div className="admin-title">
+            <LuShield className="admin-title-icon max-md:hidden" />
+            <h1 className="admin-title-text">Gestion des utilisateurs</h1>
+          </div>
           <div className="admin-search-section">
             <LuSearch className="admin-search-icon" />
             <input
@@ -363,7 +218,7 @@ const AdminPage = () => {
                     <td>
                       <img src={u.image_url || "/default.png"} className="admin-user-img" alt="profile" />
                     </td>
-                    <td>{u.firstName + " " + u.lastName}</td>
+                    <td>{`${u.firstName} ${u.lastName}`}</td>
                     <td>{u.email}</td>
 
                     <td>
@@ -386,6 +241,7 @@ const AdminPage = () => {
                       {/* ← Modifier cette partie */}
                       {u.isBanned ? (
                         <button
+                          type="button"
                           className="admin-btn-unban"
                           onClick={() => openModal("unban", u)}
                           style={{ visibility: u.id === userProfile?.id ? "hidden" : "visible" }}
@@ -395,6 +251,7 @@ const AdminPage = () => {
                         </button>
                       ) : (
                         <button
+                          type="button"
                           className="admin-btn-ban"
                           onClick={() => openModal("ban", u)}
                           style={{ visibility: u.id === userProfile?.id ? "hidden" : "visible" }}
@@ -405,6 +262,7 @@ const AdminPage = () => {
                       )}
 
                       <button
+                        type="button"
                         className="admin-btn-delete"
                         onClick={() => openModal("delete", u)}
                         style={{ visibility: u.id === userProfile?.id ? "hidden" : "visible" }}
@@ -434,4 +292,3 @@ const AdminPage = () => {
 };
 
 export default AdminPage;
-

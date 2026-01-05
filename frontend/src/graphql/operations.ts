@@ -250,17 +250,22 @@ mutation CreateGroup($data: CreateGroupInput!) {
 export const GET_ALL_MY_GROUPS = gql`
   query getAllMyGroups {
     getAllMyGroups {
-    groupToken
-    groups {
-      id
-      name
-      createdAt
-      updatedAt
-      event_type
-      piggy_bank
-      deadline
+      groupToken
+      groups {
+        id
+        name
+        createdAt
+        updatedAt
+        event_type
+        piggy_bank
+        deadline
+        groupMember {
+          id
+          userId
+          groupId
+        }
+      }
     }
-  }
   }
 `;
 

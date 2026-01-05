@@ -92,16 +92,16 @@ export type GroupMember = {
   userId: Scalars['Float']['output'];
 };
 
-export type GroupWishlistItems = {
-  __typename?: 'GroupWishlistItems';
-  fromGroupList: Array<Gift>;
-  fromWishlist: Array<Gift>;
-};
-
 export type GroupMessagesOutput = {
   __typename?: 'GroupMessagesOutput';
   groupId: Scalars['Float']['output'];
   messages: Array<Message>;
+};
+
+export type GroupWishlistItems = {
+  __typename?: 'GroupWishlistItems';
+  fromGroupList: Array<Gift>;
+  fromWishlist: Array<Gift>;
 };
 
 export type Like = {
@@ -246,14 +246,9 @@ export type PendingInvitation = {
 export type Query = {
   __typename?: 'Query';
   coucou: Scalars['String']['output'];
-<<<<<<< HEAD
+  getAllInvitations: Array<PendingInvitation>;
   getAllMessageMyGroups: Array<GroupMessagesOutput>;
   getAllMyGroups: MyGroupsResponse;
-=======
-  fetchMessagesByGroup: Scalars['String']['output'];
-  getAllInvitations: Array<PendingInvitation>;
-  getAllMyGroups: Array<Group>;
->>>>>>> dev
   getAllUsers: Array<User>;
   getAllUsersAdmin: Array<User>;
   getAllUsersForAdmin: Array<User>;
@@ -403,16 +398,12 @@ export type CreateGroupMutationVariables = Exact<{
 }>;
 
 
-export type CreateGroupMutation = { __typename?: 'Mutation', createGroup: { __typename?: 'Group', id: string, name: string, event_type: string, piggy_bank: number, deadline: any, createdAt: any, user_beneficiary?: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string } | null, groupMember: Array<{ __typename?: 'GroupMember', id: string, userId: number, groupId: number }> } };
+export type CreateGroupMutation = { __typename?: 'Mutation', createGroup: { __typename?: 'Group', id: string, name: string, event_type: string, piggy_bank: number, deadline: any, createdAt: any, user_beneficiary?: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string } | null, user_admin: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string }, groupMember: Array<{ __typename?: 'GroupMember', id: string, userId: number, groupId: number }> } };
 
 export type GetAllMyGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-<<<<<<< HEAD
-export type GetAllMyGroupsQuery = { __typename?: 'Query', getAllMyGroups: { __typename?: 'MyGroupsResponse', groupToken: string, groups: Array<{ __typename?: 'Group', id: string, name: string, createdAt: any, updatedAt: any, event_type: string, piggy_bank: number, deadline: any }> } };
-=======
-export type GetAllMyGroupsQuery = { __typename?: 'Query', getAllMyGroups: Array<{ __typename?: 'Group', id: string, name: string, createdAt: any, updatedAt: any, event_type: string, piggy_bank: number, deadline: any, messages: Array<{ __typename?: 'Message', id: string, content: string, createdAt: any, isEdited: boolean, user: { __typename?: 'User', id: string, firstName: string, lastName: string, image_url?: string | null, isAdmin: boolean } }>, user_beneficiary?: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string } | null, groupMember: Array<{ __typename?: 'GroupMember', userId: number, lastName?: string | null, joined_at: any, isGroupAdmin: boolean, id: string, groupId: number, firstName?: string | null, email?: string | null }> }> };
->>>>>>> dev
+export type GetAllMyGroupsQuery = { __typename?: 'Query', getAllMyGroups: { __typename?: 'MyGroupsResponse', groupToken: string, groups: Array<{ __typename?: 'Group', id: string, name: string, createdAt: any, updatedAt: any, event_type: string, piggy_bank: number, deadline: any, groupMember: Array<{ __typename?: 'GroupMember', id: string, userId: number, groupId: number }> }> } };
 
 export type GetAllMessageMyGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -991,6 +982,12 @@ export const CreateGroupDocument = gql`
       lastName
       email
     }
+    user_admin {
+      id
+      firstName
+      lastName
+      email
+    }
     groupMember {
       id
       userId
@@ -1037,33 +1034,12 @@ export const GetAllMyGroupsDocument = gql`
       event_type
       piggy_bank
       deadline
+      groupMember {
+        id
+        userId
+        groupId
+      }
     }
-<<<<<<< HEAD
-=======
-    id
-    name
-    createdAt
-    updatedAt
-    event_type
-    piggy_bank
-    deadline
-    user_beneficiary {
-      id
-      firstName
-      lastName
-      email
-    }
-    groupMember {
-      userId
-      lastName
-      joined_at
-      isGroupAdmin
-      id
-      groupId
-      firstName
-      email
-    }
->>>>>>> dev
   }
 }
     `;

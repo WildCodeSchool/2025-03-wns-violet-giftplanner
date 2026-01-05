@@ -1,18 +1,9 @@
-<<<<<<< HEAD:frontend/src/components/Groups/Messaging/Messaging.tsx
 import type { FormEvent, KeyboardEvent, RefObject } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { GetAllMessageMyGroupsQuery } from "../../../generated/graphql-types";
-import { countdownDate } from "../../../utils/dateCalculator";
-import { useMyProfileStore } from "../../../zustand/myProfileStore";
 import { FaLocationArrow } from "react-icons/fa";
-=======
-import type { FormEvent, KeyboardEvent } from "react";
-import { useEffect, useRef, useState } from "react";
-import { type useGetAllMyGroupsQuery, useSendMessageMutation } from "../../../generated/graphql-types";
 import { countdownDate } from "../../../utils/dateCalculator";
 import { useMyProfileStore } from "../../../zustand/myProfileStore";
-import Button from "../../utils/Button";
->>>>>>> dev:frontend/src/components/groups/Messaging/Messaging.tsx
 import Icon from "../../utils/Icon";
 import Title from "../../utils/Title";
 import Message from "./Message";
@@ -23,15 +14,9 @@ type MessagingProps = {
   participants: number;
   date: Date;
   groupId: number;
-<<<<<<< HEAD:frontend/src/components/Groups/Messaging/Messaging.tsx
   messages: GetAllMessageMyGroupsQuery["getAllMessageMyGroups"][number]["messages"];
   calbackSendMessage: (groupId: number, message: string) => void;
   contenairMessageRef: RefObject<HTMLDivElement | null>;
-=======
-  messages: NonNullable<
-    NonNullable<ReturnType<typeof useGetAllMyGroupsQuery>["data"]>["getAllMyGroups"]
-  >[0]["messages"];
->>>>>>> dev:frontend/src/components/groups/Messaging/Messaging.tsx
 };
 
 export default function Messaging({
@@ -67,19 +52,8 @@ export default function Messaging({
     e.preventDefault();
     if (messageInput.trim() === "") return;
     try {
-<<<<<<< HEAD:frontend/src/components/Groups/Messaging/Messaging.tsx
       await calbackSendMessage(groupId, messageInput);
 
-=======
-      await sendMessage({
-        variables: {
-          data: {
-            groupId: groupId,
-            message: messageInput,
-          },
-        },
-      });
->>>>>>> dev:frontend/src/components/groups/Messaging/Messaging.tsx
       setMessageInput("");
 
       contenaireTextareaRef.current!.style.height = "47px";
@@ -95,7 +69,6 @@ export default function Messaging({
     }
   };
 
-<<<<<<< HEAD:frontend/src/components/Groups/Messaging/Messaging.tsx
   const handleChangeInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMessageInput(e.target.value)
 
@@ -121,9 +94,6 @@ export default function Messaging({
   }, [messages]);
 
 
-=======
-  console.info("messages", messages);
->>>>>>> dev:frontend/src/components/groups/Messaging/Messaging.tsx
   return (
     <div className="rounded-2xl w-full h-full border-grey border-2 border-lg flex flex-col">
       <div className="relative w-full h-[80px] bg-blue rounded-t-2xl flex-row flex justify-center items-center py-4">
@@ -146,7 +116,6 @@ export default function Messaging({
           <Icon icon="dots" className="text-white" />
         </div>
       </div>
-<<<<<<< HEAD:frontend/src/components/Groups/Messaging/Messaging.tsx
       <div className="container-body-messaging">
         <div ref={contenairMessageRef} className="container-messages">
           {orderedMessages
@@ -178,37 +147,6 @@ export default function Messaging({
             </button>
           </form>
         </div>
-=======
-      <div className="w-full px-4 overflow-auto">
-        {messages
-          ?.slice()
-          .reverse()
-          .map((message) => {
-            return (
-              <Message
-                key={message.id}
-                text={message.content}
-                imageUrl={message.user.image_url ? message.user.image_url : ""}
-                align={message.user.id === userProfile?.id ? "right" : "left"}
-              />
-            );
-          })}
-        <div ref={bottomRef} />
-      </div>
-      <div className="">
-        {" "}
-        {/* TODO: fix to bottom */}
-        <form onSubmit={handleSendMessage} className="flex flex-row justify-around p-4">
-          <textarea
-            placeholder="Ecrire un message..."
-            className="w-11/12 border-2 border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:border-blue"
-            value={messageInput as string}
-            onChange={(e) => setMessageInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-          />
-          <Button colour="dark" icon="arrow" rounded type="submit" />
-        </form>
->>>>>>> dev:frontend/src/components/groups/Messaging/Messaging.tsx
       </div>
     </div>
   );
