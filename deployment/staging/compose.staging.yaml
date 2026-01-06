@@ -19,7 +19,7 @@ services:
     restart: always
     image: ${BACKEND_IMAGE}
     volumes:
-      - ./backend/public/:/app/public/
+      - ./persist/backend/public/:/app/public/
     depends_on:
       database:
         condition: service_healthy
@@ -43,7 +43,7 @@ services:
     restart: always
     image: ${PICTURE_SERVICE_IMAGE}
     volumes:
-      - ./picture-service/public/:/app/public/
+      - ./persist/picture-service/public/:/app/public/
     healthcheck:
       test: [ "CMD-SHELL", 'curl --fail --request POST --header ''Content-Type: application/json'' --url ''http://localhost:${PICTURE_SERVICE_PORT}'' --data ''{"query":"query { __typename }"}'' || exit 1' ]
       interval: 10s
@@ -53,6 +53,7 @@ services:
       BACKEND_URL: ${SERVEUR_URL}
       CLIENT_URL: ${FRONTEND_URL}
       APP_PORT: ${PICTURE_SERVICE_PORT}
+      
 
   message-service:
     container_name: giftchat-staging-message-service
