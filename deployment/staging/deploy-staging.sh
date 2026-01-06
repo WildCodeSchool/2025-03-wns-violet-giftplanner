@@ -1,5 +1,5 @@
 #!/bin/bash
-# chmod +x deploy_gif-chat_staging.sh
+# chmod +x deploy-staging.sh
 
 # Si le script crash on s'arrête
 set -e
