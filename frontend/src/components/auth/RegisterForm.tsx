@@ -84,7 +84,7 @@ const RegisterForm = () => {
 
       // Si succès
       if (res.data) {
-        setUserProfile(res.data.signup);
+        setUserProfile({ ...res.data.signup, lists: [] });
         navigate("/dashboard");
       }
     } catch (err: any) {

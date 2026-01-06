@@ -1,11 +1,11 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import Groups from "../components/Groups/Groups";
-import Messaging from "../components/Groups/Messaging/Messaging";
-import PiggyBank from "../components/Groups/PiggyBank";
-import Wishlist from "../components/Groups/Wishlist";
+import Groups from "../components/groups/Groups";
+import Messaging from "../components/groups/Messaging/Messaging";
+import PiggyBank from "../components/groups/PiggyBank";
+import Wishlist from "../components/groups/Wishlist";
 import Button from "../components/utils/Button";
 import type { GetAllMessageMyGroupsQuery, GetAllMyGroupsQuery } from "../generated/graphql-types";
-import { useGetAllMyGroupsQuery, useGetAllMessageMyGroupsQuery, useGroupWishlistItemsQuery } from "../generated/graphql-types";
+import { useGetAllMyGroupsQuery, useGetAllMessageMyGroupsQuery } from "../generated/graphql-types";
 import { useLiveChat } from "../hooks/useChat";
 import type { MessageType } from "../types/Groups";
 

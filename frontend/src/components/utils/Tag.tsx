@@ -5,10 +5,6 @@ interface TagProps {
   type?: "info" | "warning" | "success" | "dark";
   className?: string;
   onClick: () => void;
-  tag: string;
-  type?: "info" | "warning" | "success" | "dark";
-  className?: string;
-  onClick: () => void;
 }
 
 const tagStyles = {

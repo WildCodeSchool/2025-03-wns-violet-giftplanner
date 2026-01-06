@@ -14,34 +14,13 @@ import consoleErrorDev from "../hooks/erreurMod";
 import { useIsMobile } from "../hooks/useIsMobile";
 import { useMyProfileStore } from "../zustand/myProfileStore";
 
-interface ConfirmModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-  title?: string;
-  message?: string;
-}
-
-const ConfirmModal = ({ isOpen, onClose, onConfirm, title, message }: ConfirmModalProps) => {
-  if (!isOpen) return null;
-
-  return (
-    <button type="button" className="modal-overlay" onClick={onClose}>
-      <button type="button" className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <h2>{title}</h2>
-        <p>{message}</p>
-        <div className="modal-actions">
-          <button type="button" className="modal-btn-cancel" onClick={onClose}>
-            Annuler
-          </button>
-          <button type="button" className="modal-btn-confirm" onClick={onConfirm}>
-            Confirmer
-          </button>
-        </div>
-      </button>
-    </button>
-  );
-};
+// interface ConfirmModalProps {
+//   isOpen: boolean;
+//   onClose: () => void;
+//   onConfirm: () => void;
+//   title?: string;
+//   message?: string;
+// }
 
 function toBase64(file: File) {
   return new Promise((resolve, reject) => {
@@ -200,7 +179,7 @@ const UserProfilePage = () => {
       return;
     }
 
-    setUserProfile(response.data.UpdateMyProfile);
+    setUserProfile({ ...response.data.UpdateMyProfile, lists: userProfile?.lists || [] });
     // setUserProfile(response.data?.updateMyProfile);
     setMessageSuccess("Profil mis à jour avec succès !");
   };

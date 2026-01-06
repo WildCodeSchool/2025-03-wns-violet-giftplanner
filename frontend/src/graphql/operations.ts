@@ -78,6 +78,10 @@ export const UPDATE_ME_PROFILE = gql`
       lastName
       phone_number
       updatedAt
+      lists {
+        id
+        name
+      }
     }
   }
 `;
