@@ -38,10 +38,6 @@ export const SIGNUP = gql`
       lastName
       phone_number
       updatedAt
-      lists {
-        id
-        name
-      }
     }
   }
 `;
