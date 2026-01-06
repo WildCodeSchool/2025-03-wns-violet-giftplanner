@@ -7,7 +7,10 @@
     "prepare": "husky",
     "husky-lint": "biome check --error-on-warnings",
     "lint": "biome check .",
-    "lint-fix": "biome check --write ."
+    "lint-fix": "biome check --write .",
+    "nm:install": "bash ./bin/install-node-modules.sh",
+    "nm:clean": "bash ./bin/clean-node-modules.sh",
+    "nm:reset": "bash ./bin/rebuild-project.sh"
   },
   "author": "",
   "license": "ISC",
