@@ -3,8 +3,7 @@ name: Staging deployment
 on:
   push:
     branches:
-      #remettre staging
-      - US0-Implemantation-CD
+      - staging
 
 jobs:
   build-and-push-projets:
