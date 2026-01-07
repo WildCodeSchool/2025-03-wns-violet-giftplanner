@@ -2,9 +2,9 @@ import { Arg, Ctx, Int, Mutation, Query, Resolver } from "type-graphql";
 import { Gift } from "../entities/Gift";
 import List from "../entities/List";
 import User from "../entities/User";
-// biome-ignore lint/style/useImportType: bye passe biom
+// biome-ignore lint/style/useImportType: bypass biome linting
 import { AddGiftInput } from "../inputs/AddGiftInput";
-// biome-ignore lint/style/useImportType: bye passe biom
+// biome-ignore lint/style/useImportType: bypass biome linting
 import { UpdateGiftInput } from "../inputs/UpdateGiftInput";
 import type { ContextType } from "../types/context";
 import { getOrCreateUserWishlist } from "../utils/getOrCreateUserWishlist";

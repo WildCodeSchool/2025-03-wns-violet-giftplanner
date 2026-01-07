@@ -1,3 +1,4 @@
+import jwt from "jsonwebtoken";
 import {
   Arg,
   Ctx,
@@ -5,11 +6,11 @@ import {
   FieldResolver,
   InputType,
   Mutation,
+  ObjectType,
   Query,
   Resolver,
   Root,
   UseMiddleware,
-  ObjectType
 } from "type-graphql";
 import Group from "../entities/Group";
 import { GroupMember } from "../entities/GroupMember";
@@ -17,8 +18,6 @@ import { Message } from "../entities/Message";
 import User from "../entities/User";
 import { getVariableEnv } from "../lib/envManager/envManager";
 import { RoleMiddleware } from "../middleware/RoleMiddleware";
-import { addMembersToGroup } from "../services/groupMemberService";
-import  jwt  from "jsonwebtoken";
 import type { ContextType } from "../types/context";
 
 @InputType()
@@ -136,7 +135,6 @@ export default class GroupResolver {
 
     //gérer l'ajout des utilisateurs au groupe, mapper users et les ajouter s'ils existent
     if (data.users && data.users.length > 0) {
-
       //à remplacer par le service add members to group
       await Promise.all(
         data.users.map(async (userEmail) => {

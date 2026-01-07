@@ -5,7 +5,7 @@ import PiggyBank from "../components/groups/PiggyBank";
 import Wishlist from "../components/groups/Wishlist";
 import Button from "../components/utils/Button";
 import type { GetAllMessageMyGroupsQuery, GetAllMyGroupsQuery } from "../generated/graphql-types";
-import { useGetAllMyGroupsQuery, useGetAllMessageMyGroupsQuery } from "../generated/graphql-types";
+import { useGetAllMessageMyGroupsQuery, useGetAllMyGroupsQuery } from "../generated/graphql-types";
 import { useLiveChat } from "../hooks/useChat";
 import type { MessageType } from "../types/Groups";
 
@@ -13,8 +13,14 @@ type message = GetAllMessageMyGroupsQuery["getAllMessageMyGroups"][number]["mess
 
 export default function Conversations() {
   const [wishlist, setWishlist] = useState<boolean>(true);
-  const { data: groupData } = useGetAllMyGroupsQuery({ fetchPolicy: "no-cache", nextFetchPolicy: "no-cache" });
-  const { data: messageData } = useGetAllMessageMyGroupsQuery({ fetchPolicy: "no-cache", nextFetchPolicy: "no-cache" });
+  const { data: groupData } = useGetAllMyGroupsQuery({
+    fetchPolicy: "no-cache",
+    nextFetchPolicy: "no-cache",
+  });
+  const { data: messageData } = useGetAllMessageMyGroupsQuery({
+    fetchPolicy: "no-cache",
+    nextFetchPolicy: "no-cache",
+  });
   // const { data: wishlistData } = useGroupWishlistItemsQuery({ variables: { groupId: Number(groups[indexGroups].id) } }  || skip);
   const [groups, setGroups] = useState<GetAllMyGroupsQuery["getAllMyGroups"]["groups"]>([]);
   const [messages, setMessages] = useState<MessageType>({});
@@ -23,17 +29,13 @@ export default function Conversations() {
 
   const contenairMessageRef = useRef<HTMLDivElement | null>(null);
 
-  const handlerNewMessage = (response: {
-    newMessage: message,
-    groupId: number
-  }) => {
-    setMessages(prev => {
+  const handlerNewMessage = (response: { newMessage: message; groupId: number }) => {
+    setMessages((prev) => {
       const clone = structuredClone(prev);
       clone[response.groupId]?.unshift(response.newMessage);
       return clone;
     });
   };
-
 
   // scrolle vers le bas quand le rerendu est fait
   useLayoutEffect(() => {
@@ -48,11 +50,11 @@ export default function Conversations() {
 
   // pour set les groups
   useEffect(() => {
-     // if (!data?.getAllMyGroups) return;
+    // if (!data?.getAllMyGroups) return;
     setGroups(groupData?.getAllMyGroups.groups || []);
 
     // demande au server de rejoindre les rooms que utilisateur possède
-    chat.connectToRoom(groupData?.getAllMyGroups.groupToken)
+    chat.connectToRoom(groupData?.getAllMyGroups.groupToken);
   }, [groupData, chat]);
 
   useEffect(() => {
@@ -67,9 +69,10 @@ export default function Conversations() {
     setGroups(groupData?.getAllMyGroups.groups || []);
 
     //keep active group in sync or default to first during refetch
-    const existing = indexGroups !== -1
-      ? groupData?.getAllMyGroups.groups.find((group) => Number(group.id) === Number(indexGroups))
-      : null;
+    const existing =
+      indexGroups !== -1
+        ? groupData?.getAllMyGroups.groups.find((group) => Number(group.id) === Number(indexGroups))
+        : null;
 
     setIndexGroup(existing ? indexGroups : 0);
   }, [groupData, indexGroups]);
@@ -85,8 +88,6 @@ export default function Conversations() {
     setMessages(messagesMap);
   }, [messageData]);
 
- 
-
   useEffect(() => {
     if (indexGroups === -1) {
       setIndexGroup(-1);
@@ -94,7 +95,6 @@ export default function Conversations() {
     }
     setIndexGroup(indexGroups);
   }, [indexGroups]);
-
 
   //TO DO: set activeGroup.id in url
 
@@ -106,12 +106,7 @@ export default function Conversations() {
       <div className="flex flex-col mx-[2vw] h-full min-h-0 justify-between">
         <div className="h-[calc(50%-2rem)] flex pb-2 ">
           {myGroups && (
-            <Groups
-              groups={myGroups}
-              setActiveGroup={setActiveGroup}
-              loading={false}
-              error={undefined}
-            />
+            <Groups groups={myGroups} setActiveGroup={setActiveGroup} loading={false} error={undefined} />
           )}
         </div>
 
@@ -135,23 +130,30 @@ export default function Conversations() {
         </div>
 
         <div className="h-[calc(50%-2rem)] flex pt-2">
-          {indexGroups !== -1 && (wishlist ? <Wishlist beneficiaryItems={[]} groupItems={[]} onAddIdea={() => {}} /> : <PiggyBank pot={groups[indexGroups].piggy_bank} />)}
+          {indexGroups !== -1 &&
+            (wishlist ? (
+              <Wishlist beneficiaryItems={[]} groupItems={[]} onAddIdea={() => {}} />
+            ) : (
+              <PiggyBank pot={groups[indexGroups].piggy_bank} />
+            ))}
         </div>
       </div>
 
       {/* Right Column */}
       <div className="flex flex-1 w-1/2 h-full  mt-0 justify-center">
-        {indexGroups !== -1 && groups.length > 0 && messages[Number(groups[indexGroups].id)] !== undefined && (
-          <Messaging
-            title={groups[indexGroups].name}
-            participants={2}
-            date={new Date(groups[indexGroups].deadline)}
-            groupId={Number(groups[indexGroups].id)}
-            messages={messages[Number(groups[indexGroups].id)]}
-            calbackSendMessage={chat.sendMessage}
-            contenairMessageRef={contenairMessageRef}
-          />
-        )}
+        {indexGroups !== -1 &&
+          groups.length > 0 &&
+          messages[Number(groups[indexGroups].id)] !== undefined && (
+            <Messaging
+              title={groups[indexGroups].name}
+              participants={2}
+              date={new Date(groups[indexGroups].deadline)}
+              groupId={Number(groups[indexGroups].id)}
+              messages={messages[Number(groups[indexGroups].id)]}
+              calbackSendMessage={chat.sendMessage}
+              contenairMessageRef={contenairMessageRef}
+            />
+          )}
       </div>
     </div>
   );

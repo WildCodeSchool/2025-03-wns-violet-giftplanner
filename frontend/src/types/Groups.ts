@@ -24,5 +24,7 @@ export type GroupProps = {
   messages: MessageProps[];
 };
 
-
-export type MessageType = Record<number, GetAllMessageMyGroupsQuery["getAllMessageMyGroups"][number]["messages"]>
+export type MessageType = Record<
+  number,
+  GetAllMessageMyGroupsQuery["getAllMessageMyGroups"][number]["messages"]
+>;

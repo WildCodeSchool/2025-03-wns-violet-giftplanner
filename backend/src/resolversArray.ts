@@ -1,7 +1,7 @@
 import type { NonEmptyArray } from "type-graphql";
 import GroupResolver from "./resolvers/GroupResolver";
-import InvitationResolver from "./resolvers/InvitationResolver";
 import GroupWishlistResolver from "./resolvers/GroupWishlistResolver";
+import InvitationResolver from "./resolvers/InvitationResolver";
 import MessageResolver from "./resolvers/MessageResolver";
 import MyWishlistResolver from "./resolvers/MyWishlistResolver";
 import UserResolver from "./resolvers/UserResolver";

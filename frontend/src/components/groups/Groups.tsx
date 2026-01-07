@@ -45,7 +45,8 @@ export default function Groups({ groups, setActiveGroup, loading, error }: Group
               <p className="text-gray-600 text-sm sm:text-base truncate overflow-hidden text-ellipsis whitespace-nowrap">
                 <span> Date limite: {formatDate(new Date(group.deadline))} </span> <br />
                 <span>
-                  {group.groupMember?.length} {group.groupMember?.length === 1 ? "participant" : "participants"}
+                  {group.groupMember?.length}{" "}
+                  {group.groupMember?.length === 1 ? "participant" : "participants"}
                 </span>
               </p>
             </Card>
