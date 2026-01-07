@@ -6,9 +6,11 @@ RUN npm i
 COPY *.ts .
 COPY public public
 COPY index.html .
-COPY src src    
+COPY src src
 
 RUN echo "VITE_MODE=prod" >> .env
+RUN echo "VITE_API_URL=https://staging.giftchat.032025-bleu-2.wns.wilders.dev/api" >> .env
+
 RUN npm run build
 
 FROM httpd:2.4-alpine
