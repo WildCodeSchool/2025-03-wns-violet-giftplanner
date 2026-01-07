@@ -5,20 +5,18 @@ GiftChat est un site de chat en ligne qui permet de créer des groupes de discus
 
 ## Contexte
 GiftChat est un projet réalisé dans le cadre de la formation **CDA** de la **Wild Code School**, en suivant les consignes suivantes :
-
 - Permettre aux membres d’une famille ou d’un groupe d’amis de discuter d’idées de cadeaux sans voir ce que les autres préparent pour eux.
 - Un fil de discussion est consacré à chaque membre, permettant aux autres participants d’échanger des idées de cadeaux individuels ou collectifs.
 
 ## Exécution
-Avoir **Docker** installé sur sa machine.
-
-Pour lancer le projet en local, il suffit d’exécuter, dans un terminal à la racine du projet :
-
+Avoir **Docker** installé sur sa machine.  
+Pour lancer le projet en local, il suffit d’exécuter, dans un terminal à la racine du projet :  
 ```bash
 make dev-gateway
 ```
 
-##Structure du projet
+## Structure du projet
+```
 .
 ├── .github -> workflows GitHub
 ├── .husky -> hooks de pré-commit Husky
@@ -42,12 +40,13 @@ make dev-gateway
 ├── package-lock.json -> fichier de verrouillage des dépendances npm
 ├── package.json -> gestion des dépendances npm
 └── README.md -> ce fichier
+```
 
 ## Commandes utiles 
 
-Nous avons des commandes npm pour faciliter la gestion des dépendances npm en local (utiles pour autocompresstion des extenstions vsCode vu que le projet tourne avec docker c'est pas obligatoire de les utiliser) : 
-- npm run nm:install : fait un npm install dans tous les dossiers de service du projet - npm run nm:clean : supprime les dossiers node_modules dans tous les dossiers de service du projet 
-- npm run nm:reset : supprime puis réinstalle les dépendances npm dans tous les dossiers de service du projet 
+Nous avons des commandes npm pour faciliter la gestion des dépendances npm en local (utiles pour autocompresstion des extenstions vsCode vu que le projet tourne avec docker c'est pas obligatoire de les utiliser) :  
+- npm run nm:install : fait un npm install dans tous les dossiers de service du projet - npm run nm:clean : supprime les dossiers node_modules dans tous les dossiers de service du projet  
+- npm run nm:reset : supprime puis réinstalle les dépendances npm dans tous les dossiers de service du projet  
 
 ***ps: nm = node modules*** 
 
@@ -56,6 +55,7 @@ Nous avons des commandes npm pour faciliter la gestion des dépendances npm en l
 - [@Chloe](https://github.com/ChloeNuage) 
 - [@Clement](https://github.com/clement4444) 
 - [@Wolfgang](https://github.com/wktatschl) 
+
 
 
 date de modification du README.md: 07/01/2026
