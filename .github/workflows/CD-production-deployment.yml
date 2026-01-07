@@ -1,9 +1,12 @@
-name: Staging deployment
+name: Production deployment
 
 on:
   push:
     branches:
-      - staging
+      - US0-Implemantation-CD
+      # - main
+      
+
 
 jobs:
   build-and-push-projects:
@@ -12,15 +15,15 @@ jobs:
       matrix:
         include:
           - nom_service: frontend
-            nom_image: ${{ vars.IMAGE_FRONTEND_STAGING }}
+            nom_image: ${{ vars.IMAGE_FRONTEND_PRODUCTION }}
           - nom_service: backend
-            nom_image: ${{ vars.IMAGE_BACKEND_STAGING }}
+            nom_image: ${{ vars.IMAGE_BACKEND_PRODUCTION }}
           - nom_service: gateway
-            nom_image: ${{ vars.IMAGE_GATEWAY_STAGING }}
+            nom_image: ${{ vars.IMAGE_GATEWAY_PRODUCTION }}
           - nom_service: message-service
-            nom_image: ${{ vars.IMAGE_MESSAGE_SERVICE_STAGING }}
+            nom_image: ${{ vars.IMAGE_MESSAGE_SERVICE_PRODUCTION }}
           - nom_service: picture-service
-            nom_image: ${{ vars.IMAGE_PICTURE_SERVICE_STAGING }}
+            nom_image: ${{ vars.IMAGE_PICTURE_SERVICE_PRODUCTION }}
     steps:
       - name: Récupérer le code source
         uses: actions/checkout@v4
@@ -33,7 +36,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: ./${{ matrix.nom_service }}
-          file: ./${{ matrix.nom_service }}/Dockerfile.staging
+          file: ./${{ matrix.nom_service }}/Dockerfile.production
           push: true
           tags: ${{ vars.DOCKERHUB_USERNAME }}/${{ matrix.nom_image }}:latest
   
@@ -42,5 +45,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Déployer sur le serveur distant
-        run: curl -f ${{ vars.SERVER_WEBHOOK_STAGING }}
+        run: curl -f ${{ vars.SERVER_WEBHOOK_PRODUCTION }}
         
