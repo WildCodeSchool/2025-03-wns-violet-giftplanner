@@ -3,11 +3,8 @@ name: Production deployment
 on:
   push:
     branches:
-      - US0-Implemantation-CD
-      # - main
+      - main
       
-
-
 jobs:
   build-and-push-projects:
     runs-on: ubuntu-latest
