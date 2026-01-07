@@ -1,10 +1,20 @@
-import { Arg, Ctx, Field, InputType, Mutation, ObjectType, Query, Resolver, UseMiddleware } from "type-graphql";
+import jwt from "jsonwebtoken";
+import {
+  Arg,
+  Ctx,
+  Field,
+  InputType,
+  Mutation,
+  ObjectType,
+  Query,
+  Resolver,
+  UseMiddleware,
+} from "type-graphql";
 import Group from "../entities/Group";
 import { GroupMember } from "../entities/GroupMember";
 import { Message } from "../entities/Message";
-import { RoleMiddleware } from "../middleware/RoleMiddleware";
-import jwt from "jsonwebtoken";
 import { getVariableEnv } from "../lib/envManager/envManager";
+import { RoleMiddleware } from "../middleware/RoleMiddleware";
 import type { ContextType } from "../types/context";
 
 @InputType()
@@ -31,7 +41,6 @@ class GroupMessagesOutput {
   messages: Message[];
 }
 
-
 @Resolver(Group)
 export default class MessageResolver {
   // récupère tout les message de tout les groupes de l'utilisateur connecté
@@ -51,7 +60,7 @@ export default class MessageResolver {
       order: { id: "DESC" },
     });
 
-    const reponse: { groupId: number, messages: Message[] }[] = [];
+    const reponse: { groupId: number; messages: Message[] }[] = [];
 
     // charge les 10 derniers messages de chaque groupe
     for (const group of groups) {
@@ -78,7 +87,7 @@ export default class MessageResolver {
     }
 
     // décode le token pour obtenir l'ID de l'utilisateur
-    const token = jwt.verify(userToken, getVariableEnv("JWT_SECRET")) as { id: number }
+    const token = jwt.verify(userToken, getVariableEnv("JWT_SECRET")) as { id: number };
 
     if (token === null || typeof token !== "object") {
       throw new Error("Token invalide");

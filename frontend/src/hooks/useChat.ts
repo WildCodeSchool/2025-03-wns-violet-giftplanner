@@ -4,30 +4,29 @@ import { useLive } from "./useWebSocket";
 
 type message = GetAllMessageMyGroupsQuery["getAllMessageMyGroups"][number]["messages"][number];
 
-export function useLiveChat(setMessages: (response: { newMessage: message, groupId: number }) => void) {
-    const socket = useLive();
+export function useLiveChat(setMessages: (response: { newMessage: message; groupId: number }) => void) {
+  const socket = useLive();
 
-    function connectToRoom(token: string | undefined) {
-        socket?.emit("join-groups", { groupsToken: token });
-    }
+  function connectToRoom(token: string | undefined) {
+    socket?.emit("join-groups", { groupsToken: token });
+  }
 
-    function sendMessage(groupId: number, message: string) {
-        socket?.emit("send-room-message", {
-            roomId: String(groupId),
-            newMessage: message,
-        });
-    }
+  function sendMessage(groupId: number, message: string) {
+    socket?.emit("send-room-message", {
+      roomId: String(groupId),
+      newMessage: message,
+    });
+  }
 
-    useEffect(() => {
-        if (!socket) return;
+  useEffect(() => {
+    if (!socket) return;
 
-        socket.on("room-new-message", setMessages);
+    socket.on("room-new-message", setMessages);
 
-        return () => {
-            socket.off("room-new-message", setMessages);
-        };
-    }, [socket]);
+    return () => {
+      socket.off("room-new-message", setMessages);
+    };
+  }, [socket]);
 
-
-    return { connectToRoom, sendMessage };
+  return { connectToRoom, sendMessage };
 }

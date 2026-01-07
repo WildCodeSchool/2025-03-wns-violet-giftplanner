@@ -2,8 +2,7 @@ import { Arg, Ctx, Field, Int, Mutation, ObjectType, Query, Resolver } from "typ
 import { Gift } from "../entities/Gift";
 import Group from "../entities/Group";
 import { GroupMember } from "../entities/GroupMember";
-import type List from "../entities/List";
-import { AddGiftInput } from "../inputs/AddGiftInput";
+import type { AddGiftInput } from "../inputs/AddGiftInput";
 import type { ContextType } from "../types/context";
 import { getOrCreateUserWishlist } from "../utils/getOrCreateUserWishlist";
 
@@ -74,29 +73,28 @@ export default class GroupWishlistResolver {
     //   order: { createdAt: "DESC" },
     // });
 
+    //Updated with chatGPT, tell me if this is ok for you Wolfgang
+    let fromWishlist: Gift[] = [];
 
-  //Updated with chatGPT, tell me if this is ok for you Wolfgang
-  let fromWishlist: Gift[] = [];
+    // if the group has a beneficiary, load their wishlist + items
+    if (group.user_beneficiary) {
+      const beneficiaryId = group.user_beneficiary.id;
 
-  // if the group has a beneficiary, load their wishlist + items
-  if (group.user_beneficiary) {
-    const beneficiaryId = group.user_beneficiary.id;
+      const beneficiaryWishlist = await getOrCreateUserWishlist(beneficiaryId);
 
-    const beneficiaryWishlist = await getOrCreateUserWishlist(beneficiaryId);
+      fromWishlist = await Gift.find({
+        where: { list: { id: beneficiaryWishlist.id } },
+        relations: { user: true, list: true },
+        order: { createdAt: "DESC" },
+      });
+    }
 
-    fromWishlist = await Gift.find({
-      where: { list: { id: beneficiaryWishlist.id } },
+    // fetch gifts from the group list (always)
+    const fromGroupList = await Gift.find({
+      where: { list: { id: group.list_group.id } },
       relations: { user: true, list: true },
       order: { createdAt: "DESC" },
     });
-  }
-
-  // fetch gifts from the group list (always)
-  const fromGroupList = await Gift.find({
-    where: { list: { id: group.list_group.id } },
-    relations: { user: true, list: true },
-    order: { createdAt: "DESC" },
-  });
 
     return {
       fromWishlist,

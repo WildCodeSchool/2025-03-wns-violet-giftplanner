@@ -1,7 +1,7 @@
 import type { FormEvent, KeyboardEvent, RefObject } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { GetAllMessageMyGroupsQuery } from "../../../generated/graphql-types";
 import { FaLocationArrow } from "react-icons/fa";
+import type { GetAllMessageMyGroupsQuery } from "../../../generated/graphql-types";
 import { countdownDate } from "../../../utils/dateCalculator";
 import { useMyProfileStore } from "../../../zustand/myProfileStore";
 import Icon from "../../utils/Icon";
@@ -26,7 +26,7 @@ export default function Messaging({
   groupId,
   messages,
   calbackSendMessage,
-  contenairMessageRef
+  contenairMessageRef,
 }: MessagingProps) {
   const [messageInput, setMessageInput] = useState<string>("");
   const { userProfile } = useMyProfileStore();
@@ -70,7 +70,7 @@ export default function Messaging({
   };
 
   const handleChangeInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setMessageInput(e.target.value)
+    setMessageInput(e.target.value);
 
     const el = textareaRef.current;
     if (!el) return;
@@ -80,19 +80,19 @@ export default function Messaging({
     const nbLignesMax = 5;
     const hauteurLigne = 27;
     const padding = 17;
-    contenaireTextareaRef.current!.style.height = Math.min(el.scrollHeight + 4 + padding, nbLignesMax * hauteurLigne + padding) + "px";
+    contenaireTextareaRef.current!.style.height =
+      Math.min(el.scrollHeight + 4 + padding, nbLignesMax * hauteurLigne + padding) + "px";
 
     el.style.height = "100%";
   };
 
   const orderedMessages = useMemo(() => {
-    const sortMessages = messages.slice().reverse()
+    const sortMessages = messages.slice().reverse();
 
-    return sortMessages//.reduce((acc, message) => {
+    return sortMessages; //.reduce((acc, message) => {
     //   return [...acc, message];
     // }, [] as typeof messages)
   }, [messages]);
-
 
   return (
     <div className="rounded-2xl w-full h-full border-grey border-2 border-lg flex flex-col">
@@ -118,17 +118,16 @@ export default function Messaging({
       </div>
       <div className="container-body-messaging">
         <div ref={contenairMessageRef} className="container-messages">
-          {orderedMessages
-            .map((message) => {
-              return (
-                <Message
-                  key={message.id}
-                  text={message.content}
-                  imageUrl={message.user.image_url ? message.user.image_url : ""}
-                  align={message.user.id === userProfile?.id ? "right" : "left"}
-                />
-              );
-            })}
+          {orderedMessages.map((message) => {
+            return (
+              <Message
+                key={message.id}
+                text={message.content}
+                imageUrl={message.user.image_url ? message.user.image_url : ""}
+                align={message.user.id === userProfile?.id ? "right" : "left"}
+              />
+            );
+          })}
           <div ref={bottomRef} />
         </div>
         <div className="container-send-message">
