@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - staging
-      # - US0-debug
 
 jobs:
   build-and-push-projects:
