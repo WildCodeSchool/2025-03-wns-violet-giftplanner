@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - US0-debug
       
 jobs:
   build-and-push-projects:
