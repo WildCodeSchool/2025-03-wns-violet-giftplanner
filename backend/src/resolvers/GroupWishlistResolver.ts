@@ -2,7 +2,9 @@ import { Arg, Ctx, Field, Int, Mutation, ObjectType, Query, Resolver } from "typ
 import { Gift } from "../entities/Gift";
 import Group from "../entities/Group";
 import { GroupMember } from "../entities/GroupMember";
-import type { AddGiftInput } from "../inputs/AddGiftInput";
+
+// biome-ignore lint/style/useImportType: bypass biome linting
+import { AddGiftInput } from "../inputs/AddGiftInput";
 import type { ContextType } from "../types/context";
 import { getOrCreateUserWishlist } from "../utils/getOrCreateUserWishlist";
 

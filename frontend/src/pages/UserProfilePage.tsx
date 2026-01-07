@@ -4,6 +4,7 @@ import { LuLogOut, LuPencil, LuSettings, LuTrash2 } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Icon from "../components/utils/Icon";
+import Modal from "../components/utils/Modal";
 import { defaultPictureProfile } from "../data/pictureDefault";
 import {
   useDeleteMyProfileMutation,
@@ -221,39 +222,6 @@ const UserProfilePage = () => {
       toast.error("Erreur lors de la déconnexion");
       consoleErrorDev("Erreur de déconnexion :", err);
     }
-  };
-
-  const ConfirmModal = ({
-    isOpen,
-    onClose,
-    onConfirm,
-    title,
-    message,
-  }: {
-    isOpen: boolean;
-    onClose: () => void;
-    onConfirm: () => void;
-    title?: string;
-    message?: string;
-  }) => {
-    if (!isOpen) return null;
-
-    return (
-      <div className="modal-overlay" /*onClick={onClose}*/>
-        <div className="modal-content" /*onClick={(e) => e.stopPropagation()}*/>
-          <h2>{title}</h2>
-          <p>{message}</p>
-          <div className="modal-actions">
-            <button type="button" className="modal-btn-cancel" onClick={onClose}>
-              Annuler
-            </button>
-            <button type="button" className="modal-btn-confirm" onClick={onConfirm}>
-              Confirmer
-            </button>
-          </div>
-        </div>
-      </div>
-    );
   };
 
   return (
@@ -498,13 +466,23 @@ const UserProfilePage = () => {
         </div>
       </div>
 
-      <ConfirmModal
-        isOpen={isDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen(false)}
-        onConfirm={handleConfirmDelete}
-        title="Supprimer votre profil"
-        message="Êtes-vous sûr de vouloir faire ça ? Cette action est irréversible et toutes vos données seront effacées."
-      />
+      <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)}>
+        <div>
+          <h2>Supprimer votre profil</h2>
+          <p>
+            Êtes-vous sûr de vouloir faire ça ? Cette action est irréversible et toutes vos données seront
+            effacées.
+          </p>
+          <div className="modal-actions">
+            <button type="button" className="modal-btn-cancel" onClick={() => setIsDeleteModalOpen(false)}>
+              Annuler
+            </button>
+            <button type="button" className="modal-btn-confirm" onClick={handleConfirmDelete}>
+              Confirmer
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

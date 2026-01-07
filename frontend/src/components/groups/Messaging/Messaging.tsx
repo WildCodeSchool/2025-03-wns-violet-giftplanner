@@ -1,5 +1,5 @@
 import type { FormEvent, KeyboardEvent, RefObject } from "react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { FaLocationArrow } from "react-icons/fa";
 import type { GetAllMessageMyGroupsQuery } from "../../../generated/graphql-types";
 import { countdownDate } from "../../../utils/dateCalculator";
@@ -7,7 +7,6 @@ import { useMyProfileStore } from "../../../zustand/myProfileStore";
 import Icon from "../../utils/Icon";
 import Title from "../../utils/Title";
 import Message from "./Message";
-import "./messaging.css";
 
 type MessagingProps = {
   title: string;
@@ -28,6 +27,7 @@ export default function Messaging({
   calbackSendMessage,
   contenairMessageRef,
 }: MessagingProps) {
+  const id = useId();
   const [messageInput, setMessageInput] = useState<string>("");
   const { userProfile } = useMyProfileStore();
 
@@ -46,7 +46,7 @@ export default function Messaging({
   const expired = daysLeft < 0;
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const contenaireTextareaRef = useRef<HTMLFormElement>(null);
+  const containerTextareaRef = useRef<HTMLFormElement>(null);
 
   const handleSendMessage = async (e: FormEvent<HTMLFormElement> | KeyboardEvent<HTMLTextAreaElement>) => {
     e.preventDefault();
@@ -56,7 +56,7 @@ export default function Messaging({
 
       setMessageInput("");
 
-      contenaireTextareaRef.current!.style.height = "47px";
+      containerTextareaRef.current!.style.height = "47px";
     } catch (error) {
       console.error("Erreur pendant l'envoie du message", error);
     }
@@ -80,9 +80,7 @@ export default function Messaging({
     const nbLignesMax = 5;
     const hauteurLigne = 27;
     const padding = 17;
-    contenaireTextareaRef.current!.style.height =
-      Math.min(el.scrollHeight + 4 + padding, nbLignesMax * hauteurLigne + padding) + "px";
-
+    containerTextareaRef.current!.style.height = `${Math.min(el.scrollHeight + 4 + padding, nbLignesMax * hauteurLigne + padding)}px`;
     el.style.height = "100%";
   };
 
@@ -116,8 +114,11 @@ export default function Messaging({
           <Icon icon="dots" className="text-white" />
         </div>
       </div>
-      <div className="container-body-messaging">
-        <div ref={contenairMessageRef} className="container-messages">
+      <div className="h-full w-full flex flex-col px-1.5 pb-5 pl-4">
+        <div
+          ref={contenairMessageRef}
+          className="w-full overflow-y-auto flex-grow flex-shrink flex-basis-0 pt-1.5 pr-2.5 pb-2.5 pl-0"
+        >
           {orderedMessages.map((message) => {
             return (
               <Message
@@ -130,19 +131,29 @@ export default function Messaging({
           })}
           <div ref={bottomRef} />
         </div>
-        <div className="container-send-message">
-          <form onSubmit={handleSendMessage} ref={contenaireTextareaRef} className="formulaire-send-message">
+        <div className="w-full flex-grow-0 flex-shrink-0 flex-basis-auto pr-2.5">
+          <form
+            onSubmit={handleSendMessage}
+            ref={containerTextareaRef}
+            className="relative h-[47px] w-full py-1.5 pr-[45px] pb-2.5 pl-[15px] border-2 border-[#b7b7b7] rounded-[22px] focus-within:outline-none focus-within:border-[#292e96]"
+          >
             <textarea
               ref={textareaRef}
               placeholder="Ecrire un message..."
-              id="input-send-message"
+              id={id}
               value={messageInput as string}
               onChange={handleChangeInput}
               onKeyDown={handleKeyDown}
               rows={1}
+              className="w-full h-full text-lg leading-[26px] resize-none box-border overflow-y-visible focus:outline-none placeholder:text-[#b7b7b7] [&::-webkit-scrollbar]:hidden"
             />
-            <button id="bnt-send-message" type="submit" title="envoyer message">
-              <FaLocationArrow className="icon-fleche-send" />
+            <button
+              id={id}
+              type="submit"
+              title="envoyer message"
+              className="absolute bottom-1 right-1.5 bg-[#292e96] rounded-full w-[35px] h-[35px] flex items-center justify-center cursor-pointer hover:bg-[#1e2366]"
+            >
+              <FaLocationArrow className="text-white rotate-45" />
             </button>
           </form>
         </div>
