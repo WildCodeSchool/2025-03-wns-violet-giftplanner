@@ -1,0 +1,602 @@
+.infohome-background {
+  position: relative;
+  /* Ajouté -> pour contenir les enfants absolus */
+  background-color: #292e96;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+  /* Les images ne dépasseront plus */
+}
+
+.infohome-background-red {
+  position: relative;
+  /* Ajouté -> pour contenir les enfants absolus */
+  background-color: #ea4b09;
+  height: 100dvh;
+  overflow: hidden;
+  z-index: 0;
+  /* Les images ne dépasseront plus */
+}
+
+.infohome-serpentin,
+.infohome-carre,
+.infohome-etoile,
+.infohome-cotillon {
+  position: absolute;
+  z-index: -1;
+  /* Met les images derrière le texte */
+}
+
+.infohome-logo {
+  width: 200px;
+  padding-left: 16px;
+  padding-top: 16px;
+}
+
+.infohome-background h1 {
+  font-size: 75px;
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  color: #fdfbf6;
+  line-height: 70px;
+  margin-top: 0;
+}
+
+.infohome-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-left: 108px;
+  padding-right: 108px;
+  height: 100%;
+  justify-content: center;
+  gap: 104px;
+}
+
+.infohome-content-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.infohome-content-text-home {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 60px;
+  font-weight: 400;
+  color: #fdfbf6;
+}
+
+.infohome-serpentin {
+  width: 600px;
+  top: 10px;
+  left: -96px;
+}
+
+.infohome-carre {
+  width: 200px;
+  top: 200px;
+  right: 20px;
+}
+
+.infohome-etoile {
+  width: 300px;
+  top: 800px;
+}
+
+.infohome-cotillon {
+  width: 600px;
+  top: 700px;
+  right: -100px;
+}
+
+.h2-login {
+  font-size: 40px;
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  color: #200904;
+  margin-top: 240px;
+}
+
+.h2-register {
+  font-size: 40px;
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  color: #200904;
+  margin-top: 94px;
+  margin-bottom: 80px;
+}
+
+.form-login-div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  height: 100%;
+  padding: 0 20px;
+}
+
+.form-register-div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100%;
+  padding: 0 20px;
+  margin-bottom: 5%;
+}
+
+.div-bouton-homepage {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 32px;
+}
+
+.button-black {
+  background-color: #200904;
+  color: #fdfbf6;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+}
+
+.size-20px {
+  font-size: 20px;
+}
+
+.button-white {
+  background-color: #fdfbf6;
+  color: #200904;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+}
+
+.image-input-button {
+  display: inline-block;
+  width: 400px;
+  background-color: #200904;
+  /* noir par défaut */
+  color: #fdfbf6;
+  text-align: center;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 20px;
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+  transition: background-color 0.3s ease;
+  overflow: hidden;
+  /* cache le texte qui dépasse */
+  white-space: nowrap;
+  /* empêche le retour à la ligne */
+}
+
+.image-input-button-filled {
+  background-color: #292e96;
+  /* bleu si un fichier est choisi */
+}
+
+.file-label-text {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* ajoute "..." si trop long */
+}
+
+.paragraph-login {
+  font-size: 20px;
+  color: #200904;
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+}
+
+.link-login {
+  color: #200904;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 20px;
+}
+
+.input-custom {
+  width: 400px;
+  padding: 8px 8px;
+  border: 3.5px solid #200904;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1.125rem;
+  color: #200904;
+  outline: none;
+  margin-bottom: 24px;
+}
+
+/* Placeholder gris */
+.input-custom::placeholder {
+  color: #9ca3af;
+  /* gris Tailwind 400 */
+}
+
+/* Texte et style au focus */
+.input-custom:focus {
+  color: #200904;
+  border-color: #292e96;
+  /* bleu Tailwind 500 */
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.5);
+  /* anneau bleu */
+}
+
+.margin-more {
+  margin-bottom: 80px;
+}
+
+.form-login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.button-black-home {
+  background-color: #200904;
+  color: #fdfbf6;
+  border: none;
+  padding: 10px 30px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 25px;
+  transition: background-color 0.3s ease;
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+}
+
+.button-white-home {
+  background-color: #fdfbf6;
+  color: #200904;
+  border: none;
+  padding: 10px 30px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 25px;
+  transition: background-color 0.3s ease;
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+}
+
+.error-message {
+  color: #ea4b09;
+  font-weight: bold;
+  margin-bottom: 24px;
+  font-size: 18px;
+}
+
+.homepage-success-notification {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #019645;
+  color: #fdfbf6;
+  padding: 16px 32px;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 700;
+  font-family: "Inter", sans-serif;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* Footer de la HomePage */
+.homepage-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #200904;
+  padding: 12px 40px;
+  text-align: center;
+  z-index: 10;
+}
+
+.homepage-footer-text {
+  color: #fdfbf6;
+  font-size: 16px;
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  margin: 0;
+}
+
+.homepage-footer-link {
+  color: #fdfbf6;
+  font-weight: 700;
+  text-decoration: none;
+  transition: opacity 0.3s ease;
+}
+
+.homepage-footer-link:hover {
+  opacity: 0.8;
+}
+
+/* VERSION MOBILE */
+
+@media (max-width: 768px) {
+  /* HomePage */
+
+  .infohome-content-text-home {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    text-align: left;
+  }
+
+  /* H1 spécifique à la HomePage uniquement */
+  .infohome-content-text-home h1,
+  .infohome-background-red h1 {
+    font-size: 50px;
+    line-height: 50px;
+    padding-right: 18%;
+    padding-left: 5%;
+  }
+
+  .infohome-content {
+    padding-left: 24px;
+    padding-right: 24px;
+    gap: 80px;
+    height: 90%;
+  }
+
+  /* Logo centré et plus gros */
+  .infohome-logo {
+    width: 200px;
+    display: block;
+    margin: 0 auto;
+    padding-left: 0;
+    padding-top: 40px;
+  }
+
+  /* Réduire les décorations */
+  .infohome-serpentin {
+    width: 300px;
+  }
+
+  .infohome-carre {
+    width: 100px;
+    top: 150px;
+  }
+
+  .infohome-etoile {
+    width: 150px;
+    top: auto;
+    bottom: 100px;
+  }
+
+  .infohome-cotillon {
+    width: 300px;
+    top: auto;
+    bottom: 80px;
+  }
+
+  /* Boutons HomePage empilés et centrés */
+  .div-bouton-homepage {
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    max-width: 300px;
+    align-items: center;
+  }
+
+  .button-white-home,
+  .button-black-home {
+    width: auto;
+    font-size: 22px;
+    padding: 8px 24px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Footer - texte raccourci sur mobile */
+  .homepage-footer {
+    padding: 8px 20px;
+  }
+
+  /* Masquer le texte avant le lien */
+  .homepage-footer-text::before {
+    content: "";
+    display: none;
+  }
+
+  /* Masquer tout sauf le lien */
+  .homepage-footer-text {
+    font-size: 0;
+  }
+
+  .homepage-footer-link {
+    font-size: 16px;
+  }
+
+  /* Login/Register Pages */
+
+  /* Cacher InfoHome sur mobile */
+  .infohome-background {
+    display: none;
+  }
+
+  .h2-login,
+  .h2-register {
+    font-size: 32px;
+    margin-top: 60px;
+  }
+
+  .form-register-div {
+    padding: 40px 40px;
+    width: 100%;
+  }
+
+  .form-login-div {
+    padding: 100px 40px;
+    width: 100%;
+  }
+
+  .form-login {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .form-login > div,
+  .form-register-div .form-login > div {
+    width: 100%;
+  }
+
+  .input-custom {
+    width: 100% !important;
+    max-width: none !important;
+    font-size: 18px;
+    padding: 8px 24px;
+    margin-bottom: 16px;
+    box-sizing: border-box;
+  }
+
+  .button-black,
+  .button-white {
+    width: auto !important;
+    max-width: none !important;
+    font-size: 18px;
+    padding: 8px 40px;
+    box-sizing: border-box;
+  }
+
+  .paragraph-login {
+    font-size: 16px;
+  }
+
+  .link-login {
+    font-size: 16px;
+  }
+
+  .image-input-button {
+    width: 100% !important;
+    max-width: none !important;
+    font-size: 18px;
+    padding: 12px 20px;
+    box-sizing: border-box;
+  }
+
+  .margin-more {
+    margin-bottom: 40px;
+  }
+}
+
+/* Décorations mobiles - cachées par défaut */
+.auth-mobile-decoration {
+  display: none;
+}
+
+/* VERSION MOBILE - Décorations */
+@media (max-width: 768px) {
+  /* Wrapper pour les décorations mobiles */
+  .auth-page-mobile-wrapper {
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Afficher les décorations en mobile */
+  .auth-mobile-decoration {
+    display: block;
+    position: absolute;
+    z-index: 1;
+  }
+
+  /* Page Login */
+  .auth-mobile-serpentin {
+    width: 250px;
+    top: 20px;
+    left: -50px;
+    transform: rotate(-15deg);
+  }
+
+  .auth-mobile-carre {
+    width: 80px;
+    top: 120px;
+    right: 20px;
+  }
+
+  .auth-mobile-etoile {
+    width: 100px;
+    bottom: 150px;
+    left: 30px;
+  }
+
+  .auth-mobile-cotillon {
+    width: 200px;
+    bottom: 40px;
+    right: -30px;
+    transform: rotate(20deg);
+  }
+
+  /* Page Register - positions différentes */
+  .auth-mobile-serpentin-register {
+    width: 200px;
+    top: -64px;
+    right: -60px;
+    transform: rotate(25deg);
+  }
+
+  .auth-mobile-carre-register {
+    width: 70px;
+    top: 150px;
+    left: -10px;
+  }
+
+  .auth-mobile-etoile-register {
+    width: 120px;
+    bottom: 180px;
+    right: -15px;
+  }
+
+  .auth-mobile-cotillon-register {
+    width: 200px;
+    bottom: 40px;
+    left: -50px;
+    transform: rotate(-15deg);
+  }
+
+  /* S'assurer que le formulaire reste au-dessus */
+  .form-login-div,
+  .form-register-div {
+    position: relative;
+    z-index: 10;
+  }
+
+  .h2-register {
+    margin-bottom: 32px;
+  }
+}

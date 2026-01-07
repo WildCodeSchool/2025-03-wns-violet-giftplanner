@@ -1,0 +1,12 @@
+name: tests-frontend
+
+on: push
+
+jobs:
+    tests-frontend:
+        runs-on: ubuntu-latest
+        steps:
+        - name: Cherche le code et le met sur la machine virtuelle
+          uses: actions/checkout@v2
+        - name: Va dans le dossier frontend, installe les dépendances et lance les tests
+          run: cd frontend && npm i && npm test

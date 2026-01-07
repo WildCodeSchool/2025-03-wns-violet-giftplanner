@@ -1,0 +1,13 @@
+npm run husky-lint
+
+# si le paramètre bypass-bin est pas actif
+if [ "$bypass_bin" != "1" ]; then
+    # Bloquer toute modification du dossier bin/
+    if git diff --cached --name-only | grep -q "^bin/"; then
+        echo ""
+        echo "🚫 Vous n'avez pas le droit de modifier le contenu du dossier \"bin/\""
+        echo "Ce fichier est sensible donc vous devez étre sûr de ce que vous faites."
+        echo ""
+        exit 1
+    fi
+fi

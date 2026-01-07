@@ -1,0 +1,114 @@
+services:
+  frontend:
+    container_name: frontend-dev
+    restart: always
+    build: ./frontend
+    volumes:
+      - ./frontend/src/:/app/src/
+    healthcheck:
+      test: [ "CMD-SHELL", "curl --fail --request GET --url 'http://localhost:${FRONTEND_PORT}' || exit 1" ]
+      interval: 10s
+      retries: 5
+      start_period: 20s
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      VITE_API_URL: ${SERVEUR_URL}
+      VITE_API_MESSAGE: ${SERVICE_MESSAGE_URL}
+      VITE_API_URL_DOCKER: ${SERVEUR_URL_DOCKER}
+      VITE_MODE: ${MODE}
+      CHOKIDAR_USEPOLLING: true
+
+  backend:
+    container_name: backend-dev
+    restart: always
+    build: ./backend
+    volumes:
+      - ./backend/src/:/app/src/
+      - ./backend/public/:/app/public/
+      - ./backend/tests/:/app/tests/
+    depends_on:
+      database:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", 'curl --fail --request POST --header ''Content-Type: application/json'' --url ''http://localhost:${SERVEUR_PORT}'' --data ''{"query":"query { __typename }"}'' || exit 1' ]
+      interval: 10s
+      retries: 5
+      start_period: 20s
+    environment:
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USER: ${DB_USER}
+      DB_HOST: ${DB_HOST}
+      JWT_SECRET: ${JWT_SECRET}
+      SERVEUR_PORT: ${SERVEUR_PORT}
+      MODE: ${MODE}
+      INTERNAL_SECRET_KEY: ${INTERNAL_SECRET_KEY}
+
+  picture-service:
+    container_name: picture-service-dev
+    restart: always
+    build: ./picture-service
+    volumes:
+      - ./picture-service/src/:/app/src/
+      - ./picture-service/public/:/app/public/
+    healthcheck:
+      test: [ "CMD-SHELL", 'curl --fail --request POST --header ''Content-Type: application/json'' --url ''http://localhost:${PICTURE_SERVICE_PORT}'' --data ''{"query":"query { __typename }"}'' || exit 1' ]
+      interval: 10s
+      retries: 5
+      start_period: 20s
+    environment:
+      BACKEND_URL: ${SERVEUR_URL}
+      CLIENT_URL: ${FRONTEND_URL}
+      APP_PORT: ${PICTURE_SERVICE_PORT}
+
+  message-service:
+    container_name: message-service-dev
+    restart: always
+    build: ./message-service
+    volumes:
+      - ./message-service/src/:/app/src/
+    # healthcheck:
+    #   test: [ "CMD-SHELL", 'curl --fail --request POST --header ''Content-Type: application/json'' --url ''http://localhost:${MESSAGE_SERVICE_PORT}'' --data ''{"query":"query { __typename }"}'' || exit 1' ]
+    #   interval: 10s
+    #   retries: 5
+    #   start_period: 20s
+    environment:
+      BACKEND_URL: ${SERVEUR_URL}
+      CLIENT_URL: ${FRONTEND_URL}
+      MESSAGE_SERVICE_PORT: ${MESSAGE_SERVICE_PORT}
+      INTERNAL_SECRET_KEY: ${INTERNAL_SECRET_KEY}
+      JWT_SECRET: ${JWT_SECRET}
+
+  database:
+    container_name: database-dev
+    image: postgres
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d ${DB_DATABASE} -U ${DB_USER}" ]
+      interval: 10s
+      retries: 5
+      start_period: 20s
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USER}
+    ports:
+      - 5432:5432
+    volumes:
+      - ./persist/database:/var/lib/postgresql
+
+  gateway:
+    container_name: gateway-dev
+    restart: always
+    build: ./gateway
+    ports:
+      - ${GATEWAY_PORT}:80
+
+  adminer:
+    container_name: adminer-dev
+    image: adminer
+    depends_on:
+      database:
+        condition: service_healthy

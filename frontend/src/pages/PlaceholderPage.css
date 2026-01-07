@@ -1,0 +1,295 @@
+/* =====================================================
+   ProvisoirePage.css — version clean & moderne
+   (Aucune logique modifiée, mêmes classes que ton TSX)
+   ===================================================== */
+
+/* ---------- Thème / variables ---------- */
+.page {
+  --bg: hsl(222 16% 10%);
+  --bg-2: hsl(222 16% 12%);
+  --surface: hsl(222 16% 14%);
+  --surface-2: hsl(222 16% 18%);
+  --border: hsl(222 12% 24%);
+  --text: hsl(210 20% 96%);
+  --muted: hsl(216 10% 70%);
+  /* amber */
+  --danger: #ea4b09;
+  /* rouge bouton */
+  --radius: 16px;
+  --shadow-1: 0 6px 20px rgb(0 0 0 / 0.28);
+  --shadow-2: 0 10px 30px rgb(0 0 0 / 0.36);
+  --ring: 0 0 0 3px rgb(99 102 241 / 0.35);
+  --maxw: 1080px;
+  --gap: 1.25rem;
+
+  min-height: 100dvh;
+  color: var(--text);
+  background: linear-gradient(180deg, #292e96, #ea4b09);
+  padding: 28px clamp(12px, 3vw, 36px);
+  font:
+    500 16px / 1.6 system-ui,
+    -apple-system,
+    Segoe UI,
+    Roboto,
+    Ubuntu,
+    Cantarell,
+    "Helvetica Neue",
+    Arial,
+    "Apple Color Emoji",
+    "Segoe UI Emoji";
+  animation: rotateGradient 10s linear infinite;
+}
+
+/* ---------- En-tête ---------- */
+.header {
+  max-width: var(--maxw);
+  margin: 0 auto 18px;
+}
+
+.header h1 {
+  margin: 0 0 6px;
+  font-size: clamp(22px, 3.2vw, 40px);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
+.header p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.975rem;
+}
+
+/* ---------- Grille principale ---------- */
+.content {
+  max-width: var(--maxw);
+  margin: 22px auto 0;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--gap);
+}
+
+/* Ordonnancement simple (warning/action en 1ère colonne, profil plus large) */
+.card.warning {
+  grid-column: span 6;
+}
+
+.card.action {
+  grid-column: span 6;
+}
+
+.card.profil {
+  grid-column: 1 / -1;
+}
+
+@media (min-width: 980px) {
+  .card.warning {
+    grid-column: span 5;
+  }
+
+  .card.action {
+    grid-column: span 7;
+  }
+
+  .card.profil {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ---------- Cartes ---------- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-1);
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease;
+  position: relative;
+  overflow: clip;
+  padding: 24px;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-2);
+  border-color: hsl(0 0% 100% / 0.08);
+}
+
+.card h2 {
+  margin: 0 0 12px;
+  font-size: clamp(18px, 2.1vw, 22px);
+  letter-spacing: -0.01em;
+}
+
+/* Rubans latéraux discrets */
+.card.warning {
+  border-left: 6px solid var(--warning);
+}
+
+.card.action {
+  border-left: 6px solid var(--primary);
+}
+
+.card.profil {
+  border-left: 6px solid var(--success);
+}
+
+/* ---------- Listes et code ---------- */
+.card p {
+  margin: 8px 0;
+  color: var(--text);
+}
+
+.card ul {
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+
+.card ul li {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: start;
+  padding: 12px 14px;
+  background: var(--surface-2);
+  border: 1px solid hsl(222 12% 26%);
+  border-radius: 12px;
+}
+
+/* .card.warning ul li::before {
+  content: "";
+  margin-top: 3px;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--warning);
+  box-shadow: 0 0 0 3px color-mix(in hsl, var(--warning) 36%, transparent);
+} */
+.card ul li code {
+  padding: 2px 6px;
+  border-radius: 8px;
+  background: hsl(222 12% 18%);
+  border: 1px solid hsl(222 12% 24%);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 0.95em;
+  color: #ffff;
+}
+
+/* ---------- Bouton Déconnexion ---------- */
+.btn-logout {
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid hsl(0 0% 100% / 0.08);
+  background: linear-gradient(180deg, var(--danger), hsl(0 84% 56%));
+  color: white;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    filter 0.15s ease,
+    box-shadow 0.15s ease;
+  box-shadow: 0 6px 18px hsl(0 84% 56% / 0.35);
+  margin-top: 10px;
+}
+
+.btn-logout:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.02);
+}
+
+.btn-logout:active {
+  transform: translateY(0);
+}
+
+.btn-logout:focus-visible {
+  outline: none;
+  box-shadow: var(--ring);
+}
+
+/* Texte explicatif de la carte action */
+.card.action p {
+  margin-bottom: 12px;
+  color: var(--muted);
+}
+
+/* ---------- Profil (conservé car tu aimes) ---------- */
+.card.profil h2 {
+  margin-bottom: 14px;
+}
+
+.profil-grid {
+  display: grid;
+  gap: 10px;
+}
+
+@media (min-width: 720px) {
+  .profil-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 16px;
+  }
+}
+
+.profil-grid p {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: hsl(222 14% 16% / 0.55);
+  border: 1px solid hsl(222 12% 26% / 0.9);
+  border-radius: 12px;
+}
+
+.profil-grid p span {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+/* ---------- Accessibilité / préférences ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+
+  .btn-logout {
+    transition: none;
+  }
+}
+
+/* ---------- Variante claire auto ---------- */
+@media (prefers-color-scheme: light) {
+  .page {
+    --bg: hsl(210 100% 97%);
+    --bg-2: #fff;
+    --surface: #fff;
+    --surface-2: hsl(210 40% 99%);
+    --border: hsl(210 22% 90%);
+    --text: hsl(222 36% 12%);
+    --muted: hsl(222 12% 42%);
+  }
+
+  .card {
+    box-shadow: 0 8px 24px rgb(16 24 40 / 0.06);
+  }
+
+  .card ul li {
+    border-color: hsl(210 22% 90%);
+  }
+
+  .profil-grid p {
+    border-color: hsl(210 22% 90%);
+    background: hsl(210 40% 99%);
+  }
+}

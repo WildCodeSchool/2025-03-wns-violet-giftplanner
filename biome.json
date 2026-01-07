@@ -1,0 +1,62 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.2.4/schema.json",
+  "files": {
+    "includes": [
+      "frontend/src/**/*.{js,ts,tsx,css}",
+      "!frontend/src/**/generated",
+      "backend/src/**/*.{js,ts}",
+      "!frontend/src/index.css"
+    ],
+    "experimentalScannerIgnores": ["node_modules", "dist", "*.json"]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 110
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "suspicious": {
+        "noConsole": {
+          "level": "error",
+          "options": {
+            "allow": ["assert", "error", "info", "warn"]
+          }
+        },
+        "noUnknownAtRules": "off",
+        "noDoubleEquals": "off",
+        "noExplicitAny": "off"
+      },
+      "correctness": {
+        "useExhaustiveDependencies": "off",
+        "noUnusedImports": {
+          "options": {},
+          "level": "error",
+          "fix": "safe"
+        }
+      },
+      "complexity": {
+        "noBannedTypes": "off",
+        "noImportantStyles": "off"
+      },
+      "style": {
+        "noNonNullAssertion": "off"
+      }
+    }
+  },
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  },
+  "javascript": {
+    "parser": {
+      "unsafeParameterDecoratorsEnabled": true
+    }
+  }
+}

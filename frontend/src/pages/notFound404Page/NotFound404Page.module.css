@@ -1,0 +1,107 @@
+.notfoundContainer {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: linear-gradient(135deg, #292e96, #ea4b09);
+  color: white;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+  position: relative;
+  padding: 1rem;
+}
+
+.notfoundTitle {
+  font-size: 8rem;
+  font-weight: bold;
+  margin: 0;
+  animation: pulse 2s infinite;
+}
+
+.notfoundSubtitle {
+  font-size: 2rem;
+  margin: 1rem 0 0.5rem;
+}
+
+.notfoundText {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.notfoundButton {
+  display: inline-block;
+  padding: 0.8rem 1.5rem;
+  background: white;
+  color: #292e96;
+  font-weight: bold;
+  border-radius: 8px;
+  text-decoration: none;
+  transition:
+    transform 0.2s ease,
+    background 0.3s ease;
+}
+
+.notfoundButton:hover {
+  transform: scale(1.05);
+  background: #f1f1f1;
+}
+
+/* Animations */
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Bulles décoratives flottantes */
+.bubble {
+  position: absolute;
+  bottom: -100px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  animation: rise 18s infinite ease-in;
+}
+
+.bubble:nth-child(5) {
+  width: 80px;
+  height: 80px;
+  left: 20%;
+  animation-duration: 20s;
+}
+
+.bubble:nth-child(6) {
+  width: 50px;
+  height: 50px;
+  left: 50%;
+  animation-duration: 25s;
+}
+
+.bubble:nth-child(7) {
+  width: 100px;
+  height: 100px;
+  left: 75%;
+  animation-duration: 30s;
+}
+
+@keyframes rise {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0.7;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+
+  100% {
+    transform: translateY(-120vh) scale(1.2);
+    opacity: 0;
+  }
+}
