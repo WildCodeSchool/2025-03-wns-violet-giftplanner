@@ -104,7 +104,6 @@ const RegisterForm = () => {
   return (
     <div className="flex flex-col items-center justify-evenly h-full px-10 md:px-5">
       <Title dark className="">
-        {" "}
         {/* md:text-4xl md:mt-9 md:mb-20*} */}
         Créer mon compte
       </Title>

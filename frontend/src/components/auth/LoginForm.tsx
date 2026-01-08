@@ -3,7 +3,10 @@ import { Link, useNavigate } from "react-router";
 import { useLoginMutation } from "../../generated/graphql-types";
 import consoleErrorDev from "../../hooks/erreurMod";
 import { useMyProfileStore } from "../../zustand/myProfileStore";
-import "../auth/auth.css";
+import Button from "../utils/Button";
+import Input from "../utils/Input";
+
+import Title from "../utils/Title";
 
 const LoginForm = () => {
   const [form, setForm] = useState({
@@ -45,14 +48,19 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="form-login-div">
-      <h2 className="h2-login">Me connecter</h2>
-      <div className="form-login-div">
-        <form className="form-login" onSubmit={handleSubmit}>
+    <div className="flex flex-col items-center justify-evenly h-full px-10 md:px-5">
+      <Title dark className="">
+        Me connecter
+      </Title>
+      <div className="flex flex-col items-center justify-start w-full px-10 md:px-5 md:w-auto">
+        <form
+          className="flex flex-col items-center gap-3 justify-center w-full max-w-[600px] md:w-auto md:max-w-none"
+          onSubmit={handleSubmit}
+        >
           {messageError.length > 0 ? <p className="error-message">{messageError}</p> : null}
 
           {/* Input Pseudo */}
-          <div>
+          {/* <div>
             <input
               type="text"
               placeholder="Entrez votre email"
@@ -60,10 +68,18 @@ const LoginForm = () => {
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
             />
-          </div>
+          </div> */}
+          <Input
+            theme="dark"
+            type="text"
+            name="email"
+            placeholder="Adresse email"
+            value={form.email}
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
+          />
 
           {/* Input Mot de passe */}
-          <div>
+          {/* <div>
             <input
               type="password"
               placeholder="Entrez votre mot de passe"
@@ -71,18 +87,26 @@ const LoginForm = () => {
               value={form.password}
               onChange={(e) => setForm({ ...form, password: e.target.value })}
             />
-          </div>
+          </div> */}
+          <Input
+            theme="dark"
+            type="password"
+            name="password"
+            placeholder="Mot de passe"
+            value={form.password}
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
+          />
 
           {/* Bouton de connexion */}
-          <button type="submit" className="button-black size-20px">
+          <Button rounded colour="dark" className="text-xl px-[25px] py-[10px] mt-5">
             Connexion
-          </button>
+          </Button>
         </form>
-
-        {/* Lien vers inscription */}
-        <p className="paragraph-login">
+      </div>
+      <div>
+        <p className="text-base text-dark font-inter font-normal md:text-xl">
           Pas encore de compte ?{" "}
-          <Link to={"/inscription"} className="link-login">
+          <Link to={"/inscription"} className="text-dark no-underline font-semibold text-base md:text-xl">
             Inscription
           </Link>
         </p>
