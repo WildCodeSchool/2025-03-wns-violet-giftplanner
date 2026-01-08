@@ -32,7 +32,7 @@ export default function Input({
 
   const themeStyles =
     theme === "dark"
-      ? " border-dark text-dark focus:border-dark"
+      ? "border-dark text-dark focus:border-dark"
       : "bg-transparent border-white text-white placeholder-white-100 focus:placeholder-white";
 
   const errorStyles = error ? "border-orange focus:border-orange" : "";

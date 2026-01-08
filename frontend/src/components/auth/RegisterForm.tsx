@@ -3,7 +3,9 @@ import { Link, useNavigate } from "react-router";
 import { useSignupMutation } from "../../generated/graphql-types";
 import consoleErrorDev from "../../hooks/erreurMod";
 import { useMyProfileStore } from "../../zustand/myProfileStore";
-import "../auth/auth.css";
+import Button from "../utils/Button";
+import Input from "../utils/Input";
+import Title from "../utils/Title";
 
 const RegisterForm = () => {
   const [form, setForm] = useState({
@@ -101,90 +103,88 @@ const RegisterForm = () => {
   };
 
   return (
-    <div className="form-register-div">
-      <h2 className="h2-register">Créer mon compte</h2>
-      <div className="form-register-div">
-        <form className="form-login" onSubmit={handleSubmit}>
-          {messageError && <p className="error-message">{messageError}</p>}
-          {/* Input Pseudo */}
-          <div>
-            <input
-              type="text"
-              placeholder="Nom"
-              className="input-custom"
-              value={form.lastName}
-              onChange={(e) => setForm({ ...form, lastName: e.target.value })}
-            />
-          </div>
+    <div className="flex flex-col items-center justify-start h-full px-10 mb-[5%] md:px-5">
+      <Title dark className="mt-[60px] mb-8 md:text-4xl md:mt-[94px] md:mb-20">
+        Créer mon compte
+      </Title>
+      <div className="flex flex-col items-center justify-start h-full w-full px-10 mb-[5%] md:px-5 md:w-auto">
+        <form
+          className="flex flex-col items-center gap-3 justify-center w-full max-w-[600px] md:w-auto md:max-w-none"
+          onSubmit={handleSubmit}
+        >
+          {messageError && <p className="text-[#ea4b09] font-bold mb-6 text-lg">{messageError}</p>}
 
-          {/* Input Mot de passe */}
-          <div>
-            <input
-              type="text"
-              placeholder="Prénom"
-              className="input-custom"
-              value={form.firstName}
-              onChange={(e) => setForm({ ...form, firstName: e.target.value })}
-            />
-          </div>
+          <Input
+            theme="dark"
+            type="text"
+            placeholder="Nom"
+            name="lastname"
+            value={form.lastName}
+            onChange={(e) => setForm({ ...form, lastName: e.target.value })}
+          ></Input>
+          <Input
+            theme="dark"
+            type="text"
+            placeholder="Prénom"
+            name="firstname"
+            value={form.firstName}
+            onChange={(e) => setForm({ ...form, firstName: e.target.value })}
+          ></Input>
 
-          <div>
-            <input
-              type="text"
-              placeholder="Email"
-              className="input-custom"
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-            />
-          </div>
+          <Input
+            theme="dark"
+            type="text"
+            placeholder="Adresse email"
+            name="email"
+            value={form.email}
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
+          ></Input>
 
-          <div>
-            <input
-              type="date"
-              placeholder="Date de naissance"
-              className="input-custom"
-              value={form.date_of_birth}
-              onChange={(e) => setForm({ ...form, date_of_birth: e.target.value })}
-            />
-          </div>
+          <Input
+            theme="dark"
+            type="date"
+            placeholder="Date de naissance"
+            name="date_of_birth"
+            value={form.date_of_birth}
+            onChange={(e) => setForm({ ...form, date_of_birth: e.target.value })}
+          ></Input>
 
-          <div>
-            <input
-              type="password"
-              placeholder="Mot de passe"
-              className="input-custom"
-              value={form.password}
-              onChange={(e) => setForm({ ...form, password: e.target.value })}
-            />
-          </div>
+          <Input
+            theme="dark"
+            type="password"
+            placeholder="Mot de passe"
+            name="password"
+            value={form.password}
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
+          ></Input>
+          <Input
+            theme="dark"
+            type="password"
+            placeholder="Confirmation du mot de passe"
+            name="passwordConfirmation"
+            value={form.passwordConfirmation}
+            onChange={(e) => setForm({ ...form, passwordConfirmation: e.target.value })}
+          ></Input>
 
-          <div>
-            <input
-              type="password"
-              placeholder="Confirmation du mot de passe"
-              className="input-custom"
-              value={form.passwordConfirmation}
-              onChange={(e) => setForm({ ...form, passwordConfirmation: e.target.value })}
-            />
-          </div>
-
-          <div>
-            <label className={`image-input-button margin-more ${hasFile ? "image-input-button-filled" : ""}`}>
-              <span className="file-label-text">{fileName}</span>
+          <div className="w-full md:w-auto">
+            <label
+              className={`inline-block w-full bg-[#200904] text-[#fdfbf6] text-center border-none px-5 py-3 rounded-lg cursor-pointer text-lg font-inter font-bold transition-colors duration-300 overflow-hidden whitespace-nowrap mb-10 md:w-[400px] md:px-4 md:py-2 md:text-xl md:mb-20 ${hasFile ? "bg-[#292e96]" : ""}`}
+            >
+              <span className="block overflow-hidden text-ellipsis">{fileName}</span>
               <input type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
             </label>
           </div>
 
           {/* Bouton de connexion */}
-          <button type="submit" className="button-black margin-more size-20px">
+          <Button type="submit" colour="dark" rounded>
             Inscription
-          </button>
+          </Button>
         </form>
 
         {/* Lien vers inscription */}
-        <p className="paragraph-login">
+        <p className="text-base text-dark font-inter font-normal md:text-xl">
           Déjà inscrit ?{" "}
-          <Link to={"/connexion"} className="link-login">
+          <Link to={"/connexion"} className="text-[#200904] no-underline font-semibold text-base md:text-xl">
             Connexion
           </Link>
         </p>

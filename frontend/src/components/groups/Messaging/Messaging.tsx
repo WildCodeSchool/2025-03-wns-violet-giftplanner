@@ -1,11 +1,11 @@
 import type { FormEvent, KeyboardEvent, RefObject } from "react";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { FaLocationArrow } from "react-icons/fa";
-import type { GetAllMessageMyGroupsQuery } from "../../../generated/graphql-types";
-import { countdownDate } from "../../../utils/dateCalculator";
-import { useMyProfileStore } from "../../../zustand/myProfileStore";
-import Icon from "../../utils/Icon";
-import Title from "../../utils/Title";
+import type { GetAllMessageMyGroupsQuery } from "../../../generated/graphql-types.ts";
+import { countdownDate } from "../../../utils/dateCalculator.ts";
+import { useMyProfileStore } from "../../../zustand/myProfileStore.ts";
+import Icon from "../../utils/Icon.tsx";
+import Subtitle from "../../utils/Subtitle.tsx";
 import Message from "./Message";
 
 type MessagingProps = {
@@ -96,7 +96,7 @@ export default function Messaging({
     <div className="rounded-2xl w-full h-full border-grey border-2 border-lg flex flex-col">
       <div className="relative w-full h-[80px] bg-blue rounded-t-2xl flex-row flex justify-center items-center py-4">
         <div className="flex flex-col w-full items-center">
-          <Title>{title}</Title>
+          <Subtitle>{title}</Subtitle>
           <p className="text-white text-xs sm:text-sm place-self-center">
             <span>
               {expired
