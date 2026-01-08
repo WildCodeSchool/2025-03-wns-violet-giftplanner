@@ -76,7 +76,6 @@ const RegisterForm = () => {
         email: form.email,
         date_of_birth: form.date_of_birth,
         password: form.password,
-        // Ajoute phone_number si ton SignupInput l'accepte
       };
 
       // Appeler la mutation
@@ -103,16 +102,18 @@ const RegisterForm = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-start h-full px-10 mb-[5%] md:px-5">
-      <Title dark className="mt-[60px] mb-8 md:text-4xl md:mt-[94px] md:mb-20">
+    <div className="flex flex-col items-center justify-evenly h-full px-10 md:px-5">
+      <Title dark className="">
+        {" "}
+        {/* md:text-4xl md:mt-9 md:mb-20*} */}
         Créer mon compte
       </Title>
-      <div className="flex flex-col items-center justify-start h-full w-full px-10 mb-[5%] md:px-5 md:w-auto">
+      <div className="flex flex-col items-center justify-start w-full px-10 md:px-5 md:w-auto">
         <form
           className="flex flex-col items-center gap-3 justify-center w-full max-w-[600px] md:w-auto md:max-w-none"
           onSubmit={handleSubmit}
         >
-          {messageError && <p className="text-[#ea4b09] font-bold mb-6 text-lg">{messageError}</p>}
+          {messageError && <p className="text-orange font-bold  text-lg">{messageError}</p>}
 
           <Input
             theme="dark"
@@ -130,7 +131,6 @@ const RegisterForm = () => {
             value={form.firstName}
             onChange={(e) => setForm({ ...form, firstName: e.target.value })}
           ></Input>
-
           <Input
             theme="dark"
             type="text"
@@ -139,7 +139,6 @@ const RegisterForm = () => {
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
           ></Input>
-
           <Input
             theme="dark"
             type="date"
@@ -148,7 +147,6 @@ const RegisterForm = () => {
             value={form.date_of_birth}
             onChange={(e) => setForm({ ...form, date_of_birth: e.target.value })}
           ></Input>
-
           <Input
             theme="dark"
             type="password"
@@ -166,9 +164,10 @@ const RegisterForm = () => {
             onChange={(e) => setForm({ ...form, passwordConfirmation: e.target.value })}
           ></Input>
 
-          <div className="w-full md:w-auto">
+          <div className="w-full ">
+            {/* md:w-auto */}
             <label
-              className={`inline-block w-full bg-[#200904] text-[#fdfbf6] text-center border-none px-5 py-3 rounded-lg cursor-pointer text-lg font-inter font-bold transition-colors duration-300 overflow-hidden whitespace-nowrap mb-10 md:w-[400px] md:px-4 md:py-2 md:text-xl md:mb-20 ${hasFile ? "bg-[#292e96]" : ""}`}
+              className={`inline-block w-full bg-dark text-white text-center border-none px-5 py-3 rounded-lg cursor-pointer text-lg font-inter font-bold transition-colors duration-300 overflow-hidden whitespace-nowrap md:w-[400px] md:px-4 md:py-2 md:text-xl ${hasFile ? "bg-[#292e96]" : ""}`}
             >
               <span className="block overflow-hidden text-ellipsis">{fileName}</span>
               <input type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
@@ -176,15 +175,16 @@ const RegisterForm = () => {
           </div>
 
           {/* Bouton de connexion */}
-          <Button type="submit" colour="dark" rounded>
+          <Button type="submit" colour="dark" rounded className="text-xl px-[25px] py-[10px] mt-5">
             Inscription
           </Button>
         </form>
-
-        {/* Lien vers inscription */}
+      </div>
+      {/* Lien vers inscription */}
+      <div>
         <p className="text-base text-dark font-inter font-normal md:text-xl">
           Déjà inscrit ?{" "}
-          <Link to={"/connexion"} className="text-[#200904] no-underline font-semibold text-base md:text-xl">
+          <Link to={"/connexion"} className="text-dark no-underline font-semibold text-base md:text-xl">
             Connexion
           </Link>
         </p>

@@ -7,5 +7,5 @@ type SubtitleProps = {
 export default function Subtitle({ dark = false, className, children }: SubtitleProps) {
   const fontColour = dark ? "text-dark" : "text-white";
 
-  return <h2 className={`${fontColour} text-3xl font-inter ${className}`}>{children}</h2>;
+  return <h2 className={`${fontColour} text-4xl font-inter-extra-bold ${className}`}>{children}</h2>;
 }
