@@ -1,19 +1,38 @@
-# teste vide temporaire
-name: teste-vide
+name: Test le build des services
 
 on:
-  pull_request:
-    branches:
-      - toto
+  push:
+    branches-ignore:
+      - main
+      - staging
 
 jobs:
-  teste-vide:
-    name: teste-vide
+  build-and-push-projects:
     runs-on: ubuntu-latest
-
+    strategy:
+      # pouvoir voir tout les builds qui échouent pas juste le premier
+      fail-fast: false
+      matrix:
+        include:
+          - nom_service: frontend
+          - nom_service: backend
+          - nom_service: gateway
+          - nom_service: message-service
+          - nom_service: picture-service
     steps:
-      - name: Récupère le code du dépôt
+      - name: Récupérer le code source
         uses: actions/checkout@v4
+      
+      - name: setup Docker Buildx (pour du cache)
+        uses: docker/setup-buildx-action@v3
 
-      - name: Affiche un message
-        run: echo "Ceci est un test vide."
+      - name: Build l'image Docker
+        uses: docker/build-push-action@v4
+        with:
+          context: ./${{ matrix.nom_service }}
+          file: ./${{ matrix.nom_service }}/Dockerfile.staging
+          push: false
+          load: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+        

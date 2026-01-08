@@ -46,8 +46,6 @@ const App = () => {
         <Route path="inscription" element={<RegisterPage />} />
         <Route path="contact" element={<ContactPage />} />
 
-        {true && <div onClick={() => console.log("coucou biome je t'embette :)")}></div>}
-
         {/* Dashboard with nested routes */}
         <Route path="dashboard" element={<Dashboard />}>
           <Route index element={<Navigate to="conversations" replace />} />
