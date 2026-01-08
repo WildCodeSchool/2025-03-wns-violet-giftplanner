@@ -38,6 +38,7 @@ const App = () => {
 
   if (loading) return <LoadingHomePage />;
 
+  const x = ;
   return (
     <Routes>
       <Route path="/" element={<Outlet />}>
