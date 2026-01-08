@@ -1,0 +1,24 @@
+name: cheack-biome
+
+on: push
+
+jobs:
+  cheack-biome:
+    name: cheack-biome
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Récupère le code du dépôt
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.20.0
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Exécute biome
+        run: npm run husky-lint

@@ -1,0 +1,19 @@
+# teste vide temporaire
+name: teste-vide
+
+on:
+  pull_request:
+    branches:
+      - toto
+
+jobs:
+  teste-vide:
+    name: teste-vide
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Récupère le code du dépôt
+        uses: actions/checkout@v4
+
+      - name: Affiche un message
+        run: echo "Ceci est un test vide."
