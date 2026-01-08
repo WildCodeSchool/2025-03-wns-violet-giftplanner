@@ -135,7 +135,7 @@ export default function Messaging({
           <form
             onSubmit={handleSendMessage}
             ref={containerTextareaRef}
-            className="relative h-[47px] w-full py-1.5 pr-[45px] pb-2.5 pl-[15px] border-2 border-[#b7b7b7] rounded-[22px] focus-within:outline-none focus-within:border-[#292e96]"
+            className="relative h-[47px] w-full py-1.5 pr-[45px] pb-2.5 pl-[15px] border-2 border-[#b7b7b7] rounded-[22px] focus-within:outline-none focus-within:border-blue"
           >
             <textarea
               ref={textareaRef}
@@ -151,7 +151,7 @@ export default function Messaging({
               id={id}
               type="submit"
               title="envoyer message"
-              className="absolute bottom-1 right-1.5 bg-[#292e96] rounded-full w-[35px] h-[35px] flex items-center justify-center cursor-pointer hover:bg-[#1e2366]"
+              className="absolute bottom-1 right-1.5 bg-blue rounded-full w-[35px] h-[35px] flex items-center justify-center cursor-pointer hover:bg-[#1e2366]"
             >
               <FaLocationArrow className="text-white rotate-45" />
             </button>

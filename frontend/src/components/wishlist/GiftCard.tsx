@@ -18,7 +18,7 @@ export default function GiftCard({ gift, className, onEdit, onDelete }: GiftCard
   return (
     <div
       className={clsx(
-        "group relative bg-[#FDFBF6] rounded-xl shadow overflow-hidden flex flex-col hover:shadow-lg transition",
+        "group relative bg-white rounded-xl shadow overflow-hidden flex flex-col hover:shadow-lg transition",
         className,
       )}
     >
@@ -28,13 +28,13 @@ export default function GiftCard({ gift, className, onEdit, onDelete }: GiftCard
           {imageUrl ? (
             <img src={imageUrl} alt={name} className="w-full h-40 object-cover" />
           ) : (
-            <div className="flex items-center justify-center w-full h-40 bg-[#FDFBF6]">
-              <Icon icon="gift" className="text-9xl text-[#EA4B09] opacity-70" />
+            <div className="flex items-center justify-center w-full h-40 bg-white">
+              <Icon icon="gift" className="text-9xl text-orange opacity-70" />
             </div>
           )}
           <div className="p-3 flex-1 flex flex-col">
-            <h5 className="text-lg font-semibold text-[#200904] mb-2 leading-tight">{name}</h5>
-            {description && <p className="text-sm text-[#200904] opacity-80 flex-1">{description}</p>}
+            <h5 className="text-lg font-semibold text-dark mb-2 leading-tight">{name}</h5>
+            {description && <p className="text-sm text-dark opacity-80 flex-1">{description}</p>}
           </div>
         </a>
       ) : (
@@ -42,13 +42,13 @@ export default function GiftCard({ gift, className, onEdit, onDelete }: GiftCard
           {imageUrl ? (
             <img src={imageUrl} alt={name} className="w-full h-40 object-cover" />
           ) : (
-            <div className="flex items-center justify-center w-full h-40 bg-[#FDFBF6]">
-              <Icon icon="gift" className="text-9xl text-[#EA4B09] opacity-70" />
+            <div className="flex items-center justify-center w-full h-40 bg-white">
+              <Icon icon="gift" className="text-9xl text-orange opacity-70" />
             </div>
           )}
           <div className="div-content-giftcard">
-            <h5 className="text-lg font-semibold text-[#200904] mb-2">{name}</h5>
-            {description && <p className="text-sm text-[#200904] opacity-80 flex-1">{description}</p>}
+            <h5 className="text-lg font-semibold text-dark mb-2">{name}</h5>
+            {description && <p className="text-sm text-dark opacity-80 flex-1">{description}</p>}
           </div>
         </div>
       )}
@@ -64,7 +64,7 @@ export default function GiftCard({ gift, className, onEdit, onDelete }: GiftCard
               e.stopPropagation();
               onEdit?.(gift);
             }}
-            className="px-3 py-1 rounded-md bg-white/95 text-[#200904] text-sm font-bold shadow hover:bg-white cursor-pointer"
+            className="px-3 py-1 rounded-md bg-white/95 text-dark text-sm font-bold shadow hover:bg-white cursor-pointer"
           >
             Modifier
           </button>
@@ -89,7 +89,7 @@ export default function GiftCard({ gift, className, onEdit, onDelete }: GiftCard
 /** Skeleton cards for loading states */
 export function GiftCardSkeleton() {
   return (
-    <div className="bg-[#FDFBF6] rounded-xl shadow overflow-hidden animate-pulse">
+    <div className="bg-white rounded-xl shadow overflow-hidden animate-pulse">
       <div className="w-full h-40 bg-gray-200" />
       <div className="p-3">
         <div className="h-5 bg-gray-200 rounded mb-2 w-3/4" />
