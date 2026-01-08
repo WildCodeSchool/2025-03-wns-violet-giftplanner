@@ -9,7 +9,6 @@ import { getVariableEnv } from "./lib/envManager/envManager";
 import resolverArray from "./resolversArray";
 
 dotenv.config();
-const x = ;
 
 const port = getVariableEnv("SERVEUR_PORT", true);
 const mode = getVariableEnv("MODE");
