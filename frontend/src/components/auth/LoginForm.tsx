@@ -58,47 +58,23 @@ const LoginForm = () => {
           onSubmit={handleSubmit}
         >
           {messageError.length > 0 ? <p className="error-message">{messageError}</p> : null}
-
-          {/* Input Pseudo */}
-          {/* <div>
-            <input
-              type="text"
-              placeholder="Entrez votre email"
-              className="input-custom"
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-            />
-          </div> */}
           <Input
             theme="dark"
             type="text"
             name="email"
-            placeholder="Adresse email"
+            placeholder="Entrez votre adresse email"
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
           />
-
-          {/* Input Mot de passe */}
-          {/* <div>
-            <input
-              type="password"
-              placeholder="Entrez votre mot de passe"
-              className="input-custom margin-more"
-              value={form.password}
-              onChange={(e) => setForm({ ...form, password: e.target.value })}
-            />
-          </div> */}
           <Input
             theme="dark"
             type="password"
             name="password"
-            placeholder="Mot de passe"
+            placeholder="Entrez votre mot de passe"
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
           />
-
-          {/* Bouton de connexion */}
-          <Button rounded colour="dark" className="text-xl px-[25px] py-[10px] mt-5">
+          <Button rounded colour="dark" className="text-xl px-[25px] py-[10px] mt-5" type="submit">
             Connexion
           </Button>
         </form>
