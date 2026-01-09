@@ -1,11 +1,11 @@
 import type { FormEvent, KeyboardEvent, RefObject } from "react";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { FaLocationArrow } from "react-icons/fa";
-import type { GetAllMessageMyGroupsQuery } from "../../../generated/graphql-types";
-import { countdownDate } from "../../../utils/dateCalculator";
-import { useMyProfileStore } from "../../../zustand/myProfileStore";
-import Icon from "../../utils/Icon";
-import Title from "../../utils/Title";
+import type { GetAllMessageMyGroupsQuery } from "../../../generated/graphql-types.ts";
+import { countdownDate } from "../../../utils/dateCalculator.ts";
+import { useMyProfileStore } from "../../../zustand/myProfileStore.ts";
+import Icon from "../../utils/Icon.tsx";
+import Subtitle from "../../utils/Subtitle.tsx";
 import Message from "./Message";
 
 type MessagingProps = {
@@ -96,7 +96,7 @@ export default function Messaging({
     <div className="rounded-2xl w-full h-full border-grey border-2 border-lg flex flex-col">
       <div className="relative w-full h-[80px] bg-blue rounded-t-2xl flex-row flex justify-center items-center py-4">
         <div className="flex flex-col w-full items-center">
-          <Title>{title}</Title>
+          <Subtitle>{title}</Subtitle>
           <p className="text-white text-xs sm:text-sm place-self-center">
             <span>
               {expired
@@ -135,7 +135,7 @@ export default function Messaging({
           <form
             onSubmit={handleSendMessage}
             ref={containerTextareaRef}
-            className="relative h-[47px] w-full py-1.5 pr-[45px] pb-2.5 pl-[15px] border-2 border-[#b7b7b7] rounded-[22px] focus-within:outline-none focus-within:border-[#292e96]"
+            className="relative h-[47px] w-full py-1.5 pr-[45px] pb-2.5 pl-[15px] border-2 border-[#b7b7b7] rounded-[22px] focus-within:outline-none focus-within:border-blue"
           >
             <textarea
               ref={textareaRef}
@@ -151,7 +151,7 @@ export default function Messaging({
               id={id}
               type="submit"
               title="envoyer message"
-              className="absolute bottom-1 right-1.5 bg-[#292e96] rounded-full w-[35px] h-[35px] flex items-center justify-center cursor-pointer hover:bg-[#1e2366]"
+              className="absolute bottom-1 right-1.5 bg-blue rounded-full w-[35px] h-[35px] flex items-center justify-center cursor-pointer hover:bg-[#1e2366]"
             >
               <FaLocationArrow className="text-white rotate-45" />
             </button>

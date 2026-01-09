@@ -1,6 +1,6 @@
 import type React from "react";
 import type { ColourScheme } from "../../types/ColourScheme";
-import Title from "./Title";
+import Subtitle from "./Subtitle";
 
 type ContainerProps = {
   colour: ColourScheme["colour"];
@@ -16,7 +16,7 @@ export default function Container({ colour, title, button, children }: Container
     >
       {/* Header */}
       <div className="flex justify-between items-center pb-4">
-        <Title>{title}</Title>
+        <Subtitle>{title}</Subtitle>
         {button}
       </div>
 

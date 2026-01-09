@@ -10,7 +10,7 @@ import Input from "../utils/Input";
 import InputWithToggle from "../utils/InputWithToggle";
 import ResponsiveImage from "../utils/ResponsiveImage";
 import SearchSelectInput from "../utils/SearchSelectInput";
-import Title from "../utils/Title";
+import Subtitle from "../utils/Subtitle";
 import GroupLink from "./GroupLink";
 
 type CreateGroupFormProps = {
@@ -124,7 +124,7 @@ export default function CreateGroupForm({ onSuccess }: CreateGroupFormProps) {
     <form className=" flex w-full h-full rounded-2xl" onSubmit={handleSubmit} autoComplete="off">
       <div className="bg-green w-1/2 h-full flex flex-col justify-center pt-10 pb-5 rounded-tl-2xl rounded-bl-2xl">
         {/* Form to create a new group */}
-        <Title className="text-center text-2xl">Créer un groupe</Title>
+        <Subtitle className="text-center text-2xl">Créer un groupe</Subtitle>
         <div className="text-white text-8xl m-auto">
           <Icon icon="image" />
         </div>
