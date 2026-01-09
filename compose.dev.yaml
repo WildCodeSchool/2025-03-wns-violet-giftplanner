@@ -5,6 +5,7 @@ services:
     build: ./frontend
     volumes:
       - ./frontend/src/:/app/src/
+      - ./frontend/public/:/app/public/
     healthcheck:
       test: [ "CMD-SHELL", "curl --fail --request GET --url 'http://localhost:${FRONTEND_PORT}' || exit 1" ]
       interval: 10s
