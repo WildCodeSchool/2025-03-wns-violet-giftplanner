@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { defaultPictureProfile } from "../data/pictureDefault";
-import type { GetMyProfileQuery } from "../generated/graphql-types";
+import type { GetMyProfileQuery } from "../graphql/generated/graphql-types";
 
 type State = {
   userProfile: null | UserProfil;

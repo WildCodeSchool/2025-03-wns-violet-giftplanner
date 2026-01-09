@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { GetAllMyGroupsQuery } from "../../generated/graphql-types";
+import type { GetAllMyGroupsQuery } from "../../graphql/generated/graphql-types";
 import { formatDate } from "../../utils/dateCalculator";
 import CreateGroupForm from "../forms/CreateGroupForm";
 import Button from "../utils/Button";

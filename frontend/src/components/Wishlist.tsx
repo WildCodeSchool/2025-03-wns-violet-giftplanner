@@ -1,7 +1,12 @@
 // src/components/Wishlist.tsx
 import { useMutation, useQuery } from "@apollo/client";
 import { useState } from "react";
-import { ADD_GIFT, DELETE_GIFT, MY_WISHLIST_ITEMS, UPDATE_GIFT } from "../graphql/operations";
+import {
+  ADD_GIFT,
+  DELETE_GIFT,
+  MY_WISHLIST_ITEMS,
+  UPDATE_GIFT,
+} from "../graphql/operations/wishlistOperations";
 import type { Gift } from "../types/Gift";
 import { useMyProfileStore } from "../zustand/myProfileStore";
 import Button from "./utils/Button";

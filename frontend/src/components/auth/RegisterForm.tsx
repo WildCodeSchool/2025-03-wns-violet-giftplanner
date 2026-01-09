@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
-import { useSignupMutation } from "../../generated/graphql-types";
+import { useSignupMutation } from "../../graphql/generated/graphql-types";
 import consoleErrorDev from "../../hooks/erreurMod";
 import { useMyProfileStore } from "../../zustand/myProfileStore";
 import "../auth/auth.css";

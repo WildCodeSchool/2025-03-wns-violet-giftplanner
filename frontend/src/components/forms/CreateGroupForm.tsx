@@ -1,7 +1,7 @@
 import type React from "react";
 import { useState } from "react";
-import { useCreateGroupMutation } from "../../generated/graphql-types";
-import { GET_ALL_MY_GROUPS } from "../../graphql/operations";
+import { useCreateGroupMutation } from "../../graphql/generated/graphql-types";
+import { GET_ALL_MY_GROUPS } from "../../graphql/operations/groupOperations";
 import { groupCreationFormValidation } from "../../hooks/formValidationRules";
 import { useSanitizedForm } from "../../hooks/useSanitizedForm";
 import Button from "../utils/Button";
