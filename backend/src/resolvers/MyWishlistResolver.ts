@@ -6,9 +6,9 @@ import User from "../entities/User";
 import { AddGiftInput } from "../inputs/AddGiftInput";
 // biome-ignore lint/style/useImportType: bypass biome linting
 import { UpdateGiftInput } from "../inputs/UpdateGiftInput";
+import { RoleMiddleware } from "../middleware/RoleMiddleware";
 import type { ContextType } from "../types/context";
 import { getOrCreateUserWishlist } from "../utils/getOrCreateUserWishlist";
-import { RoleMiddleware } from "../middleware/RoleMiddleware";
 
 @Resolver()
 export default class MyWishlistResolver {

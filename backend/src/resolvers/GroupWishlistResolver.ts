@@ -5,9 +5,9 @@ import { GroupMember } from "../entities/GroupMember";
 
 // biome-ignore lint/style/useImportType: bypass biome linting
 import { AddGiftInput } from "../inputs/AddGiftInput";
+import { RoleMiddleware } from "../middleware/RoleMiddleware";
 import type { ContextType } from "../types/context";
 import { getOrCreateUserWishlist } from "../utils/getOrCreateUserWishlist";
-import { RoleMiddleware } from "../middleware/RoleMiddleware";
 
 @ObjectType()
 class GroupWishlistItems {
