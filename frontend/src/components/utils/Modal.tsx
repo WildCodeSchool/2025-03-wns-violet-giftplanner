@@ -11,9 +11,9 @@ export default function Modal({ isOpen, onClose, children, className }: ModalPro
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 max-md:bg-[#FDFBF6]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 max-md:bg-white">
       <div
-        className={`bg-[#FDFBF6] rounded-2xl shadow-xl w-10/12 h-10/12 mx-4 relative max-md:max-w-none max-md:h-full max-md:rounded-none max-md:mx-0 max-md:flex max-md:flex-col max-md:p-10 ${className || ""}`}
+        className={`bg-white rounded-2xl shadow-xl w-10/12 h-10/12 mx-4 relative max-md:max-w-none max-md:h-full max-md:rounded-none max-md:mx-0 max-md:flex max-md:flex-col max-md:p-10 ${className || ""}`}
       >
         <button
           type="button"
