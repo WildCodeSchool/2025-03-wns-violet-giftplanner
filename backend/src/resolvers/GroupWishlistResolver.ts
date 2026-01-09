@@ -1,4 +1,4 @@
-import { Arg, Ctx, Field, Int, Mutation, ObjectType, Query, Resolver } from "type-graphql";
+import { Arg, Ctx, Field, Int, Mutation, ObjectType, Query, Resolver, UseMiddleware } from "type-graphql";
 import { Gift } from "../entities/Gift";
 import Group from "../entities/Group";
 import { GroupMember } from "../entities/GroupMember";
@@ -7,6 +7,7 @@ import { GroupMember } from "../entities/GroupMember";
 import { AddGiftInput } from "../inputs/AddGiftInput";
 import type { ContextType } from "../types/context";
 import { getOrCreateUserWishlist } from "../utils/getOrCreateUserWishlist";
+import { RoleMiddleware } from "../middleware/RoleMiddleware";
 
 @ObjectType()
 class GroupWishlistItems {
@@ -18,6 +19,7 @@ class GroupWishlistItems {
 }
 
 @Resolver()
+@UseMiddleware(RoleMiddleware())
 export default class GroupWishlistResolver {
   @Query(() => GroupWishlistItems)
   async groupWishlistItems(
@@ -105,6 +107,7 @@ export default class GroupWishlistResolver {
   }
 
   @Mutation(() => Gift)
+  @UseMiddleware(RoleMiddleware())
   async addGiftToGroupList(
     @Arg("groupId", () => Int) groupId: number,
     @Arg("data") data: AddGiftInput,
