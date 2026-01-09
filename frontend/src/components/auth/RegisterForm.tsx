@@ -112,7 +112,7 @@ const RegisterForm = () => {
           className="flex flex-col items-center gap-3 justify-center w-full max-w-[600px] md:w-auto md:max-w-none"
           onSubmit={handleSubmit}
         >
-          {messageError && <p className="text-orange font-bold  text-lg">{messageError}</p>}
+          {messageError && <p className="text-orange font-bold text-lg">{messageError}</p>}
 
           <Input
             theme="dark"
@@ -168,7 +168,7 @@ const RegisterForm = () => {
             <label
               className={`inline-block w-full bg-dark text-white text-center border-none px-5 py-3 rounded-lg cursor-pointer text-lg font-inter font-bold transition-colors duration-300 overflow-hidden whitespace-nowrap md:w-[400px] md:px-4 md:py-2 md:text-xl ${hasFile ? "bg-[#292e96]" : ""}`}
             >
-              <span className="block overflow-hidden text-ellipsis">{fileName}</span>
+              <span className="block overflow-hidden text-ellipsis font-bold">{fileName}</span>
               <input type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
             </label>
           </div>

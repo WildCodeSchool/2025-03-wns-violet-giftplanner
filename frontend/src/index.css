@@ -77,4 +77,10 @@
   input[type="number"] {
     -moz-appearance: textfield;
   }
+
+  input[type=password]::-ms-reveal,
+  input[type=password]::-ms-clear
+  {
+      display: none;
+  }
 }

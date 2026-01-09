@@ -28,12 +28,12 @@ export default function Input({
   ...props
 }: InputProps) {
   const baseStyles =
-    "w-full px-4 py-2 border-2 rounded-lg font-inter font-bold text-md outline-none transition-colors duration-200 focus:border-4";
+    "w-full px-4 py-2 border-2 rounded-lg font-bold text-lg outline-none transition-colors duration-200";
 
   const themeStyles =
     theme === "dark"
-      ? "border-dark text-dark focus:border-dark"
-      : "bg-transparent border-white text-white placeholder-white-100 focus:placeholder-white";
+      ? "border-dark border-[3.5px] text-dark focus:border-blue"
+      : "bg-transparent border-white border-[3.5px] text-white placeholder-white-100 focus:placeholder-white";
 
   const errorStyles = error ? "border-orange focus:border-orange" : "";
 
@@ -64,7 +64,7 @@ export default function Input({
           />
         )}
       </div>
-      {error && <p className="text-orange font-inter text-sm pt-1">{error}</p>}
+      {error && <p className="text-orange font-bold text-sm pt-1">{error}</p>}
     </div>
   );
 }
