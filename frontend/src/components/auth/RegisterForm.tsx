@@ -5,8 +5,8 @@ import consoleErrorDev from "../../hooks/erreurMod";
 import { useMyProfileStore } from "../../zustand/myProfileStore";
 import Button from "../utils/Button";
 import Input from "../utils/Input";
-import Title from "../utils/Title";
 import AuthFooter from "./AuthFooter";
+import AuthFormTemplate from "./AuthFormTemplate";
 
 const RegisterForm = () => {
   const [form, setForm] = useState({
@@ -103,88 +103,81 @@ const RegisterForm = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-evenly h-full md:px-24 px-5">
-      <Title dark className="">
-        {/* md:text-4xl md:mt-9 md:mb-20*} */}
-        Créer mon compte
-      </Title>
-      <div className="flex flex-col items-center justify-start w-full md:px-10 px-5 w-auto">
-        <form
-          className="flex flex-col items-center gap-3 justify-center w-full max-w-[600px] w-auto max-w-none"
-          onSubmit={handleSubmit}
+    <AuthFormTemplate
+      title="Créer mon compte"
+      onSubmit={handleSubmit}
+      footer={
+        <AuthFooter to="/connexion" link="Connexion">
+          Déjà inscrit ?{" "}
+        </AuthFooter>
+      }
+    >
+      {messageError && <p className="text-orange font-bold text-lg">{messageError}</p>}
+
+      <Input
+        theme="dark"
+        type="text"
+        placeholder="Nom"
+        name="lastname"
+        value={form.lastName}
+        onChange={(e) => setForm({ ...form, lastName: e.target.value })}
+      ></Input>
+      <Input
+        theme="dark"
+        type="text"
+        placeholder="Prénom"
+        name="firstname"
+        value={form.firstName}
+        onChange={(e) => setForm({ ...form, firstName: e.target.value })}
+      ></Input>
+      <Input
+        theme="dark"
+        type="text"
+        placeholder="Adresse email"
+        name="email"
+        value={form.email}
+        onChange={(e) => setForm({ ...form, email: e.target.value })}
+      ></Input>
+      <Input
+        theme="dark"
+        type="date"
+        placeholder="Date de naissance"
+        name="date_of_birth"
+        value={form.date_of_birth}
+        onChange={(e) => setForm({ ...form, date_of_birth: e.target.value })}
+      ></Input>
+      <Input
+        theme="dark"
+        type="password"
+        placeholder="Mot de passe"
+        name="password"
+        value={form.password}
+        onChange={(e) => setForm({ ...form, password: e.target.value })}
+      ></Input>
+      <Input
+        theme="dark"
+        type="password"
+        placeholder="Confirmation du mot de passe"
+        name="passwordConfirmation"
+        value={form.passwordConfirmation}
+        onChange={(e) => setForm({ ...form, passwordConfirmation: e.target.value })}
+      ></Input>
+
+      <div className="w-full ">
+        {/* md:w-auto */}
+        <label
+          className={`inline-block w-full bg-dark text-white text-center border-none px-5 py-3 rounded-lg cursor-pointer text-sm md:text-lg font-inter font-bold transition-colors duration-300 overflow-hidden whitespace-nowrap w-[400px] px-4 py-2 text-xl ${hasFile ? "bg-[#292e96]" : ""}`}
         >
-          {messageError && <p className="text-orange font-bold text-lg">{messageError}</p>}
-
-          <Input
-            theme="dark"
-            type="text"
-            placeholder="Nom"
-            name="lastname"
-            value={form.lastName}
-            onChange={(e) => setForm({ ...form, lastName: e.target.value })}
-          ></Input>
-          <Input
-            theme="dark"
-            type="text"
-            placeholder="Prénom"
-            name="firstname"
-            value={form.firstName}
-            onChange={(e) => setForm({ ...form, firstName: e.target.value })}
-          ></Input>
-          <Input
-            theme="dark"
-            type="text"
-            placeholder="Adresse email"
-            name="email"
-            value={form.email}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
-          ></Input>
-          <Input
-            theme="dark"
-            type="date"
-            placeholder="Date de naissance"
-            name="date_of_birth"
-            value={form.date_of_birth}
-            onChange={(e) => setForm({ ...form, date_of_birth: e.target.value })}
-          ></Input>
-          <Input
-            theme="dark"
-            type="password"
-            placeholder="Mot de passe"
-            name="password"
-            value={form.password}
-            onChange={(e) => setForm({ ...form, password: e.target.value })}
-          ></Input>
-          <Input
-            theme="dark"
-            type="password"
-            placeholder="Confirmation du mot de passe"
-            name="passwordConfirmation"
-            value={form.passwordConfirmation}
-            onChange={(e) => setForm({ ...form, passwordConfirmation: e.target.value })}
-          ></Input>
-
-          <div className="w-full ">
-            {/* md:w-auto */}
-            <label
-              className={`inline-block w-full bg-dark text-white text-center border-none px-5 py-3 rounded-lg cursor-pointer text-sm md:text-lg font-inter font-bold transition-colors duration-300 overflow-hidden whitespace-nowrap w-[400px] px-4 py-2 text-xl ${hasFile ? "bg-[#292e96]" : ""}`}
-            >
-              <span className="block overflow-hidden text-lg text-ellipsis font-bold">{fileName}</span>
-              <input type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
-            </label>
-          </div>
-
-          {/* Bouton de connexion */}
-          <Button type="submit" colour="dark" rounded className="text-xl px-[25px] py-[10px] mt-5">
-            Inscription
-          </Button>
-        </form>
+          <span className="block overflow-hidden text-lg text-ellipsis font-bold">{fileName}</span>
+          <input type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
+        </label>
       </div>
-      {/* Lien vers inscription */}
-      <AuthFooter to="/connexion" link="Connexion">
-        Déjà inscrit ?{" "}
-      </AuthFooter>
-    </div>
+
+      {/* Bouton de connexion */}
+      <Button type="submit" colour="dark" rounded className="text-xl px-[25px] py-[10px] mt-5">
+        Inscription
+      </Button>
+    </AuthFormTemplate>
   );
 };
 

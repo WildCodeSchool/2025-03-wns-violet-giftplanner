@@ -5,8 +5,8 @@ import consoleErrorDev from "../../hooks/erreurMod";
 import { useMyProfileStore } from "../../zustand/myProfileStore";
 import Button from "../utils/Button";
 import Input from "../utils/Input";
-import Title from "../utils/Title";
 import AuthFooter from "./AuthFooter";
+import AuthFormTemplate from "./AuthFormTemplate";
 
 const LoginForm = () => {
   const [form, setForm] = useState({
@@ -48,41 +48,37 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center gap-4 md:gap-8 h-full px-5 md:px-24 min-h-0 py-4 md:py-0">
-      <Title dark className="flex-shrink-0">
-        Me connecter
-      </Title>
-      <div className="flex flex-col justify-start w-full px-5 md:px-0 md:w-auto flex-shrink-0">
-        <form
-          className="flex flex-col items-center gap-3 justify-center w-full max-w-[600px] md:w-auto md:max-w-none"
-          onSubmit={handleSubmit}
-        >
-          {messageError.length > 0 ? <p className="error-message">{messageError}</p> : null}
-          <Input
-            theme="dark"
-            type="text"
-            name="email"
-            placeholder="Entrez votre adresse email"
-            value={form.email}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
-          />
-          <Input
-            theme="dark"
-            type="password"
-            name="password"
-            placeholder="Entrez votre mot de passe"
-            value={form.password}
-            onChange={(e) => setForm({ ...form, password: e.target.value })}
-          />
-          <Button rounded colour="dark" className="text-xl px-[25px] py-[10px] mt-5" type="submit">
-            Connexion
-          </Button>
-        </form>
+    <AuthFormTemplate
+      title="Me connecter"
+      onSubmit={handleSubmit}
+      footer={
         <AuthFooter to="/inscription" link="Inscription">
           Pas encore de compte ?{" "}
         </AuthFooter>
-      </div>
-    </div>
+      }
+    >
+      {messageError.length > 0 ? <p className="error-message">{messageError}</p> : null}
+      <Input
+        theme="dark"
+        type="text"
+        name="email"
+        placeholder="Entrez votre adresse email"
+        value={form.email}
+        onChange={(e) => setForm({ ...form, email: e.target.value })}
+      />
+      <Input
+        theme="dark"
+        type="password"
+        name="password"
+        placeholder="Entrez votre mot de passe"
+        value={form.password}
+        onChange={(e) => setForm({ ...form, password: e.target.value })}
+      />
+
+      <Button rounded colour="dark" className="text-xl px-[25px] py-[10px] mt-5" type="submit">
+        Connexion
+      </Button>
+    </AuthFormTemplate>
   );
 };
 
