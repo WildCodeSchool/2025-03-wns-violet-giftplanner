@@ -28,7 +28,7 @@ export default function Input({
   ...props
 }: InputProps) {
   const baseStyles =
-    "w-full px-4 py-2 border-2 rounded-lg font-bold text-lg outline-none transition-colors duration-200";
+    "w-full p-2 border-2 rounded-lg font-bold text-lg outline-none transition-colors duration-200";
 
   const themeStyles =
     theme === "dark"

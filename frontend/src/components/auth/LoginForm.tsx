@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { useLoginMutation } from "../../generated/graphql-types";
 import consoleErrorDev from "../../hooks/erreurMod";
 import { useMyProfileStore } from "../../zustand/myProfileStore";
 import Button from "../utils/Button";
 import Input from "../utils/Input";
-
 import Title from "../utils/Title";
+import AuthFooter from "./AuthFooter";
 
 const LoginForm = () => {
   const [form, setForm] = useState({
@@ -48,11 +48,11 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-evenly h-full px-10 md:px-5">
-      <Title dark className="">
+    <div className="flex flex-col items-center justify-center gap-4 md:gap-8 h-full px-5 md:px-24 min-h-0 py-4 md:py-0">
+      <Title dark className="flex-shrink-0">
         Me connecter
       </Title>
-      <div className="flex flex-col items-center justify-start w-full px-10 md:px-5 md:w-auto">
+      <div className="flex flex-col justify-start w-full px-5 md:px-0 md:w-auto flex-shrink-0">
         <form
           className="flex flex-col items-center gap-3 justify-center w-full max-w-[600px] md:w-auto md:max-w-none"
           onSubmit={handleSubmit}
@@ -78,14 +78,9 @@ const LoginForm = () => {
             Connexion
           </Button>
         </form>
-      </div>
-      <div>
-        <p className="text-base text-dark font-inter font-normal md:text-xl">
+        <AuthFooter to="/inscription" link="Inscription">
           Pas encore de compte ?{" "}
-          <Link to={"/inscription"} className="text-dark no-underline font-semibold text-base md:text-xl">
-            Inscription
-          </Link>
-        </p>
+        </AuthFooter>
       </div>
     </div>
   );

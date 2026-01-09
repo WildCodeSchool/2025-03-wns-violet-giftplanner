@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { useSignupMutation } from "../../generated/graphql-types";
 import consoleErrorDev from "../../hooks/erreurMod";
 import { useMyProfileStore } from "../../zustand/myProfileStore";
 import Button from "../utils/Button";
 import Input from "../utils/Input";
 import Title from "../utils/Title";
+import AuthFooter from "./AuthFooter";
 
 const RegisterForm = () => {
   const [form, setForm] = useState({
@@ -102,14 +103,14 @@ const RegisterForm = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-evenly h-full px-10 md:px-5">
+    <div className="flex flex-col items-center justify-evenly h-full md:px-24 px-5">
       <Title dark className="">
         {/* md:text-4xl md:mt-9 md:mb-20*} */}
         Créer mon compte
       </Title>
-      <div className="flex flex-col items-center justify-start w-full px-10 md:px-5 md:w-auto">
+      <div className="flex flex-col items-center justify-start w-full md:px-10 px-5 w-auto">
         <form
-          className="flex flex-col items-center gap-3 justify-center w-full max-w-[600px] md:w-auto md:max-w-none"
+          className="flex flex-col items-center gap-3 justify-center w-full max-w-[600px] w-auto max-w-none"
           onSubmit={handleSubmit}
         >
           {messageError && <p className="text-orange font-bold text-lg">{messageError}</p>}
@@ -166,9 +167,9 @@ const RegisterForm = () => {
           <div className="w-full ">
             {/* md:w-auto */}
             <label
-              className={`inline-block w-full bg-dark text-white text-center border-none px-5 py-3 rounded-lg cursor-pointer text-lg font-inter font-bold transition-colors duration-300 overflow-hidden whitespace-nowrap md:w-[400px] md:px-4 md:py-2 md:text-xl ${hasFile ? "bg-[#292e96]" : ""}`}
+              className={`inline-block w-full bg-dark text-white text-center border-none px-5 py-3 rounded-lg cursor-pointer text-sm md:text-lg font-inter font-bold transition-colors duration-300 overflow-hidden whitespace-nowrap w-[400px] px-4 py-2 text-xl ${hasFile ? "bg-[#292e96]" : ""}`}
             >
-              <span className="block overflow-hidden text-ellipsis font-bold">{fileName}</span>
+              <span className="block overflow-hidden text-lg text-ellipsis font-bold">{fileName}</span>
               <input type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
             </label>
           </div>
@@ -180,14 +181,9 @@ const RegisterForm = () => {
         </form>
       </div>
       {/* Lien vers inscription */}
-      <div>
-        <p className="text-base text-dark font-inter font-normal md:text-xl">
-          Déjà inscrit ?{" "}
-          <Link to={"/connexion"} className="text-dark no-underline font-semibold text-base md:text-xl">
-            Connexion
-          </Link>
-        </p>
-      </div>
+      <AuthFooter to="/connexion" link="Connexion">
+        Déjà inscrit ?{" "}
+      </AuthFooter>
     </div>
   );
 };
