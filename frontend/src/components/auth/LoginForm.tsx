@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { useLoginMutation } from "../../generated/graphql-types";
+import { useLoginMutation } from "../../graphql/generated/graphql-types";
 import consoleErrorDev from "../../hooks/erreurMod";
 import { useMyProfileStore } from "../../zustand/myProfileStore";
 import Button from "../utils/Button";

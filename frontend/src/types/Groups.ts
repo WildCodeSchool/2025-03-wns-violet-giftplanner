@@ -1,4 +1,4 @@
-import type { GetAllMessageMyGroupsQuery } from "../generated/graphql-types";
+import type { GetAllMessageMyGroupsQuery } from "../graphql/generated/graphql-types";
 
 export type MessageProps = {
   text: string;

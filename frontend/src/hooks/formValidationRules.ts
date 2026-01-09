@@ -1,4 +1,4 @@
-import type { CreateGroupInput } from "../generated/graphql-types";
+import type { CreateGroupInput } from "../graphql/generated/graphql-types";
 import { countdownDate } from "../utils/dateCalculator";
 import { verifyEmail } from "./verifyEmail";
 

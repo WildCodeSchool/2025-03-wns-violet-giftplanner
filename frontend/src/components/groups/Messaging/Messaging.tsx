@@ -1,7 +1,7 @@
 import type { FormEvent, KeyboardEvent, RefObject } from "react";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { FaLocationArrow } from "react-icons/fa";
-import type { GetAllMessageMyGroupsQuery } from "../../../generated/graphql-types.ts";
+import type { GetAllMessageMyGroupsQuery } from "../../../graphql/generated/graphql-types.ts";
 import { countdownDate } from "../../../utils/dateCalculator.ts";
 import { useMyProfileStore } from "../../../zustand/myProfileStore.ts";
 import Icon from "../../utils/Icon.tsx";

@@ -3,6 +3,7 @@ import type { Gift } from "../../types/Gift";
 import Icon from "../utils/Icon";
 import "./giftcard.css";
 import "./Wishlist.css";
+import { useEffect, useState } from "react";
 
 type GiftCardProps = {
   gift: Gift;
@@ -14,6 +15,16 @@ type GiftCardProps = {
 
 export default function GiftCard({ gift, className, onEdit, onDelete }: GiftCardProps) {
   const { name, description, imageUrl, url } = gift;
+  const [errorImageUrl, setErrorImageUrl] = useState(false);
+
+  useEffect(() => {
+    if (imageUrl) {
+      const img = new Image();
+      img.src = imageUrl;
+      img.onerror = () => setErrorImageUrl(true);
+      img.onload = () => setErrorImageUrl(false);
+    }
+  }, [imageUrl]);
 
   return (
     <div
@@ -26,7 +37,11 @@ export default function GiftCard({ gift, className, onEdit, onDelete }: GiftCard
       {url ? (
         <a href={url} target="_blank" rel="noopener noreferrer" className="block">
           {imageUrl ? (
-            <img src={imageUrl} alt={name} className="w-full h-40 object-cover" />
+            <img
+              src={errorImageUrl ? "/images/gift-not-find.png" : imageUrl}
+              alt={name}
+              className={`w-full h-40 ${errorImageUrl ? "object-contain" : "object-cover"}`}
+            />
           ) : (
             <div className="flex items-center justify-center w-full h-40 bg-white">
               <Icon icon="gift" className="text-9xl text-orange opacity-70" />
@@ -40,7 +55,11 @@ export default function GiftCard({ gift, className, onEdit, onDelete }: GiftCard
       ) : (
         <div>
           {imageUrl ? (
-            <img src={imageUrl} alt={name} className="w-full h-40 object-cover" />
+            <img
+              src={errorImageUrl ? "/images/gift-not-find.png" : imageUrl}
+              alt={name}
+              className={`w-full h-40 ${errorImageUrl ? "object-contain" : "object-cover"}`}
+            />
           ) : (
             <div className="flex items-center justify-center w-full h-40 bg-white">
               <Icon icon="gift" className="text-9xl text-orange opacity-70" />

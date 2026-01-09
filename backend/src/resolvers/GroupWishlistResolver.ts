@@ -1,10 +1,11 @@
-import { Arg, Ctx, Field, Int, Mutation, ObjectType, Query, Resolver } from "type-graphql";
+import { Arg, Ctx, Field, Int, Mutation, ObjectType, Query, Resolver, UseMiddleware } from "type-graphql";
 import { Gift } from "../entities/Gift";
 import Group from "../entities/Group";
 import { GroupMember } from "../entities/GroupMember";
 
 // biome-ignore lint/style/useImportType: bypass biome linting
 import { AddGiftInput } from "../inputs/AddGiftInput";
+import { RoleMiddleware } from "../middleware/RoleMiddleware";
 import type { ContextType } from "../types/context";
 import { getOrCreateUserWishlist } from "../utils/getOrCreateUserWishlist";
 
@@ -18,6 +19,7 @@ class GroupWishlistItems {
 }
 
 @Resolver()
+@UseMiddleware(RoleMiddleware())
 export default class GroupWishlistResolver {
   @Query(() => GroupWishlistItems)
   async groupWishlistItems(
@@ -105,6 +107,7 @@ export default class GroupWishlistResolver {
   }
 
   @Mutation(() => Gift)
+  @UseMiddleware(RoleMiddleware())
   async addGiftToGroupList(
     @Arg("groupId", () => Int) groupId: number,
     @Arg("data") data: AddGiftInput,
