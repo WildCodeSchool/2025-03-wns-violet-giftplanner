@@ -8,6 +8,7 @@ import Button from "./utils/Button";
 import Icon from "./utils/Icon";
 import Modal from "./utils/Modal";
 import GiftCard, { GiftCardSkeleton } from "./wishlist/GiftCard";
+import { useToggle } from "../hooks/useToggle";
 import "./wishlist/Wishlist.css";
 
 export default function Wishlist() {
@@ -24,18 +25,35 @@ export default function Wishlist() {
   const [deleteGift] = useMutation(DELETE_GIFT);
 
   const [updateGift, { loading: updating }] = useMutation(UPDATE_GIFT);
-  const [editingGift, setEditingGift] = useState<Gift | null>(null);
-  const [isEditModalOpen, setEditModalOpen] = useState(false);
 
+  // hooks
+  const addModal = useToggle(false);
+  const editModal = useToggle(false);
+
+  // state
   const [editFormData, setEditFormData] = useState({
     name: "",
     description: "",
     imageUrl: "",
     url: "",
   });
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({ name: "", description: "", imageUrl: "", url: "" });
+  const [editingGift, setEditingGift] = useState<Gift | null>(null);
+
+  // helpers
+  const closeAddModal = () => {
+    addModal.close();
+    setFormData({
+      name: "",
+      description: "",
+      imageUrl: "",
+      url: ""
+    });
+  };
+  const closeEditModal = () => {
+    editModal.close();
+    setEditingGift(null);
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -61,7 +79,8 @@ export default function Wishlist() {
     });
 
     setFormData({ name: "", description: "", imageUrl: "", url: "" });
-    setIsModalOpen(false);
+    // setIsModalOpen(false);
+    addModal.close();
   };
 
   const handleDeleteGift = async (gift: Gift) => {
@@ -96,7 +115,7 @@ export default function Wishlist() {
       refetchQueries: [{ query: MY_WISHLIST_ITEMS }],
       awaitRefetchQueries: true,
     });
-    setEditModalOpen(false);
+    editModal.close();
     setEditingGift(null);
   };
 
@@ -113,7 +132,7 @@ export default function Wishlist() {
             icon="plus"
             text="Nouvelle idée"
             colour="green"
-            onClick={() => setIsModalOpen(true)}
+            onClick={addModal.open}
             className="max-md:hidden"
           />
         </div>
@@ -127,14 +146,14 @@ export default function Wishlist() {
               <div className="flex flex-col items-center justify-center text-[#FDFBF6]">
                 <Icon icon="gift" className="text-7xl opacity-80 mb-3" />
                 <p className="text-lg mb-8">Aucune idée pour l'instant.</p>
-                <button
+                <Button
                   type="button"
-                  onClick={() => setIsModalOpen(true)}
-                  className="flex items-center gap-2 bg-[#019645] text-[#FDFBF6] font-semibold px-4 py-2 rounded-xl hover:bg-[#01803b] transition"
-                >
-                  <Icon icon="plus" />
-                  Ajouter une idée
-                </button>
+                  icon="plus"
+                  text="Ajouter une idée"
+                  colour="green"
+                  onClick={addModal.open}
+                  className="px-4 py-2 rounded-xl"
+                />
               </div>
             </div>
           ) : (
@@ -171,7 +190,7 @@ export default function Wishlist() {
                           imageUrl: gift.imageUrl ?? "",
                           url: gift.url ?? "",
                         });
-                        setEditModalOpen(true);
+                        editModal.open();
                       }}
                     />
                   </li>
@@ -187,13 +206,13 @@ export default function Wishlist() {
           icon="plus"
           text="Nouvelle idée"
           colour="green"
-          onClick={() => setIsModalOpen(true)}
+          onClick={addModal.open}
           className="wishlist-mobile-button"
         />
       </div>
 
       {/* Modal when adding */}
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+      <Modal isOpen={addModal.isOpen} onClose={closeAddModal}>
         <div className="modal-mobile-content">
           <h2 className="text-xl font-bold text-[#200904] mb-4">Ajouter une nouvelle idée</h2>
           <form onSubmit={handleSubmit} className="space-y-3">
@@ -251,27 +270,24 @@ export default function Wishlist() {
               />
             </div>
             <div className="flex justify-end gap-3 pt-3 modal-buttons">
-              <button
+              <Button
                 type="submit"
+                text={creating ? "Ajout…" : "Ajouter"}
+                colour="green"
+                className="rounded-[10px]"
+                // If Button supports disabled:
                 disabled={creating}
-                className="px-4 py-2 rounded-[10px] bg-[#019645] text-[#FDFBF6] font-semibold hover:bg-[#01803b]"
-              >
-                {creating ? "Ajout…" : "Ajouter"}
-              </button>
-              <button
-                type="button"
-                onClick={() => setIsModalOpen(false)}
-                className="px-4 py-2 rounded-[10px] bg-[#200904] text-[#FDFBF6] font-semibold hover:bg-[#463835]"
-              >
+              />
+              <Button type="button" colour="dark" onClick={closeAddModal} className="rounded-[10px]">
                 Annuler
-              </button>
+              </Button>
             </div>
           </form>
         </div>
       </Modal>
 
       {/* edit modal */}
-      <Modal isOpen={isEditModalOpen} onClose={() => setEditModalOpen(false)}>
+      <Modal isOpen={editModal.isOpen} onClose={closeEditModal}>
         <div className="modal-mobile-content">
           <h2 className="text-xl font-bold text-[#200904] mb-4">Modifier le cadeau</h2>
           <form onSubmit={handleEditSubmit} className="space-y-3">
@@ -329,20 +345,12 @@ export default function Wishlist() {
               />
             </div>
             <div className="flex justify-end gap-3 pt-3 modal-buttons">
-              <button
-                type="submit"
-                disabled={updating}
-                className="px-4 py-2 rounded-[10px] bg-[#019645] text-[#FDFBF6] font-semibold hover:bg-[#01803b]"
-              >
+              <Button type="submit" colour="green" className="rounded-[10px]">
                 {updating ? "Mis à jour…" : "Mettre à jour"}
-              </button>
-              <button
-                type="button"
-                onClick={() => setEditModalOpen(false)}
-                className="px-4 py-2 rounded-[10px] bg-[#200904] text-[#FDFBF6] font-semibold hover:bg-[#463835]"
-              >
+              </Button>
+              <Button type="button" colour="dark" onClick={closeEditModal} className="rounded-[10px]">
                 Annuler
-              </button>
+              </Button>
             </div>
           </form>
         </div>

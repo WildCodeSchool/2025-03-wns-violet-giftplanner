@@ -6,6 +6,7 @@ import Button from "../utils/Button";
 import Card from "../utils/Card";
 import Container from "../utils/Container";
 import Modal from "../utils/Modal";
+import { useToggle } from "../../hooks/useToggle";
 
 type GroupsProps = {
   groups: GetAllMyGroupsQuery["getAllMyGroups"];
@@ -16,10 +17,15 @@ type GroupsProps = {
 };
 
 export default function Groups({ groups, setActiveGroup, loading, error }: GroupsProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  // const [isOpen, setIsOpen] = useState(false);
 
-  function toggleModal() {
-    setIsOpen(!isOpen);
+  // function toggleModal() {
+  //   setIsOpen(!isOpen);
+  // }
+
+  const createGroupModal = useToggle(false);
+  const closeCreateGroupModal = () => {
+    createGroupModal.close();
   }
 
   return (
@@ -27,7 +33,7 @@ export default function Groups({ groups, setActiveGroup, loading, error }: Group
       <Container
         colour="blue"
         title="Mes Groupes"
-        button={<Button text={"Ajouter un groupe"} icon="plus" colour="green" onClick={toggleModal} />}
+        button={<Button text={"Ajouter un groupe"} icon="plus" colour="green" onClick={createGroupModal.open} />}
       >
         {loading && <div>Loading...</div>}
         {error && <div>Error: {error}</div>}
@@ -53,11 +59,11 @@ export default function Groups({ groups, setActiveGroup, loading, error }: Group
           );
         })}
       </Container>
-      {isOpen && (
-        <Modal onClose={toggleModal} isOpen={isOpen}>
-          <CreateGroupForm onSuccess={toggleModal} />
+      
+        <Modal isOpen={createGroupModal.isOpen} onClose={closeCreateGroupModal} size="lg" withPadding={false} className="p-0 overflow-y-auto max-h-[85vh] max-md:max-h-full">
+          <CreateGroupForm onSuccess={closeCreateGroupModal} />
         </Modal>
-      )}
+      
     </>
   );
 }
