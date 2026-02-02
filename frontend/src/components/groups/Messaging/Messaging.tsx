@@ -117,7 +117,7 @@ export default function Messaging({
       <div className="h-full w-full flex flex-col px-1.5 pb-5 pl-4">
         <div
           ref={contenairMessageRef}
-          className="w-full overflow-y-auto flex-grow flex-shrink flex-basis-0 pt-1.5 pr-2.5 pb-2.5 pl-0"
+          className="w-full overflow-y-auto min-h-auto flex-grow flex-shrink basis-0 pt-[7px] pr-2.5 pb-2.5 pl-0"
         >
           {orderedMessages.map((message) => {
             return (
@@ -131,11 +131,11 @@ export default function Messaging({
           })}
           <div ref={bottomRef} />
         </div>
-        <div className="w-full flex-grow-0 flex-shrink-0 flex-basis-auto pr-2.5">
+        <div className="w-full flex-grow-0 flex-shrink-0 basis-auto pr-2.5">
           <form
             onSubmit={handleSendMessage}
             ref={containerTextareaRef}
-            className="relative h-[47px] w-full py-1.5 pr-[45px] pb-2.5 pl-[15px] border-2 border-[#b7b7b7] rounded-[22px] focus-within:outline-none focus-within:border-blue"
+            className="relative h-[47px] w-full py-[7px] pr-[45px] pb-2.5 pl-[15px] border-2 border-[#b7b7b7] rounded-[22px] focus-within:outline-none focus-within:border-blue"
           >
             <textarea
               ref={textareaRef}
