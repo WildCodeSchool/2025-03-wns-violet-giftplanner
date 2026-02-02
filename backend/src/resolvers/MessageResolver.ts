@@ -10,6 +10,7 @@ import {
   Resolver,
   UseMiddleware,
 } from "type-graphql";
+import { LessThan } from "typeorm";
 import Group from "../entities/Group";
 import { GroupMember } from "../entities/GroupMember";
 import { Message } from "../entities/Message";
@@ -41,6 +42,24 @@ class GroupMessagesOutput {
   messages: Message[];
 }
 
+@InputType()
+class GetLazyMessagesInput {
+  @Field()
+  groupId: number;
+
+  @Field()
+  oldTimestamp: string;
+}
+
+@ObjectType()
+class GetLazyMessagesOutput {
+  @Field()
+  isMaximumMessages: boolean;
+
+  @Field(() => [Message])
+  messages: Message[];
+}
+
 @Resolver(Group)
 export default class MessageResolver {
   // récupère tout les message de tout les groupes de l'utilisateur connecté
@@ -62,13 +81,13 @@ export default class MessageResolver {
 
     const reponse: { groupId: number; messages: Message[] }[] = [];
 
-    // charge les 10 derniers messages de chaque groupe
+    // charge les 40 derniers messages de chaque groupe
     for (const group of groups) {
       const messages = await Message.find({
         where: { group: { id: group.id } },
         relations: { user: true },
         order: { createdAt: "DESC" },
-        take: 20,
+        take: 40,
       });
       reponse.push({ groupId: group.id, messages });
     }
@@ -111,5 +130,40 @@ export default class MessageResolver {
       where: { id: newMessage.id },
       relations: ["user", "group"],
     });
+  }
+
+  @UseMiddleware(RoleMiddleware())
+  @Query(() => GetLazyMessagesOutput)
+  async getLazyMessages(@Arg("data") data: GetLazyMessagesInput) {
+    const { groupId, oldTimestamp } = data;
+
+    let oldDate: Date;
+    try {
+      oldDate = new Date(oldTimestamp);
+      if (Number.isNaN(oldDate.getTime())) {
+        throw new Error("Invalid date");
+      }
+    } catch {
+      throw new Error("Invalid date format");
+    }
+
+    // récupère les 40 premiers messages plus anciens que oldTimestamp
+    const messages = await Message.find({
+      where: { group: { id: groupId }, createdAt: LessThan(oldDate) },
+      relations: { user: true },
+      order: { createdAt: "DESC" },
+      take: 40,
+    });
+
+    const oldestMessage = await Message.findOne({
+      where: { group: { id: groupId } },
+      order: { createdAt: "ASC" },
+      select: { id: true, createdAt: true },
+    });
+
+    const isMaximumMessages = oldestMessage ? messages.some((msg) => msg.id === oldestMessage.id) : true;
+
+    // renvoie les messages et si c'est tout les messages
+    return { isMaximumMessages, messages: messages };
   }
 }

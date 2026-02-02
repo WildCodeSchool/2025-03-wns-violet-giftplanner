@@ -1,7 +1,8 @@
-import type { FormEvent, KeyboardEvent, RefObject } from "react";
+import type { FormEvent, KeyboardEvent, RefObject, UIEvent } from "react";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { FaLocationArrow } from "react-icons/fa";
 import type { GetAllMessageMyGroupsQuery } from "../../../graphql/generated/graphql-types.ts";
+import { useGetLazyMessagesLazyQuery } from "../../../graphql/generated/graphql-types.ts";
 import { countdownDate } from "../../../utils/dateCalculator.ts";
 import { useMyProfileStore } from "../../../zustand/myProfileStore.ts";
 import Icon from "../../utils/Icon.tsx";
@@ -14,6 +15,7 @@ type MessagingProps = {
   date: Date;
   groupId: number;
   messages: GetAllMessageMyGroupsQuery["getAllMessageMyGroups"][number]["messages"];
+  addMessages: (message: GetAllMessageMyGroupsQuery["getAllMessageMyGroups"][number]["messages"]) => void;
   calbackSendMessage: (groupId: number, message: string) => void;
   contenairMessageRef: RefObject<HTMLDivElement | null>;
 };
@@ -24,6 +26,7 @@ export default function Messaging({
   date,
   groupId,
   messages,
+  addMessages,
   calbackSendMessage,
   contenairMessageRef,
 }: MessagingProps) {
@@ -34,6 +37,9 @@ export default function Messaging({
   // scroll automatique le plus en bas possible
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const didInitialScroll = useRef<null | number>(null);
+  const [oldMessagesPending, setOldMessagesPending] = useState<boolean>(false);
+  const [isMaximumMessages, setIsMaximumMessages] = useState<boolean>(false);
+  const [getLazyMessagesLazyQuery] = useGetLazyMessagesLazyQuery();
 
   useEffect(() => {
     if (didInitialScroll.current != groupId && messages.length > 0) {
@@ -84,6 +90,49 @@ export default function Messaging({
     el.style.height = "100%";
   };
 
+  const loadMoreMessage = async () => {
+    if (oldMessagesPending || isMaximumMessages) return;
+
+    // mettre en mode chargement
+    setOldMessagesPending(true);
+
+    // charger une partie des anciens messages
+    const olderMessages = await getLazyMessagesLazyQuery({
+      variables: {
+        data: {
+          groupId: groupId,
+          oldTimestamp: messages[messages.length - 1].createdAt,
+        },
+      },
+    });
+
+    addMessages(olderMessages.data?.getLazyMessages.messages || []);
+    setOldMessagesPending(false);
+    setIsMaximumMessages(olderMessages.data?.getLazyMessages.isMaximumMessages || false);
+  };
+
+  const onScrollContainerMessages = async (e: UIEvent<HTMLDivElement>) => {
+    // si on a déja charger tout les message ou que des messages sont en cours de chargement on sort
+    if (isMaximumMessages || oldMessagesPending) return;
+
+    const el = e.currentTarget;
+
+    // défini a 10% de la hauteur du contenair ou 200px minimum et 1000 au max pour charger plus de messages
+    const hauteurDeDeclanchement =
+      el.scrollHeight * 0.1 < 200 ? 200 : el.scrollHeight > 1000 ? 1000 : el.scrollHeight * 0.1;
+
+    if (el.scrollTop < hauteurDeDeclanchement) {
+      const previousHeight = el.scrollHeight;
+      const previosScrollTop = el.scrollTop;
+
+      // charger plus de message
+      await loadMoreMessage();
+
+      // après le chargement des messages on remet le scroll a la même position qu'avant le chargement
+      el.scrollTo(0, el.scrollHeight - previousHeight + previosScrollTop);
+    }
+  };
+
   const orderedMessages = useMemo(() => {
     const sortMessages = messages.slice().reverse();
 
@@ -118,6 +167,7 @@ export default function Messaging({
         <div
           ref={contenairMessageRef}
           className="w-full overflow-y-auto min-h-auto flex-grow flex-shrink basis-0 pt-[7px] pr-2.5 pb-2.5 pl-0"
+          onScroll={onScrollContainerMessages}
         >
           {orderedMessages.map((message) => {
             return (

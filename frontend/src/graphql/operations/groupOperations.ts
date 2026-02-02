@@ -75,3 +75,25 @@ export const GET_ALL_MESSAGE_MY_GROUPS = gql`
     }
   }
 `;
+
+export const GET_LAZY_MESSAGES = gql`
+  query getLazyMessages($data: GetLazyMessagesInput!) {
+    getLazyMessages(data: $data) {
+      isMaximumMessages
+      messages {
+        id
+        content
+        createdAt
+        updatedAt
+        isEdited
+        user {
+          id
+          firstName
+          lastName
+          image_url
+          isAdmin
+        }
+      }
+    }
+  }
+`;

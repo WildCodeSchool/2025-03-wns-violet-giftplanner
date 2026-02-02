@@ -49,6 +49,17 @@ export type DeleteUserResponse = {
   success: Scalars['Boolean']['output'];
 };
 
+export type GetLazyMessagesInput = {
+  groupId: Scalars['Float']['input'];
+  oldTimestamp: Scalars['String']['input'];
+};
+
+export type GetLazyMessagesOutput = {
+  __typename?: 'GetLazyMessagesOutput';
+  isMaximumMessages: Scalars['Boolean']['output'];
+  messages: Array<Message>;
+};
+
 export type Gift = {
   __typename?: 'Gift';
   createdAt: Scalars['DateTimeISO']['output'];
@@ -252,12 +263,18 @@ export type Query = {
   getAllUsers: Array<User>;
   getAllUsersAdmin: Array<User>;
   getAllUsersForAdmin: Array<User>;
+  getLazyMessages: GetLazyMessagesOutput;
   getMyProfile: User;
   groupWishlistItems: GroupWishlistItems;
   myWishlistItems: Array<Gift>;
   testAdmin: Scalars['String']['output'];
   testUser: Scalars['String']['output'];
   welcomeAll: Scalars['String']['output'];
+};
+
+
+export type QueryGetLazyMessagesArgs = {
+  data: GetLazyMessagesInput;
 };
 
 
@@ -331,6 +348,13 @@ export type GetAllMessageMyGroupsQueryVariables = Exact<{ [key: string]: never; 
 
 
 export type GetAllMessageMyGroupsQuery = { __typename?: 'Query', getAllMessageMyGroups: Array<{ __typename?: 'GroupMessagesOutput', groupId: number, messages: Array<{ __typename?: 'Message', id: string, content: string, createdAt: any, updatedAt: any, isEdited: boolean, user: { __typename?: 'User', id: string, firstName: string, lastName: string, image_url?: string | null, isAdmin: boolean } }> }> };
+
+export type GetLazyMessagesQueryVariables = Exact<{
+  data: GetLazyMessagesInput;
+}>;
+
+
+export type GetLazyMessagesQuery = { __typename?: 'Query', getLazyMessages: { __typename?: 'GetLazyMessagesOutput', isMaximumMessages: boolean, messages: Array<{ __typename?: 'Message', id: string, content: string, createdAt: any, updatedAt: any, isEdited: boolean, user: { __typename?: 'User', id: string, firstName: string, lastName: string, image_url?: string | null, isAdmin: boolean } }> } };
 
 export type LoginMutationVariables = Exact<{
   data: LoginInput;
@@ -598,6 +622,60 @@ export type GetAllMessageMyGroupsQueryHookResult = ReturnType<typeof useGetAllMe
 export type GetAllMessageMyGroupsLazyQueryHookResult = ReturnType<typeof useGetAllMessageMyGroupsLazyQuery>;
 export type GetAllMessageMyGroupsSuspenseQueryHookResult = ReturnType<typeof useGetAllMessageMyGroupsSuspenseQuery>;
 export type GetAllMessageMyGroupsQueryResult = Apollo.QueryResult<GetAllMessageMyGroupsQuery, GetAllMessageMyGroupsQueryVariables>;
+export const GetLazyMessagesDocument = gql`
+    query getLazyMessages($data: GetLazyMessagesInput!) {
+  getLazyMessages(data: $data) {
+    isMaximumMessages
+    messages {
+      id
+      content
+      createdAt
+      updatedAt
+      isEdited
+      user {
+        id
+        firstName
+        lastName
+        image_url
+        isAdmin
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetLazyMessagesQuery__
+ *
+ * To run a query within a React component, call `useGetLazyMessagesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetLazyMessagesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetLazyMessagesQuery({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useGetLazyMessagesQuery(baseOptions: Apollo.QueryHookOptions<GetLazyMessagesQuery, GetLazyMessagesQueryVariables> & ({ variables: GetLazyMessagesQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetLazyMessagesQuery, GetLazyMessagesQueryVariables>(GetLazyMessagesDocument, options);
+      }
+export function useGetLazyMessagesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetLazyMessagesQuery, GetLazyMessagesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetLazyMessagesQuery, GetLazyMessagesQueryVariables>(GetLazyMessagesDocument, options);
+        }
+export function useGetLazyMessagesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetLazyMessagesQuery, GetLazyMessagesQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetLazyMessagesQuery, GetLazyMessagesQueryVariables>(GetLazyMessagesDocument, options);
+        }
+export type GetLazyMessagesQueryHookResult = ReturnType<typeof useGetLazyMessagesQuery>;
+export type GetLazyMessagesLazyQueryHookResult = ReturnType<typeof useGetLazyMessagesLazyQuery>;
+export type GetLazyMessagesSuspenseQueryHookResult = ReturnType<typeof useGetLazyMessagesSuspenseQuery>;
+export type GetLazyMessagesQueryResult = Apollo.QueryResult<GetLazyMessagesQuery, GetLazyMessagesQueryVariables>;
 export const LoginDocument = gql`
     mutation Login($data: LoginInput!) {
   login(data: $data) {

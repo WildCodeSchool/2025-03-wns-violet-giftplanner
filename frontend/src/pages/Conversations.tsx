@@ -98,6 +98,17 @@ export default function Conversations() {
 
   //TO DO: set activeGroup.id in url
 
+  const addMessage = (groupId: number, message: message[]) => {
+    setMessages((prev) => {
+      const clone = structuredClone(prev);
+      if (!clone[groupId]) {
+        clone[groupId] = [];
+      }
+      clone[groupId] = [...clone[groupId], ...message];
+      return clone;
+    });
+  };
+
   const myGroups = groupData?.getAllMyGroups;
 
   return (
@@ -150,6 +161,9 @@ export default function Conversations() {
               date={new Date(groups[indexGroups].deadline)}
               groupId={Number(groups[indexGroups].id)}
               messages={messages[Number(groups[indexGroups].id)]}
+              addMessages={(
+                message: GetAllMessageMyGroupsQuery["getAllMessageMyGroups"][number]["messages"],
+              ) => addMessage(Number(groups[indexGroups].id), message)}
               calbackSendMessage={chat.sendMessage}
               contenairMessageRef={contenairMessageRef}
             />
