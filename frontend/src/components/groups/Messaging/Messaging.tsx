@@ -7,6 +7,11 @@ import { useMyProfileStore } from "../../../zustand/myProfileStore.ts";
 import Icon from "../../utils/Icon.tsx";
 import Subtitle from "../../utils/Subtitle.tsx";
 import Message from "./Message";
+import { useToggle } from "../../../hooks/useToggle.ts";
+import Modal from "../../utils/Modal.tsx";
+import GroupFormIndex from "../../forms/groups/index.tsx";
+import GroupFormTemplate from "../../forms/groups/GroupFormTemplate.tsx";
+import UsersForm from "../../forms/groups/UsersForm.tsx";
 
 type MessagingProps = {
   title: string;
@@ -92,6 +97,8 @@ export default function Messaging({
     // }, [] as typeof messages)
   }, [messages]);
 
+  const [isOpen, toggleOpen] = useToggle(false);
+
   return (
     <div className="rounded-2xl w-full h-full border-grey border-2 border-lg flex flex-col">
       <div className="relative w-full h-[80px] bg-blue rounded-t-2xl flex-row flex justify-center items-center py-4">
@@ -111,8 +118,13 @@ export default function Messaging({
           </p>
         </div>
         <div className="absolute right-0 px-8">
-          <Icon icon="dots" className="text-white" />
+          <button type="button" onClick={toggleOpen}><Icon icon="edit" className="text-white" /></button>
         </div>
+        {isOpen && (
+          <Modal isOpen={isOpen} onClose={toggleOpen}>
+            <GroupFormIndex onSuccess={toggleOpen} groupId={groupId}/>
+          </Modal>
+        )}
       </div>
       <div className="h-full w-full flex flex-col px-1.5 pb-5 pl-4">
         <div

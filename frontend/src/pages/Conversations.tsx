@@ -14,8 +14,7 @@ type message = GetAllMessageMyGroupsQuery["getAllMessageMyGroups"][number]["mess
 export default function Conversations() {
   const [wishlist, setWishlist] = useState<boolean>(true);
   const { data: groupData } = useGetAllMyGroupsQuery({
-    fetchPolicy: "no-cache",
-    nextFetchPolicy: "no-cache",
+    fetchPolicy: "cache-and-network"
   });
   const { data: messageData } = useGetAllMessageMyGroupsQuery({
     fetchPolicy: "no-cache",

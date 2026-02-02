@@ -74,6 +74,16 @@ export default class GroupResolver {
     return { groups, groupToken };
   }
 
+  @Query(() => Group)
+  async getGroupById(@Arg("id") id: number) {
+    const group = await Group.findOne({ 
+      where: { id: id },
+      relations: { user_admin: true, user_beneficiary: true, groupMember: true },
+     });
+    if (!group) throw new Error("Groupe non trouvé");
+    return group;
+  }
+
   @FieldResolver(() => [GroupMember])
   async groupMember(@Root() group: Group) {
     const groupMembers = await GroupMember.find({
@@ -154,6 +164,19 @@ export default class GroupResolver {
       );
     }
 
+    return group;
+  }
+
+  @UseMiddleware(RoleMiddleware())
+  @Mutation(() => Group)
+  async updateGroup(@Arg("id") id: number, @Arg("data") data: CreateGroupInput) {
+    const group = await Group.findOne({ where: { id: id } });
+    if (!group) throw new Error("Groupe non trouvé");
+    group.name = data.name;
+    group.event_type = data.event_type;
+    group.piggy_bank = data.piggy_bank;
+    group.deadline = data.deadline;
+    await group.save();
     return group;
   }
 }

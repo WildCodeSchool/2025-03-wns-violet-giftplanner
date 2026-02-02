@@ -75,3 +75,56 @@ export const GET_ALL_MESSAGE_MY_GROUPS = gql`
     }
   }
 `;
+
+// export const UPDATE_GROUP = gql`
+//   mutation UpdateGroup($id: ID!, $data: UpdateGroupInput!) {
+//     updateGroup(id: $id, data: $data) {
+//       id
+//       name
+//     }
+//   }
+// `;
+
+
+
+export const GET_GROUP_BY_ID = gql`
+  query GetGroupById($id: Float!) {
+    getGroupById(id: $id) {
+      user_admin {
+        firstName
+        lastName
+        id
+        email
+      }
+      piggy_bank
+      name
+      id
+      groupMember {
+        firstName
+        lastName
+        email
+        userId
+      }
+      deadline
+      event_type
+      user_beneficiary {
+        firstName
+        lastName
+        id
+      }
+    }
+  }
+`;
+
+export const UPDATE_GROUP = gql`
+  mutation UpdateGroup($data: CreateGroupInput!, $updateGroupId: Float!) {
+  updateGroup(data: $data, id: $updateGroupId) {
+    id
+    event_type
+    updatedAt
+    name
+    piggy_bank
+    deadline
+  }
+}
+`;

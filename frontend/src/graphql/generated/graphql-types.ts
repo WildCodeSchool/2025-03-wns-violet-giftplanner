@@ -156,6 +156,7 @@ export type Mutation = {
   signup: User;
   unbanUser: BanUserResponse;
   updateGift: Gift;
+  updateGroup: Group;
 };
 
 
@@ -220,6 +221,12 @@ export type MutationUpdateGiftArgs = {
   id: Scalars['Int']['input'];
 };
 
+
+export type MutationUpdateGroupArgs = {
+  data: CreateGroupInput;
+  id: Scalars['Float']['input'];
+};
+
 export type MyGroupsResponse = {
   __typename?: 'MyGroupsResponse';
   groupToken: Scalars['String']['output'];
@@ -252,12 +259,18 @@ export type Query = {
   getAllUsers: Array<User>;
   getAllUsersAdmin: Array<User>;
   getAllUsersForAdmin: Array<User>;
+  getGroupById: Group;
   getMyProfile: User;
   groupWishlistItems: GroupWishlistItems;
   myWishlistItems: Array<Gift>;
   testAdmin: Scalars['String']['output'];
   testUser: Scalars['String']['output'];
   welcomeAll: Scalars['String']['output'];
+};
+
+
+export type QueryGetGroupByIdArgs = {
+  id: Scalars['Float']['input'];
 };
 
 
@@ -331,6 +344,21 @@ export type GetAllMessageMyGroupsQueryVariables = Exact<{ [key: string]: never; 
 
 
 export type GetAllMessageMyGroupsQuery = { __typename?: 'Query', getAllMessageMyGroups: Array<{ __typename?: 'GroupMessagesOutput', groupId: number, messages: Array<{ __typename?: 'Message', id: string, content: string, createdAt: any, updatedAt: any, isEdited: boolean, user: { __typename?: 'User', id: string, firstName: string, lastName: string, image_url?: string | null, isAdmin: boolean } }> }> };
+
+export type GetGroupByIdQueryVariables = Exact<{
+  id: Scalars['Float']['input'];
+}>;
+
+
+export type GetGroupByIdQuery = { __typename?: 'Query', getGroupById: { __typename?: 'Group', piggy_bank: number, name: string, id: string, deadline: any, event_type: string, user_admin: { __typename?: 'User', firstName: string, lastName: string, id: string, email: string }, groupMember: Array<{ __typename?: 'GroupMember', firstName?: string | null, lastName?: string | null, email?: string | null, userId: number }>, user_beneficiary?: { __typename?: 'User', firstName: string, lastName: string, id: string } | null } };
+
+export type UpdateGroupMutationVariables = Exact<{
+  data: CreateGroupInput;
+  updateGroupId: Scalars['Float']['input'];
+}>;
+
+
+export type UpdateGroupMutation = { __typename?: 'Mutation', updateGroup: { __typename?: 'Group', id: string, event_type: string, updatedAt: any, name: string, piggy_bank: number, deadline: any } };
 
 export type LoginMutationVariables = Exact<{
   data: LoginInput;
@@ -598,6 +626,106 @@ export type GetAllMessageMyGroupsQueryHookResult = ReturnType<typeof useGetAllMe
 export type GetAllMessageMyGroupsLazyQueryHookResult = ReturnType<typeof useGetAllMessageMyGroupsLazyQuery>;
 export type GetAllMessageMyGroupsSuspenseQueryHookResult = ReturnType<typeof useGetAllMessageMyGroupsSuspenseQuery>;
 export type GetAllMessageMyGroupsQueryResult = Apollo.QueryResult<GetAllMessageMyGroupsQuery, GetAllMessageMyGroupsQueryVariables>;
+export const GetGroupByIdDocument = gql`
+    query GetGroupById($id: Float!) {
+  getGroupById(id: $id) {
+    user_admin {
+      firstName
+      lastName
+      id
+      email
+    }
+    piggy_bank
+    name
+    id
+    groupMember {
+      firstName
+      lastName
+      email
+      userId
+    }
+    deadline
+    event_type
+    user_beneficiary {
+      firstName
+      lastName
+      id
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetGroupByIdQuery__
+ *
+ * To run a query within a React component, call `useGetGroupByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetGroupByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetGroupByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetGroupByIdQuery(baseOptions: Apollo.QueryHookOptions<GetGroupByIdQuery, GetGroupByIdQueryVariables> & ({ variables: GetGroupByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetGroupByIdQuery, GetGroupByIdQueryVariables>(GetGroupByIdDocument, options);
+      }
+export function useGetGroupByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetGroupByIdQuery, GetGroupByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetGroupByIdQuery, GetGroupByIdQueryVariables>(GetGroupByIdDocument, options);
+        }
+export function useGetGroupByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetGroupByIdQuery, GetGroupByIdQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetGroupByIdQuery, GetGroupByIdQueryVariables>(GetGroupByIdDocument, options);
+        }
+export type GetGroupByIdQueryHookResult = ReturnType<typeof useGetGroupByIdQuery>;
+export type GetGroupByIdLazyQueryHookResult = ReturnType<typeof useGetGroupByIdLazyQuery>;
+export type GetGroupByIdSuspenseQueryHookResult = ReturnType<typeof useGetGroupByIdSuspenseQuery>;
+export type GetGroupByIdQueryResult = Apollo.QueryResult<GetGroupByIdQuery, GetGroupByIdQueryVariables>;
+export const UpdateGroupDocument = gql`
+    mutation UpdateGroup($data: CreateGroupInput!, $updateGroupId: Float!) {
+  updateGroup(data: $data, id: $updateGroupId) {
+    id
+    event_type
+    updatedAt
+    name
+    piggy_bank
+    deadline
+  }
+}
+    `;
+export type UpdateGroupMutationFn = Apollo.MutationFunction<UpdateGroupMutation, UpdateGroupMutationVariables>;
+
+/**
+ * __useUpdateGroupMutation__
+ *
+ * To run a mutation, you first call `useUpdateGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateGroupMutation, { data, loading, error }] = useUpdateGroupMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *      updateGroupId: // value for 'updateGroupId'
+ *   },
+ * });
+ */
+export function useUpdateGroupMutation(baseOptions?: Apollo.MutationHookOptions<UpdateGroupMutation, UpdateGroupMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateGroupMutation, UpdateGroupMutationVariables>(UpdateGroupDocument, options);
+      }
+export type UpdateGroupMutationHookResult = ReturnType<typeof useUpdateGroupMutation>;
+export type UpdateGroupMutationResult = Apollo.MutationResult<UpdateGroupMutation>;
+export type UpdateGroupMutationOptions = Apollo.BaseMutationOptions<UpdateGroupMutation, UpdateGroupMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($data: LoginInput!) {
   login(data: $data) {
