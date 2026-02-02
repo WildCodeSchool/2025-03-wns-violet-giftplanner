@@ -39,7 +39,16 @@ export default function Conversations() {
 
   // scrolle vers le bas quand le rerendu est fait
   useLayoutEffect(() => {
-    contenairMessageRef.current?.scrollTo(0, contenairMessageRef.current.scrollHeight);
+    if (!contenairMessageRef.current) return;
+    const scrollTop = contenairMessageRef.current.scrollTop;
+    const scrollHeight = contenairMessageRef.current.scrollHeight;
+    const clientHeight = contenairMessageRef.current.clientHeight;
+
+    const distanceToBottom = scrollHeight - (scrollTop + clientHeight);
+
+    if (distanceToBottom >= clientHeight) return;
+
+    contenairMessageRef.current.scrollTo(0, scrollHeight);
   }, [messages]);
 
   const chat = useLiveChat(handlerNewMessage);

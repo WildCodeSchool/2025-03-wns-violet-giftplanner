@@ -63,6 +63,8 @@ export default function Messaging({
       setMessageInput("");
 
       containerTextareaRef.current!.style.height = "47px";
+
+      contenairMessageRef.current?.scrollTo(0, contenairMessageRef.current.scrollHeight);
     } catch (error) {
       console.error("Erreur pendant l'envoie du message", error);
     }
@@ -122,14 +124,11 @@ export default function Messaging({
       el.scrollHeight * 0.1 < 200 ? 200 : el.scrollHeight > 1000 ? 1000 : el.scrollHeight * 0.1;
 
     if (el.scrollTop < hauteurDeDeclanchement) {
-      const previousHeight = el.scrollHeight;
-      const previosScrollTop = el.scrollTop;
-
       // charger plus de message
       await loadMoreMessage();
 
       // après le chargement des messages on remet le scroll a la même position qu'avant le chargement
-      el.scrollTo(0, el.scrollHeight - previousHeight + previosScrollTop);
+      // el.scrollTo(0, el.scrollHeight - previousHeight + previosScrollTop);
     }
   };
 
