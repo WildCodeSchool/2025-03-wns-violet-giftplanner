@@ -146,7 +146,7 @@ export default function Conversations() {
           messages[Number(groups[indexGroups].id)] !== undefined && (
             <Messaging
               title={groups[indexGroups].name}
-              participants={2}
+              participants={groups[indexGroups].groupMember.length}
               date={new Date(groups[indexGroups].deadline)}
               groupId={Number(groups[indexGroups].id)}
               messages={messages[Number(groups[indexGroups].id)]}
