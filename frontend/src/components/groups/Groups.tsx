@@ -9,7 +9,7 @@ import Modal from "../utils/Modal";
 
 type GroupsProps = {
   groups: GetAllMyGroupsQuery["getAllMyGroups"];
-  setActiveGroup: (group: GetAllMyGroupsQuery["getAllMyGroups"][0]) => void;
+  setActiveGroup: (group: GetAllMyGroupsQuery["getAllMyGroups"]["groups"][number]) => void;
   loading: boolean;
   error?: string;
   onClick?: () => void;
@@ -32,7 +32,7 @@ export default function Groups({ groups, setActiveGroup, loading, error }: Group
         {loading && <div>Loading...</div>}
         {error && <div>Error: {error}</div>}
 
-        {groups.map((group) => {
+        {groups?.groups.map((group) => {
           return (
             <Card
               key={group.id}
@@ -45,7 +45,8 @@ export default function Groups({ groups, setActiveGroup, loading, error }: Group
               <p className="text-gray-600 text-sm sm:text-base truncate overflow-hidden text-ellipsis whitespace-nowrap">
                 <span> Date limite: {formatDate(new Date(group.deadline))} </span> <br />
                 <span>
-                  {group.groupMember.length} {group.groupMember.length === 1 ? "participant" : "participants"}
+                  {group.groupMember?.length}{" "}
+                  {group.groupMember?.length === 1 ? "participant" : "participants"}
                 </span>
               </p>
             </Card>

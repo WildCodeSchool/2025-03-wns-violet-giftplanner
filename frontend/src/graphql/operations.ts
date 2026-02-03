@@ -78,6 +78,10 @@ export const UPDATE_ME_PROFILE = gql`
       lastName
       phone_number
       updatedAt
+      lists {
+        id
+        name
+      }
     }
   }
 `;
@@ -250,55 +254,44 @@ mutation CreateGroup($data: CreateGroupInput!) {
 export const GET_ALL_MY_GROUPS = gql`
   query getAllMyGroups {
     getAllMyGroups {
-    messages {
-      id
-      content
-      createdAt
-      isEdited
-      user {
+      groupToken
+      groups {
         id
-        firstName
-        lastName
-        image_url
-        isAdmin
-      }
-    }
-    id
-    name
-    createdAt
-    updatedAt
-    event_type
-    piggy_bank
-    deadline
-    user_beneficiary {
-      id
-      firstName
-      lastName
-      email
-    }
-    user_admin {
-      id
-      firstName
-      lastName
-      email
-    }
-      groupMember {
-        userId
-        lastName
-        joined_at
-        isGroupAdmin
-        id
-        groupId
-        firstName
-        email
+        name
+        createdAt
+        updatedAt
+        event_type
+        piggy_bank
+        deadline
+        groupMember {
+          id
+          userId
+          groupId
+        }
       }
     }
   }
 `;
 
-export const SendMessage = gql`
-  mutation SendMessage($data: NewMessageInput!) {
-    sendMessage(data: $data)
+export const GET_ALL_MESSAGE_MY_GROUPS = gql`
+  query getAllMessageMyGroups {
+    getAllMessageMyGroups {
+      groupId
+      messages {
+        id
+        content
+        createdAt
+        updatedAt
+        isEdited
+        user {
+          id
+          firstName
+          lastName
+          image_url
+          isAdmin
+        }
+      }
+    }
   }
 `;
 

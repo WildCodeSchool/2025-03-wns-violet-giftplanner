@@ -4,6 +4,7 @@ import { LuLogOut, LuPencil, LuSettings, LuTrash2 } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Icon from "../components/utils/Icon";
+import Modal from "../components/utils/Modal";
 import { defaultPictureProfile } from "../data/pictureDefault";
 import {
   useDeleteMyProfileMutation,
@@ -14,34 +15,13 @@ import consoleErrorDev from "../hooks/erreurMod";
 import { useIsMobile } from "../hooks/useIsMobile";
 import { useMyProfileStore } from "../zustand/myProfileStore";
 
-interface ConfirmModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-  title?: string;
-  message?: string;
-}
-
-const ConfirmModal = ({ isOpen, onClose, onConfirm, title, message }: ConfirmModalProps) => {
-  if (!isOpen) return null;
-
-  return (
-    <button type="button" className="modal-overlay" onClick={onClose}>
-      <button type="button" className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <h2>{title}</h2>
-        <p>{message}</p>
-        <div className="modal-actions">
-          <button type="button" className="modal-btn-cancel" onClick={onClose}>
-            Annuler
-          </button>
-          <button type="button" className="modal-btn-confirm" onClick={onConfirm}>
-            Confirmer
-          </button>
-        </div>
-      </button>
-    </button>
-  );
-};
+// interface ConfirmModalProps {
+//   isOpen: boolean;
+//   onClose: () => void;
+//   onConfirm: () => void;
+//   title?: string;
+//   message?: string;
+// }
 
 function toBase64(file: File) {
   return new Promise((resolve, reject) => {
@@ -200,7 +180,7 @@ const UserProfilePage = () => {
       return;
     }
 
-    setUserProfile(response.data.UpdateMyProfile);
+    setUserProfile({ ...response.data.UpdateMyProfile, lists: userProfile?.lists || [] });
     // setUserProfile(response.data?.updateMyProfile);
     setMessageSuccess("Profil mis à jour avec succès !");
   };
@@ -242,39 +222,6 @@ const UserProfilePage = () => {
       toast.error("Erreur lors de la déconnexion");
       consoleErrorDev("Erreur de déconnexion :", err);
     }
-  };
-
-  const ConfirmModal = ({
-    isOpen,
-    onClose,
-    onConfirm,
-    title,
-    message,
-  }: {
-    isOpen: boolean;
-    onClose: () => void;
-    onConfirm: () => void;
-    title?: string;
-    message?: string;
-  }) => {
-    if (!isOpen) return null;
-
-    return (
-      <div className="modal-overlay" /*onClick={onClose}*/>
-        <div className="modal-content" /*onClick={(e) => e.stopPropagation()}*/>
-          <h2>{title}</h2>
-          <p>{message}</p>
-          <div className="modal-actions">
-            <button type="button" className="modal-btn-cancel" onClick={onClose}>
-              Annuler
-            </button>
-            <button type="button" className="modal-btn-confirm" onClick={onConfirm}>
-              Confirmer
-            </button>
-          </div>
-        </div>
-      </div>
-    );
   };
 
   return (
@@ -519,13 +466,23 @@ const UserProfilePage = () => {
         </div>
       </div>
 
-      <ConfirmModal
-        isOpen={isDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen(false)}
-        onConfirm={handleConfirmDelete}
-        title="Supprimer votre profil"
-        message="Êtes-vous sûr de vouloir faire ça ? Cette action est irréversible et toutes vos données seront effacées."
-      />
+      <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)}>
+        <div>
+          <h2>Supprimer votre profil</h2>
+          <p>
+            Êtes-vous sûr de vouloir faire ça ? Cette action est irréversible et toutes vos données seront
+            effacées.
+          </p>
+          <div className="modal-actions">
+            <button type="button" className="modal-btn-cancel" onClick={() => setIsDeleteModalOpen(false)}>
+              Annuler
+            </button>
+            <button type="button" className="modal-btn-confirm" onClick={handleConfirmDelete}>
+              Confirmer
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

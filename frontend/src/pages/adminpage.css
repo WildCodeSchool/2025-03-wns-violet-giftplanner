@@ -82,6 +82,11 @@ td.admin-actions {
 }
 
 .admin-title {
+  font-size: clamp(24px, 3vw, 32px);
+  font-weight: 700;
+  color: #fdfbf6;
+  margin: 0;
+  font-family: "Inter", sans-serif;
   display: flex;
   align-items: center;
   gap: 16px;

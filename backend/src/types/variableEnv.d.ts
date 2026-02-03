@@ -5,4 +5,5 @@ export type VariableEnvListeType =
   | "DB_HOST"
   | "JWT_SECRET"
   | "SERVEUR_PORT"
-  | "MODE";
+  | "MODE"
+  | "INTERNAL_SECRET_KEY";

@@ -90,7 +90,15 @@ export default function SearchSelectInput({
     theme === "dark" ? "bg-black border-white text-white" : "bg-white border-white border-4 text-dark";
 
   return (
-    <div ref={containerRef} className="flex flex-col w-full" onKeyDown={handleKeyDown}>
+    <div
+      tabIndex={0}
+      ref={containerRef}
+      role="combobox"
+      aria-expanded={open}
+      aria-haspopup="listbox"
+      className="flex flex-col w-full"
+      onKeyDown={handleKeyDown}
+    >
       {label && (
         <label htmlFor={id} className="font-semibold text-md text-white dark:text-dark">
           {label}
@@ -103,7 +111,17 @@ export default function SearchSelectInput({
         {!open && (
           <div
             className={`${baseInput} ${themeInput} ${errorInput} ${className} flex justify-between items-center`}
+            role="combobox"
+            aria-expanded={open}
+            aria-haspopup="listbox"
+            tabIndex={0}
             onClick={() => setOpen(true)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                setOpen(true);
+              }
+            }}
           >
             <span className={value ? "" : "opacity-50"}>
               {value ? options.find((o) => o.value === value)?.label : placeholder}
@@ -135,9 +153,16 @@ export default function SearchSelectInput({
               absolute left-0 right-0 mt-2 border-2 rounded-lg shadow-lg z-20 max-h-60 overflow-y-auto
               ${dropdownStyles}
             `}
+            role="listbox"
+            aria-expanded={open}
+            aria-haspopup="listbox"
           >
             {/* OPTIONS */}
-            {filtered.length === 0 && <div className="p-3 opacity-60 italic">Pas de résultats...</div>}
+            {filtered.length === 0 && (
+              <div className="p-3 opacity-60 italic" role="option" tabIndex={0} aria-selected={false}>
+                Pas de résultats...
+              </div>
+            )}
 
             {filtered.map((option, index) => {
               const selected = option.value === value;
@@ -146,12 +171,23 @@ export default function SearchSelectInput({
               return (
                 <div
                   key={option.value}
+                  role="option"
+                  aria-selected={selected}
+                  tabIndex={0}
                   onClick={() => {
                     onChange(option.value);
                     setOpen(false);
                     setQuery("");
                   }}
                   onMouseEnter={() => setFocusedIndex(index)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      onChange(option.value);
+                      setOpen(false);
+                      setQuery("");
+                    }
+                  }}
                   className={`
                     px-4 py-2 cursor-pointer transition
                     ${selected ? "opacity-100 font-bold" : "opacity-80"}

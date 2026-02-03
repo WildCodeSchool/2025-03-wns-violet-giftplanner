@@ -24,7 +24,15 @@ export default function ToggleSwitch({ checked, onChange, mode = "light" }: Togg
   return (
     <div
       onClick={() => onChange(!checked)}
-      aria-role="switch"
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          onChange(!checked);
+        }
+      }}
+      role="switch"
+      aria-checked={checked}
+      tabIndex={0}
       className={`
         shrink-0
         basis-auto
