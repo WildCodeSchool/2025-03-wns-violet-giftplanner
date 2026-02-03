@@ -117,7 +117,7 @@ export const GET_GROUP_BY_ID = gql`
 `;
 
 export const UPDATE_GROUP = gql`
-  mutation UpdateGroup($data: CreateGroupInput!, $updateGroupId: Float!) {
+  mutation UpdateGroup($data: UpdateGroupInput!, $updateGroupId: Float!) {
   updateGroup(data: $data, id: $updateGroupId) {
     id
     event_type

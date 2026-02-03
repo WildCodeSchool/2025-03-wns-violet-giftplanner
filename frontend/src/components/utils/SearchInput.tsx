@@ -45,6 +45,7 @@ export default function SearchInput({
 
   function handleAddTag() {
     if (value.trim() !== "" && onAddTag) {
+      console.log("going here")
       onAddTag(value.trim());
     }
   }

@@ -223,7 +223,7 @@ export type MutationUpdateGiftArgs = {
 
 
 export type MutationUpdateGroupArgs = {
-  data: CreateGroupInput;
+  data: UpdateGroupInput;
   id: Scalars['Float']['input'];
 };
 
@@ -293,6 +293,15 @@ export type UpdateGiftInput = {
   url?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type UpdateGroupInput = {
+  deadline: Scalars['DateTimeISO']['input'];
+  event_type: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  piggy_bank: Scalars['Float']['input'];
+  user_beneficiary?: InputMaybe<Scalars['String']['input']>;
+  users?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
 export type UpdateMyProfileInput = {
   date_of_birth: Scalars['String']['input'];
   email: Scalars['String']['input'];
@@ -353,7 +362,7 @@ export type GetGroupByIdQueryVariables = Exact<{
 export type GetGroupByIdQuery = { __typename?: 'Query', getGroupById: { __typename?: 'Group', piggy_bank: number, name: string, id: string, deadline: any, event_type: string, user_admin: { __typename?: 'User', firstName: string, lastName: string, id: string, email: string }, groupMember: Array<{ __typename?: 'GroupMember', firstName?: string | null, lastName?: string | null, email?: string | null, userId: number }>, user_beneficiary?: { __typename?: 'User', firstName: string, lastName: string, id: string } | null } };
 
 export type UpdateGroupMutationVariables = Exact<{
-  data: CreateGroupInput;
+  data: UpdateGroupInput;
   updateGroupId: Scalars['Float']['input'];
 }>;
 
@@ -688,7 +697,7 @@ export type GetGroupByIdLazyQueryHookResult = ReturnType<typeof useGetGroupByIdL
 export type GetGroupByIdSuspenseQueryHookResult = ReturnType<typeof useGetGroupByIdSuspenseQuery>;
 export type GetGroupByIdQueryResult = Apollo.QueryResult<GetGroupByIdQuery, GetGroupByIdQueryVariables>;
 export const UpdateGroupDocument = gql`
-    mutation UpdateGroup($data: CreateGroupInput!, $updateGroupId: Float!) {
+    mutation UpdateGroup($data: UpdateGroupInput!, $updateGroupId: Float!) {
   updateGroup(data: $data, id: $updateGroupId) {
     id
     event_type

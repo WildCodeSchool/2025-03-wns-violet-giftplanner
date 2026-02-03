@@ -17,7 +17,8 @@ export async function addMembersToGroup({ userEmails, groupId }: AddMembersInput
   await Promise.all(
     userEmails.map(async (userEmail) => {
       const userToAdd = await User.findOne({ where: { email: userEmail } });
-      if (!userToAdd) {
+      const userPending = await PendingInvitation.findOne({where: {userEmail : userEmail}})
+      if (!userToAdd && !userPending) {
         // if the user does not exist in the db, add it to the pendinginvitationList
         const pendingInvitation = PendingInvitation.create({
           userEmail: userEmail,
@@ -29,7 +30,7 @@ export async function addMembersToGroup({ userEmails, groupId }: AddMembersInput
       }
 
       const groupMember = GroupMember.create({
-        userId: userToAdd.id,
+        userId: userToAdd?.id,
         groupId,
       });
 

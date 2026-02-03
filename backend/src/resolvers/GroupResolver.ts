@@ -19,6 +19,7 @@ import User from "../entities/User";
 import { getVariableEnv } from "../lib/envManager/envManager";
 import { RoleMiddleware } from "../middleware/RoleMiddleware";
 import type { ContextType } from "../types/context";
+import { addMembersToGroup } from "../services/groupMemberService";
 
 @InputType()
 class CreateGroupInput {
@@ -38,6 +39,29 @@ class CreateGroupInput {
 
   @Field({ nullable: true })
   user_beneficiary?: string;
+}
+
+
+@InputType()
+class UpdateGroupInput {
+  @Field()
+  name!: string;
+
+  @Field()
+  event_type!: string;
+
+  @Field()
+  piggy_bank!: number;
+
+  @Field()
+  deadline!: Date;
+
+  @Field(() => [String], { nullable: true })
+  users?: string[];
+
+  @Field({ nullable: true })
+  user_beneficiary?: string;
+
 }
 
 @ObjectType()
@@ -169,7 +193,7 @@ export default class GroupResolver {
 
   @UseMiddleware(RoleMiddleware())
   @Mutation(() => Group)
-  async updateGroup(@Arg("id") id: number, @Arg("data") data: CreateGroupInput) {
+  async updateGroup(@Arg("id") id: number, @Arg("data") data: UpdateGroupInput) {
     const group = await Group.findOne({ where: { id: id } });
     if (!group) throw new Error("Groupe non trouvé");
     group.name = data.name;
@@ -177,6 +201,14 @@ export default class GroupResolver {
     group.piggy_bank = data.piggy_bank;
     group.deadline = data.deadline;
     await group.save();
+
+    if (data.users?.length) {
+      await addMembersToGroup({
+        userEmails: data.users,
+        groupId: group.id
+      });
+    }
+    
     return group;
   }
 }
