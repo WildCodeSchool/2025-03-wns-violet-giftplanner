@@ -14,6 +14,7 @@ import { GET_ALL_MY_GROUPS } from "../../../graphql/operations/groupOperations";
 import { groupCreationFormValidation, type GroupFormErrors } from "../groups/formValidationRules";
 import { useSanitizedForm } from "../../../hooks/useSanitizedForm";
 import { useUserPermissions } from "../../../hooks/useUserPermissions";
+import UsersForm from "./UsersForm";
 
 type GroupFormIndex = {
     onSuccess?: () => void;
@@ -224,27 +225,10 @@ export default function GroupFormindex({onSuccess, groupId} : GroupFormIndex) {
             setChecked={setChecked}
             submitError={submitError}
              />)}
-            right={ (
-              <div className="mt-8">
-                <SearchInput
-                    placeholder="Ajouter des participants..."
-                    theme="dark"
-                    name="users"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)} // ✅ correct
-                    items={formData.users ?? []}
-                    error={errors.users}
-                    onClick={(email) => {
-                        setFormData((prev) => ({
-                        ...prev,
-                        users: prev?.users?.filter((user) => user !== email),
-                        }));
-                    }}
-                    onAddTag={handleAddUserByEmail}
-                    />
-                    {!isAdmin && isEditMode && <button>Quitter le groupe</button>}
-                    {isAdmin && isEditMode && <button>Supprimer le groupe</button> }
-                    </div>)
+            right={(!isEditMode || (isEditMode && isAdmin)) && (
+              <UsersForm query={query} setQuery={setQuery} formData={formData} setFormData={setFormData} errors={errors} onAddTag={handleAddUserByEmail} 
+              isAdmin={isAdmin} isEdit={isEditMode}></UsersForm>
+                )
 
             }
             onSubmit={handleSubmit}

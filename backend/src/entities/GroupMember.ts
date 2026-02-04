@@ -53,14 +53,18 @@ export class GroupMember extends BaseEntity {
 
   @ManyToOne(
     () => User,
-    (user) => user.groupMember,
+    (user) => user.groupMember, {
+      onDelete: "CASCADE",
+    }
   )
   @JoinColumn({ name: "userId" })
   user: User;
 
   @ManyToOne(
     () => Group,
-    (group) => group.groupMember,
+    (group) => group.groupMember, {
+      onDelete: "CASCADE",
+    }
   )
   @JoinColumn({ name: "groupId" })
   group: Group;

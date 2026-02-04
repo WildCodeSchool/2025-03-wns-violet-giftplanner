@@ -148,10 +148,12 @@ export type Mutation = {
   banUser: BanUserResponse;
   createGroup: Group;
   deleteGift: Scalars['Int']['output'];
+  deleteGroup: Scalars['String']['output'];
   deleteMyProfile: DeleteUserResponse;
   deleteUser: DeleteUserResponse;
   login: User;
   logout: Scalars['Boolean']['output'];
+  removeMembersFromGroup: Scalars['String']['output'];
   sendMessage: Message;
   signup: User;
   unbanUser: BanUserResponse;
@@ -191,6 +193,11 @@ export type MutationDeleteGiftArgs = {
 };
 
 
+export type MutationDeleteGroupArgs = {
+  id: Scalars['Float']['input'];
+};
+
+
 export type MutationDeleteUserArgs = {
   userId: Scalars['Float']['input'];
 };
@@ -198,6 +205,12 @@ export type MutationDeleteUserArgs = {
 
 export type MutationLoginArgs = {
   data: LoginInput;
+};
+
+
+export type MutationRemoveMembersFromGroupArgs = {
+  groupId: Scalars['Float']['input'];
+  userIds: Array<Scalars['Float']['input']>;
 };
 
 

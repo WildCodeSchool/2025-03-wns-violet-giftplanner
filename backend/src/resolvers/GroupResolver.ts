@@ -12,6 +12,7 @@ import {
   Root,
   UseMiddleware,
 } from "type-graphql";
+
 import Group from "../entities/Group";
 import { GroupMember } from "../entities/GroupMember";
 import { Message } from "../entities/Message";
@@ -19,7 +20,7 @@ import User from "../entities/User";
 import { getVariableEnv } from "../lib/envManager/envManager";
 import { RoleMiddleware } from "../middleware/RoleMiddleware";
 import type { ContextType } from "../types/context";
-import { addMembersToGroup } from "../services/groupMemberService";
+import { addMembersToGroup, removeMembersFromGroup } from "../services/groupMemberService";
 
 @InputType()
 class CreateGroupInput {
@@ -211,4 +212,111 @@ export default class GroupResolver {
     
     return group;
   }
+
+  @UseMiddleware(RoleMiddleware())
+  @Mutation(() => String)
+  async deleteGroup(
+    @Arg("id") id: number,
+    @Ctx() ctx: ContextType
+  ): Promise<string> {
+    if (!ctx.user) {
+      throw new Error("Utilisateur non connecté");
+    }
+  
+    const group = await Group.findOne({
+      where: {
+        id,
+        user_admin: { id: ctx.user.id },
+      },
+      relations: { user_admin: true },
+    });
+    
+    if (!group) {
+      throw new Error("Groupe introuvable ou accès refusé");
+    }
+  
+    if (!group.user_admin || group.user_admin.id !== ctx.user.id) {
+      throw new Error(
+        "Il faut être administrateur du groupe pour pouvoir le supprimer"
+      );
+    }
+  
+    try {
+      await Group.remove(group);
+      return "Le groupe a été supprimé";
+    } catch (err) {
+      console.error("deleteGroup error:", err);
+      throw new Error("Une erreur est survenue lors de la suppression du groupe");
+    }
+  }
+
+  @UseMiddleware(RoleMiddleware())
+  @Mutation(() => String)
+  async removeMembersFromGroup(@Arg("groupId", () => Number) groupId: number,
+  @Arg("userIds", () => [Number]) userIds: number[], @Ctx() ctx: ContextType ): Promise<string> {
+    if (!ctx.user) {
+      throw new Error("Utilisateur non connecté");
+    }
+
+    const group = await Group.findOne({
+      where: {
+        id: groupId
+      },
+      relations: { user_admin: true },
+    });
+
+    if (!group) {
+      throw new Error("Groupe introuvable ou accès refusé");
+    }
+    const currentUserId = ctx.user.id
+    const isAdmin = ctx.user.id === group.user_admin.id
+    
+   
+    //Admin cannot remove itself from a group
+    if (isAdmin && userIds.length > 0 && userIds.includes(group?.user_admin.id)) {
+      throw new Error ("L'administrateur du groupe ne peut pas être supprimer. Supprimer plutôt le groupe")
+    }
+
+     //Remove myself from a group 
+    if(!isAdmin && userIds.length > 0 && userIds.every((id) => (id === currentUserId))) {
+      try {
+        removeMembersFromGroup({
+          userIds: [currentUserId],
+          groupId,
+        })
+
+        return "Succès! Vous ne faites plus partie du groupe!"
+
+      } catch (err) {
+        console.error("deleteGroup error:", err);
+        throw new Error("Une erreur est survenue, nous n'avons pas pu vous supprimer du groupe");
+      }
+      
+    }
+    
+    //Admin removes users from a group
+    if (isAdmin && userIds.length > 0 && !userIds.includes(group?.user_admin.id) ) {
+      try {
+        removeMembersFromGroup({
+          userIds,
+          groupId,
+        })
+
+        return "Succès! Les utilisateurs ont été supprimé du groupe!"
+
+      } catch (err) {
+        console.error("deleteGroup error:", err);
+        throw new Error("Une erreur est survenue, nous n'avons pas pu supprimer les utilisateurs du groupe");
+      }
+
+    }
+
+    return "Un problème est survenu"
+
+   
+
+
+  }
+  
+  
 }
