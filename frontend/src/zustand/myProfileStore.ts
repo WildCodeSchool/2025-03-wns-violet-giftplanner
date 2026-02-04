@@ -8,7 +8,7 @@ type State = {
   clearUserProfile: () => void;
 };
 
-type UserProfile = GetMyProfileQuery["getMyProfile"];
+export type UserProfile = GetMyProfileQuery["getMyProfile"];
 
 export const useMyProfileStore = create<State>((set) => ({
   userProfile: null,

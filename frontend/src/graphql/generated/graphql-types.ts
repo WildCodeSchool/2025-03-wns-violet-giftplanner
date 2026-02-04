@@ -347,7 +347,7 @@ export type CreateGroupMutation = { __typename?: 'Mutation', createGroup: { __ty
 export type GetAllMyGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllMyGroupsQuery = { __typename?: 'Query', getAllMyGroups: { __typename?: 'MyGroupsResponse', groupToken: string, groups: Array<{ __typename?: 'Group', id: string, name: string, createdAt: any, updatedAt: any, event_type: string, piggy_bank: number, deadline: any, groupMember: Array<{ __typename?: 'GroupMember', id: string, userId: number, groupId: number }> }> } };
+export type GetAllMyGroupsQuery = { __typename?: 'Query', getAllMyGroups: { __typename?: 'MyGroupsResponse', groupToken: string, groups: Array<{ __typename?: 'Group', id: string, name: string, createdAt: any, updatedAt: any, event_type: string, piggy_bank: number, deadline: any, groupMember: Array<{ __typename?: 'GroupMember', id: string, userId: number, groupId: number }>, user_admin: { __typename?: 'User', isAdmin: boolean, firstName: string, lastName: string, email: string } }> } };
 
 export type GetAllMessageMyGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -359,7 +359,7 @@ export type GetGroupByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetGroupByIdQuery = { __typename?: 'Query', getGroupById: { __typename?: 'Group', piggy_bank: number, name: string, id: string, deadline: any, event_type: string, user_admin: { __typename?: 'User', firstName: string, lastName: string, id: string, email: string }, groupMember: Array<{ __typename?: 'GroupMember', firstName?: string | null, lastName?: string | null, email?: string | null, userId: number }>, user_beneficiary?: { __typename?: 'User', firstName: string, lastName: string, id: string } | null } };
+export type GetGroupByIdQuery = { __typename?: 'Query', getGroupById: { __typename?: 'Group', piggy_bank: number, name: string, id: string, deadline: any, event_type: string, user_admin: { __typename?: 'User', firstName: string, lastName: string, id: string, email: string, isAdmin: boolean }, groupMember: Array<{ __typename?: 'GroupMember', firstName?: string | null, lastName?: string | null, email?: string | null, userId: number }>, user_beneficiary?: { __typename?: 'User', firstName: string, lastName: string, id: string } | null } };
 
 export type UpdateGroupMutationVariables = Exact<{
   data: UpdateGroupInput;
@@ -546,6 +546,12 @@ export const GetAllMyGroupsDocument = gql`
         userId
         groupId
       }
+      user_admin {
+        isAdmin
+        firstName
+        lastName
+        email
+      }
     }
   }
 }
@@ -659,6 +665,12 @@ export const GetGroupByIdDocument = gql`
       firstName
       lastName
       id
+    }
+    user_admin {
+      isAdmin
+      firstName
+      lastName
+      email
     }
   }
 }

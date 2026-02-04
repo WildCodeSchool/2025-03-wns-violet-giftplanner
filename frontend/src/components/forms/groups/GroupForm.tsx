@@ -1,15 +1,4 @@
 import type React from "react";
-import { useEffect, useState } from "react";
-import {
-  type CreateGroupInput,
-  useCreateGroupMutation,
-  useGetGroupByIdQuery,
-  useUpdateGroupMutation,
-} from "../../../graphql/generated/graphql-types";
-import { GET_ALL_MY_GROUPS } from "../../../graphql/operations/groupOperations";
-import { groupCreationFormValidation, type GroupFormErrors } from "../../../hooks/formValidationRules";
-import { useSanitizedForm } from "../../../hooks/useSanitizedForm";
-import Button from "../../utils/Button";
 import Icon from "../../utils/Icon";
 import Input from "../../utils/Input";
 import InputWithToggle from "../../utils/InputWithToggle";

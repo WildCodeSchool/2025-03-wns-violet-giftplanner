@@ -5,13 +5,15 @@ import { useEffect, useState } from "react";
 import { useMyProfileStore } from "../../../zustand/myProfileStore";
 import {
   type CreateGroupInput,
+  type Group,
   useCreateGroupMutation,
   useGetGroupByIdQuery,
   useUpdateGroupMutation,
 } from "../../../graphql/generated/graphql-types";
 import { GET_ALL_MY_GROUPS } from "../../../graphql/operations/groupOperations";
-import { groupCreationFormValidation, type GroupFormErrors } from "../../../hooks/formValidationRules";
+import { groupCreationFormValidation, type GroupFormErrors } from "../groups/formValidationRules";
 import { useSanitizedForm } from "../../../hooks/useSanitizedForm";
+import { useUserPermissions } from "../../../hooks/useUserPermissions";
 
 type GroupFormIndex = {
     onSuccess?: () => void;
@@ -29,12 +31,14 @@ const EMPTY_FORM_STATE: CreateGroupInput = {
 
 export default function GroupFormindex({onSuccess, groupId} : GroupFormIndex) {
     const [submitError, setSubmitError] = useState<string>("");
-    const isEditMode = Boolean(groupId);
     const [checked, setChecked] = useState(false);
     const [query, setQuery] = useState("");
     const { userProfile } = useMyProfileStore();
-    const currentUser = userProfile
-  
+    const [group, setGroup] = useState<Group | null>(null);
+    const { currentUser, isAdmin } = useUserPermissions(group);  
+    const isEditMode = !!groupId //(truthy => true or falsy => false)
+    console.log('i am admin', isAdmin)
+    console.log('is edit', isEditMode)
 
     const {
         formData,
@@ -75,23 +79,23 @@ export default function GroupFormindex({onSuccess, groupId} : GroupFormIndex) {
     
       useEffect(() => {
         if (!isEditMode || !data?.getGroupById) return;
-    
-        const group = data.getGroupById;
+        setGroup(data?.getGroupById)
+        // const group = ;
     
         setFormData((prev) => ({
           ...prev,
-          name: group.name ?? "",
-          event_type: group.event_type ?? "",
-          piggy_bank: group.piggy_bank ?? 0,
+          name: group?.name ?? "",
+          event_type: group?.event_type ?? "",
+          piggy_bank: group?.piggy_bank ?? 0,
           // Normalise to YYYY-MM-DD for the date input, if possible
-          deadline: group.deadline ? new Date(group.deadline).toISOString().slice(0, 10) : "",
+          deadline: group?.deadline ? new Date(group?.deadline).toISOString().slice(0, 10) : "",
           // We don't currently have an email here, so use the first name as a display value if present
-          user_beneficiary: group.user_beneficiary?.firstName ?? "",
+          user_beneficiary: group?.user_beneficiary?.firstName ?? "",
           users: []
           
         }));
-        setChecked(Boolean(group.user_beneficiary));
-      }, [data, isEditMode, setFormData]);
+        setChecked(Boolean(group?.user_beneficiary));
+      }, [data, isEditMode, setFormData, group]);
     
       if (isEditMode) {
         if (loading) return <div>Loading...</div>;
@@ -154,76 +158,74 @@ export default function GroupFormindex({onSuccess, groupId} : GroupFormIndex) {
 
       
 
-    async function handleSubmit(e: React.FormEvent) {
-        e.preventDefault();
-        setSubmitError("");
-    
-        if (isEmpty) {
-          console.info("Form is empty.");
-          setSubmitError("Être bref c'est bien, mais il faut quand même remplir le formulaire");
+  async function handleSubmit(e: React.FormEvent) {
+      e.preventDefault();
+      setSubmitError("");
+  
+      if (isEmpty) {
+        console.info("Form is empty.");
+        setSubmitError("Être bref c'est bien, mais il faut quand même remplir le formulaire");
+        return;
+      }
+  
+      if (!isValid) {
+        console.error("Form has errors, cannot submit.", errors);
+        return;
+      }
+  
+      try {
+        const sanitizedData = getSanitizedData();
+  
+        if (!sanitizedData) {
+          console.error("Sanitized data is null or undefined.");
           return;
         }
-    
-        if (!isValid) {
-          console.error("Form has errors, cannot submit.", errors);
-          return;
-        }
-    
-        try {
-          const sanitizedData = getSanitizedData();
-    
-          if (!sanitizedData) {
-            console.error("Sanitized data is null or undefined.");
-            return;
-          }
-    
-          const commonVariables = {
-            data: {
-              ...sanitizedData,
-              piggy_bank: Number(sanitizedData.piggy_bank),
-              deadline: new Date(sanitizedData.deadline),
-              users: formData.users
+  
+        const commonVariables = {
+          data: {
+            ...sanitizedData,
+            piggy_bank: Number(sanitizedData.piggy_bank),
+            deadline: new Date(sanitizedData.deadline),
+            users: formData.users
+          },
+        };
+  
+        if (isEditMode && groupId) {
+          await updateGroup({
+            variables: {
+              ...commonVariables,
+              updateGroupId: groupId,
             },
-          };
-    
-          if (isEditMode && groupId) {
-            await updateGroup({
-              variables: {
-                ...commonVariables,
-                updateGroupId: groupId,
-              },
-            });
-          } else {
-            const response = await createGroup({
-              variables: commonVariables,
-            });
-    
-            console.info("Group created successfully:", response.data);
-    
-            setFormData(EMPTY_FORM_STATE);
-            setChecked(false);
-          }
-    
-          if (onSuccess) onSuccess();
-        } catch (error: unknown) {
-          console.error("Error submitting group form:", error);
-          if (error instanceof Error) {
-            setSubmitError(error.message);
-          } else {
-            setSubmitError("Une erreur est survenue");
-          }
+          });
+        } else {
+          const response = await createGroup({
+            variables: commonVariables,
+          });
+  
+          console.info("Group created successfully:", response.data);
+  
+          setFormData(EMPTY_FORM_STATE);
+          setChecked(false);
+        }
+  
+        if (onSuccess) onSuccess();
+      } catch (error: unknown) {
+        console.error("Error submitting group form:", error);
+        if (error instanceof Error) {
+          setSubmitError(error.message);
+        } else {
+          setSubmitError("Une erreur est survenue");
         }
       }
+    }
     return (
         <GroupFormTemplate 
-            left={<GroupForm formData={formData} errors={errors} isEdit={isEditMode} handleChange={handleChange} checked={checked} 
+            left={(!isEditMode || (isEditMode && isAdmin)) && (<GroupForm formData={formData} errors={errors} isEdit={isEditMode} handleChange={handleChange} checked={checked} 
             setChecked={setChecked}
             submitError={submitError}
-             />}
-            right={
+             />)}
+            right={ (
               <div className="mt-8">
-
-              
                 <SearchInput
                     placeholder="Ajouter des participants..."
                     theme="dark"
@@ -240,7 +242,9 @@ export default function GroupFormindex({onSuccess, groupId} : GroupFormIndex) {
                     }}
                     onAddTag={handleAddUserByEmail}
                     />
-                    </div>
+                    {!isAdmin && isEditMode && <button>Quitter le groupe</button>}
+                    {isAdmin && isEditMode && <button>Supprimer le groupe</button> }
+                    </div>)
 
             }
             onSubmit={handleSubmit}

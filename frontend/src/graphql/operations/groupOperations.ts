@@ -49,6 +49,12 @@ export const GET_ALL_MY_GROUPS = gql`
           userId
           groupId
         }
+        user_admin {
+        isAdmin
+        firstName
+        lastName
+        email
+      }
       }
     }
   }
@@ -71,6 +77,7 @@ export const GET_ALL_MESSAGE_MY_GROUPS = gql`
           image_url
           isAdmin
         }
+          
       }
     }
   }
@@ -112,6 +119,12 @@ export const GET_GROUP_BY_ID = gql`
         lastName
         id
       }
+      user_admin {
+      isAdmin
+      firstName
+      lastName
+      email
+    }
     }
   }
 `;
