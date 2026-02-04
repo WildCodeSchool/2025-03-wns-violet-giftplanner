@@ -202,6 +202,7 @@ export default function Conversations() {
               contenairMessageRef={contenairMessageRef}
               updateLastVu={updateLastVu}
               getLastVu={getLastVu}
+              getNbNewMessages={getNbNewMessages}
             />
           )}
       </div>

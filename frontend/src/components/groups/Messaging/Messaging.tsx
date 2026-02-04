@@ -1,13 +1,14 @@
 import type { FormEvent, KeyboardEvent, RefObject, UIEvent } from "react";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
-import { FaLocationArrow } from "react-icons/fa";
+import { FaArrowDown, FaLocationArrow } from "react-icons/fa";
 import type { GetAllMessageMyGroupsQuery } from "../../../graphql/generated/graphql-types.ts";
 import { useGetLazyMessagesLazyQuery } from "../../../graphql/generated/graphql-types.ts";
+import type { Message as MessageType } from "../../../types/Message";
 import { countdownDate } from "../../../utils/dateCalculator.ts";
 import { useMyProfileStore } from "../../../zustand/myProfileStore.ts";
 import Icon from "../../utils/Icon.tsx";
 import Subtitle from "../../utils/Subtitle.tsx";
-import Message from "./Message";
+import Message from "./Message.tsx";
 
 type MessagingProps = {
   title: string;
@@ -20,6 +21,7 @@ type MessagingProps = {
   contenairMessageRef: RefObject<HTMLDivElement | null>;
   updateLastVu: (groupId: number, date: Date | string, serveurSyconization?: boolean) => void;
   getLastVu: (groupId: number) => Date | undefined;
+  getNbNewMessages: (groupId: number, messages: MessageType[]) => number;
 };
 
 export default function Messaging({
@@ -33,6 +35,7 @@ export default function Messaging({
   contenairMessageRef,
   updateLastVu,
   getLastVu,
+  getNbNewMessages,
 }: MessagingProps) {
   const id = useId();
   const [messageInput, setMessageInput] = useState<string>("");
@@ -188,22 +191,40 @@ export default function Messaging({
         </div>
       </div>
       <div className="h-full w-full flex flex-col px-1.5 pb-5 pl-4">
-        <div
-          ref={contenairMessageRef}
-          className="w-full overflow-y-auto min-h-auto flex-grow flex-shrink basis-0 pt-[7px] pr-2.5 pb-2.5 pl-0"
-          onScroll={onScrollContainerMessages}
-        >
-          {orderedMessages.map((message) => {
-            return (
-              <Message
-                key={message.id}
-                text={message.content}
-                imageUrl={message.user.image_url ? message.user.image_url : ""}
-                align={message.user.id === userProfile?.id ? "right" : "left"}
-              />
-            );
-          })}
-          <div ref={bottomRef} />
+        <div className="relative w-full overflow-hidden min-h-auto flex-grow flex-shrink basis-0 pt-[7px] pr-2.5 pb-2.5 pl-0">
+          <div
+            ref={contenairMessageRef}
+            className="w-full overflow-y-auto min-h-auto h-full"
+            onScroll={onScrollContainerMessages}
+          >
+            {orderedMessages.map((message) => {
+              return (
+                <Message
+                  key={message.id}
+                  text={message.content}
+                  imageUrl={message.user.image_url ? message.user.image_url : ""}
+                  align={message.user.id === userProfile?.id ? "right" : "left"}
+                />
+              );
+            })}
+            <div ref={bottomRef} />
+            {getNbNewMessages(groupId, messages) > 0 && (
+              <button
+                className="flex cursor-pointer gap-[5px] items-center absolute px-[10px] py-[5px] bottom-[5px] left-[50%] rounded-[100px] text-[16px] text-white bg-[var(--color-blue)] hover:bg-[#1e2366]"
+                style={{ transform: "translateX(-50%)" }}
+                type="button"
+                onClick={() => {
+                  contenairMessageRef.current?.scrollTo({
+                    top: contenairMessageRef.current.scrollHeight,
+                    behavior: "smooth",
+                  });
+                }}
+              >
+                {getNbNewMessages(groupId, messages)} nouveaux message
+                <FaArrowDown />
+              </button>
+            )}
+          </div>
         </div>
         <div className="w-full flex-grow-0 flex-shrink-0 basis-auto pr-2.5">
           <form
