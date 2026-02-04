@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Groups from "../components/groups/Groups";
 import Messaging from "../components/groups/Messaging/Messaging";
 import PiggyBank from "../components/groups/PiggyBank";
@@ -6,10 +6,10 @@ import Wishlist from "../components/groups/Wishlist";
 import Button from "../components/utils/Button";
 import type { GetAllMessageMyGroupsQuery, GetAllMyGroupsQuery } from "../graphql/generated/graphql-types";
 import { useGetAllMessageMyGroupsQuery, useGetAllMyGroupsQuery } from "../graphql/generated/graphql-types";
+import useVuMessage from "../hooks/message/vuMessage";
 import { useLiveChat } from "../hooks/useChat";
 import type { MessageType } from "../types/Groups";
-
-type message = GetAllMessageMyGroupsQuery["getAllMessageMyGroups"][number]["messages"][number];
+import type { Message } from "../types/Message";
 
 export default function Conversations() {
   const [wishlist, setWishlist] = useState<boolean>(true);
@@ -24,12 +24,14 @@ export default function Conversations() {
   // const { data: wishlistData } = useGroupWishlistItemsQuery({ variables: { groupId: Number(groups[indexGroups].id) } }  || skip);
   const [groups, setGroups] = useState<GetAllMyGroupsQuery["getAllMyGroups"]["groups"]>([]);
   const [messages, setMessages] = useState<MessageType>({});
+  // const [nbNewMessagesRef, setNbNewMessagesRef] = useState<{ [groupId: number]: number }>({});
+  const { updateLastVu, getNbNewMessages, getLastVu } = useVuMessage();
 
   const [indexGroups, setIndexGroup] = useState<number>(0);
 
   const contenairMessageRef = useRef<HTMLDivElement | null>(null);
 
-  const handlerNewMessage = (response: { newMessage: message; groupId: number }) => {
+  const handlerNewMessage = (response: { newMessage: Message; groupId: number }) => {
     setMessages((prev) => {
       const clone = structuredClone(prev);
       clone[response.groupId]?.unshift(response.newMessage);
@@ -37,18 +39,28 @@ export default function Conversations() {
     });
   };
 
-  // scrolle vers le bas quand le rerendu est fait
-  useLayoutEffect(() => {
-    if (!contenairMessageRef.current) return;
-    const scrollTop = contenairMessageRef.current.scrollTop;
-    const scrollHeight = contenairMessageRef.current.scrollHeight;
-    const clientHeight = contenairMessageRef.current.clientHeight;
+  // scroller vers le bas quand on reçoit un nouveau message
+  useEffect(() => {
+    if (indexGroups === -1) return;
+    if (!groups[indexGroups]) return;
+    if (!Number(groups[indexGroups].id)) return;
+    const groupsId = Number(groups[indexGroups].id);
 
-    const distanceToBottom = scrollHeight - (scrollTop + clientHeight);
+    if (getNbNewMessages(groupsId, messages[groupsId]) > 0) {
+      // scrolle vers le bas si on y est déjà
+      if (!contenairMessageRef.current) return;
+      const scrollTop = contenairMessageRef.current.scrollTop;
+      const scrollHeight = contenairMessageRef.current.scrollHeight;
+      const clientHeight = contenairMessageRef.current.clientHeight;
 
-    if (distanceToBottom >= clientHeight) return;
+      const distanceToBottom = scrollHeight - (scrollTop + clientHeight);
 
-    contenairMessageRef.current.scrollTo(0, scrollHeight);
+      if (distanceToBottom >= clientHeight) return;
+
+      contenairMessageRef.current.scrollTo(0, scrollHeight);
+
+      updateLastVu(groupsId, messages[groupsId][0].createdAt);
+    }
   }, [messages]);
 
   const chat = useLiveChat(handlerNewMessage);
@@ -86,7 +98,7 @@ export default function Conversations() {
     setIndexGroup(existing ? indexGroups : 0);
   }, [groupData, indexGroups]);
 
-  // pour set les messages
+  // pour set les messages initiaux
   useEffect(() => {
     const data = messageData?.getAllMessageMyGroups;
     const messagesMap: MessageType = {};
@@ -95,6 +107,11 @@ export default function Conversations() {
     });
 
     setMessages(messagesMap);
+
+    // set les nb de nouveaux messages
+    data?.forEach((groupMessages) => {
+      updateLastVu(Number(groupMessages.groupId), groupMessages.lastTempstampVu, false);
+    });
   }, [messageData]);
 
   useEffect(() => {
@@ -107,7 +124,7 @@ export default function Conversations() {
 
   //TO DO: set activeGroup.id in url
 
-  const addMessage = (groupId: number, message: message[]) => {
+  const addMessage = (groupId: number, message: Message[]) => {
     setMessages((prev) => {
       const clone = structuredClone(prev);
       if (!clone[groupId]) {
@@ -126,7 +143,15 @@ export default function Conversations() {
       <div className="flex flex-col mx-[2vw] h-full min-h-0 justify-between">
         <div className="h-[calc(50%-2rem)] flex pb-2 ">
           {myGroups && (
-            <Groups groups={myGroups} setActiveGroup={setActiveGroup} loading={false} error={undefined} />
+            <Groups
+              groups={myGroups}
+              setActiveGroup={setActiveGroup}
+              loading={false}
+              error={undefined}
+              messages={messages}
+              getNbNewMessages={getNbNewMessages}
+              updateLastVu={updateLastVu}
+            />
           )}
         </div>
 
@@ -175,6 +200,8 @@ export default function Conversations() {
               ) => addMessage(Number(groups[indexGroups].id), message)}
               calbackSendMessage={chat.sendMessage}
               contenairMessageRef={contenairMessageRef}
+              updateLastVu={updateLastVu}
+              getLastVu={getLastVu}
             />
           )}
       </div>

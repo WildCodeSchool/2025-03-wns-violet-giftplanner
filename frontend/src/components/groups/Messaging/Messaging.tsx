@@ -18,6 +18,8 @@ type MessagingProps = {
   addMessages: (message: GetAllMessageMyGroupsQuery["getAllMessageMyGroups"][number]["messages"]) => void;
   calbackSendMessage: (groupId: number, message: string) => void;
   contenairMessageRef: RefObject<HTMLDivElement | null>;
+  updateLastVu: (groupId: number, date: Date | string, serveurSyconization?: boolean) => void;
+  getLastVu: (groupId: number) => Date | undefined;
 };
 
 export default function Messaging({
@@ -29,6 +31,8 @@ export default function Messaging({
   addMessages,
   calbackSendMessage,
   contenairMessageRef,
+  updateLastVu,
+  getLastVu,
 }: MessagingProps) {
   const id = useId();
   const [messageInput, setMessageInput] = useState<string>("");
@@ -139,6 +143,27 @@ export default function Messaging({
     //   return [...acc, message];
     // }, [] as typeof messages)
   }, [messages]);
+
+  useEffect(() => {
+    const el = contenairMessageRef.current;
+    if (!el) return;
+
+    const onScroll = () => {
+      if (el.scrollHeight - (el.scrollTop + el.clientHeight) <= 5) {
+        const lastMsgTs = messages[0]?.createdAt ? new Date(messages[0].createdAt).getTime() : 0;
+        const lastVuTs = getLastVu(groupId)?.getTime() ?? 0;
+
+        // si le dernier message est déjà vu on sort
+        if (lastMsgTs <= lastVuTs) return;
+
+        updateLastVu(groupId, messages[0]?.createdAt);
+        return;
+      }
+    };
+
+    el.addEventListener("scroll", onScroll);
+    return () => el.removeEventListener("scroll", onScroll);
+  }, [messages, groupId]);
 
   return (
     <div className="rounded-2xl w-full h-full border-grey border-2 border-lg flex flex-col">

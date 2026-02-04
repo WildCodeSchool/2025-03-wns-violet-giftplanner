@@ -40,6 +40,9 @@ class GroupMessagesOutput {
 
   @Field(() => [Message])
   messages: Message[];
+
+  @Field()
+  lastTempstampVu: Date;
 }
 
 @InputType()
@@ -58,6 +61,18 @@ class GetLazyMessagesOutput {
 
   @Field(() => [Message])
   messages: Message[];
+}
+
+@InputType()
+class SetLastMessageVuInput {
+  @Field()
+  groupId: number;
+}
+
+@ObjectType()
+class SetLastMessageVuOutput {
+  @Field()
+  sucess: boolean;
 }
 
 @Resolver(Group)
@@ -79,7 +94,7 @@ export default class MessageResolver {
       order: { id: "DESC" },
     });
 
-    const reponse: { groupId: number; messages: Message[] }[] = [];
+    const reponse: { groupId: number; messages: Message[]; lastTempstampVu: Date }[] = [];
 
     // charge les 40 derniers messages de chaque groupe
     for (const group of groups) {
@@ -89,7 +104,7 @@ export default class MessageResolver {
         order: { createdAt: "DESC" },
         take: 40,
       });
-      reponse.push({ groupId: group.id, messages });
+      reponse.push({ groupId: group.id, messages, lastTempstampVu: group.groupMember[0].lastTempstampVu });
     }
 
     return reponse;
@@ -165,5 +180,33 @@ export default class MessageResolver {
 
     // renvoie les messages et si c'est tout les messages
     return { isMaximumMessages, messages: messages };
+  }
+
+  // met a jour le vu du dernier message pour un groupe donné
+  @UseMiddleware(RoleMiddleware())
+  @Mutation(() => SetLastMessageVuOutput)
+  async setLastMessageVu(@Arg("data") data: SetLastMessageVuInput, @Ctx() ctx: ContextType) {
+    const { groupId } = data;
+
+    const userId = ctx.user?.id;
+    if (!userId) throw new Error("Utilisateur non authentifié");
+
+    // récupère le dernier message du groupe
+    const lastMessage = await Message.findOne({
+      where: { group: { id: groupId } },
+      order: { createdAt: "DESC" },
+    });
+
+    if (lastMessage) {
+      // met a jour le vu du dernier message pour l'utilisateur
+      await GroupMember.update(
+        { user: { id: userId }, group: { id: groupId } },
+        { lastTempstampVu: lastMessage.createdAt },
+      );
+
+      return { sucess: true };
+    }
+
+    return { sucess: false };
   }
 }
