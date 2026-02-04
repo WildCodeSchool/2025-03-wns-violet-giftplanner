@@ -5,7 +5,7 @@ import PiggyBank from "../components/groups/PiggyBank";
 import Wishlist from "../components/groups/Wishlist";
 import Button from "../components/utils/Button";
 import type { GetAllMessageMyGroupsQuery, GetAllMyGroupsQuery } from "../generated/graphql-types";
-import { useGetAllMessageMyGroupsQuery, useGetAllMyGroupsQuery } from "../generated/graphql-types";
+import { useGetAllMessageMyGroupsQuery, useGetAllMyGroupsQuery, useGroupWishlistItemsQuery } from "../generated/graphql-types";
 import { useLiveChat } from "../hooks/useChat";
 import type { MessageType } from "../types/Groups";
 
@@ -21,11 +21,30 @@ export default function Conversations() {
     fetchPolicy: "no-cache",
     nextFetchPolicy: "no-cache",
   });
-  // const { data: wishlistData } = useGroupWishlistItemsQuery({ variables: { groupId: Number(groups[indexGroups].id) } }  || skip);
+  
   const [groups, setGroups] = useState<GetAllMyGroupsQuery["getAllMyGroups"]["groups"]>([]);
   const [messages, setMessages] = useState<MessageType>({});
 
   const [indexGroups, setIndexGroup] = useState<number>(0);
+
+  const canQueryWishlist =
+  indexGroups !== -1 && groups.length > 0 && !!groups[indexGroups];
+
+
+  const { data: wishlistData, refetch: refetchWishlist } = useGroupWishlistItemsQuery({ 
+    variables: { groupId: Number(groups[indexGroups]?.id) },
+    skip: !canQueryWishlist,
+    fetchPolicy: "no-cache",
+    nextFetchPolicy: "no-cache"
+  });
+
+  const beneficiaryItems =
+    wishlistData?.groupWishlistItems?.fromWishlist ?? [];
+
+  const groupItems =
+    wishlistData?.groupWishlistItems?.fromGroupList ?? [];
+
+  // type DebugWishlist = GroupWishlistItemsQuery;
 
   const contenairMessageRef = useRef<HTMLDivElement | null>(null);
 
@@ -131,8 +150,11 @@ export default function Conversations() {
 
         <div className="h-[calc(50%-2rem)] flex pt-2">
           {indexGroups !== -1 &&
+            groups.length > 0 &&
+            groups[indexGroups] &&
             (wishlist ? (
-              <Wishlist beneficiaryItems={[]} groupItems={[]} onAddIdea={() => {}} />
+              <Wishlist 
+                groupId={Number(groups[indexGroups].id)} beneficiaryItems={beneficiaryItems} groupItems={groupItems} onAddIdea={() => refetchWishlist()} />
             ) : (
               <PiggyBank pot={groups[indexGroups].piggy_bank} />
             ))}
