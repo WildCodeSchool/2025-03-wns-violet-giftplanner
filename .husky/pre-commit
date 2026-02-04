@@ -1,6 +1,7 @@
 npm run husky-lint
 
 # si le paramètre bypass-bin est pas actif
+# bypass_bin=1 git commit 
 if [ "$bypass_bin" != "1" ]; then
     # Bloquer toute modification du dossier bin/
     if git diff --cached --name-only | grep -q "^bin/"; then
