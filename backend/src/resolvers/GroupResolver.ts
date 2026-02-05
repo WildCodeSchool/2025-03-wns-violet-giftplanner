@@ -65,6 +65,15 @@ class UpdateGroupInput {
 
 }
 
+@InputType()
+class RemoveMembersInput {
+  @Field(() => [Number], { nullable: true })
+  userIds?: number[];
+
+  @Field(() => [String], { nullable: true })
+  userEmails?: string[];
+}
+
 @ObjectType()
 export class MyGroupsResponse {
   @Field(() => [Group])
@@ -88,7 +97,9 @@ export default class GroupResolver {
           user: { id: ctx.user?.id },
         },
       },
-      relations: { groupMember: true, user_admin: true, user_beneficiary: true },
+      relations: { groupMember: {
+        user: true, // 👈 THIS is the key
+      }, user_admin: true, user_beneficiary: true },
       order: { id: "DESC" },
     });
 
@@ -103,7 +114,13 @@ export default class GroupResolver {
   async getGroupById(@Arg("id") id: number) {
     const group = await Group.findOne({ 
       where: { id: id },
-      relations: { user_admin: true, user_beneficiary: true, groupMember: true },
+      relations: { 
+        user_admin: true, 
+        user_beneficiary: true, 
+        groupMember: {
+          user: true,
+        },
+      },
      });
     if (!group) throw new Error("Groupe non trouvé");
     return group;
@@ -113,6 +130,7 @@ export default class GroupResolver {
   async groupMember(@Root() group: Group) {
     const groupMembers = await GroupMember.find({
       where: { groupId: group.id },
+      relations: { user: true },
     });
 
     return groupMembers || []; // >>> not null
@@ -252,10 +270,18 @@ export default class GroupResolver {
 
   @UseMiddleware(RoleMiddleware())
   @Mutation(() => String)
-  async removeMembersFromGroup(@Arg("groupId", () => Number) groupId: number,
-  @Arg("userIds", () => [Number]) userIds: number[], @Ctx() ctx: ContextType ): Promise<string> {
+  async removeMembersFromGroup(
+    @Arg("groupId", () => Number) groupId: number,
+    @Arg("data") data: RemoveMembersInput,
+    @Ctx() ctx: ContextType
+  ): Promise<string> {
     if (!ctx.user) {
       throw new Error("Utilisateur non connecté");
+    }
+
+    // Ensure at least one input is provided
+    if ((!data.userIds || data.userIds.length === 0) && (!data.userEmails || data.userEmails.length === 0)) {
+      throw new Error("Vous devez fournir au moins un identifiant utilisateur ou un email");
     }
 
     const group = await Group.findOne({
@@ -268,55 +294,69 @@ export default class GroupResolver {
     if (!group) {
       throw new Error("Groupe introuvable ou accès refusé");
     }
-    const currentUserId = ctx.user.id
-    const isAdmin = ctx.user.id === group.user_admin.id
+
+    const currentUserId = ctx.user.id;
+    const isAdmin = ctx.user.id === group.user_admin.id;
+
+    // Convert emails to user IDs if provided
+    let userIdsToRemove: number[] = [];
     
-   
-    //Admin cannot remove itself from a group
-    if (isAdmin && userIds.length > 0 && userIds.includes(group?.user_admin.id)) {
-      throw new Error ("L'administrateur du groupe ne peut pas être supprimer. Supprimer plutôt le groupe")
+    if (data.userEmails && data.userEmails.length > 0) {
+      await Promise.all(
+        data.userEmails.map(async (email) => {
+          const user = await User.findOne({ where: { email } });
+          if (user) {
+            userIdsToRemove.push(user.id);
+          }
+        })
+      );
     }
 
-     //Remove myself from a group 
-    if(!isAdmin && userIds.length > 0 && userIds.every((id) => (id === currentUserId))) {
+    // Add direct user IDs if provided
+    if (data.userIds && data.userIds.length > 0) {
+      userIdsToRemove.push(...data.userIds);
+    }
+
+    // Remove duplicates
+    userIdsToRemove = [...new Set(userIdsToRemove)];
+
+    if (userIdsToRemove.length === 0) {
+      throw new Error("Aucun utilisateur valide trouvé");
+    }
+
+    // Admin cannot remove itself from a group
+    if (isAdmin && userIdsToRemove.includes(group.user_admin.id)) {
+      throw new Error("L'administrateur du groupe ne peut pas être supprimé. Supprimez plutôt le groupe");
+    }
+
+    // Remove myself from a group
+    if (!isAdmin && userIdsToRemove.length === 1 && userIdsToRemove[0] === currentUserId) {
       try {
-        removeMembersFromGroup({
+        await removeMembersFromGroup({
           userIds: [currentUserId],
           groupId,
-        })
-
-        return "Succès! Vous ne faites plus partie du groupe!"
-
+        });
+        return "Succès! Vous ne faites plus partie du groupe!";
       } catch (err) {
-        console.error("deleteGroup error:", err);
+        console.error("removeMembersFromGroup error:", err);
         throw new Error("Une erreur est survenue, nous n'avons pas pu vous supprimer du groupe");
       }
-      
     }
-    
-    //Admin removes users from a group
-    if (isAdmin && userIds.length > 0 && !userIds.includes(group?.user_admin.id) ) {
+
+    // Admin removes users from a group
+    if (isAdmin && userIdsToRemove.length > 0 && !userIdsToRemove.includes(group.user_admin.id)) {
       try {
-        removeMembersFromGroup({
-          userIds,
+        await removeMembersFromGroup({
+          userIds: userIdsToRemove,
           groupId,
-        })
-
-        return "Succès! Les utilisateurs ont été supprimé du groupe!"
-
+        });
+        return "Succès! Les utilisateurs ont été supprimés du groupe!";
       } catch (err) {
-        console.error("deleteGroup error:", err);
+        console.error("removeMembersFromGroup error:", err);
         throw new Error("Une erreur est survenue, nous n'avons pas pu supprimer les utilisateurs du groupe");
       }
-
     }
 
-    return "Un problème est survenu"
-
-   
-
-
+    throw new Error("Vous n'avez pas les permissions nécessaires pour effectuer cette action");
   }
-  
-  
 }

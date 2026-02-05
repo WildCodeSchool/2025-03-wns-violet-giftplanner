@@ -25,12 +25,16 @@ export default function Conversations() {
   const [messages, setMessages] = useState<MessageType>({});
 
   const [indexGroups, setIndexGroup] = useState<number>(0);
+  const [selectedGroupId, setSelectedGroupId] = useState<number | null>(null);
 
   const contenairMessageRef = useRef<HTMLDivElement | null>(null);
 
   const handlerNewMessage = (response: { newMessage: message; groupId: number }) => {
     setMessages((prev) => {
       const clone = structuredClone(prev);
+      if (!clone[response.groupId]) {
+        clone[response.groupId] = [];
+      }
       clone[response.groupId]?.unshift(response.newMessage);
       return clone;
     });
@@ -44,17 +48,18 @@ export default function Conversations() {
   const chat = useLiveChat(handlerNewMessage);
 
   function setActiveGroup(group: GetAllMyGroupsQuery["getAllMyGroups"]["groups"][number]) {
-    setIndexGroup(groups.findIndex((g) => Number(g.id) === Number(group.id)));
+    const groupIndex = groups.findIndex((g) => Number(g.id) === Number(group.id));
+    setIndexGroup(groupIndex);
+    setSelectedGroupId(Number(group.id));
   }
 
   // pour set les groups
   useEffect(() => {
-    // if (!data?.getAllMyGroups) return;
-    setGroups(groupData?.getAllMyGroups.groups || []);
-
-    // demande au server de rejoindre les rooms que utilisateur possède
-    chat.connectToRoom(groupData?.getAllMyGroups.groupToken);
-  }, [groupData, chat]);
+    const token = groupData?.getAllMyGroups.groupToken;
+    if (token) {
+      chat.connectToRoom(token);
+    }
+  }, [groupData?.getAllMyGroups.groupToken]);
 
   useEffect(() => {
     // waiting for data to load
@@ -62,19 +67,40 @@ export default function Conversations() {
 
     if (groupData?.getAllMyGroups.groups.length === 0) {
       setIndexGroup(-1);
+      setSelectedGroupId(null);
       return;
     }
 
-    setGroups(groupData?.getAllMyGroups.groups || []);
+    const newGroups = groupData?.getAllMyGroups.groups || [];
+    setGroups(newGroups);
+
+    // Initialize messages map with empty arrays for all groups
+    setMessages((prev) => {
+      const updated = { ...prev };
+      newGroups.forEach((group) => {
+        const groupId = Number(group.id);
+        if (!updated[groupId]) {
+          updated[groupId] = [];
+        }
+      });
+      return updated;
+    });
 
     //keep active group in sync or default to first during refetch
-    const existing =
-      indexGroups !== -1
-        ? groupData?.getAllMyGroups.groups.find((group) => Number(group.id) === Number(indexGroups))
-        : null;
-
-    setIndexGroup(existing ? indexGroups : 0);
-  }, [groupData, indexGroups]);
+    setSelectedGroupId((currentSelectedId) => {
+      if (currentSelectedId !== null) {
+        const existingIndex = newGroups.findIndex((group) => Number(group.id) === currentSelectedId);
+        if (existingIndex !== -1) {
+          setIndexGroup(existingIndex);
+          return currentSelectedId;
+        }
+      }
+      // Default to first group
+      const firstGroupId = newGroups[0] ? Number(newGroups[0].id) : null;
+      setIndexGroup(firstGroupId !== null ? 0 : -1);
+      return firstGroupId;
+    });
+  }, [groupData]);
 
   // pour set les messages
   useEffect(() => {
@@ -84,16 +110,15 @@ export default function Conversations() {
       messagesMap[Number(groupMessages.groupId)] = groupMessages.messages;
     });
 
-    setMessages(messagesMap);
+    // Merge with existing messages to preserve empty arrays for groups without messages
+    setMessages((prev) => {
+      const merged = { ...prev };
+      Object.keys(messagesMap).forEach((groupId) => {
+        merged[Number(groupId)] = messagesMap[Number(groupId)];
+      });
+      return merged;
+    });
   }, [messageData]);
-
-  useEffect(() => {
-    if (indexGroups === -1) {
-      setIndexGroup(-1);
-      return;
-    }
-    setIndexGroup(indexGroups);
-  }, [indexGroups]);
 
   //TO DO: set activeGroup.id in url
 
@@ -130,6 +155,7 @@ export default function Conversations() {
 
         <div className="h-[calc(50%-2rem)] flex pt-2">
           {indexGroups !== -1 &&
+            indexGroups < groups.length &&
             (wishlist ? (
               <Wishlist beneficiaryItems={[]} groupItems={[]} onAddIdea={() => {}} />
             ) : (
@@ -142,6 +168,7 @@ export default function Conversations() {
       <div className="flex flex-1 w-1/2 h-full  mt-0 justify-center">
         {indexGroups !== -1 &&
           groups.length > 0 &&
+          indexGroups < groups.length &&
           messages[Number(groups[indexGroups].id)] !== undefined && (
             <Messaging
               title={groups[indexGroups].name}

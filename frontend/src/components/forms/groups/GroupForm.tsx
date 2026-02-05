@@ -15,11 +15,13 @@ type GroupFormProps = {
   isEdit: boolean;
   handleChange: any;
   checked: boolean;
-  setChecked: any
+  setChecked: any;
+  isAdmin: boolean;
 };
 
 
-export default function GroupForm({ formData, errors, checked, setChecked, isEdit, handleChange }: GroupFormProps) {
+export default function GroupForm({ formData, errors, checked, setChecked, isEdit, handleChange, isAdmin }: GroupFormProps) {
+  const disabled = isEdit && !isAdmin;
 
   return (
         <>
@@ -31,6 +33,7 @@ export default function GroupForm({ formData, errors, checked, setChecked, isEdi
           </div>
           <div className="flex flex-col gap-4 px-20">
             <Input
+              disabled={disabled}
               name="name"
               type="text"
               value={formData.name}
@@ -41,6 +44,7 @@ export default function GroupForm({ formData, errors, checked, setChecked, isEdi
             />
 
             <SearchSelectInput
+              disabled={disabled}
               name="event_type"
               value={formData.event_type}
               onChange={(val) =>
@@ -56,6 +60,7 @@ export default function GroupForm({ formData, errors, checked, setChecked, isEdi
             />
 
             <Input
+              disabled={disabled}
               name="piggy_bank"
               type="number"
               value={String(formData.piggy_bank)}
@@ -66,6 +71,7 @@ export default function GroupForm({ formData, errors, checked, setChecked, isEdi
             />
 
             <InputWithToggle
+              disabled={disabled}
               checked={checked}
               onCheckedChange={() => {
                 setChecked(!checked);
@@ -79,6 +85,7 @@ export default function GroupForm({ formData, errors, checked, setChecked, isEdi
             />
 
             <Input
+              disabled={disabled}
               name="deadline"
               type="date"
               value={formData.deadline}

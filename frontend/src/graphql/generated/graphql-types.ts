@@ -82,13 +82,11 @@ export type Group = {
 
 export type GroupMember = {
   __typename?: 'GroupMember';
-  email?: Maybe<Scalars['String']['output']>;
-  firstName?: Maybe<Scalars['String']['output']>;
   groupId: Scalars['Float']['output'];
   id: Scalars['ID']['output'];
   isGroupAdmin: Scalars['Boolean']['output'];
   joined_at: Scalars['DateTimeISO']['output'];
-  lastName?: Maybe<Scalars['String']['output']>;
+  user: User;
   userId: Scalars['Float']['output'];
 };
 
@@ -209,8 +207,8 @@ export type MutationLoginArgs = {
 
 
 export type MutationRemoveMembersFromGroupArgs = {
+  data: RemoveMembersInput;
   groupId: Scalars['Float']['input'];
-  userIds: Array<Scalars['Float']['input']>;
 };
 
 
@@ -291,6 +289,11 @@ export type QueryGroupWishlistItemsArgs = {
   groupId: Scalars['Int']['input'];
 };
 
+export type RemoveMembersInput = {
+  userEmails?: InputMaybe<Array<Scalars['String']['input']>>;
+  userIds?: InputMaybe<Array<Scalars['Float']['input']>>;
+};
+
 export type SignupInput = {
   date_of_birth: Scalars['String']['input'];
   email: Scalars['String']['input'];
@@ -355,12 +358,12 @@ export type CreateGroupMutationVariables = Exact<{
 }>;
 
 
-export type CreateGroupMutation = { __typename?: 'Mutation', createGroup: { __typename?: 'Group', id: string, name: string, event_type: string, piggy_bank: number, deadline: any, createdAt: any, user_beneficiary?: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string } | null, user_admin: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string }, groupMember: Array<{ __typename?: 'GroupMember', id: string, userId: number, groupId: number }> } };
+export type CreateGroupMutation = { __typename?: 'Mutation', createGroup: { __typename?: 'Group', id: string, name: string, event_type: string, piggy_bank: number, deadline: any, createdAt: any, user_beneficiary?: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string } | null, user_admin: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string }, groupMember: Array<{ __typename?: 'GroupMember', id: string, userId: number, groupId: number, isGroupAdmin: boolean, joined_at: any, user: { __typename?: 'User', firstName: string, email: string, lastName: string } }> } };
 
 export type GetAllMyGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllMyGroupsQuery = { __typename?: 'Query', getAllMyGroups: { __typename?: 'MyGroupsResponse', groupToken: string, groups: Array<{ __typename?: 'Group', id: string, name: string, createdAt: any, updatedAt: any, event_type: string, piggy_bank: number, deadline: any, groupMember: Array<{ __typename?: 'GroupMember', id: string, userId: number, groupId: number }>, user_admin: { __typename?: 'User', isAdmin: boolean, firstName: string, lastName: string, email: string } }> } };
+export type GetAllMyGroupsQuery = { __typename?: 'Query', getAllMyGroups: { __typename?: 'MyGroupsResponse', groupToken: string, groups: Array<{ __typename?: 'Group', id: string, name: string, createdAt: any, updatedAt: any, event_type: string, piggy_bank: number, deadline: any, groupMember: Array<{ __typename?: 'GroupMember', id: string, userId: number, groupId: number, isGroupAdmin: boolean, joined_at: any, user: { __typename?: 'User', firstName: string, email: string, lastName: string } }>, user_admin: { __typename?: 'User', isAdmin: boolean, firstName: string, lastName: string, email: string } }> } };
 
 export type GetAllMessageMyGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -372,7 +375,7 @@ export type GetGroupByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetGroupByIdQuery = { __typename?: 'Query', getGroupById: { __typename?: 'Group', piggy_bank: number, name: string, id: string, deadline: any, event_type: string, user_admin: { __typename?: 'User', firstName: string, lastName: string, id: string, email: string, isAdmin: boolean }, groupMember: Array<{ __typename?: 'GroupMember', firstName?: string | null, lastName?: string | null, email?: string | null, userId: number }>, user_beneficiary?: { __typename?: 'User', firstName: string, lastName: string, id: string } | null } };
+export type GetGroupByIdQuery = { __typename?: 'Query', getGroupById: { __typename?: 'Group', piggy_bank: number, name: string, id: string, deadline: any, event_type: string, user_admin: { __typename?: 'User', firstName: string, lastName: string, id: string, email: string, isAdmin: boolean }, groupMember: Array<{ __typename?: 'GroupMember', id: string, userId: number, groupId: number, isGroupAdmin: boolean, joined_at: any, user: { __typename?: 'User', firstName: string, email: string, lastName: string } }>, user_beneficiary?: { __typename?: 'User', firstName: string, lastName: string, id: string } | null } };
 
 export type UpdateGroupMutationVariables = Exact<{
   data: UpdateGroupInput;
@@ -381,6 +384,21 @@ export type UpdateGroupMutationVariables = Exact<{
 
 
 export type UpdateGroupMutation = { __typename?: 'Mutation', updateGroup: { __typename?: 'Group', id: string, event_type: string, updatedAt: any, name: string, piggy_bank: number, deadline: any } };
+
+export type DeleteGroupMutationVariables = Exact<{
+  deleteGroupId: Scalars['Float']['input'];
+}>;
+
+
+export type DeleteGroupMutation = { __typename?: 'Mutation', deleteGroup: string };
+
+export type RemoveMembersFromGroupMutationVariables = Exact<{
+  groupId: Scalars['Float']['input'];
+  data: RemoveMembersInput;
+}>;
+
+
+export type RemoveMembersFromGroupMutation = { __typename?: 'Mutation', removeMembersFromGroup: string };
 
 export type LoginMutationVariables = Exact<{
   data: LoginInput;
@@ -512,6 +530,13 @@ export const CreateGroupDocument = gql`
       id
       userId
       groupId
+      isGroupAdmin
+      joined_at
+      user {
+        firstName
+        email
+        lastName
+      }
     }
   }
 }
@@ -558,6 +583,13 @@ export const GetAllMyGroupsDocument = gql`
         id
         userId
         groupId
+        isGroupAdmin
+        joined_at
+        user {
+          firstName
+          email
+          lastName
+        }
       }
       user_admin {
         isAdmin
@@ -667,10 +699,16 @@ export const GetGroupByIdDocument = gql`
     name
     id
     groupMember {
-      firstName
-      lastName
-      email
+      id
       userId
+      groupId
+      isGroupAdmin
+      joined_at
+      user {
+        firstName
+        email
+        lastName
+      }
     }
     deadline
     event_type
@@ -760,6 +798,69 @@ export function useUpdateGroupMutation(baseOptions?: Apollo.MutationHookOptions<
 export type UpdateGroupMutationHookResult = ReturnType<typeof useUpdateGroupMutation>;
 export type UpdateGroupMutationResult = Apollo.MutationResult<UpdateGroupMutation>;
 export type UpdateGroupMutationOptions = Apollo.BaseMutationOptions<UpdateGroupMutation, UpdateGroupMutationVariables>;
+export const DeleteGroupDocument = gql`
+    mutation DeleteGroup($deleteGroupId: Float!) {
+  deleteGroup(id: $deleteGroupId)
+}
+    `;
+export type DeleteGroupMutationFn = Apollo.MutationFunction<DeleteGroupMutation, DeleteGroupMutationVariables>;
+
+/**
+ * __useDeleteGroupMutation__
+ *
+ * To run a mutation, you first call `useDeleteGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteGroupMutation, { data, loading, error }] = useDeleteGroupMutation({
+ *   variables: {
+ *      deleteGroupId: // value for 'deleteGroupId'
+ *   },
+ * });
+ */
+export function useDeleteGroupMutation(baseOptions?: Apollo.MutationHookOptions<DeleteGroupMutation, DeleteGroupMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteGroupMutation, DeleteGroupMutationVariables>(DeleteGroupDocument, options);
+      }
+export type DeleteGroupMutationHookResult = ReturnType<typeof useDeleteGroupMutation>;
+export type DeleteGroupMutationResult = Apollo.MutationResult<DeleteGroupMutation>;
+export type DeleteGroupMutationOptions = Apollo.BaseMutationOptions<DeleteGroupMutation, DeleteGroupMutationVariables>;
+export const RemoveMembersFromGroupDocument = gql`
+    mutation RemoveMembersFromGroup($groupId: Float!, $data: RemoveMembersInput!) {
+  removeMembersFromGroup(groupId: $groupId, data: $data)
+}
+    `;
+export type RemoveMembersFromGroupMutationFn = Apollo.MutationFunction<RemoveMembersFromGroupMutation, RemoveMembersFromGroupMutationVariables>;
+
+/**
+ * __useRemoveMembersFromGroupMutation__
+ *
+ * To run a mutation, you first call `useRemoveMembersFromGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveMembersFromGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeMembersFromGroupMutation, { data, loading, error }] = useRemoveMembersFromGroupMutation({
+ *   variables: {
+ *      groupId: // value for 'groupId'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useRemoveMembersFromGroupMutation(baseOptions?: Apollo.MutationHookOptions<RemoveMembersFromGroupMutation, RemoveMembersFromGroupMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveMembersFromGroupMutation, RemoveMembersFromGroupMutationVariables>(RemoveMembersFromGroupDocument, options);
+      }
+export type RemoveMembersFromGroupMutationHookResult = ReturnType<typeof useRemoveMembersFromGroupMutation>;
+export type RemoveMembersFromGroupMutationResult = Apollo.MutationResult<RemoveMembersFromGroupMutation>;
+export type RemoveMembersFromGroupMutationOptions = Apollo.BaseMutationOptions<RemoveMembersFromGroupMutation, RemoveMembersFromGroupMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($data: LoginInput!) {
   login(data: $data) {

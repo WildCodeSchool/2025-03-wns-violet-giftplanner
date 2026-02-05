@@ -39,18 +39,7 @@ export class GroupMember extends BaseEntity {
   @Field()
   isGroupAdmin: boolean;
 
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  firstName?: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  lastName?: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  email?: string;
-
+  @Field(() => User)
   @ManyToOne(
     () => User,
     (user) => user.groupMember, {

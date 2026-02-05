@@ -7,12 +7,14 @@ type GroupFormTemplateProps = {
   right?: React.ReactNode;
   isEdit: boolean;
   submitError:any;
-  errors: any
+  errors: any;
+  onSuccess: () => void;
+  isAdmin: boolean;
 };
 
-export default function GroupFormTemplate({ onSubmit, left, right, isEdit, submitError, errors }: GroupFormTemplateProps) {
+export default function GroupFormTemplate({ onSubmit, onSuccess, left, right, isEdit, submitError, errors, isAdmin }: GroupFormTemplateProps) {
   return (
-    <form className="relative flex w-full h-full rounded-2xl" onSubmit={onSubmit} autoComplete="off">
+    <form className="relative flex w-full h-full rounded-2xl" onSubmit={(e)=> {onSubmit(e); onSuccess()}} autoComplete="off">
       <div className="bg-green w-1/2 h-full flex flex-col justify-center pt-10 pb-5 rounded-tl-2xl rounded-bl-2xl">
         {left}
       </div>
@@ -21,7 +23,16 @@ export default function GroupFormTemplate({ onSubmit, left, right, isEdit, submi
         {right}
       </div>
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-        <Button colour="dark" rounded type="submit">{isEdit ? "Mettre à jour" : "Créer le groupe"}</Button>
+        {isEdit && isAdmin && (
+          <Button colour="dark" rounded type="submit">Mettre à jour</Button>
+        )}
+
+        {!isEdit && (
+          <Button colour="dark" rounded type="submit">Créer le groupe</Button>
+
+        ) }
+
+        
         {submitError && (
           <p className="text-orange font-inter text-sm pt-1 text-center">
             {submitError}

@@ -97,7 +97,7 @@ export default class MessageResolver {
 
     if (!userId) throw new Error("Utilisateur non authentifié");
 
-    const group = await GroupMember.findOne({ where: { user: { id: userId }, group: { id: groupId } } });
+    const group = await GroupMember.findOne({ where: { userId: userId, groupId: groupId } });
     // verifier que l'utilisateur fait bien partie du groupe
     if (!group) throw new Error("Groupe non trouvé");
 

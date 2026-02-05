@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import type { IconTypes } from "./Icon";
 import Icon from "./Icon";
+import Input from "./Input";
 
 interface Option {
   label: string;
@@ -18,6 +19,7 @@ interface SearchableSelectProps {
   theme?: "light" | "dark";
   icon?: IconTypes;
   className?: string;
+  disabled?: boolean;
 }
 
 export default function SearchSelectInput({
@@ -29,8 +31,10 @@ export default function SearchSelectInput({
   label,
   error,
   theme = "light",
+  disabled = false,
   icon,
   className = "",
+  name,
 }: SearchableSelectProps) {
   const id = useId();
   const [open, setOpen] = useState(false);
@@ -41,8 +45,17 @@ export default function SearchSelectInput({
   // Filter options
   const filtered = options.filter((opt) => opt.label.toLowerCase().includes(query.toLowerCase()));
 
+  // Close dropdown if disabled
+  useEffect(() => {
+    if (disabled && open) {
+      setOpen(false);
+      setQuery("");
+    }
+  }, [disabled, open]);
+
   // Close dropdown on click outside
   useEffect(() => {
+    if (disabled) return;
     const handler = (e: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setOpen(false);
@@ -51,11 +64,11 @@ export default function SearchSelectInput({
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
-  }, []);
+  }, [disabled]);
 
   // Keyboard navigation
   function handleKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
-    if (!open) return;
+    if (disabled || !open) return;
 
     if (e.key === "ArrowDown") {
       e.preventDefault();
@@ -77,12 +90,18 @@ export default function SearchSelectInput({
 
   // Styles (copied from your Input component)
   const baseInput =
-    "w-full px-4 py-2 border-2 rounded-lg font-inter font-bold text-md outline-none transition-colors duration-200 focus:border-4 cursor-pointer";
+    "w-full px-4 py-2 border-2 rounded-lg font-inter font-bold text-md outline-none transition-colors duration-200 focus:border-4";
 
   const themeInput =
     theme === "dark"
       ? "border-dark text-dark focus:border-dark bg-white"
       : "bg-transparent border-white text-white placeholder-white-100 focus:placeholder-white";
+
+  const disabledStyles = disabled
+    ? theme === "dark"
+      ? "opacity-60 cursor-not-allowed bg-gray-50 border-gray-300 text-gray-600"
+      : "opacity-60 cursor-not-allowed bg-gray-900/30 border-gray-500 text-gray-300"
+    : "cursor-pointer";
 
   const errorInput = error ? "border-orange focus:border-orange" : "";
 
@@ -91,11 +110,12 @@ export default function SearchSelectInput({
 
   return (
     <div
-      tabIndex={0}
+      tabIndex={disabled ? -1 : 0}
       ref={containerRef}
       role="combobox"
       aria-expanded={open}
       aria-haspopup="listbox"
+      aria-disabled={disabled}
       className="flex flex-col w-full"
       onKeyDown={handleKeyDown}
     >
@@ -110,13 +130,15 @@ export default function SearchSelectInput({
         {/* WHEN CLOSED → show regular input */}
         {!open && (
           <div
-            className={`${baseInput} ${themeInput} ${errorInput} ${className} flex justify-between items-center`}
+            className={`${baseInput} ${themeInput} ${disabledStyles} ${errorInput} ${className} flex justify-between items-center`}
             role="combobox"
             aria-expanded={open}
             aria-haspopup="listbox"
-            tabIndex={0}
-            onClick={() => setOpen(true)}
+            aria-disabled={disabled}
+            tabIndex={disabled ? -1 : 0}
+            onClick={() => !disabled && setOpen(true)}
             onKeyDown={(e) => {
+              if (disabled) return;
               if (e.key === "Enter") {
                 e.preventDefault();
                 setOpen(true);
@@ -127,13 +149,22 @@ export default function SearchSelectInput({
               {value ? options.find((o) => o.value === value)?.label : placeholder}
             </span>
 
-            {icon && <Icon icon={icon} className={`text-2xl ${error ? "text-orange" : "text-white"}`} />}
+            {icon && (
+              <Icon
+                icon={icon}
+                className={`text-2xl ${
+                  error ? "text-orange" : disabled ? (theme === "dark" ? "text-gray-400" : "text-gray-500") : "text-white"
+                } ${disabled ? "cursor-not-allowed" : ""}`}
+              />
+            )}
           </div>
         )}
 
         {/* WHEN OPEN → show SEARCH BAR in place of the input */}
-        {open && (
-          <input
+        {open && !disabled && (
+          <Input
+            name={name}
+            disabled={disabled}
             type="text"
             value={query}
             onChange={(e) => {
@@ -147,7 +178,7 @@ export default function SearchSelectInput({
         )}
 
         {/* DROPDOWN LIST */}
-        {open && (
+        {open && !disabled && (
           <div
             className={`
               absolute left-0 right-0 mt-2 border-2 rounded-lg shadow-lg z-20 max-h-60 overflow-y-auto

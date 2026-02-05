@@ -10,8 +10,7 @@ import Message from "./Message";
 import { useToggle } from "../../../hooks/useToggle.ts";
 import Modal from "../../utils/Modal.tsx";
 import GroupFormIndex from "../../forms/groups/index.tsx";
-import GroupFormTemplate from "../../forms/groups/GroupFormTemplate.tsx";
-import UsersForm from "../../forms/groups/UsersForm.tsx";
+
 
 type MessagingProps = {
   title: string;
@@ -122,7 +121,7 @@ export default function Messaging({
         </div>
         {isOpen && (
           <Modal isOpen={isOpen} onClose={toggleOpen}>
-            <GroupFormIndex onSuccess={toggleOpen} groupId={groupId}/>
+            <GroupFormIndex isOpen={isOpen} onSuccess={toggleOpen} groupId={groupId}/>
           </Modal>
         )}
       </div>

@@ -24,10 +24,17 @@ mutation CreateGroup($data: CreateGroupInput!) {
       email
     }
     groupMember {
-      id
-      userId
-      groupId
-    }
+          id
+          userId
+          groupId
+          isGroupAdmin
+          joined_at
+          user {
+            firstName
+            email
+            lastName
+          }
+        }
   }
 }
 `;
@@ -44,10 +51,17 @@ export const GET_ALL_MY_GROUPS = gql`
         event_type
         piggy_bank
         deadline
-        groupMember {
+         groupMember {
           id
           userId
           groupId
+          isGroupAdmin
+          joined_at
+          user {
+            firstName
+            email
+            lastName
+          }
         }
         user_admin {
         isAdmin
@@ -83,17 +97,6 @@ export const GET_ALL_MESSAGE_MY_GROUPS = gql`
   }
 `;
 
-// export const UPDATE_GROUP = gql`
-//   mutation UpdateGroup($id: ID!, $data: UpdateGroupInput!) {
-//     updateGroup(id: $id, data: $data) {
-//       id
-//       name
-//     }
-//   }
-// `;
-
-
-
 export const GET_GROUP_BY_ID = gql`
   query GetGroupById($id: Float!) {
     getGroupById(id: $id) {
@@ -107,11 +110,17 @@ export const GET_GROUP_BY_ID = gql`
       name
       id
       groupMember {
-        firstName
-        lastName
-        email
-        userId
-      }
+          id
+          userId
+          groupId
+          isGroupAdmin
+          joined_at
+          user {
+            firstName
+            email
+            lastName
+          }
+        }
       deadline
       event_type
       user_beneficiary {
@@ -139,5 +148,17 @@ export const UPDATE_GROUP = gql`
     piggy_bank
     deadline
   }
+}
+`;
+
+export const DELETE_GROUP = gql`
+mutation DeleteGroup($deleteGroupId: Float!) {
+  deleteGroup(id: $deleteGroupId)
+}
+`;
+
+export const REMOVE_GROUP_MEMBERS = gql`
+mutation RemoveMembersFromGroup($groupId: Float!, $data: RemoveMembersInput!) {
+  removeMembersFromGroup(groupId: $groupId, data: $data) 
 }
 `;

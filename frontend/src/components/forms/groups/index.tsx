@@ -1,6 +1,5 @@
 import GroupForm from "./GroupForm"
 import GroupFormTemplate from "./GroupFormTemplate"
-import SearchInput from "../../utils/SearchInput";
 import { useEffect, useState } from "react";
 import { useMyProfileStore } from "../../../zustand/myProfileStore";
 import {
@@ -8,6 +7,7 @@ import {
   type Group,
   useCreateGroupMutation,
   useGetGroupByIdQuery,
+  useRemoveMembersFromGroupMutation,
   useUpdateGroupMutation,
 } from "../../../graphql/generated/graphql-types";
 import { GET_ALL_MY_GROUPS } from "../../../graphql/operations/groupOperations";
@@ -17,8 +17,9 @@ import { useUserPermissions } from "../../../hooks/useUserPermissions";
 import UsersForm from "./UsersForm";
 
 type GroupFormIndex = {
-    onSuccess?: () => void;
+    onSuccess: () => void;
     groupId?: number;
+    isOpen?: boolean;
 }
 
 const EMPTY_FORM_STATE: CreateGroupInput = {
@@ -36,8 +37,18 @@ export default function GroupFormindex({onSuccess, groupId} : GroupFormIndex) {
     const [query, setQuery] = useState("");
     const { userProfile } = useMyProfileStore();
     const [group, setGroup] = useState<Group | null>(null);
-    const { currentUser, isAdmin } = useUserPermissions(group);  
+    const { currentUser, isAdmin } = useUserPermissions(group || undefined);  
     const isEditMode = !!groupId //(truthy => true or falsy => false)
+    const [removeMembers] = useRemoveMembersFromGroupMutation({
+      awaitRefetchQueries: true,
+      refetchQueries: [
+        {
+          query: GET_ALL_MY_GROUPS,
+        },
+      ],
+    });
+    const [usersToRemove, setUsersToRemove] = useState<string[]>([]);
+    const [originalMemberEmails, setOriginalMemberEmails] = useState<string[]>([]);
     console.log('i am admin', isAdmin)
     console.log('is edit', isEditMode)
 
@@ -80,23 +91,36 @@ export default function GroupFormindex({onSuccess, groupId} : GroupFormIndex) {
     
       useEffect(() => {
         if (!isEditMode || !data?.getGroupById) return;
-        setGroup(data?.getGroupById)
-        // const group = ;
+        const groupData = data.getGroupById;
+        // Set group state with proper type casting
+        setGroup(groupData as Group);
+
+        // Extract emails from existing group members (excluding the current user)
+        const existingMemberEmails = groupData.groupMember
+          .map((member) => member.user?.email)
+          .filter((email): email is string => {
+            // Filter out undefined/null emails and the current user's email
+            return Boolean(email) && email.toLowerCase() !== currentUser?.email?.toLowerCase();
+          });
+    
+        // Store original member emails to track removals
+        setOriginalMemberEmails(existingMemberEmails);
+        // Reset users to remove when group data loads
+        setUsersToRemove([]);
     
         setFormData((prev) => ({
           ...prev,
-          name: group?.name ?? "",
-          event_type: group?.event_type ?? "",
-          piggy_bank: group?.piggy_bank ?? 0,
+          name: groupData?.name ?? "",
+          event_type: groupData?.event_type ?? "",
+          piggy_bank: groupData?.piggy_bank ?? 0,
           // Normalise to YYYY-MM-DD for the date input, if possible
-          deadline: group?.deadline ? new Date(group?.deadline).toISOString().slice(0, 10) : "",
+          deadline: groupData?.deadline ? new Date(groupData?.deadline).toISOString().slice(0, 10) : "",
           // We don't currently have an email here, so use the first name as a display value if present
-          user_beneficiary: group?.user_beneficiary?.firstName ?? "",
-          users: []
-          
+          user_beneficiary: groupData?.user_beneficiary?.firstName ?? "",
+          users: existingMemberEmails
         }));
-        setChecked(Boolean(group?.user_beneficiary));
-      }, [data, isEditMode, setFormData, group]);
+        setChecked(Boolean(groupData?.user_beneficiary));
+      }, [data, isEditMode, currentUser?.email]); //setFromData
     
       if (isEditMode) {
         if (loading) return <div>Loading...</div>;
@@ -145,9 +169,13 @@ export default function GroupFormindex({onSuccess, groupId} : GroupFormIndex) {
   
     setFormData((prev) => ({
       ...prev,
-      users: [...(prev.users ?? []), normalizedEmail],
+      users: [...(prev.users || []), normalizedEmail],
     }));
-    console.log(formData.users)
+    
+    // If this user was marked for removal but is being added back, remove from removal list
+    if (isEditMode && isAdmin && usersToRemove.includes(normalizedEmail)) {
+      setUsersToRemove((prev) => prev.filter((e) => e !== normalizedEmail));
+    }
   
     setErrors((prev) => {
       const { users, ...rest } = prev;
@@ -198,17 +226,26 @@ export default function GroupFormindex({onSuccess, groupId} : GroupFormIndex) {
               updateGroupId: groupId,
             },
           });
+          
+          // Remove members that were removed from the form
+          if (usersToRemove.length > 0 && isAdmin) {
+            await removeMembersAsAdmin();
+          }
+          
+          // Reset removal tracking after successful update
+          setUsersToRemove([]);
         } else {
           const response = await createGroup({
             variables: commonVariables,
           });
-  
+
           console.info("Group created successfully:", response.data);
-  
+
           setFormData(EMPTY_FORM_STATE);
           setChecked(false);
+          setUsersToRemove([]);
         }
-  
+
         if (onSuccess) onSuccess();
       } catch (error: unknown) {
         console.error("Error submitting group form:", error);
@@ -219,16 +256,50 @@ export default function GroupFormindex({onSuccess, groupId} : GroupFormIndex) {
         }
       }
     }
+
+
+    async function removeMembersAsAdmin () {
+      if (!isAdmin || !groupId || usersToRemove.length === 0) return;
+      try {
+        await removeMembers({
+          variables: {
+            groupId: groupId,
+            data: {
+              userEmails: usersToRemove
+            }
+          }
+        });
+        // Reset the users to remove list after successful removal
+        setUsersToRemove([]);
+      } catch (error) {
+        console.error("Error removing members:", error);
+        throw error; // Re-throw to be caught by handleSubmit
+      }
+    }
+
+    const handleRemoveMember = (email: string) => {
+      // Only track removal if this email was originally a member
+      if (isEditMode && isAdmin && originalMemberEmails.includes(email)) {
+        setUsersToRemove((prev) => {
+          // Avoid duplicates
+          if (!prev.includes(email)) {
+            return [...prev, email];
+          }
+          return prev;
+        });
+      }
+    };
     return (
         <GroupFormTemplate 
-            left={(!isEditMode || (isEditMode && isAdmin)) && (<GroupForm formData={formData} errors={errors} isEdit={isEditMode} handleChange={handleChange} checked={checked} 
-            setChecked={setChecked}
-            submitError={submitError}
-             />)}
-            right={(!isEditMode || (isEditMode && isAdmin)) && (
-              <UsersForm query={query} setQuery={setQuery} formData={formData} setFormData={setFormData} errors={errors} onAddTag={handleAddUserByEmail} 
-              isAdmin={isAdmin} isEdit={isEditMode}></UsersForm>
-                )
+            onSuccess={onSuccess}
+            isAdmin={isAdmin}
+            left={<GroupForm formData={formData} errors={errors} isEdit={isEditMode} handleChange={handleChange} checked={checked} 
+            setChecked={setChecked} onSuccess={onSuccess} isAdmin={isAdmin}
+             />}
+            right={
+              <UsersForm query={query} setQuery={setQuery} items={formData.users || []} setFormData={setFormData} errors={errors} onAddTag={handleAddUserByEmail} 
+              isAdmin={isAdmin} isEdit={isEditMode} groupId={groupId || 0} currentUser={currentUser} onSuccess={onSuccess} onRemoveMember={handleRemoveMember}></UsersForm>
+                
 
             }
             onSubmit={handleSubmit}
