@@ -2,15 +2,14 @@ import type { FormEvent, KeyboardEvent, RefObject } from "react";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { FaLocationArrow } from "react-icons/fa";
 import type { GetAllMessageMyGroupsQuery } from "../../../graphql/generated/graphql-types.ts";
+import { useToggle } from "../../../hooks/useToggle.ts";
 import { countdownDate } from "../../../utils/dateCalculator.ts";
 import { useMyProfileStore } from "../../../zustand/myProfileStore.ts";
+import GroupFormIndex from "../../forms/groups/index.tsx";
 import Icon from "../../utils/Icon.tsx";
+import Modal from "../../utils/Modal.tsx";
 import Subtitle from "../../utils/Subtitle.tsx";
 import Message from "./Message";
-import { useToggle } from "../../../hooks/useToggle.ts";
-import Modal from "../../utils/Modal.tsx";
-import GroupFormIndex from "../../forms/groups/index.tsx";
-
 
 type MessagingProps = {
   title: string;
@@ -117,11 +116,13 @@ export default function Messaging({
           </p>
         </div>
         <div className="absolute right-0 px-8">
-          <button type="button" onClick={toggleOpen}><Icon icon="edit" className="text-white" /></button>
+          <button type="button" onClick={toggleOpen}>
+            <Icon icon="edit" className="text-white" />
+          </button>
         </div>
         {isOpen && (
           <Modal isOpen={isOpen} onClose={toggleOpen}>
-            <GroupFormIndex isOpen={isOpen} onSuccess={toggleOpen} groupId={groupId}/>
+            <GroupFormIndex isOpen={isOpen} onSuccess={toggleOpen} groupId={groupId} />
           </Modal>
         )}
       </div>

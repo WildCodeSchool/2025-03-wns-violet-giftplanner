@@ -1,11 +1,11 @@
 import { useState } from "react";
 import type { GetAllMyGroupsQuery } from "../../graphql/generated/graphql-types";
 import { formatDate } from "../../utils/dateCalculator";
+import GroupFormindex from "../forms/groups/index";
 import Button from "../utils/Button";
 import Card from "../utils/Card";
 import Container from "../utils/Container";
 import Modal from "../utils/Modal";
-import GroupFormindex from "../forms/groups/index";
 
 type GroupsProps = {
   groups: GetAllMyGroupsQuery["getAllMyGroups"];

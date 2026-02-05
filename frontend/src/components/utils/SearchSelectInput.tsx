@@ -153,7 +153,11 @@ export default function SearchSelectInput({
               <Icon
                 icon={icon}
                 className={`text-2xl ${
-                  error ? "text-orange" : disabled ? (theme === "dark" ? "text-gray-400" : "text-gray-500") : "text-white"
+                  error
+                    ? "text-orange"
+                    : disabled
+                      ? (theme === "dark" ? "text-gray-400" : "text-gray-500")
+                      : "text-white"
                 } ${disabled ? "cursor-not-allowed" : ""}`}
               />
             )}

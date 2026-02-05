@@ -70,7 +70,11 @@ export default function Input({
           <Icon
             icon={icon}
             className={`absolute right-3 top-1/2 -translate-y-1/2 ${
-              error ? "text-orange" : disabled ? (theme === "dark" ? "text-gray-400" : "text-gray-500") : "text-white"
+              error
+                ? "text-orange"
+                : disabled
+                  ? (theme === "dark" ? "text-gray-400" : "text-gray-500")
+                  : "text-white"
             } text-2xl ${disabled ? "cursor-not-allowed" : "cursor-pointer"}`}
           />
         )}

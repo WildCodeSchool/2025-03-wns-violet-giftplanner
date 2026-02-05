@@ -31,7 +31,6 @@ export function useLiveChat(setMessages: (response: { newMessage: message; group
   return { connectToRoom, sendMessage };
 }
 
-
 // const sendMessage = useCallback(...)
 // const connectToRoom = useCallback(...)
 // return useMemo(() => ({

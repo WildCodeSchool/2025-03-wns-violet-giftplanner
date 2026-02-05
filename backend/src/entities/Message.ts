@@ -53,7 +53,8 @@ export class Message extends BaseEntity {
     (group) => group.messages,
     {
       onDelete: "CASCADE",
-    })
+    },
+  )
   @Field(() => Group)
   group: Group;
 }

@@ -1,7 +1,7 @@
 import { useId } from "react";
 import Icon from "./Icon";
-import Tag from "./Tag";
 import Input from "./Input";
+import Tag from "./Tag";
 
 interface SearchInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "onClick"> {
   name: string;
@@ -49,7 +49,6 @@ export default function SearchInput({
   function handleAddTag() {
     if (disabled) return;
     if (value.trim() !== "" && onAddTag) {
-      console.log("going here")
       onAddTag(value.trim());
     }
   }

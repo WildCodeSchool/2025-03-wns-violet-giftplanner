@@ -19,8 +19,8 @@ import { Message } from "../entities/Message";
 import User from "../entities/User";
 import { getVariableEnv } from "../lib/envManager/envManager";
 import { RoleMiddleware } from "../middleware/RoleMiddleware";
-import type { ContextType } from "../types/context";
 import { addMembersToGroup, removeMembersFromGroup } from "../services/groupMemberService";
+import type { ContextType } from "../types/context";
 
 @InputType()
 class CreateGroupInput {
@@ -42,7 +42,6 @@ class CreateGroupInput {
   user_beneficiary?: string;
 }
 
-
 @InputType()
 class UpdateGroupInput {
   @Field()
@@ -62,7 +61,6 @@ class UpdateGroupInput {
 
   @Field({ nullable: true })
   user_beneficiary?: string;
-
 }
 
 @InputType()
@@ -97,9 +95,13 @@ export default class GroupResolver {
           user: { id: ctx.user?.id },
         },
       },
-      relations: { groupMember: {
-        user: true, // 👈 THIS is the key
-      }, user_admin: true, user_beneficiary: true },
+      relations: {
+        groupMember: {
+          user: true, // 👈 THIS is the key
+        },
+        user_admin: true,
+        user_beneficiary: true,
+      },
       order: { id: "DESC" },
     });
 
@@ -112,16 +114,16 @@ export default class GroupResolver {
 
   @Query(() => Group)
   async getGroupById(@Arg("id") id: number) {
-    const group = await Group.findOne({ 
+    const group = await Group.findOne({
       where: { id: id },
-      relations: { 
-        user_admin: true, 
-        user_beneficiary: true, 
+      relations: {
+        user_admin: true,
+        user_beneficiary: true,
         groupMember: {
           user: true,
         },
       },
-     });
+    });
     if (!group) throw new Error("Groupe non trouvé");
     return group;
   }
@@ -224,23 +226,20 @@ export default class GroupResolver {
     if (data.users?.length) {
       await addMembersToGroup({
         userEmails: data.users,
-        groupId: group.id
+        groupId: group.id,
       });
     }
-    
+
     return group;
   }
 
   @UseMiddleware(RoleMiddleware())
   @Mutation(() => String)
-  async deleteGroup(
-    @Arg("id") id: number,
-    @Ctx() ctx: ContextType
-  ): Promise<string> {
+  async deleteGroup(@Arg("id") id: number, @Ctx() ctx: ContextType): Promise<string> {
     if (!ctx.user) {
       throw new Error("Utilisateur non connecté");
     }
-  
+
     const group = await Group.findOne({
       where: {
         id,
@@ -248,17 +247,15 @@ export default class GroupResolver {
       },
       relations: { user_admin: true },
     });
-    
+
     if (!group) {
       throw new Error("Groupe introuvable ou accès refusé");
     }
-  
+
     if (!group.user_admin || group.user_admin.id !== ctx.user.id) {
-      throw new Error(
-        "Il faut être administrateur du groupe pour pouvoir le supprimer"
-      );
+      throw new Error("Il faut être administrateur du groupe pour pouvoir le supprimer");
     }
-  
+
     try {
       await Group.remove(group);
       return "Le groupe a été supprimé";
@@ -273,7 +270,7 @@ export default class GroupResolver {
   async removeMembersFromGroup(
     @Arg("groupId", () => Number) groupId: number,
     @Arg("data") data: RemoveMembersInput,
-    @Ctx() ctx: ContextType
+    @Ctx() ctx: ContextType,
   ): Promise<string> {
     if (!ctx.user) {
       throw new Error("Utilisateur non connecté");
@@ -286,7 +283,7 @@ export default class GroupResolver {
 
     const group = await Group.findOne({
       where: {
-        id: groupId
+        id: groupId,
       },
       relations: { user_admin: true },
     });
@@ -300,7 +297,7 @@ export default class GroupResolver {
 
     // Convert emails to user IDs if provided
     let userIdsToRemove: number[] = [];
-    
+
     if (data.userEmails && data.userEmails.length > 0) {
       await Promise.all(
         data.userEmails.map(async (email) => {
@@ -308,7 +305,7 @@ export default class GroupResolver {
           if (user) {
             userIdsToRemove.push(user.id);
           }
-        })
+        }),
       );
     }
 

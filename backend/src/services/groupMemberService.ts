@@ -22,7 +22,7 @@ export async function addMembersToGroup({ userEmails, groupId }: AddMembersInput
   await Promise.all(
     userEmails.map(async (userEmail) => {
       const userToAdd = await User.findOne({ where: { email: userEmail } });
-      const userPending = await PendingInvitation.findOne({where: {userEmail : userEmail}})
+      const userPending = await PendingInvitation.findOne({ where: { userEmail: userEmail } });
       if (!userToAdd && !userPending) {
         // if the user does not exist in the db, add it to the pendinginvitationList
         const pendingInvitation = PendingInvitation.create({
@@ -42,8 +42,6 @@ export async function addMembersToGroup({ userEmails, groupId }: AddMembersInput
       await groupMember.save();
     }),
   );
-
-  
 }
 
 export async function removeMembersFromGroup({ userIds, groupId }: RemoveMembersInput) {
@@ -52,8 +50,8 @@ export async function removeMembersFromGroup({ userIds, groupId }: RemoveMembers
   // Remove all group members
   await Promise.all(
     userIds.map(async (userId) => {
-      const groupMember = await GroupMember.findOne({ 
-        where: { userId: userId, groupId: groupId }
+      const groupMember = await GroupMember.findOne({
+        where: { userId: userId, groupId: groupId },
       });
 
       if (!groupMember) return;
@@ -64,6 +62,6 @@ export async function removeMembersFromGroup({ userIds, groupId }: RemoveMembers
         console.error("removeMembersFromGroup error:", err);
         throw new Error("Une erreur est survenue lors de la suppression de l'utilisateur du groupe");
       }
-    })
+    }),
   );
 }

@@ -24,7 +24,7 @@ const disabledTagStyles = {
 
 export default function Tag({ tag, type = "info", onClick, className, disabled = false }: TagProps) {
   const baseStyles = disabled ? disabledTagStyles[type] : tagStyles[type];
-  
+
   return (
     <div
       className={`inline-flex items-center gap-2 w-fit rounded-full text-md pl-4 pr-2 py-1 font-medium ${baseStyles} ${
