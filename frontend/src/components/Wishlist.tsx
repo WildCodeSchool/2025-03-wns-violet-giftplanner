@@ -2,13 +2,13 @@
 import { useMutation, useQuery } from "@apollo/client";
 import { useState } from "react";
 import { ADD_GIFT, DELETE_GIFT, MY_WISHLIST_ITEMS, UPDATE_GIFT } from "../graphql/operations";
+import { useToggle } from "../hooks/useToggle";
 import type { Gift } from "../types/Gift";
 import { useMyProfileStore } from "../zustand/myProfileStore";
 import Button from "./utils/Button";
 import Icon from "./utils/Icon";
 import Modal from "./utils/Modal";
 import GiftCard, { GiftCardSkeleton } from "./wishlist/GiftCard";
-import { useToggle } from "../hooks/useToggle";
 import "./wishlist/Wishlist.css";
 
 export default function Wishlist() {
@@ -47,7 +47,7 @@ export default function Wishlist() {
       name: "",
       description: "",
       imageUrl: "",
-      url: ""
+      url: "",
     });
   };
   const closeEditModal = () => {

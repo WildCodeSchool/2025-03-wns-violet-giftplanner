@@ -25,7 +25,7 @@ export default function Button({
   className,
   children,
   type = "button",
-  disabled = false
+  disabled = false,
 }: ButtonProps) {
   const backgroundColours = {
     blue: "bg-blue",

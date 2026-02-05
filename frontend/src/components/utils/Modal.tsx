@@ -1,6 +1,6 @@
-import { useEffect } from "react";
-import type React from "react";
 import clsx from "clsx";
+import type React from "react";
+import { useEffect } from "react";
 
 type ModalSize = "sm" | "md" | "lg";
 
@@ -12,7 +12,7 @@ type ModalProps = {
   className?: string; // extra classes for the PANEL (not the overlay)
   closeOnOverlayClick?: boolean;
   showCloseButton?: boolean;
-  withPadding?: boolean
+  withPadding?: boolean;
 };
 
 const sizeClasses: Record<ModalSize, string> = {
@@ -29,7 +29,7 @@ export default function Modal({
   className,
   closeOnOverlayClick = true,
   showCloseButton = true,
-  withPadding = true
+  withPadding = true,
 }: ModalProps) {
   useEffect(() => {
     if (!isOpen) return;
@@ -53,8 +53,10 @@ export default function Modal({
   if (!isOpen) return null;
 
   return (
+    // biome-ignore lint/a11y/noStaticElementInteractions: overlay click is pointer-only; keyboard users dismiss via Escape
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 max-md:p-0"
+      role="presentation"
       onMouseDown={() => {
         if (closeOnOverlayClick) onClose();
       }}

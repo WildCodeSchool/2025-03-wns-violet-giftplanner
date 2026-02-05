@@ -1,12 +1,11 @@
-import { useState } from "react";
 import type { GetAllMyGroupsQuery } from "../../generated/graphql-types";
+import { useToggle } from "../../hooks/useToggle";
 import { formatDate } from "../../utils/dateCalculator";
 import CreateGroupForm from "../forms/CreateGroupForm";
 import Button from "../utils/Button";
 import Card from "../utils/Card";
 import Container from "../utils/Container";
 import Modal from "../utils/Modal";
-import { useToggle } from "../../hooks/useToggle";
 
 type GroupsProps = {
   groups: GetAllMyGroupsQuery["getAllMyGroups"];
@@ -26,14 +25,16 @@ export default function Groups({ groups, setActiveGroup, loading, error }: Group
   const createGroupModal = useToggle(false);
   const closeCreateGroupModal = () => {
     createGroupModal.close();
-  }
+  };
 
   return (
     <>
       <Container
         colour="blue"
         title="Mes Groupes"
-        button={<Button text={"Ajouter un groupe"} icon="plus" colour="green" onClick={createGroupModal.open} />}
+        button={
+          <Button text={"Ajouter un groupe"} icon="plus" colour="green" onClick={createGroupModal.open} />
+        }
       >
         {loading && <div>Loading...</div>}
         {error && <div>Error: {error}</div>}
@@ -59,11 +60,16 @@ export default function Groups({ groups, setActiveGroup, loading, error }: Group
           );
         })}
       </Container>
-      
-        <Modal isOpen={createGroupModal.isOpen} onClose={closeCreateGroupModal} size="lg" withPadding={false} className="p-0 overflow-y-auto max-h-[85vh] max-md:max-h-full">
-          <CreateGroupForm onSuccess={closeCreateGroupModal} />
-        </Modal>
-      
+
+      <Modal
+        isOpen={createGroupModal.isOpen}
+        onClose={closeCreateGroupModal}
+        size="lg"
+        withPadding={false}
+        className="p-0 overflow-y-auto max-h-[85vh] max-md:max-h-full"
+      >
+        <CreateGroupForm onSuccess={closeCreateGroupModal} />
+      </Modal>
     </>
   );
 }
