@@ -1,4 +1,4 @@
-export default function getProfilePictureUrl(imageUrl: string | null): string {
+export default function getProfilePictureUrl(imageUrl: string | null | undefined): string {
   if (!imageUrl) {
     return "/images/papier-theme.jpg";
   }

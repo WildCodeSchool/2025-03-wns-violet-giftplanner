@@ -4,11 +4,12 @@ import { FaArrowDown, FaLocationArrow } from "react-icons/fa";
 import type { GetAllMessageMyGroupsQuery } from "../../../graphql/generated/graphql-types.ts";
 import { useGetLazyMessagesLazyQuery } from "../../../graphql/generated/graphql-types.ts";
 import type { Message as MessageType } from "../../../types/Message";
-import { countdownDate } from "../../../utils/dateCalculator.ts";
+import { countdownDate, isSameDate } from "../../../utils/dateCalculator.ts";
 import { useMyProfileStore } from "../../../zustand/myProfileStore.ts";
 import Icon from "../../utils/Icon.tsx";
 import Subtitle from "../../utils/Subtitle.tsx";
 import Message from "./Message.tsx";
+import TimeLigne from "./TimeLigne.tsx";
 
 type MessagingProps = {
   title: string;
@@ -142,9 +143,33 @@ export default function Messaging({
   const orderedMessages = useMemo(() => {
     const sortMessages = messages.slice().reverse();
 
-    return sortMessages; //.reduce((acc, message) => {
-    //   return [...acc, message];
-    // }, [] as typeof messages)
+    const groupedMessages = sortMessages.reduce((acc, message) => {
+      // si c'est le premier message on crée un nouveau groupe
+      if (acc.length === 0) return [[message]];
+      const lastGroup = acc[acc.length - 1];
+
+      // si le user est le meme que le group précédent
+      if (message.user.id === lastGroup[0].user.id) {
+        // si il y a moins de 5 messages dans le groupe on ajoute le message au groupe
+        if (lastGroup.length < 5) {
+          // si le message a été crée a maxiume 10minutes du message précédent on ajoute le message au groupe
+          const lastMessageDate = new Date(lastGroup[lastGroup.length - 1].createdAt).getTime();
+          const messageDate = new Date(message.createdAt).getTime();
+
+          if (messageDate - lastMessageDate < 10 * 60 * 1000) {
+            acc[acc.length - 1] = [...lastGroup, message];
+            return acc;
+          }
+        }
+      }
+
+      acc.push([message]);
+      // ajouter un nouveau groupe si l'utilisateur est différent ou si le regroupement est plein
+      return acc;
+    }, [] as MessageType[][]);
+
+    // reture du useMemo
+    return groupedMessages;
   }, [messages]);
 
   useEffect(() => {
@@ -194,17 +219,18 @@ export default function Messaging({
         <div className="relative w-full overflow-hidden min-h-auto flex-grow flex-shrink basis-0 pt-[10px] pb-2.5 pl-0">
           <div
             ref={contenairMessageRef}
-            className="w-full overflow-y-auto min-h-auto h-full pr-[10px]"
+            className="flex flex-col w-full overflow-y-auto min-h-auto h-full pr-[10px] gap-[20px]"
             onScroll={onScrollContainerMessages}
           >
-            {orderedMessages.map((message) => {
+            {orderedMessages.map((message, index) => {
               return (
-                <Message
-                  key={message.id}
-                  text={message.content}
-                  imageUrl={message.user.image_url ? message.user.image_url : ""}
-                  align={message.user.id === userProfile?.id ? "right" : "left"}
-                />
+                <div key={message[0].id} className="flex flex-col">
+                  {(index === 0 ||
+                    !isSameDate(message[0].createdAt, orderedMessages[index - 1][0].createdAt)) && (
+                    <TimeLigne date={message[0].createdAt} />
+                  )}
+                  <Message regroupement={message} userId={userProfile ? Number(userProfile.id) : 0} />
+                </div>
               );
             })}
             <div ref={bottomRef} />
@@ -220,7 +246,8 @@ export default function Messaging({
                   });
                 }}
               >
-                {getNbNewMessages(groupId, messages)} nouveaux message
+                {getNbNewMessages(groupId, messages)} nouveau{getNbNewMessages(groupId, messages) > 1 && "x"}{" "}
+                message{getNbNewMessages(groupId, messages) > 1 && "s"}
                 <FaArrowDown />
               </button>
             )}
