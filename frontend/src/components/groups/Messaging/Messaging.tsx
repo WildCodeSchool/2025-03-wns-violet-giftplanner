@@ -190,11 +190,11 @@ export default function Messaging({
           <Icon icon="dots" className="text-white" />
         </div>
       </div>
-      <div className="h-full w-full flex flex-col px-1.5 pb-5 pl-4">
-        <div className="relative w-full overflow-hidden min-h-auto flex-grow flex-shrink basis-0 pt-[7px] pr-2.5 pb-2.5 pl-0">
+      <div className="h-full w-full flex flex-col pr-[6px] pb-5 pl-4">
+        <div className="relative w-full overflow-hidden min-h-auto flex-grow flex-shrink basis-0 pt-[10px] pb-2.5 pl-0">
           <div
             ref={contenairMessageRef}
-            className="w-full overflow-y-auto min-h-auto h-full"
+            className="w-full overflow-y-auto min-h-auto h-full pr-[10px]"
             onScroll={onScrollContainerMessages}
           >
             {orderedMessages.map((message) => {
