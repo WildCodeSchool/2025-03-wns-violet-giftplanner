@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import type { GetAllMessageMyGroupsQuery } from "../generated/graphql-types";
+import type { GetAllMessageMyGroupsQuery } from "../graphql/generated/graphql-types";
 import { useLive } from "./useWebSocket";
 
 type message = GetAllMessageMyGroupsQuery["getAllMessageMyGroups"][number]["messages"][number];

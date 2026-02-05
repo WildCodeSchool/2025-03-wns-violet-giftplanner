@@ -1,9 +1,12 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router";
-import { useLoginMutation } from "../../generated/graphql-types";
+import { useNavigate } from "react-router";
+import { useLoginMutation } from "../../graphql/generated/graphql-types";
 import consoleErrorDev from "../../hooks/erreurMod";
 import { useMyProfileStore } from "../../zustand/myProfileStore";
-import "../auth/auth.css";
+import Button from "../utils/Button";
+import Input from "../utils/Input";
+import AuthFooter from "./AuthFooter";
+import AuthFormTemplate from "./AuthFormTemplate";
 
 const LoginForm = () => {
   const [form, setForm] = useState({
@@ -45,49 +48,37 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="form-login-div">
-      <h2 className="h2-login">Me connecter</h2>
-      <div className="form-login-div">
-        <form className="form-login" onSubmit={handleSubmit}>
-          {messageError.length > 0 ? <p className="error-message">{messageError}</p> : null}
-
-          {/* Input Pseudo */}
-          <div>
-            <input
-              type="text"
-              placeholder="Entrez votre email"
-              className="input-custom"
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-            />
-          </div>
-
-          {/* Input Mot de passe */}
-          <div>
-            <input
-              type="password"
-              placeholder="Entrez votre mot de passe"
-              className="input-custom margin-more"
-              value={form.password}
-              onChange={(e) => setForm({ ...form, password: e.target.value })}
-            />
-          </div>
-
-          {/* Bouton de connexion */}
-          <button type="submit" className="button-black size-20px">
-            Connexion
-          </button>
-        </form>
-
-        {/* Lien vers inscription */}
-        <p className="paragraph-login">
+    <AuthFormTemplate
+      title="Me connecter"
+      onSubmit={handleSubmit}
+      footer={
+        <AuthFooter to="/inscription" link="Inscription">
           Pas encore de compte ?{" "}
-          <Link to={"/inscription"} className="link-login">
-            Inscription
-          </Link>
-        </p>
-      </div>
-    </div>
+        </AuthFooter>
+      }
+    >
+      {messageError.length > 0 ? <p className="error-message">{messageError}</p> : null}
+      <Input
+        theme="dark"
+        type="text"
+        name="email"
+        placeholder="Entrez votre adresse email"
+        value={form.email}
+        onChange={(e) => setForm({ ...form, email: e.target.value })}
+      />
+      <Input
+        theme="dark"
+        type="password"
+        name="password"
+        placeholder="Entrez votre mot de passe"
+        value={form.password}
+        onChange={(e) => setForm({ ...form, password: e.target.value })}
+      />
+
+      <Button rounded colour="dark" className="text-xl px-[25px] py-[10px] mt-5" type="submit">
+        Connexion
+      </Button>
+    </AuthFormTemplate>
   );
 };
 

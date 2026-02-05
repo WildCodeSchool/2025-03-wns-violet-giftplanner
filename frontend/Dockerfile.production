@@ -9,6 +9,8 @@ COPY index.html .
 COPY src src    
 
 RUN echo "VITE_MODE=prod" >> .env
+RUN echo "VITE_MESSAGE_SOCKET_URL=https://giftchat.032025-bleu-2.wns.wilders.dev" >> .env
+RUN echo "VITE_API_URL=https://giftchat.032025-bleu-2.wns.wilders.dev/api" >> .env
 RUN npm run build
 
 FROM httpd:2.4-alpine

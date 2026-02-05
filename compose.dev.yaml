@@ -5,6 +5,7 @@ services:
     build: ./frontend
     volumes:
       - ./frontend/src/:/app/src/
+      - ./frontend/public/:/app/public/
     healthcheck:
       test: [ "CMD-SHELL", "curl --fail --request GET --url 'http://localhost:${FRONTEND_PORT}' || exit 1" ]
       interval: 10s
@@ -15,7 +16,7 @@ services:
         condition: service_healthy
     environment:
       VITE_API_URL: ${SERVEUR_URL}
-      VITE_API_MESSAGE: ${SERVICE_MESSAGE_URL}
+      VITE_MESSAGE_SOCKET_URL: ${SERVICE_MESSAGE_URL}
       VITE_API_URL_DOCKER: ${SERVEUR_URL_DOCKER}
       VITE_MODE: ${MODE}
       CHOKIDAR_USEPOLLING: true

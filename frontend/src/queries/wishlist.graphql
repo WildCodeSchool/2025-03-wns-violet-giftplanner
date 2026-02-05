@@ -1,9 +1,0 @@
-query WishlistItems {
-    wishlistItems {
-        id
-        name
-        description
-        imageUrl
-        price
-    }
-}
