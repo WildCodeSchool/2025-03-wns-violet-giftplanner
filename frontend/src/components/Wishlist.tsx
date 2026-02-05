@@ -132,14 +132,6 @@ export default function Wishlist() {
               <div className="flex flex-col items-center justify-center text-white">
                 <Icon icon="gift" className="text-7xl opacity-80 mb-3" />
                 <p className="text-lg mb-8">Aucune idée pour l'instant.</p>
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(true)}
-                  className="flex items-center gap-2 bg-green text-white font-semibold px-4 py-2 rounded-xl hover:bg-[#01803b] transition"
-                >
-                  <Icon icon="plus" />
-                  Ajouter une idée
-                </button>
               </div>
             </div>
           ) : (
@@ -255,20 +247,12 @@ export default function Wishlist() {
                 className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-orange"
               />
             </div>
-            <div className="flex justify-end gap-3 pt-3 modal-buttons">
-              <button
-                type="submit"
-                disabled={creating}
-                className="px-4 py-2 rounded-[10px] bg-green text-white font-semibold hover:bg-[#01803b]"
-              >
-                {creating ? "Ajout…" : "Ajouter"}
-              </button>
-              <button
-                type="button"
-                onClick={() => setIsModalOpen(false)}
-                className="px-4 py-2 rounded-[10px] bg-dark text-white font-semibold hover:bg-[#463835]"
-              >
+            <div className="modal-buttons">
+              <button type="button" onClick={() => setIsModalOpen(false)} className="bg-orange text-white">
                 Annuler
+              </button>
+              <button type="submit" disabled={creating} className="bg-green text-white">
+                {creating ? "Ajout…" : "Ajouter"}
               </button>
             </div>
           </form>
@@ -333,20 +317,12 @@ export default function Wishlist() {
                 className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-orange"
               />
             </div>
-            <div className="flex justify-end gap-3 pt-3 modal-buttons">
-              <button
-                type="submit"
-                disabled={updating}
-                className="px-4 py-2 rounded-[10px] bg-green text-white font-semibold hover:bg-[#01803b]"
-              >
-                {updating ? "Mis à jour…" : "Mettre à jour"}
-              </button>
-              <button
-                type="button"
-                onClick={() => setEditModalOpen(false)}
-                className="px-4 py-2 rounded-[10px] bg-dark text-white font-semibold hover:bg-[#463835]"
-              >
+            <div className="modal-buttons">
+              <button type="button" onClick={() => setEditModalOpen(false)} className="bg-orange text-white">
                 Annuler
+              </button>
+              <button type="submit" disabled={updating} className="bg-green text-white">
+                {updating ? "Mis à jour…" : "Mettre à jour"}
               </button>
             </div>
           </form>

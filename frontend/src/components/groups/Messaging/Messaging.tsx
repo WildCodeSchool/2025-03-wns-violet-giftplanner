@@ -1,6 +1,6 @@
 import type { FormEvent, KeyboardEvent, RefObject } from "react";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
-import { FaLocationArrow } from "react-icons/fa";
+import { FaArrowLeft, FaLocationArrow } from "react-icons/fa";
 import type { GetAllMessageMyGroupsQuery } from "../../../graphql/generated/graphql-types.ts";
 import { countdownDate } from "../../../utils/dateCalculator.ts";
 import { useMyProfileStore } from "../../../zustand/myProfileStore.ts";
@@ -16,6 +16,9 @@ type MessagingProps = {
   messages: GetAllMessageMyGroupsQuery["getAllMessageMyGroups"][number]["messages"];
   calbackSendMessage: (groupId: number, message: string) => void;
   contenairMessageRef: RefObject<HTMLDivElement | null>;
+  onBack?: () => void;
+  isMobile?: boolean;
+  hideHeader?: boolean;
 };
 
 export default function Messaging({
@@ -26,6 +29,9 @@ export default function Messaging({
   messages,
   calbackSendMessage,
   contenairMessageRef,
+  onBack,
+  isMobile = false,
+  hideHeader = false,
 }: MessagingProps) {
   const id = useId();
   const [messageInput, setMessageInput] = useState<string>("");
@@ -93,31 +99,47 @@ export default function Messaging({
   }, [messages]);
 
   return (
-    <div className="rounded-2xl w-full h-full border-grey border-2 border-lg flex flex-col">
-      <div className="relative w-full h-[80px] bg-blue rounded-t-2xl flex-row flex justify-center items-center py-4">
-        <div className="flex flex-col w-full items-center">
-          <Subtitle>{title}</Subtitle>
-          <p className="text-white text-xs sm:text-sm place-self-center">
-            <span>
-              {expired
-                ? `Ce groupe a expiré depuis ${Math.abs(daysLeft)} jour(s)`
-                : `${daysLeft} jour(s) restant(s)`}{" "}
-            </span>{" "}
-            -{" "}
-            <span>
-              {" "}
-              {participants} {participants === 1 ? "participant" : "participants"}{" "}
-            </span>
-          </p>
+    <div
+      className={`${isMobile && hideHeader ? "" : isMobile ? "rounded-none" : "rounded-2xl border-grey border-2 border-lg"} w-full h-full flex flex-col`}
+    >
+      {!hideHeader && (
+        <div
+          className={`relative w-full h-[80px] bg-blue ${isMobile ? "rounded-none" : "rounded-t-2xl"} flex-row flex justify-center items-center py-4`}
+        >
+          {isMobile && onBack && (
+            <button
+              type="button"
+              onClick={onBack}
+              className="absolute left-0 px-4 cursor-pointer"
+              aria-label="Retour"
+            >
+              <FaArrowLeft className="text-white text-xl" />
+            </button>
+          )}
+          <div className="flex flex-col w-full items-center">
+            <Subtitle className="text-lg">{title}</Subtitle>
+            <p className="text-white text-xs sm:text-sm place-self-center">
+              <span>
+                {expired
+                  ? `Ce groupe a expiré depuis ${Math.abs(daysLeft)} jour(s)`
+                  : `${daysLeft} jour(s) restant(s)`}{" "}
+              </span>{" "}
+              -{" "}
+              <span>
+                {" "}
+                {participants} {participants === 1 ? "participant" : "participants"}{" "}
+              </span>
+            </p>
+          </div>
+          <div className="absolute right-0 px-8">
+            <Icon icon="dots" className="text-white" />
+          </div>
         </div>
-        <div className="absolute right-0 px-8">
-          <Icon icon="dots" className="text-white" />
-        </div>
-      </div>
-      <div className="h-full w-full flex flex-col px-1.5 pb-5 pl-4">
+      )}
+      <div className="flex-1 w-full flex flex-col px-1.5 pb-5 pl-4 min-h-0">
         <div
           ref={contenairMessageRef}
-          className="w-full overflow-y-auto flex-grow flex-shrink flex-basis-0 pt-1.5 pr-2.5 pb-2.5 pl-0"
+          className="w-full overflow-y-auto flex-grow flex-shrink flex-basis-0 pt-4 pr-2.5 pb-2.5 pl-0"
         >
           {orderedMessages.map((message) => {
             return (

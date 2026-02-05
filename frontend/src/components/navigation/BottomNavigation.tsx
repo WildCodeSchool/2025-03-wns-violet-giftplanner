@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { LuHeart, LuMessageCircleMore, LuShield, LuUserRound } from "react-icons/lu";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useMobileNavigationStore } from "../../zustand/mobileNavigationStore";
 import { useMyProfileStore } from "../../zustand/myProfileStore";
 import "./bottom-navigation.css";
 
 export default function BottomNavigation() {
   const { userProfile } = useMyProfileStore();
+  const { isBottomNavVisible } = useMobileNavigationStore();
   const [currentLocation, setCurrentLocation] = useState<string>("");
   const navigate = useNavigate();
   const location = useLocation();
@@ -13,6 +15,10 @@ export default function BottomNavigation() {
   useEffect(() => {
     setCurrentLocation(location.pathname);
   }, [location]);
+
+  if (!isBottomNavVisible) {
+    return null;
+  }
 
   return (
     <div className="bottom-navigation">

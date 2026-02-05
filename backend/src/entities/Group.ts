@@ -45,7 +45,7 @@ export class Group extends BaseEntity {
   @Field()
   event_type: string;
 
-  @Column()
+  @Column({ default: 0 })
   @Field()
   piggy_bank: number;
 

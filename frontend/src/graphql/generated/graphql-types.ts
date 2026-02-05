@@ -18,6 +18,11 @@ export type Scalars = {
   DateTimeISO: { input: any; output: any; }
 };
 
+export type AddFundsInput = {
+  amount: Scalars['Float']['input'];
+  groupId: Scalars['Float']['input'];
+};
+
 export type AddGiftInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   imageUrl?: InputMaybe<Scalars['String']['input']>;
@@ -38,7 +43,7 @@ export type CreateGroupInput = {
   deadline: Scalars['DateTimeISO']['input'];
   event_type: Scalars['String']['input'];
   name: Scalars['String']['input'];
-  piggy_bank: Scalars['Float']['input'];
+  piggy_bank?: InputMaybe<Scalars['Float']['input']>;
   user_beneficiary?: InputMaybe<Scalars['String']['input']>;
   users?: InputMaybe<Array<Scalars['String']['input']>>;
 };
@@ -143,6 +148,7 @@ export type Message = {
 export type Mutation = {
   __typename?: 'Mutation';
   UpdateMyProfile: User;
+  addFundsToGroup: Group;
   addGift: Gift;
   addGiftToGroupList: Gift;
   banUser: BanUserResponse;
@@ -161,6 +167,11 @@ export type Mutation = {
 
 export type MutationUpdateMyProfileArgs = {
   data: UpdateMyProfileInput;
+};
+
+
+export type MutationAddFundsToGroupArgs = {
+  data: AddFundsInput;
 };
 
 
@@ -331,6 +342,13 @@ export type GetAllMessageMyGroupsQueryVariables = Exact<{ [key: string]: never; 
 
 
 export type GetAllMessageMyGroupsQuery = { __typename?: 'Query', getAllMessageMyGroups: Array<{ __typename?: 'GroupMessagesOutput', groupId: number, messages: Array<{ __typename?: 'Message', id: string, content: string, createdAt: any, updatedAt: any, isEdited: boolean, user: { __typename?: 'User', id: string, firstName: string, lastName: string, image_url?: string | null, isAdmin: boolean } }> }> };
+
+export type AddFundsToGroupMutationVariables = Exact<{
+  data: AddFundsInput;
+}>;
+
+
+export type AddFundsToGroupMutation = { __typename?: 'Mutation', addFundsToGroup: { __typename?: 'Group', id: string, piggy_bank: number } };
 
 export type LoginMutationVariables = Exact<{
   data: LoginInput;
@@ -598,6 +616,40 @@ export type GetAllMessageMyGroupsQueryHookResult = ReturnType<typeof useGetAllMe
 export type GetAllMessageMyGroupsLazyQueryHookResult = ReturnType<typeof useGetAllMessageMyGroupsLazyQuery>;
 export type GetAllMessageMyGroupsSuspenseQueryHookResult = ReturnType<typeof useGetAllMessageMyGroupsSuspenseQuery>;
 export type GetAllMessageMyGroupsQueryResult = Apollo.QueryResult<GetAllMessageMyGroupsQuery, GetAllMessageMyGroupsQueryVariables>;
+export const AddFundsToGroupDocument = gql`
+    mutation AddFundsToGroup($data: AddFundsInput!) {
+  addFundsToGroup(data: $data) {
+    id
+    piggy_bank
+  }
+}
+    `;
+export type AddFundsToGroupMutationFn = Apollo.MutationFunction<AddFundsToGroupMutation, AddFundsToGroupMutationVariables>;
+
+/**
+ * __useAddFundsToGroupMutation__
+ *
+ * To run a mutation, you first call `useAddFundsToGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddFundsToGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addFundsToGroupMutation, { data, loading, error }] = useAddFundsToGroupMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useAddFundsToGroupMutation(baseOptions?: Apollo.MutationHookOptions<AddFundsToGroupMutation, AddFundsToGroupMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddFundsToGroupMutation, AddFundsToGroupMutationVariables>(AddFundsToGroupDocument, options);
+      }
+export type AddFundsToGroupMutationHookResult = ReturnType<typeof useAddFundsToGroupMutation>;
+export type AddFundsToGroupMutationResult = Apollo.MutationResult<AddFundsToGroupMutation>;
+export type AddFundsToGroupMutationOptions = Apollo.BaseMutationOptions<AddFundsToGroupMutation, AddFundsToGroupMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($data: LoginInput!) {
   login(data: $data) {

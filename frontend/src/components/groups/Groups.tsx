@@ -13,9 +13,18 @@ type GroupsProps = {
   loading: boolean;
   error?: string;
   onClick?: () => void;
+  onGroupClick?: (group: GetAllMyGroupsQuery["getAllMyGroups"]["groups"][number]) => void;
+  activeGroupId?: number;
 };
 
-export default function Groups({ groups, setActiveGroup, loading, error }: GroupsProps) {
+export default function Groups({
+  groups,
+  setActiveGroup,
+  loading,
+  error,
+  onGroupClick,
+  activeGroupId,
+}: GroupsProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   function toggleModal() {
@@ -26,7 +35,8 @@ export default function Groups({ groups, setActiveGroup, loading, error }: Group
     <>
       <Container
         colour="blue"
-        title="Mes Groupes"
+        title="Mes groupes"
+        classNameTitle="text-[1.125rem]"
         button={<Button text={"Ajouter un groupe"} icon="plus" colour="green" onClick={toggleModal} />}
       >
         {loading && <div>Loading...</div>}
@@ -38,11 +48,13 @@ export default function Groups({ groups, setActiveGroup, loading, error }: Group
               key={group.id}
               id={Number(group.id)}
               title={group.name}
+              active={activeGroupId === Number(group.id)}
               onClick={() => {
                 setActiveGroup?.(group);
+                onGroupClick?.(group);
               }}
             >
-              <p className="text-gray-600 text-sm sm:text-base truncate overflow-hidden text-ellipsis whitespace-nowrap">
+              <p className="text-gray-600 text-xs sm:text-sm leading-tight">
                 <span> Date limite: {formatDate(new Date(group.deadline))} </span> <br />
                 <span>
                   {group.groupMember?.length}{" "}
@@ -55,7 +67,7 @@ export default function Groups({ groups, setActiveGroup, loading, error }: Group
       </Container>
       {isOpen && (
         <Modal onClose={toggleModal} isOpen={isOpen}>
-          <CreateGroupForm onSuccess={toggleModal} />
+          <CreateGroupForm onSuccess={toggleModal} onCancel={toggleModal} />
         </Modal>
       )}
     </>
