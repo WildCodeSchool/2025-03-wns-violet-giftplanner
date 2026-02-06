@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useLogoutMutation } from "../../generated/graphql-types";
+import { useLogoutMutation } from "../../graphql/generated/graphql-types";
 import consoleErrorDev from "../../hooks/erreurMod";
 import { useMyProfileStore } from "../../zustand/myProfileStore";
 import Redirect from "./Redirect";
@@ -75,7 +75,7 @@ export default function Navigation() {
               link="/dashboard/profile"
               icon={
                 <LuUserRound
-                  className={`"cursor-pointer transition-bnt-nav ${currentLocation === "/dashboard/profile" && "profile-icon"}`}
+                  className={`cursor-pointer transition-bnt-nav ${currentLocation === "/dashboard/profile" && "profile-icon"}`}
                 />
               }
             />

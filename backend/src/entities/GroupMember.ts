@@ -39,21 +39,17 @@ export class GroupMember extends BaseEntity {
   @Field()
   isGroupAdmin: boolean;
 
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  firstName?: string;
+  @Column({ type: "timestamptz", default: () => "CURRENT_TIMESTAMP" })
+  @Field()
+  lastTempstampVu: Date;
 
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  lastName?: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  email?: string;
-
+  @Field(() => User)
   @ManyToOne(
     () => User,
     (user) => user.groupMember,
+    {
+      onDelete: "CASCADE",
+    },
   )
   @JoinColumn({ name: "userId" })
   user: User;
@@ -61,6 +57,9 @@ export class GroupMember extends BaseEntity {
   @ManyToOne(
     () => Group,
     (group) => group.groupMember,
+    {
+      onDelete: "CASCADE",
+    },
   )
   @JoinColumn({ name: "groupId" })
   group: Group;

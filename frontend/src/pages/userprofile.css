@@ -73,8 +73,8 @@
 
 .profile-image-edit-icon {
   position: absolute;
-  bottom: 50%;
-  right: -10px;
+  bottom: 14%;
+  right: 0px;
   transform: translateY(50%);
   background-color: #200904;
   color: #fdfbf6;
@@ -106,8 +106,14 @@
   display: flex;
   flex-direction: column;
   min-height: 0;
+  overflow: hidden;
+}
+
+.profile-content-inner {
+  flex: 1;
   overflow-y: auto;
-  overflow-x: hidden;
+  padding-right: 32px;
+  margin-right: -24px;
 }
 
 .profile-success-message {

@@ -33,15 +33,6 @@
   padding-top: 16px;
 }
 
-.infohome-background h1 {
-  font-size: 75px;
-  font-family: "Inter", sans-serif;
-  font-weight: 400;
-  color: #fdfbf6;
-  line-height: 70px;
-  margin-top: 0;
-}
-
 .infohome-content {
   display: flex;
   flex-direction: column;
@@ -64,32 +55,34 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  font-size: 60px;
+  font-size: 75px;
+  line-height: 1;
   font-weight: 400;
   color: #fdfbf6;
 }
 
 .infohome-serpentin {
-  width: 600px;
-  top: 10px;
+  width: 450px;
+  top: 8px;
   left: -96px;
 }
 
 .infohome-carre {
   width: 200px;
-  top: 200px;
+  top: 150px;
   right: 20px;
 }
 
 .infohome-etoile {
-  width: 300px;
-  top: 800px;
+  width: 200px;
+  top: 500px;
+  left: -50px;
 }
 
 .infohome-cotillon {
-  width: 600px;
-  top: 700px;
-  right: -100px;
+  width: 400px;
+  top: 525px;
+  right: 0;
 }
 
 .h2-login {
@@ -535,58 +528,19 @@
     z-index: 1;
   }
 
-  /* Page Login */
-  .auth-mobile-serpentin {
-    width: 250px;
-    top: 20px;
-    left: -50px;
-    transform: rotate(-15deg);
-  }
-
-  .auth-mobile-carre {
-    width: 80px;
-    top: 120px;
-    right: 20px;
-  }
-
-  .auth-mobile-etoile {
-    width: 100px;
-    bottom: 150px;
-    left: 30px;
-  }
-
-  .auth-mobile-cotillon {
-    width: 200px;
-    bottom: 40px;
-    right: -30px;
-    transform: rotate(20deg);
-  }
-
   /* Page Register - positions différentes */
   .auth-mobile-serpentin-register {
-    width: 200px;
-    top: -64px;
-    right: -60px;
-    transform: rotate(25deg);
-  }
-
-  .auth-mobile-carre-register {
-    width: 70px;
-    top: 150px;
-    left: -10px;
-  }
-
-  .auth-mobile-etoile-register {
-    width: 120px;
-    bottom: 180px;
-    right: -15px;
+    width: 260px;
+    top: 25px;
+    left: -65px;
+    z-index: -10;
   }
 
   .auth-mobile-cotillon-register {
-    width: 200px;
-    bottom: 40px;
-    left: -50px;
-    transform: rotate(-15deg);
+    width: 255px;
+    right: -110px;
+    z-index: -10;
+    bottom: -55px;
   }
 
   /* S'assurer que le formulaire reste au-dessus */

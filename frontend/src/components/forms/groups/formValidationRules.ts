@@ -1,6 +1,6 @@
-import type { CreateGroupInput } from "../generated/graphql-types";
-import { countdownDate } from "../utils/dateCalculator";
-import { verifyEmail } from "./verifyEmail";
+import type { CreateGroupInput } from "../../../graphql/generated/graphql-types";
+import { verifyEmail } from "../../../hooks/verifyEmail";
+import { countdownDate } from "../../../utils/dateCalculator";
 
 export type GroupFormErrors = Partial<Record<keyof CreateGroupInput, string>> & {
   main?: string;
@@ -14,22 +14,12 @@ export function groupCreationFormValidation(values: CreateGroupInput) {
   if (!values.name) errors.name = "Le nom du groupe est requis";
   else if (values.name.length < 6) errors.name = "Le nom du groupe doit faire au moins 6 charactères de long";
 
-  if (!values.piggy_bank) errors.piggy_bank = "Veuillez définir une cagnotte";
-  else if (Number.isNaN(Number(values.piggy_bank)) || Number(values.piggy_bank) <= 0)
-    errors.piggy_bank = "La cagnotte ne peut pas être négative";
-
   if (!values.deadline) errors.deadline = "La date butoire de l'évènement est requise";
   else if (countdownDate(new Date(values.deadline)) < 0)
     errors.deadline = "La date ne peut pas être dans le passé";
 
   //If all values are empty
-  if (
-    !values.deadline &&
-    !values.event_type &&
-    !values.name &&
-    !values.piggy_bank &&
-    !values.user_beneficiary
-  ) {
+  if (!values.deadline && !values.event_type && !values.name && !values.user_beneficiary) {
     errors.main = "Les champs doivent être rempli";
   }
 

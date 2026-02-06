@@ -1,4 +1,4 @@
-import { Arg, Ctx, Int, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Ctx, Int, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
 import { Gift } from "../entities/Gift";
 import List from "../entities/List";
 import User from "../entities/User";
@@ -6,12 +6,14 @@ import User from "../entities/User";
 import { AddGiftInput } from "../inputs/AddGiftInput";
 // biome-ignore lint/style/useImportType: bypass biome linting
 import { UpdateGiftInput } from "../inputs/UpdateGiftInput";
+import { RoleMiddleware } from "../middleware/RoleMiddleware";
 import type { ContextType } from "../types/context";
 import { getOrCreateUserWishlist } from "../utils/getOrCreateUserWishlist";
 
 @Resolver()
 export default class MyWishlistResolver {
   @Query(() => [Gift])
+  @UseMiddleware(RoleMiddleware())
   async myWishlistItems(@Ctx() ctx: ContextType): Promise<Gift[]> {
     if (!ctx.user) throw new Error("Utilisateur non connecté");
 
@@ -25,6 +27,7 @@ export default class MyWishlistResolver {
   }
 
   @Mutation(() => Gift)
+  @UseMiddleware(RoleMiddleware())
   async addGift(@Arg("data") data: AddGiftInput, @Ctx() ctx: ContextType): Promise<Gift> {
     if (!ctx.user) throw new Error("Utilisateur non connecté");
 
@@ -60,6 +63,7 @@ export default class MyWishlistResolver {
   }
 
   @Mutation(() => Gift)
+  @UseMiddleware(RoleMiddleware())
   async updateGift(
     @Arg("id", () => Int) id: number,
     @Arg("data") data: UpdateGiftInput,
@@ -81,6 +85,7 @@ export default class MyWishlistResolver {
     return gift;
   }
 
+  @UseMiddleware(RoleMiddleware())
   @Mutation(() => Int)
   async deleteGift(@Arg("id", () => Int) id: number, @Ctx() ctx: ContextType): Promise<number> {
     if (!ctx.user) throw new Error("Utilisateur non connecté");

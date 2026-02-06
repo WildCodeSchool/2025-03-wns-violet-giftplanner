@@ -12,6 +12,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   placholder?: string;
   label?: string;
   icon?: IconTypes;
+  disabled?: boolean;
 }
 
 export default function Input({
@@ -25,15 +26,22 @@ export default function Input({
   className = "",
   placeholder,
   icon,
+  disabled = false,
   ...props
 }: InputProps) {
   const baseStyles =
-    "w-full px-4 py-2 border-2 rounded-lg font-inter font-bold text-md outline-none transition-colors duration-200 focus:border-4";
+    "w-full p-2 rounded-lg font-inter font-bold text-lg outline-none transition-colors duration-200 placeholder:font-bold";
 
   const themeStyles =
     theme === "dark"
-      ? " border-dark text-dark focus:border-dark"
-      : "bg-transparent border-white text-white placeholder-white-100 focus:placeholder-white";
+      ? "border-dark border-[3.5px] text-dark focus:border-blue placeholder:text-dark/50"
+      : "bg-transparent border-white border-[3.5px] text-white placeholder:text-white/70";
+
+  const disabledStyles = disabled
+    ? theme === "dark"
+      ? "opacity-60 cursor-not-allowed bg-gray-50 border-gray-300 text-gray-600"
+      : "opacity-60 cursor-not-allowed bg-gray-900/30 border-gray-500 text-gray-300 placeholder-gray-400"
+    : "";
 
   const errorStyles = error ? "border-orange focus:border-orange" : "";
 
@@ -52,7 +60,8 @@ export default function Input({
           type={type}
           value={value}
           onChange={onChange}
-          className={`${baseStyles} ${themeStyles} ${errorStyles} ${className}`}
+          disabled={disabled}
+          className={`${baseStyles} ${themeStyles} ${disabledStyles} ${errorStyles} ${className}`}
           name={name}
           placeholder={placeholder}
           {...props}
@@ -60,11 +69,17 @@ export default function Input({
         {icon && (
           <Icon
             icon={icon}
-            className={`absolute right-3 top-1/2 -translate-y-1/2 ${error ? "text-orange" : "text-white"} text-2xl cursor-pointer`}
+            className={`absolute right-3 top-1/2 -translate-y-1/2 ${
+              error
+                ? "text-orange"
+                : disabled
+                  ? (theme === "dark" ? "text-gray-400" : "text-gray-500")
+                  : "text-white"
+            } text-2xl ${disabled ? "cursor-not-allowed" : "cursor-pointer"}`}
           />
         )}
       </div>
-      {error && <p className="text-orange font-inter text-sm pt-1">{error}</p>}
+      {error && <p className="text-orange font-bold text-sm pt-1">{error}</p>}
     </div>
   );
 }

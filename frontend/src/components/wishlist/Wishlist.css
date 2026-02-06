@@ -24,6 +24,31 @@
 }
 
 /* Modal desktop styles */
+.modal-mobile-content {
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+
+.modal-mobile-content h2 {
+  font-weight: 900;
+  text-align: center;
+  font-size: 28px;
+  margin-top: 0;
+  margin-bottom: 32px;
+}
+
+.modal-mobile-content form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
 .modal-mobile-content label {
   text-align: left;
   font-size: 18px;
@@ -59,6 +84,21 @@
   font-weight: 700;
 }
 
+.modal-mobile-content .modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  padding-top: 24px;
+}
+
+.modal-mobile-content .modal-buttons button {
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  font-family: "Inter", sans-serif;
+}
+
 /* Hide scrollbar on mobile while keeping scroll functionality */
 @media (max-width: 768px) {
   .wishlist-content-mobile {
@@ -88,6 +128,10 @@
     justify-content: center;
     border-radius: 40px;
     box-shadow: rgba(32, 9, 4, 0.2) 0px 2px 6px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: 700;
+    font-family: "Inter", sans-serif;
   }
 
   .div-content-giftcard {
@@ -116,11 +160,19 @@
     padding-bottom: 16px;
   }
 
+  .modal-mobile-content {
+    padding: 32px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
   .modal-mobile-content h2 {
     font-weight: 900;
     text-align: center;
     font-size: 24px;
-    margin-top: 24px;
+    margin-top: 0;
     margin-bottom: 40px;
   }
 

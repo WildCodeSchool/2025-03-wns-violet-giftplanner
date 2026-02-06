@@ -1,11 +1,11 @@
-import { FaArrowCircleRight, FaRegUser } from "react-icons/fa";
+import { FaArrowCircleRight, FaArrowLeft, FaRegUser } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
 import { HiDotsVertical, HiOutlineCurrencyDollar } from "react-icons/hi";
 import { HiOutlineChatBubbleLeftRight } from "react-icons/hi2";
 import { ImCancelCircle } from "react-icons/im";
 import { IoIosClose } from "react-icons/io";
 import { IoChatboxEllipsesOutline, IoSearch } from "react-icons/io5";
-import { LuCirclePlus, LuGift, LuHeart } from "react-icons/lu";
+import { LuCirclePlus, LuGift, LuHeart, LuPencil, LuPiggyBank } from "react-icons/lu";
 import { RiImageCircleLine } from "react-icons/ri";
 
 export type IconTypes =
@@ -13,7 +13,9 @@ export type IconTypes =
   | "plus"
   | "heart"
   | "dollar"
+  | "piggyBank"
   | "arrow"
+  | "arrowLeft"
   | "logout"
   | "user"
   | "gift"
@@ -22,7 +24,8 @@ export type IconTypes =
   | "doubleChat"
   | "image"
   | "delete"
-  | "search";
+  | "search"
+  | "edit";
 export type IconProps = {
   icon: IconTypes;
   text?: string;
@@ -34,7 +37,9 @@ const iconMap = {
   plus: LuCirclePlus,
   heart: LuHeart,
   dollar: HiOutlineCurrencyDollar,
+  piggyBank: LuPiggyBank,
   arrow: FaArrowCircleRight,
+  arrowLeft: FaArrowLeft,
   logout: FiLogOut,
   user: FaRegUser,
   gift: LuGift,
@@ -44,14 +49,23 @@ const iconMap = {
   image: RiImageCircleLine,
   delete: IoIosClose,
   search: IoSearch,
+  edit: LuPencil,
 };
 
 export default function Icon({ icon, text, className }: IconProps) {
   const IconComponent = iconMap[icon];
 
+  const isPiggyBank = icon === "piggyBank";
+  const isClose = icon === "close";
+  const iconSize = isPiggyBank ? "text-3xl" : "text-2xl";
+  const iconStroke = isPiggyBank ? 2 : isClose ? undefined : 3;
+
   return (
-    <div className={`flex items-center gap-1 ${text ? "" : className || ""}`}>
-      <IconComponent className={className || ""} />
+    <div className={`flex items-center gap-2 ${text ? "" : className || ""}`}>
+      <IconComponent
+        className={`${iconSize} ${className || ""}`}
+        style={iconStroke ? { strokeWidth: iconStroke } : undefined}
+      />
       {text && <span>{text}</span>}
     </div>
   );

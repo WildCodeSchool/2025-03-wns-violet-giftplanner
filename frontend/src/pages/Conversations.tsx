@@ -1,19 +1,42 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { FaArrowLeft } from "react-icons/fa";
+import { HiDotsVertical } from "react-icons/hi";
+import { LuCirclePlus, LuMessageCircleMore } from "react-icons/lu";
+import GroupFormindex from "../components/forms/groups/index";
+import AddFundsModal from "../components/groups/AddFundsModal";
 import Groups from "../components/groups/Groups";
 import Messaging from "../components/groups/Messaging/Messaging";
+import type { MobileView } from "../components/groups/Messaging/MobileBottomButtons";
+import MobileBottomButtons from "../components/groups/Messaging/MobileBottomButtons";
 import PiggyBank from "../components/groups/PiggyBank";
 import Wishlist from "../components/groups/Wishlist";
 import Button from "../components/utils/Button";
-import type { GetAllMessageMyGroupsQuery, GetAllMyGroupsQuery } from "../generated/graphql-types";
-import { useGetAllMessageMyGroupsQuery, useGetAllMyGroupsQuery } from "../generated/graphql-types";
+import Modal from "../components/utils/Modal";
+import type { GetAllMessageMyGroupsQuery, GetAllMyGroupsQuery } from "../graphql/generated/graphql-types";
+import { useGetAllMessageMyGroupsQuery, useGetAllMyGroupsQuery } from "../graphql/generated/graphql-types";
+import useVuMessage from "../hooks/message/vuMessage";
 import { useLiveChat } from "../hooks/useChat";
+import { useIsMobile } from "../hooks/useIsMobile";
 import type { MessageType } from "../types/Groups";
+import { countdownDate, formatDate } from "../utils/dateCalculator";
+import { useMobileNavigationStore } from "../zustand/mobileNavigationStore";
+import "./conversations.css";
+import type { Message } from "../types/Message";
 
-type message = GetAllMessageMyGroupsQuery["getAllMessageMyGroups"][number]["messages"][number];
+type MobileViewState = "groups" | "chat" | "wishlist" | "cagnotte";
 
 export default function Conversations() {
+  const isMobile = useIsMobile();
+  const { setBottomNavVisible } = useMobileNavigationStore();
+
   const [wishlist, setWishlist] = useState<boolean>(true);
-  const { data: groupData } = useGetAllMyGroupsQuery({
+  const [mobileView, setMobileView] = useState<MobileViewState>("groups");
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [slideDirection, setSlideDirection] = useState<"left" | "right">("right");
+  const [isCreateGroupModalOpen, setIsCreateGroupModalOpen] = useState(false);
+  const [isAddFundsModalOpen, setIsAddFundsModalOpen] = useState(false);
+
+  const { data: groupData, refetch: refetchGroups } = useGetAllMyGroupsQuery({
     fetchPolicy: "no-cache",
     nextFetchPolicy: "no-cache",
   });
@@ -21,54 +44,105 @@ export default function Conversations() {
     fetchPolicy: "no-cache",
     nextFetchPolicy: "no-cache",
   });
-  // const { data: wishlistData } = useGroupWishlistItemsQuery({ variables: { groupId: Number(groups[indexGroups].id) } }  || skip);
+
   const [groups, setGroups] = useState<GetAllMyGroupsQuery["getAllMyGroups"]["groups"]>([]);
   const [messages, setMessages] = useState<MessageType>({});
-
+  // const [nbNewMessagesRef, setNbNewMessagesRef] = useState<{ [groupId: number]: number }>({});
+  const { updateLastVu, getNbNewMessages, getLastVu } = useVuMessage();
   const [indexGroups, setIndexGroup] = useState<number>(0);
+  const [selectedGroupId, setSelectedGroupId] = useState<number | null>(null);
 
   const contenairMessageRef = useRef<HTMLDivElement | null>(null);
 
-  const handlerNewMessage = (response: { newMessage: message; groupId: number }) => {
+  const handlerNewMessage = (response: { newMessage: Message; groupId: number }) => {
     setMessages((prev) => {
       const clone = structuredClone(prev);
+      if (!clone[response.groupId]) {
+        clone[response.groupId] = [];
+      }
       clone[response.groupId]?.unshift(response.newMessage);
       return clone;
     });
   };
 
-  // scrolle vers le bas quand le rerendu est fait
-  useLayoutEffect(() => {
-    contenairMessageRef.current?.scrollTo(0, contenairMessageRef.current.scrollHeight);
+  // scroller vers le bas quand on reçoit un nouveau message
+  useEffect(() => {
+    if (indexGroups === -1) return;
+    if (!groups[indexGroups]) return;
+    if (!Number(groups[indexGroups].id)) return;
+    const groupsId = Number(groups[indexGroups].id);
+
+    if (getNbNewMessages(groupsId, messages[groupsId]) > 0) {
+      // scrolle vers le bas si on y est déjà
+      if (!contenairMessageRef.current) return;
+      const scrollTop = contenairMessageRef.current.scrollTop;
+      const scrollHeight = contenairMessageRef.current.scrollHeight;
+      const clientHeight = contenairMessageRef.current.clientHeight;
+
+      const distanceToBottom = scrollHeight - (scrollTop + clientHeight);
+
+      if (distanceToBottom >= clientHeight) return;
+
+      contenairMessageRef.current.scrollTo(0, scrollHeight);
+
+      updateLastVu(groupsId, messages[groupsId][0].createdAt);
+    }
   }, [messages]);
 
   const chat = useLiveChat(handlerNewMessage);
 
   function setActiveGroup(group: GetAllMyGroupsQuery["getAllMyGroups"]["groups"][number]) {
-    setIndexGroup(groups.findIndex((g) => Number(g.id) === Number(group.id)));
+    const groupIndex = groups.findIndex((g) => Number(g.id) === Number(group.id));
+    setIndexGroup(groupIndex);
+    setSelectedGroupId(Number(group.id));
   }
+
+  // Handle mobile view changes - hide/show bottom navigation
+  useEffect(() => {
+    if (isMobile) {
+      setBottomNavVisible(mobileView === "groups");
+    } else {
+      setBottomNavVisible(true);
+    }
+  }, [isMobile, mobileView, setBottomNavVisible]);
+
+  // Reset mobile view when switching from mobile to desktop
+  useEffect(() => {
+    if (!isMobile) {
+      setMobileView("groups");
+    }
+  }, [isMobile]);
 
   // pour set les groups
   useEffect(() => {
-    // if (!data?.getAllMyGroups) return;
     setGroups(groupData?.getAllMyGroups.groups || []);
-
-    // demande au server de rejoindre les rooms que utilisateur possède
     chat.connectToRoom(groupData?.getAllMyGroups.groupToken);
   }, [groupData, chat]);
 
   useEffect(() => {
-    // waiting for data to load
     if (!groupData?.getAllMyGroups) return;
 
     if (groupData?.getAllMyGroups.groups.length === 0) {
       setIndexGroup(-1);
+      setSelectedGroupId(null);
       return;
     }
 
-    setGroups(groupData?.getAllMyGroups.groups || []);
+    const newGroups = groupData?.getAllMyGroups.groups || [];
+    setGroups(newGroups);
 
-    //keep active group in sync or default to first during refetch
+    // Initialize messages map with empty arrays for all groups
+    setMessages((prev) => {
+      const updated = { ...prev };
+      newGroups.forEach((group) => {
+        const groupId = Number(group.id);
+        if (!updated[groupId]) {
+          updated[groupId] = [];
+        }
+      });
+      return updated;
+    });
+
     const existing =
       indexGroups !== -1
         ? groupData?.getAllMyGroups.groups.find((group) => Number(group.id) === Number(indexGroups))
@@ -77,7 +151,7 @@ export default function Conversations() {
     setIndexGroup(existing ? indexGroups : 0);
   }, [groupData, indexGroups]);
 
-  // pour set les messages
+  // pour set les messages initiaux
   useEffect(() => {
     const data = messageData?.getAllMessageMyGroups;
     const messagesMap: MessageType = {};
@@ -86,31 +160,297 @@ export default function Conversations() {
     });
 
     setMessages(messagesMap);
+
+    // set les nb de nouveaux messages
+    data?.forEach((groupMessages) => {
+      updateLastVu(Number(groupMessages.groupId), groupMessages.lastTempstampVu, false);
+    });
   }, [messageData]);
 
-  useEffect(() => {
-    if (indexGroups === -1) {
-      setIndexGroup(-1);
-      return;
-    }
-    setIndexGroup(indexGroups);
-  }, [indexGroups]);
-
-  //TO DO: set activeGroup.id in url
+  const addMessage = (groupId: number, message: Message[]) => {
+    setMessages((prev) => {
+      const clone = structuredClone(prev);
+      if (!clone[groupId]) {
+        clone[groupId] = [];
+      }
+      clone[groupId] = [...clone[groupId], ...message];
+      return clone;
+    });
+  };
 
   const myGroups = groupData?.getAllMyGroups;
 
-  return (
-    <div className="flex flex-row h-full justify-around w-full relative ">
-      {/* Left Column */}
-      <div className="flex flex-col mx-[2vw] h-full min-h-0 justify-between">
-        <div className="h-[calc(50%-2rem)] flex pb-2 ">
-          {myGroups && (
-            <Groups groups={myGroups} setActiveGroup={setActiveGroup} loading={false} error={undefined} />
+  // Mobile navigation handlers
+  const handleGroupClick = (group: GetAllMyGroupsQuery["getAllMyGroups"]["groups"][number]) => {
+    setActiveGroup(group);
+    setSlideDirection("right");
+    setIsAnimating(true);
+    setMobileView("chat");
+    setTimeout(() => setIsAnimating(false), 300);
+  };
+
+  const handleBackToGroups = () => {
+    setSlideDirection("left");
+    setIsAnimating(true);
+    setTimeout(() => {
+      setMobileView("groups");
+      setIsAnimating(false);
+    }, 300);
+  };
+
+  const handleMobileViewChange = (view: MobileView) => {
+    setMobileView(view);
+  };
+
+  // Build subtitle for header
+  const getHeaderSubtitle = () => {
+    if (indexGroups === -1 || groups.length === 0) return undefined;
+    const group = groups[indexGroups];
+    const daysLeft = countdownDate(new Date(group.deadline));
+    const expired = daysLeft < 0;
+    const participants = group.groupMember?.length || 0;
+
+    return `${expired ? `Expiré depuis ${Math.abs(daysLeft)} jour(s)` : `${daysLeft} jour(s) restant(s)`} - ${participants} ${participants === 1 ? "participant" : "participants"}`;
+  };
+
+  // Determine CSS classes for chat view
+  const getChatViewClasses = () => {
+    const classes = ["mobile-view", "mobile-chat-view"];
+
+    if (mobileView === "groups" && !isAnimating) {
+      classes.push("hidden-right");
+    }
+    if (isAnimating && slideDirection === "right") {
+      classes.push("slide-in-right");
+    }
+    if (isAnimating && slideDirection === "left") {
+      classes.push("slide-out-right");
+    }
+
+    return classes.join(" ");
+  };
+
+  // Mobile render
+  if (isMobile) {
+    return (
+      <div className="mobile-view-container h-full">
+        {/* Groups View - always visible underneath */}
+        <div className="mobile-view mobile-groups-view">
+          <div className="mobile-groups-page">
+            {/* Header */}
+            <div className="mobile-groups-header">
+              <div className="mobile-groups-title">
+                <h2>Mes groupes</h2>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="mobile-groups-content">
+              {groups.length === 0 ? (
+                <div className="mobile-groups-empty">
+                  <LuMessageCircleMore className="mobile-groups-empty-icon" />
+                  <p className="mobile-groups-empty-text">Aucun groupe pour l'instant.</p>
+                  <button
+                    type="button"
+                    onClick={() => setIsCreateGroupModalOpen(true)}
+                    className="mobile-groups-empty-button"
+                  >
+                    <LuCirclePlus />
+                    Créer un groupe
+                  </button>
+                </div>
+              ) : (
+                <div className="mobile-groups-list">
+                  {groups.map((group) => (
+                    <button
+                      key={group.id}
+                      type="button"
+                      className="mobile-group-card"
+                      onClick={() => handleGroupClick(group)}
+                    >
+                      <img
+                        src="/images/papier-theme.jpg"
+                        alt={group.name}
+                        className="mobile-group-card-image"
+                      />
+                      <div className="mobile-group-card-content">
+                        <h3 className="mobile-group-card-title">{group.name}</h3>
+                        <p className="mobile-group-card-info">
+                          {formatDate(new Date(group.deadline))} · {group.groupMember?.length || 0}{" "}
+                          {(group.groupMember?.length || 0) === 1 ? "participant" : "participants"}
+                        </p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Mobile Add Button */}
+            {groups.length > 0 && (
+              <div className="mobile-groups-button-container">
+                <button
+                  type="button"
+                  className="mobile-groups-button"
+                  onClick={() => setIsCreateGroupModalOpen(true)}
+                >
+                  <LuCirclePlus className="text-xl" />
+                  Ajouter un groupe
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Create Group Modal */}
+          {isCreateGroupModalOpen && (
+            <Modal onClose={() => setIsCreateGroupModalOpen(false)} isOpen={isCreateGroupModalOpen}>
+              <GroupFormindex
+                onSuccess={() => setIsCreateGroupModalOpen(false)}
+                onCancel={() => setIsCreateGroupModalOpen(false)}
+                groupId={selectedGroupId || undefined}
+              />
+            </Modal>
           )}
         </div>
 
-        <div className="flex flex-row gap-2 pb-2 absolute top-[calc(50%)]">
+        {/* Chat/Wishlist/Cagnotte Views - slides over groups */}
+        <div
+          className={getChatViewClasses()}
+          style={{ display: "flex", flexDirection: "column", height: "100%" }}
+        >
+          {/* Common Header for all views (Chat, Wishlist, Cagnotte) */}
+          {indexGroups !== -1 && groups.length > 0 && (
+            <div className="mobile-chat-header">
+              <button
+                type="button"
+                className="mobile-chat-back"
+                onClick={handleBackToGroups}
+                aria-label="Retour"
+              >
+                <FaArrowLeft className="text-xl" />
+              </button>
+              <div className="mobile-chat-title">
+                <h2>{groups[indexGroups].name}</h2>
+                <p>{getHeaderSubtitle()}</p>
+              </div>
+              <button type="button" className="mobile-chat-menu" aria-label="Menu">
+                <HiDotsVertical className="text-xl" />
+              </button>
+            </div>
+          )}
+
+          {/* Chat View */}
+          {mobileView === "chat" && indexGroups !== -1 && groups.length > 0 && (
+            <div className="mobile-chat-content">
+              {messages[Number(groups[indexGroups].id)] !== undefined && (
+                <Messaging
+                  title={groups[indexGroups].name}
+                  participants={groups[indexGroups].groupMember?.length || 0}
+                  date={new Date(groups[indexGroups].deadline)}
+                  groupId={Number(groups[indexGroups].id)}
+                  messages={messages[Number(groups[indexGroups].id)]}
+                  calbackSendMessage={chat.sendMessage}
+                  contenairMessageRef={contenairMessageRef}
+                  isMobile={true}
+                  hideHeader={true}
+                />
+              )}
+            </div>
+          )}
+
+          {/* Wishlist View */}
+          {mobileView === "wishlist" && indexGroups !== -1 && (
+            <div className="mobile-subview-content mobile-wishlist-bg">
+              {/* Idées du bénéficiaire */}
+              <div className="mobile-wishlist-section">
+                <h3 className="mobile-wishlist-section-title">Idées du bénéficiaire</h3>
+                <p className="mobile-wishlist-section-empty">Aucune idée ajoutée par le bénéficiaire.</p>
+              </div>
+
+              {/* Idées du groupe */}
+              <div className="mobile-wishlist-section">
+                <h3 className="mobile-wishlist-section-title">Idées proposées par le groupe</h3>
+                <p className="mobile-wishlist-section-empty">Aucune idée proposée pour le moment.</p>
+              </div>
+
+              {/* Button */}
+              <div className="mobile-subview-button-container">
+                <button type="button" className="mobile-subview-button">
+                  <LuCirclePlus className="text-xl" />
+                  Proposer une idée
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Cagnotte View */}
+          {mobileView === "cagnotte" && indexGroups !== -1 && groups[indexGroups] && (
+            <div className="mobile-subview-content mobile-cagnotte-bg">
+              <div className="mobile-cagnotte-amount">
+                <p className="mobile-cagnotte-amount-value">{groups[indexGroups]?.piggy_bank || 0}€</p>
+                <p className="mobile-cagnotte-amount-label">Cagnotte actuelle</p>
+              </div>
+
+              {/* Button */}
+              <div className="mobile-subview-button-container">
+                <button
+                  type="button"
+                  className="mobile-subview-button"
+                  onClick={() => setIsAddFundsModalOpen(true)}
+                >
+                  <LuCirclePlus className="text-xl" />
+                  Ajouter des fonds
+                </button>
+              </div>
+
+              {/* Add Funds Modal for Mobile */}
+              <AddFundsModal
+                isOpen={isAddFundsModalOpen}
+                onClose={() => setIsAddFundsModalOpen(false)}
+                onSuccess={() => refetchGroups()}
+                groupId={Number(groups[indexGroups].id)}
+                currentAmount={groups[indexGroups]?.piggy_bank || 0}
+              />
+            </div>
+          )}
+
+          {/* Bottom Buttons */}
+          {mobileView !== "groups" && (
+            <MobileBottomButtons
+              currentView={mobileView as MobileView}
+              onChatClick={() => handleMobileViewChange("chat")}
+              onWishlistClick={() => handleMobileViewChange("wishlist")}
+              onCagnotteClick={() => handleMobileViewChange("cagnotte")}
+            />
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Desktop render (original layout)
+  return (
+    <div className="flex flex-row h-full justify-around w-full relative ">
+      {/* Left Column */}
+      <div className="flex flex-col mx-[calc(var(--spacing)*10)] h-full min-h-0">
+        <div className="h-[calc(50%-2rem)] flex">
+          {myGroups && (
+            <Groups
+              groups={myGroups}
+              setActiveGroup={setActiveGroup}
+              loading={false}
+              error={undefined}
+              messages={messages}
+              getNbNewMessages={getNbNewMessages}
+              updateLastVu={updateLastVu}
+              activeGroupId={
+                indexGroups !== -1 && groups[indexGroups] ? Number(groups[indexGroups].id) : undefined
+              }
+            />
+          )}
+        </div>
+
+        <div className="flex flex-row gap-4 mt-[calc(var(--spacing)*10)] mb-4">
           <Button
             text="Wishlist"
             icon="heart"
@@ -121,7 +461,7 @@ export default function Conversations() {
           />
           <Button
             text="Cagnotte"
-            icon="dollar"
+            icon="piggyBank"
             colour="yellow"
             onClick={() => {
               setWishlist(false);
@@ -129,29 +469,51 @@ export default function Conversations() {
           />
         </div>
 
-        <div className="h-[calc(50%-2rem)] flex pt-2">
+        <div className="h-[calc(50%-2rem)] flex">
           {indexGroups !== -1 &&
+            groups[indexGroups] &&
             (wishlist ? (
               <Wishlist beneficiaryItems={[]} groupItems={[]} onAddIdea={() => {}} />
             ) : (
-              <PiggyBank pot={groups[indexGroups].piggy_bank} />
+              <PiggyBank
+                pot={groups[indexGroups].piggy_bank}
+                onAddFunds={() => setIsAddFundsModalOpen(true)}
+              />
             ))}
         </div>
+
+        {/* Add Funds Modal */}
+        {indexGroups !== -1 && groups[indexGroups] && (
+          <AddFundsModal
+            isOpen={isAddFundsModalOpen}
+            onClose={() => setIsAddFundsModalOpen(false)}
+            onSuccess={() => refetchGroups()}
+            groupId={Number(groups[indexGroups].id)}
+            currentAmount={groups[indexGroups].piggy_bank}
+          />
+        )}
       </div>
 
       {/* Right Column */}
       <div className="flex flex-1 w-1/2 h-full  mt-0 justify-center">
         {indexGroups !== -1 &&
           groups.length > 0 &&
+          indexGroups < groups.length &&
           messages[Number(groups[indexGroups].id)] !== undefined && (
             <Messaging
               title={groups[indexGroups].name}
-              participants={2}
+              participants={groups[indexGroups].groupMember.length}
               date={new Date(groups[indexGroups].deadline)}
               groupId={Number(groups[indexGroups].id)}
               messages={messages[Number(groups[indexGroups].id)]}
+              addMessages={(
+                message: GetAllMessageMyGroupsQuery["getAllMessageMyGroups"][number]["messages"],
+              ) => addMessage(Number(groups[indexGroups].id), message)}
               calbackSendMessage={chat.sendMessage}
               contenairMessageRef={contenairMessageRef}
+              updateLastVu={updateLastVu}
+              getLastVu={getLastVu}
+              getNbNewMessages={getNbNewMessages}
             />
           )}
       </div>

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Navigate, Outlet, Route, Routes, useNavigate } from "react-router";
 import AdminRoute from "./components/AdminRoute";
-import { useGetMyProfileQuery } from "./generated/graphql-types";
+import { useGetMyProfileQuery } from "./graphql/generated/graphql-types";
 import AdminPage from "./pages/AdminPage";
 import ContactPage from "./pages/ContactPage";
 import Conversations from "./pages/Conversations";

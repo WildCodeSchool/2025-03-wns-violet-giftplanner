@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-@import "tailwindcss" source("../src");
+@import "tailwindcss";
 
 
 
@@ -11,8 +11,8 @@
   --color-orange: #EA4B09;
   --color-green: #019645;
   --color-yellow: #FFC300;
-  --color-light-grey: #FDFBF6;
-  --color-grey: #dddad2;
+  --color-light-grey: #F0F0F0;
+  --color-grey: #E6E6E6;
   --color-dark: #200904
 }
 
@@ -56,10 +56,34 @@
 
 ::-webkit-scrollbar-thumb {
   @apply bg-grey rounded-full;
+  background-color: #c3c1bc;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #c3c1bc;
+  background-color: #9c9b97;
+}
+
+/* Thin scrollbar for containers */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 2px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 2px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.5) transparent;
 }
 
 .bg-green {
@@ -76,5 +100,10 @@
 
   input[type="number"] {
     -moz-appearance: textfield;
+  }
+
+  input[type=password]::-ms-reveal,
+  input[type=password]::-ms-clear {
+    display: none;
   }
 }

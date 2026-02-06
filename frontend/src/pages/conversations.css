@@ -1,0 +1,463 @@
+/* Mobile Conversations View Animations */
+
+.mobile-view-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.mobile-view {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Groups view - base layer (always visible underneath) */
+.mobile-groups-view {
+  z-index: 1;
+  background-color: #292e96;
+}
+
+/* Chat/Wishlist/Cagnotte views - overlay layer */
+.mobile-chat-view {
+  z-index: 2;
+  background-color: white;
+}
+
+/* Hidden state - off screen to the right */
+.mobile-chat-view.hidden-right {
+  transform: translateX(100%);
+}
+
+/* Animation: Slide in from right (entering chat) */
+.slide-in-right {
+  animation: slideInFromRight 0.3s ease-in-out forwards;
+}
+
+/* Animation: Slide out to right (leaving chat, revealing groups) */
+.slide-out-right {
+  animation: slideOutToRight 0.3s ease-in-out forwards;
+}
+
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutToRight {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* ===== MOBILE GROUPS PAGE STYLES ===== */
+
+.mobile-groups-page {
+  background-color: #292e96;
+  min-height: 100%;
+  padding: 24px;
+  padding-bottom: 140px;
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-groups-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  margin-top: 16px;
+}
+
+.mobile-groups-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: white;
+}
+
+.mobile-groups-title h2 {
+  font-size: 24px;
+  font-weight: 700;
+  font-family: "Inter", sans-serif;
+  color: white;
+  margin: 0;
+}
+
+.mobile-groups-content {
+  flex: 1;
+  overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.mobile-groups-content::-webkit-scrollbar {
+  display: none;
+}
+
+.mobile-groups-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Mobile Group Card */
+.mobile-group-card {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: none;
+  width: 100%;
+  text-align: left;
+}
+
+.mobile-group-card:active {
+  transform: scale(0.98);
+}
+
+.mobile-group-card-image {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 16px;
+  flex-shrink: 0;
+}
+
+.mobile-group-card-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.mobile-group-card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #200904;
+  margin: 0 0 4px 0;
+  font-family: "Inter", sans-serif;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mobile-group-card-info {
+  font-size: 14px;
+  color: #776b69;
+  margin: 0;
+  font-family: "Inter", sans-serif;
+}
+
+/* Mobile Add Group Button */
+.mobile-groups-button-container {
+  position: fixed;
+  bottom: 6.4rem;
+  left: 24px;
+  right: 24px;
+  z-index: 10;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.mobile-groups-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: #00a650;
+  color: white;
+  border: none;
+  border-radius: 40px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: 700;
+  font-family: "Inter", sans-serif;
+  cursor: pointer;
+  box-shadow: rgba(32, 9, 4, 0.2) 0px 2px 6px;
+  transition: background-color 0.2s ease;
+}
+
+.mobile-groups-button:hover {
+  background-color: #01803b;
+}
+
+.mobile-groups-button:active {
+  transform: scale(0.98);
+}
+
+/* Empty state */
+.mobile-groups-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: white;
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.mobile-groups-empty-icon {
+  font-size: 70px;
+  opacity: 0.8;
+  margin-bottom: 12px;
+}
+
+.mobile-groups-empty-text {
+  font-size: 18px;
+  margin-bottom: 32px;
+  font-family: "Inter", sans-serif;
+}
+
+.mobile-groups-empty-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #00a650;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: "Inter", sans-serif;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.mobile-groups-empty-button:hover {
+  background-color: #01803b;
+}
+
+/* ===== COMMON MOBILE CHAT HEADER ===== */
+
+.mobile-chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #292e96;
+  padding: 16px 20px;
+  flex-shrink: 0;
+}
+
+.mobile-chat-back {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-chat-title {
+  flex: 1;
+  text-align: center;
+}
+
+.mobile-chat-title h2 {
+  font-size: 20px;
+  font-weight: 700;
+  font-family: "Inter", sans-serif;
+  color: white;
+  margin: 0;
+}
+
+.mobile-chat-title p {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 4px 0 0 0;
+  font-family: "Inter", sans-serif;
+}
+
+.mobile-chat-menu {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 8px;
+}
+
+/* Chat content area */
+.mobile-chat-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding-bottom: 72px;
+}
+
+/* ===== MOBILE SUBVIEW CONTENT (Wishlist/Cagnotte) ===== */
+
+.mobile-subview-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  padding-bottom: 160px;
+  overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.mobile-subview-content::-webkit-scrollbar {
+  display: none;
+}
+
+.mobile-wishlist-bg {
+  background-color: #ea4b09;
+}
+
+.mobile-cagnotte-bg {
+  background-color: #f5c400;
+}
+
+/* Subview button (at bottom) */
+.mobile-subview-button-container {
+  position: fixed;
+  bottom: 7rem;
+  left: 24px;
+  right: 24px;
+  z-index: 10;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.mobile-subview-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: #00a650;
+  color: white;
+  border: none;
+  border-radius: 40px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: 700;
+  font-family: "Inter", sans-serif;
+  cursor: pointer;
+  box-shadow: rgba(32, 9, 4, 0.2) 0px 2px 6px;
+  transition: background-color 0.2s ease;
+}
+
+.mobile-subview-button:hover {
+  background-color: #01803b;
+}
+
+.mobile-subview-button:active {
+  transform: scale(0.98);
+}
+
+/* ===== MOBILE WISHLIST CONTENT STYLES ===== */
+
+.mobile-wishlist-section {
+  margin-bottom: 24px;
+}
+
+.mobile-wishlist-section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  margin: 0 0 12px 0;
+  font-family: "Inter", sans-serif;
+}
+
+.mobile-wishlist-section-empty {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: "Inter", sans-serif;
+}
+
+.mobile-wishlist-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mobile-wishlist-card {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.mobile-wishlist-card-image {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  object-fit: cover;
+  margin-right: 16px;
+  flex-shrink: 0;
+  background-color: #f5f5f5;
+}
+
+.mobile-wishlist-card-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.mobile-wishlist-card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #200904;
+  margin: 0 0 4px 0;
+  font-family: "Inter", sans-serif;
+}
+
+.mobile-wishlist-card-description {
+  font-size: 14px;
+  color: #776b69;
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ===== MOBILE CAGNOTTE CONTENT STYLES ===== */
+
+.mobile-cagnotte-amount {
+  text-align: center;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+.mobile-cagnotte-amount-value {
+  font-size: 48px;
+  font-weight: 800;
+  font-family: "Inter", sans-serif;
+  margin: 0;
+}
+
+.mobile-cagnotte-amount-label {
+  font-size: 18px;
+  font-family: "Inter", sans-serif;
+  margin: 8px 0 0 0;
+  opacity: 0.9;
+}

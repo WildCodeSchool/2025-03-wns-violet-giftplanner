@@ -1,37 +1,29 @@
-import LoginForm from "../components/auth/LoginForm";
+import LoginForm from "../components/forms/auth/LoginForm";
 import InfoHome from "../components/InfoHome";
-import "../components/auth/auth.css";
+import "../components/forms/auth/auth.css";
 
 const LoginPage = () => {
   return (
-    <div className="min-h-screen flex flex-col md:flex-row">
-      <div className="flex-1">
+    <div className="flex h-dvh md:h-screen w-screen overflow-hidden">
+      {/* Left column */}
+      <div className="display-hidden md:w-1/2">
         <InfoHome />
       </div>
-      <div className="flex-1 default-background auth-page-mobile-wrapper">
-        {/* Décorations mobiles */}
+
+      {/* Right column */}
+      <div className="w-full md:w-1/2 h-full relative overflow-hidden">
+        <LoginForm />
+        {/* Décorations mobiles - différentes de la page login */}
         <img
-          className="auth-mobile-decoration auth-mobile-serpentin"
+          className="auth-mobile-decoration auth-mobile-serpentin-register"
           src="/images/serpentin-jaune.png"
           alt="Serpentin Jaune"
         />
         <img
-          className="auth-mobile-decoration auth-mobile-carre"
-          src="/images/carre-vert.png"
-          alt="Carré vert"
+          className="auth-mobile-decoration auth-mobile-cotillon-register"
+          src="/images/cotillon-rouge.png"
+          alt="Cotillon rouge"
         />
-        <img
-          className="auth-mobile-decoration auth-mobile-etoile"
-          src="/images/etoile-rose.png"
-          alt="Etoile rose"
-        />
-        <img
-          className="auth-mobile-decoration auth-mobile-cotillon"
-          src="/images/cotillon-bleu.png"
-          alt="Cotillon bleu"
-        />
-
-        <LoginForm />
       </div>
     </div>
   );

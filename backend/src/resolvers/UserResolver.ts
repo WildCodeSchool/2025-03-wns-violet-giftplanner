@@ -47,7 +47,7 @@ class UpdateMyProfileInput {
   @Field()
   date_of_birth!: string;
   @Field()
-  phone_number!: string;
+  phone_number?: string;
   @Field(() => String, { nullable: true })
   pictureBase64?: string;
 }
@@ -98,6 +98,7 @@ export default class UserResolver {
   }
 
   @Query(() => User)
+  @UseMiddleware(RoleMiddleware())
   async getMyProfile(@Ctx() ctx: ContextType) {
     if (!ctx.user) throw new Error("Utilisateur non connecté");
     const user = await User.findOne({
@@ -121,7 +122,7 @@ export default class UserResolver {
 
   @Query(() => [User])
   @UseMiddleware(RoleMiddleware(true))
-  async getAllUsersForAdmin(@Ctx() _ctx: ContextType) {
+  async getAllUsersForAdmin() {
     // Récupérer tous les utilisateurs (y compris les bannis, mais pas les supprimés)
     const allUsers = await User.find({
       where: { deletedAt: IsNull() },
@@ -227,6 +228,7 @@ export default class UserResolver {
   }
 
   @Mutation(() => Boolean)
+  @UseMiddleware(RoleMiddleware())
   async logout(@Ctx() ctx: ContextType) {
     // set le cookie vide pour déconnecter l'utilisateur
     cookieManager.delCookie(ctx, "token", { secure: false });
@@ -236,6 +238,7 @@ export default class UserResolver {
   }
 
   @Mutation(() => User)
+  @UseMiddleware(RoleMiddleware())
   async UpdateMyProfile(@Arg("data") data: UpdateMyProfileInput, @Ctx() ctx: ContextType) {
     if (!ctx.user) throw new Error("Utilisateur non connecté update impossible");
 
@@ -251,20 +254,21 @@ export default class UserResolver {
     }
 
     // hash le mot de passe
-    const password_hashed = await argon2.hash(data.password);
+    const password_hashed = data.password ? await argon2.hash(data.password) : undefined;
     const newData = {
       ...data,
       password_hashed,
       password: undefined,
       image_url: urlImage ? urlImage.data.url : undefined,
       pictureBase64: undefined,
+      phone_number: data.phone_number ?? undefined,
     };
 
     // modifie l'utilisateur connecté
     await User.update({ id: ctx.user.id }, newData);
 
     //récupère le profil de l'utilisateur connecté
-    const user = await User.findOne({ where: { id: ctx.user.id } });
+    const user = await User.findOne({ where: { id: ctx.user.id }, relations: ["lists"] });
 
     return user as User;
   }
@@ -419,6 +423,7 @@ export default class UserResolver {
   }
 
   @Mutation(() => DeleteUserResponse)
+  @UseMiddleware(RoleMiddleware())
   async deleteMyProfile(@Ctx() ctx: ContextType): Promise<DeleteUserResponse> {
     // Vérifier que l'utilisateur est connecté
     if (!ctx.user) {

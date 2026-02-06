@@ -10,7 +10,7 @@ import {
   useDeleteMyProfileMutation,
   useLogoutMutation,
   useUpdateMyProfileMutation,
-} from "../generated/graphql-types";
+} from "../graphql/generated/graphql-types";
 import consoleErrorDev from "../hooks/erreurMod";
 import { useIsMobile } from "../hooks/useIsMobile";
 import { useMyProfileStore } from "../zustand/myProfileStore";
@@ -290,13 +290,13 @@ const UserProfilePage = () => {
               src={imageUrl}
               alt="Profile"
               className="profile-image"
-              onClick={() => isEditing && document.getElementById("file-input")?.click()}
+              onClick={() => isEditing && document.getElementById(pictureInputId)?.click()}
             />
             {isEditing && (
               <button
                 type="button"
                 className="profile-image-edit-icon"
-                onClick={() => document.getElementById("file-input")?.click()}
+                onClick={() => document.getElementById(pictureInputId)?.click()}
               >
                 <LuPencil />
               </button>
@@ -314,155 +314,157 @@ const UserProfilePage = () => {
 
         {/* Conteneur principal */}
         <div className="profile-content">
-          {messageError && <p className="error-message">{messageError}</p>}
+          <div className="profile-content-inner">
+            {messageError && <p className="error-message">{messageError}</p>}
 
-          {messageSuccess && <p className="profile-success-message">{messageSuccess}</p>}
+            {messageSuccess && <p className="profile-success-message">{messageSuccess}</p>}
 
-          {/* Grille des champs */}
-          <div className="profile-form-grid">
-            {/* Prénom */}
-            <div className="profile-field">
-              <label htmlFor={firstNameInputId} className="profile-field-label">
-                Prénom
-              </label>
-              <input
-                id={firstNameInputId}
-                type="text"
-                value={profile.firstName}
-                onChange={(e) => setProfile({ ...profile, firstName: e.target.value })}
-                disabled={!isEditing}
-                className={`profile-input ${isEditing ? "editable" : ""}`}
-              />
-            </div>
-
-            {/* Nom */}
-            <div className="profile-field">
-              <label htmlFor={lastNameInputId} className="profile-field-label">
-                Nom
-              </label>
-              <input
-                id={lastNameInputId}
-                type="text"
-                value={profile.lastName}
-                onChange={(e) => setProfile({ ...profile, lastName: e.target.value })}
-                disabled={!isEditing}
-                className={`profile-input ${isEditing ? "editable" : ""}`}
-              />
-            </div>
-
-            {/* Email */}
-            <div className="profile-field">
-              <label htmlFor={emailInputId} className="profile-field-label">
-                Email
-              </label>
-              <input
-                id={emailInputId}
-                type="email"
-                value={profile.email}
-                onChange={(e) => setProfile({ ...profile, email: e.target.value })}
-                disabled={!isEditing}
-                className={`profile-input ${isEditing ? "editable" : ""}`}
-              />
-            </div>
-
-            {/* Téléphone */}
-            <div className="profile-field">
-              <label htmlFor={phoneNumberInputId} className="profile-field-label">
-                Téléphone
-              </label>
-              <input
-                type="text"
-                id={phoneNumberInputId}
-                value={profile.phone_number}
-                onChange={(e) => setProfile({ ...profile, phone_number: e.target.value })}
-                disabled={!isEditing}
-                className={`profile-input ${isEditing ? "editable" : ""}`}
-              />
-            </div>
-
-            {/* Date de naissance */}
-            <div className="profile-field">
-              <label htmlFor={dateOfBirthInputId} className="profile-field-label">
-                Date de naissance
-              </label>
-              <input
-                id={dateOfBirthInputId}
-                type={isEditing ? "date" : "text"}
-                value={
-                  isEditing
-                    ? profile.date_of_birth
-                    : new Date(profile.date_of_birth).toLocaleDateString("fr-FR")
-                }
-                onChange={(e) => setProfile({ ...profile, date_of_birth: e.target.value })}
-                disabled={!isEditing}
-                className={`profile-input ${isEditing ? "editable" : ""}`}
-              />
-            </div>
-
-            {/* Mot de passe */}
-            <div className="profile-field">
-              <label htmlFor={passwordInputId} className="profile-field-label">
-                Mot de passe
-              </label>
-              {!isEditing ? (
-                <input
-                  id={passwordInputId}
-                  type="text"
-                  value="****************"
-                  disabled
-                  className="profile-input"
-                />
-              ) : (
-                <input
-                  type="password"
-                  id={passwordInputId}
-                  placeholder="Nouveau mot de passe"
-                  value={profile.password}
-                  onChange={(e) => setProfile({ ...profile, password: e.target.value })}
-                  className="profile-input editable"
-                />
-              )}
-            </div>
-
-            {/* Confirmation mot de passe (uniquement en édition) */}
-            {isEditing && (
-              <div className="profile-field profile-field-full">
-                <label htmlFor={passwordConfirmationInputId} className="profile-field-label">
-                  Confirmation du mot de passe
+            {/* Grille des champs */}
+            <div className="profile-form-grid">
+              {/* Prénom */}
+              <div className="profile-field">
+                <label htmlFor={firstNameInputId} className="profile-field-label">
+                  Prénom
                 </label>
                 <input
-                  type="password"
-                  id={passwordConfirmationInputId}
-                  placeholder="Confirmer le mot de passe"
-                  value={profile.passwordConfirmation}
-                  onChange={(e) => setProfile({ ...profile, passwordConfirmation: e.target.value })}
-                  className="profile-input editable profile-password-confirm"
+                  id={firstNameInputId}
+                  type="text"
+                  value={profile.firstName}
+                  onChange={(e) => setProfile({ ...profile, firstName: e.target.value })}
+                  disabled={!isEditing}
+                  className={`profile-input ${isEditing ? "editable" : ""}`}
                 />
+              </div>
+
+              {/* Nom */}
+              <div className="profile-field">
+                <label htmlFor={lastNameInputId} className="profile-field-label">
+                  Nom
+                </label>
+                <input
+                  id={lastNameInputId}
+                  type="text"
+                  value={profile.lastName}
+                  onChange={(e) => setProfile({ ...profile, lastName: e.target.value })}
+                  disabled={!isEditing}
+                  className={`profile-input ${isEditing ? "editable" : ""}`}
+                />
+              </div>
+
+              {/* Email */}
+              <div className="profile-field">
+                <label htmlFor={emailInputId} className="profile-field-label">
+                  Email
+                </label>
+                <input
+                  id={emailInputId}
+                  type="email"
+                  value={profile.email}
+                  onChange={(e) => setProfile({ ...profile, email: e.target.value })}
+                  disabled={!isEditing}
+                  className={`profile-input ${isEditing ? "editable" : ""}`}
+                />
+              </div>
+
+              {/* Téléphone */}
+              <div className="profile-field">
+                <label htmlFor={phoneNumberInputId} className="profile-field-label">
+                  Téléphone
+                </label>
+                <input
+                  type="text"
+                  id={phoneNumberInputId}
+                  value={profile.phone_number}
+                  onChange={(e) => setProfile({ ...profile, phone_number: e.target.value })}
+                  disabled={!isEditing}
+                  className={`profile-input ${isEditing ? "editable" : ""}`}
+                />
+              </div>
+
+              {/* Date de naissance */}
+              <div className="profile-field">
+                <label htmlFor={dateOfBirthInputId} className="profile-field-label">
+                  Date de naissance
+                </label>
+                <input
+                  id={dateOfBirthInputId}
+                  type={isEditing ? "date" : "text"}
+                  value={
+                    isEditing
+                      ? profile.date_of_birth
+                      : new Date(profile.date_of_birth).toLocaleDateString("fr-FR")
+                  }
+                  onChange={(e) => setProfile({ ...profile, date_of_birth: e.target.value })}
+                  disabled={!isEditing}
+                  className={`profile-input ${isEditing ? "editable" : ""}`}
+                />
+              </div>
+
+              {/* Mot de passe */}
+              <div className="profile-field">
+                <label htmlFor={passwordInputId} className="profile-field-label">
+                  Mot de passe
+                </label>
+                {!isEditing ? (
+                  <input
+                    id={passwordInputId}
+                    type="text"
+                    value="****************"
+                    disabled
+                    className="profile-input"
+                  />
+                ) : (
+                  <input
+                    type="password"
+                    id={passwordInputId}
+                    placeholder="Nouveau mot de passe"
+                    value={profile.password}
+                    onChange={(e) => setProfile({ ...profile, password: e.target.value })}
+                    className="profile-input editable"
+                  />
+                )}
+              </div>
+
+              {/* Confirmation mot de passe (uniquement en édition) */}
+              {isEditing && (
+                <div className="profile-field profile-field-full">
+                  <label htmlFor={passwordConfirmationInputId} className="profile-field-label">
+                    Confirmation du mot de passe
+                  </label>
+                  <input
+                    type="password"
+                    id={passwordConfirmationInputId}
+                    placeholder="Confirmer le mot de passe"
+                    value={profile.passwordConfirmation}
+                    onChange={(e) => setProfile({ ...profile, passwordConfirmation: e.target.value })}
+                    className="profile-input editable profile-password-confirm"
+                  />
+                </div>
+              )}
+            </div>
+            {/* Boutons d'action */}
+            {isEditing && (
+              <div className="profile-actions">
+                <button type="button" onClick={handleCancelClick} className="profile-cancel-button">
+                  Annuler
+                </button>
+                <button type="button" onClick={handleSaveClick} className="profile-save-button">
+                  Enregistrer
+                </button>
+              </div>
+            )}
+
+            {!isEditing && (
+              <div className="profile-button-group">
+                <button type="button" onClick={handleEditClick} className="profile-editer-button">
+                  Modifier mes infos
+                </button>
+                <button type="button" onClick={handleDeleteClick} className="profile-delete-button">
+                  Supprimer mon profil
+                </button>
               </div>
             )}
           </div>
-          {/* Boutons d'action */}
-          {isEditing && (
-            <div className="profile-actions">
-              <button type="button" onClick={handleCancelClick} className="profile-cancel-button">
-                Annuler
-              </button>
-              <button type="button" onClick={handleSaveClick} className="profile-save-button">
-                Enregistrer
-              </button>
-            </div>
-          )}
-
-          {!isEditing && (
-            <div className="profile-button-group">
-              <button type="button" onClick={handleEditClick} className="profile-editer-button">
-                Modifier mes infos
-              </button>
-              <button type="button" onClick={handleDeleteClick} className="profile-delete-button">
-                Supprimer mon profil
-              </button>
-            </div>
-          )}
         </div>
       </div>
 
