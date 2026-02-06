@@ -48,7 +48,10 @@ export default function Card({
       {/* Hover overlay */}
       <div className="pointer-events-none absolute inset-0 rounded-lg transition group-hover:bg-black/10">
         {actions && (
-          <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 pointer-events-auto">
+          <div
+            className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 pointer-events-auto"
+            onClick={(e) => e.stopPropagation()}
+            >
             {actions}
           </div>
         )}

@@ -5,7 +5,7 @@ import Button from "../utils/Button";
 import Card from "../utils/Card";
 import Container from "../utils/Container";
 import Modal from "../utils/Modal";
-import { useAddGiftToGroupListMutation, useDeleteGiftMutation } from "../../generated/graphql-types";
+import { useAddGiftToGroupListMutation, useDeleteGiftMutation, useUpdateGiftMutation } from "../../generated/graphql-types";
 import { useMyProfileStore } from "../../zustand/myProfileStore";
 
 type Props = {
@@ -23,7 +23,11 @@ export default function Wishlist({ groupId, beneficiaryItems, groupItems, onAddI
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({ name: "", description: "", imageUrl: "", url: ""});
 
+  const [editingGift, setEditingGift] = useState<Gift | null>(null);
+
   const [addGiftToGroupList, { loading: creating }] = useAddGiftToGroupListMutation();
+
+  const [updateGift, { loading: updating }] = useUpdateGiftMutation();
 
   const [deleteGift, { loading: deleting }] = useDeleteGiftMutation();
 
@@ -33,24 +37,42 @@ export default function Wishlist({ groupId, beneficiaryItems, groupItems, onAddI
   const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
 
-    await addGiftToGroupList({
-      variables: {
-        groupId,
-        data: {
-          name: formData.name,
-          description: formData.description || undefined,
-          imageUrl: formData.imageUrl || undefined,
-          url: formData.url || undefined,
-        },
-      },
-    });
+    try {
+      if (editingGift) {
+        await updateGift({
+          variables: {
+            id: Number(editingGift.id),
+            data: {
+              name: formData.name,
+              description: formData.description || undefined,
+              imageUrl: formData.imageUrl || undefined,
+              url: formData.url || undefined,
+            },
+          },
+        });
+      } else {
+        await addGiftToGroupList({
+          variables: {
+            groupId,
+            data: {
+              name: formData.name,
+              description: formData.description || undefined,
+              imageUrl: formData.imageUrl || undefined,
+              url: formData.url || undefined,
+            },
+          },
+        });
+      }
+    
+      // reset + close
+      setFormData({ name: "", description: "", imageUrl: "", url: "" });
+      setIsModalOpen(false);
 
-    // reset + close
-    setFormData({ name: "", description: "", imageUrl: "", url: "" });
-    setIsModalOpen(false);
-
-    // ask parent to refresh list
-    onAddIdea?.()
+      // ask parent to refresh list
+      onAddIdea?.()
+    } catch (err) {
+      console.error("Erreur lors de l'enregistrement :", err);
+    }
   };
 
   const handleDelete = async (gift: Gift) => {
@@ -132,14 +154,32 @@ export default function Wishlist({ groupId, beneficiaryItems, groupItems, onAddI
                   }}
                   actions={
                     isOwner ? (
-                      <Button
-                        onClick={() => handleDelete(gift)}
-                        icon="delete"
-                        colour="orange"
-                        className="px-2 py-1 rounded-md bg-[#A74228] text-white text-sm shadow cursor-pointer"
-                        disabled={deleting}
-                      >
-                      </Button>
+                      <>
+                        <Button
+                          onClick={() => {
+                            setEditingGift(gift);
+                            setFormData({
+                              name: gift.name,
+                              description: gift.description || "",
+                              imageUrl: gift.imageUrl || "",
+                              url: gift.url || "",
+                            });
+                            setIsModalOpen(true);
+                          }}
+                          icon="dots"
+                          colour="dark"
+                          className="px-2 py-1 rounded-md bg-[#E9A800] text-white text-sm shadow"
+                        >
+                        </Button>
+                        <Button
+                          onClick={() => handleDelete(gift)}
+                          icon="delete"
+                          colour="orange"
+                          className="px-2 py-1 rounded-md bg-[#A74228] text-white text-sm shadow cursor-pointer"
+                          disabled={deleting}
+                        >
+                        </Button>
+                      </>
                     ) : null
                   }
                 >
