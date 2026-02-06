@@ -1,5 +1,6 @@
-import type { GetAllMyGroupsQuery } from "../../generated/graphql-types";
+import type { GetAllMyGroupsQuery } from "../../graphql/generated/graphql-types";
 import { useToggle } from "../../hooks/useToggle";
+import type { Message } from "../../types/Message";
 import { formatDate } from "../../utils/dateCalculator";
 import CreateGroupForm from "../forms/CreateGroupForm";
 import Button from "../utils/Button";
@@ -13,15 +14,20 @@ type GroupsProps = {
   loading: boolean;
   error?: string;
   onClick?: () => void;
+  messages: Record<number, Message[]>;
+  getNbNewMessages: (groupId: number, messages: Message[]) => number;
+  updateLastVu: (groupId: number, date: Date | string, serveurSyconization?: boolean) => void;
 };
 
-export default function Groups({ groups, setActiveGroup, loading, error }: GroupsProps) {
-  // const [isOpen, setIsOpen] = useState(false);
-
-  // function toggleModal() {
-  //   setIsOpen(!isOpen);
-  // }
-
+export default function Groups({
+  groups,
+  setActiveGroup,
+  loading,
+  error,
+  messages,
+  getNbNewMessages,
+  updateLastVu,
+}: GroupsProps) {
   const createGroupModal = useToggle(false);
   const closeCreateGroupModal = () => {
     createGroupModal.close();
@@ -47,7 +53,9 @@ export default function Groups({ groups, setActiveGroup, loading, error }: Group
               title={group.name}
               onClick={() => {
                 setActiveGroup?.(group);
+                updateLastVu(Number(group.id), messages[Number(group.id)][0].createdAt);
               }}
+              nbNewMessages={getNbNewMessages(Number(group.id), messages[Number(group.id)] || [])}
             >
               <p className="text-gray-600 text-sm sm:text-base truncate overflow-hidden text-ellipsis whitespace-nowrap">
                 <span> Date limite: {formatDate(new Date(group.deadline))} </span> <br />

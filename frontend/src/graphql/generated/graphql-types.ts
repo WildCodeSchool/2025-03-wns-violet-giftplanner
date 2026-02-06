@@ -49,6 +49,17 @@ export type DeleteUserResponse = {
   success: Scalars['Boolean']['output'];
 };
 
+export type GetLazyMessagesInput = {
+  groupId: Scalars['Float']['input'];
+  oldTimestamp: Scalars['String']['input'];
+};
+
+export type GetLazyMessagesOutput = {
+  __typename?: 'GetLazyMessagesOutput';
+  isMaximumMessages: Scalars['Boolean']['output'];
+  messages: Array<Message>;
+};
+
 export type Gift = {
   __typename?: 'Gift';
   createdAt: Scalars['DateTimeISO']['output'];
@@ -82,19 +93,18 @@ export type Group = {
 
 export type GroupMember = {
   __typename?: 'GroupMember';
-  email?: Maybe<Scalars['String']['output']>;
-  firstName?: Maybe<Scalars['String']['output']>;
   groupId: Scalars['Float']['output'];
   id: Scalars['ID']['output'];
   isGroupAdmin: Scalars['Boolean']['output'];
   joined_at: Scalars['DateTimeISO']['output'];
-  lastName?: Maybe<Scalars['String']['output']>;
+  lastTempstampVu: Scalars['DateTimeISO']['output'];
   userId: Scalars['Float']['output'];
 };
 
 export type GroupMessagesOutput = {
   __typename?: 'GroupMessagesOutput';
   groupId: Scalars['Float']['output'];
+  lastTempstampVu: Scalars['DateTimeISO']['output'];
   messages: Array<Message>;
 };
 
@@ -153,6 +163,7 @@ export type Mutation = {
   login: User;
   logout: Scalars['Boolean']['output'];
   sendMessage: Message;
+  setLastMessageVu: SetLastMessageVuOutput;
   signup: User;
   unbanUser: BanUserResponse;
   updateGift: Gift;
@@ -205,6 +216,11 @@ export type MutationSendMessageArgs = {
 };
 
 
+export type MutationSetLastMessageVuArgs = {
+  data: SetLastMessageVuInput;
+};
+
+
 export type MutationSignupArgs = {
   data: SignupInput;
 };
@@ -252,6 +268,7 @@ export type Query = {
   getAllUsers: Array<User>;
   getAllUsersAdmin: Array<User>;
   getAllUsersForAdmin: Array<User>;
+  getLazyMessages: GetLazyMessagesOutput;
   getMyProfile: User;
   groupWishlistItems: GroupWishlistItems;
   myWishlistItems: Array<Gift>;
@@ -261,8 +278,22 @@ export type Query = {
 };
 
 
+export type QueryGetLazyMessagesArgs = {
+  data: GetLazyMessagesInput;
+};
+
+
 export type QueryGroupWishlistItemsArgs = {
   groupId: Scalars['Int']['input'];
+};
+
+export type SetLastMessageVuInput = {
+  groupId: Scalars['Float']['input'];
+};
+
+export type SetLastMessageVuOutput = {
+  __typename?: 'SetLastMessageVuOutput';
+  sucess: Scalars['Boolean']['output'];
 };
 
 export type SignupInput = {
@@ -330,7 +361,21 @@ export type GetAllMyGroupsQuery = { __typename?: 'Query', getAllMyGroups: { __ty
 export type GetAllMessageMyGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllMessageMyGroupsQuery = { __typename?: 'Query', getAllMessageMyGroups: Array<{ __typename?: 'GroupMessagesOutput', groupId: number, messages: Array<{ __typename?: 'Message', id: string, content: string, createdAt: any, updatedAt: any, isEdited: boolean, user: { __typename?: 'User', id: string, firstName: string, lastName: string, image_url?: string | null, isAdmin: boolean } }> }> };
+export type GetAllMessageMyGroupsQuery = { __typename?: 'Query', getAllMessageMyGroups: Array<{ __typename?: 'GroupMessagesOutput', groupId: number, lastTempstampVu: any, messages: Array<{ __typename?: 'Message', id: string, content: string, createdAt: any, updatedAt: any, isEdited: boolean, user: { __typename?: 'User', id: string, firstName: string, lastName: string, image_url?: string | null, isAdmin: boolean } }> }> };
+
+export type GetLazyMessagesQueryVariables = Exact<{
+  data: GetLazyMessagesInput;
+}>;
+
+
+export type GetLazyMessagesQuery = { __typename?: 'Query', getLazyMessages: { __typename?: 'GetLazyMessagesOutput', isMaximumMessages: boolean, messages: Array<{ __typename?: 'Message', id: string, content: string, createdAt: any, updatedAt: any, isEdited: boolean, user: { __typename?: 'User', id: string, firstName: string, lastName: string, image_url?: string | null, isAdmin: boolean } }> } };
+
+export type SetLastMessageVuMutationVariables = Exact<{
+  data: SetLastMessageVuInput;
+}>;
+
+
+export type SetLastMessageVuMutation = { __typename?: 'Mutation', setLastMessageVu: { __typename?: 'SetLastMessageVuOutput', sucess: boolean } };
 
 export type LoginMutationVariables = Exact<{
   data: LoginInput;
@@ -549,6 +594,7 @@ export const GetAllMessageMyGroupsDocument = gql`
     query getAllMessageMyGroups {
   getAllMessageMyGroups {
     groupId
+    lastTempstampVu
     messages {
       id
       content
@@ -598,6 +644,93 @@ export type GetAllMessageMyGroupsQueryHookResult = ReturnType<typeof useGetAllMe
 export type GetAllMessageMyGroupsLazyQueryHookResult = ReturnType<typeof useGetAllMessageMyGroupsLazyQuery>;
 export type GetAllMessageMyGroupsSuspenseQueryHookResult = ReturnType<typeof useGetAllMessageMyGroupsSuspenseQuery>;
 export type GetAllMessageMyGroupsQueryResult = Apollo.QueryResult<GetAllMessageMyGroupsQuery, GetAllMessageMyGroupsQueryVariables>;
+export const GetLazyMessagesDocument = gql`
+    query getLazyMessages($data: GetLazyMessagesInput!) {
+  getLazyMessages(data: $data) {
+    isMaximumMessages
+    messages {
+      id
+      content
+      createdAt
+      updatedAt
+      isEdited
+      user {
+        id
+        firstName
+        lastName
+        image_url
+        isAdmin
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetLazyMessagesQuery__
+ *
+ * To run a query within a React component, call `useGetLazyMessagesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetLazyMessagesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetLazyMessagesQuery({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useGetLazyMessagesQuery(baseOptions: Apollo.QueryHookOptions<GetLazyMessagesQuery, GetLazyMessagesQueryVariables> & ({ variables: GetLazyMessagesQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetLazyMessagesQuery, GetLazyMessagesQueryVariables>(GetLazyMessagesDocument, options);
+      }
+export function useGetLazyMessagesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetLazyMessagesQuery, GetLazyMessagesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetLazyMessagesQuery, GetLazyMessagesQueryVariables>(GetLazyMessagesDocument, options);
+        }
+export function useGetLazyMessagesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetLazyMessagesQuery, GetLazyMessagesQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetLazyMessagesQuery, GetLazyMessagesQueryVariables>(GetLazyMessagesDocument, options);
+        }
+export type GetLazyMessagesQueryHookResult = ReturnType<typeof useGetLazyMessagesQuery>;
+export type GetLazyMessagesLazyQueryHookResult = ReturnType<typeof useGetLazyMessagesLazyQuery>;
+export type GetLazyMessagesSuspenseQueryHookResult = ReturnType<typeof useGetLazyMessagesSuspenseQuery>;
+export type GetLazyMessagesQueryResult = Apollo.QueryResult<GetLazyMessagesQuery, GetLazyMessagesQueryVariables>;
+export const SetLastMessageVuDocument = gql`
+    mutation SetLastMessageVu($data: SetLastMessageVuInput!) {
+  setLastMessageVu(data: $data) {
+    sucess
+  }
+}
+    `;
+export type SetLastMessageVuMutationFn = Apollo.MutationFunction<SetLastMessageVuMutation, SetLastMessageVuMutationVariables>;
+
+/**
+ * __useSetLastMessageVuMutation__
+ *
+ * To run a mutation, you first call `useSetLastMessageVuMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetLastMessageVuMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setLastMessageVuMutation, { data, loading, error }] = useSetLastMessageVuMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useSetLastMessageVuMutation(baseOptions?: Apollo.MutationHookOptions<SetLastMessageVuMutation, SetLastMessageVuMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SetLastMessageVuMutation, SetLastMessageVuMutationVariables>(SetLastMessageVuDocument, options);
+      }
+export type SetLastMessageVuMutationHookResult = ReturnType<typeof useSetLastMessageVuMutation>;
+export type SetLastMessageVuMutationResult = Apollo.MutationResult<SetLastMessageVuMutation>;
+export type SetLastMessageVuMutationOptions = Apollo.BaseMutationOptions<SetLastMessageVuMutation, SetLastMessageVuMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($data: LoginInput!) {
   login(data: $data) {
