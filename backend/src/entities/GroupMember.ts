@@ -39,17 +39,9 @@ export class GroupMember extends BaseEntity {
   @Field()
   isGroupAdmin: boolean;
 
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  firstName?: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  lastName?: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  email?: string;
+  @Column({ type: "timestamptz", default: () => "CURRENT_TIMESTAMP" })
+  @Field()
+  lastTempstampVu: Date;
 
   @ManyToOne(
     () => User,

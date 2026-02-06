@@ -21,7 +21,7 @@ export default function InputWithToggle({
   return (
     <div className="flex flex-row w-full gap-1 justify-between items-center">
       {checked && <Input theme={theme} {...props} placeholder={label} onChange={onChange} />}
-      {!checked && <span className="text-white">{question}</span>}
+      {!checked && <span className="text-white font-bold text-lg">{question}</span>}
       <ToggleSwitch checked={checked} onChange={onCheckedChange} colour={theme} />
     </div>
   );

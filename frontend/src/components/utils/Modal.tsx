@@ -13,6 +13,7 @@ type ModalProps = {
   closeOnOverlayClick?: boolean;
   showCloseButton?: boolean;
   withPadding?: boolean;
+  hideCloseButton?: boolean;
 };
 
 const sizeClasses: Record<ModalSize, string> = {

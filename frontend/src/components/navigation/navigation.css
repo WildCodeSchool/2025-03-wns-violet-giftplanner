@@ -1,23 +1,27 @@
-/* .chat-icon {
+.chat-icon {
   color: #292e96;
   transition: color 0.5s ease;
+  cursor: pointer;
 }
 
 .wishlist-icon {
   color: #ea4b09;
   transition: color 0.5s ease;
+  cursor: pointer;
 }
 
 .profile-icon {
   color: #fa7d7d;
   transition: color 0.5s ease;
+  cursor: pointer;
 }
 
 .admin-icon {
   color: #a74228;
   transition: color 0.5s ease;
+  cursor: pointer;
 }
 
 .transition-bnt-nav {
   transition: color 0.5s ease;
-} */
+}

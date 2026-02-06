@@ -96,18 +96,21 @@ export default function Wishlist({ groupId, beneficiaryItems, groupItems, onAddI
     <Container
       colour="orange"
       title="Wishlist du groupe"
-      button={
-        <Button text="Proposer une idée" icon="plus" colour="green" onClick={() => setIsModalOpen(true)} />
-      }
+      classNameTitle="text-[1.125rem]"
+      button={<Button text="Proposer une idée" icon="plus" colour="green" onClick={() => {
+      setEditingGift(null);
+      setFormData({ name: "", description: "", imageUrl: "", url: "" });
+      setIsModalOpen(true);
+    }} />}
     >
       {/* Beneficiary wishlist */}
       <section className="mb-6">
-        <h3 className="text-md font-semibold mb-2 text-dark">Idées du bénéficiaire</h3>
+        <h3 className="text-md font-inter-extra-bold mb-2 text-dark">Idées du bénéficiaire</h3>
 
         {beneficiaryItems.length === 0 ? (
-          <p className="text-gray-600 text-sm">Aucune idée ajoutée par le bénéficiaire.</p>
+          <p className="text-dark text-sm">Aucune idée ajoutée par le bénéficiaire.</p>
         ) : (
-          <div className="grid gap-3 grid-cols-[repeat(auto-fill,minmax(220px,1fr))]">
+          <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(220px,1fr))]">
             {beneficiaryItems.map((gift) => (
               <Card
                 key={gift.id}
@@ -127,10 +130,10 @@ export default function Wishlist({ groupId, beneficiaryItems, groupItems, onAddI
 
       {/* Group suggestions */}
       <section>
-        <h3 className="text-md font-semibold mb-2 text-dark">Idées proposées par le groupe</h3>
+        <h3 className="text-md font-inter-extra-bold mb-2 text-dark">Idées proposées par le groupe</h3>
 
         {groupItems.length === 0 ? (
-          <p className="text-gray-600 text-sm">Aucune idée proposée pour le moment.</p>
+          <p className="text-dark text-sm">Aucune idée proposée pour le moment.</p>
         ) : (
           <div className="grid gap-3 grid-cols-[repeat(auto-fill,minmax(220px,1fr))]">
             {groupItems.map((gift) => {
@@ -150,7 +153,10 @@ export default function Wishlist({ groupId, beneficiaryItems, groupItems, onAddI
                     isOwner ? (
                       <>
                         <Button
-                          onClick={() => {
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+
                             setEditingGift(gift);
                             setFormData({
                               name: gift.name,
@@ -164,14 +170,20 @@ export default function Wishlist({ groupId, beneficiaryItems, groupItems, onAddI
                           colour="dark"
                           className="px-2 py-1 rounded-md bg-[#E9A800] text-white text-sm shadow"
                           disabled={updating}
-                        ></Button>
+                        />
+
                         <Button
-                          onClick={() => handleDelete(gift)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            handleDelete(gift);
+                          }}
                           icon="delete"
                           colour="orange"
                           className="px-2 py-1 rounded-md bg-[#A74228] text-white text-sm shadow cursor-pointer"
                           disabled={deleting}
-                        ></Button>
+                        />
+
                       </>
                     ) : null
                   }

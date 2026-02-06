@@ -1,10 +1,11 @@
+import type { MouseEventHandler } from "react";
 import type { ColourScheme } from "../../types/ColourScheme";
 import type { IconProps } from "./Icon";
 import Icon from "./Icon";
 
 type ButtonType = HTMLButtonElement["type"];
 type ButtonProps = {
-  onClick?: () => void;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
   text?: string;
   colour?: ColourScheme["colour"];
   icon?: IconProps["icon"];
@@ -46,7 +47,7 @@ export default function Button({
       disabled={disabled}
       className={`${backgroundColour} text-white font-inter-extra-bold
         ${rounded ? "rounded-full p-2" : "rounded-lg py-2 px-4"}
-        flex items-center gap-1 font-medium shadow-md
+        flex items-center gap-2 font-medium shadow-md
         transition-all duration-200 ease-in-out
         ${disabled ? "opacity-60 cursor-not-allowed hover:brightness-100 hover:scale-100 active:scale-100" : "hover:brightness-110 hover:scale-[1.02] active:scale-[0.97] active:brightness-95"}
         ${className}

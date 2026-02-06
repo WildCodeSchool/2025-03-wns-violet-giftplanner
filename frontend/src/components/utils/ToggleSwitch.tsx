@@ -18,8 +18,17 @@ interface ToggleProps {
 // };
 
 export default function ToggleSwitch({ checked, onChange, mode = "light" }: ToggleProps) {
-  const borderColour = mode === "dark" ? "border-gray-300" : "border-white";
-  const bulletColour = mode === "dark" ? "bg-gray-200" : "bg-white";
+  const borderColour = mode === "dark" ? "border-dark" : "border-white";
+  // When checked: solid fill, when unchecked: transparent (outline only)
+  const bgColour = checked ? (mode === "dark" ? "bg-dark" : "bg-white") : "bg-transparent";
+  // Bullet border color: when checked on light mode, use green so it's visible against white bg
+  const bulletBorderColour = checked
+    ? mode === "dark"
+      ? "border-white"
+      : "border-green"
+    : mode === "dark"
+      ? "border-dark"
+      : "border-white";
 
   return (
     <div
@@ -36,33 +45,28 @@ export default function ToggleSwitch({ checked, onChange, mode = "light" }: Togg
       className={`
         shrink-0
         basis-auto
-        w-[56px]
-        cursor-pointer flex items-center rounded-full p-[1px]
-        transition-colors duration-300 border-2 ${borderColour}
+        cursor-pointer flex items-center rounded-full
+        transition-colors duration-300 border-[3.5px] ${borderColour} ${bgColour}
 
         /* base (mobile) */
-        w-12 h-7
+        w-14 h-8
 
-        /* tablet */
-        sm:w-14 sm:h-8 
-
-        /* desktop */
-        md:w-16 md:h-9 
+        /* tablet & desktop */
+        sm:w-16 sm:h-9
       `}
     >
+      {/* Hollow bullet - just border, transparent inside */}
       <div
         className={`
-          shrink-0 
-          ${bulletColour} rounded-full shadow-md transform transition-transform duration-300
+          shrink-0
+          bg-transparent rounded-full transform transition-all duration-300
+          ${bulletBorderColour} border-[3px]
 
           /* base bullet */
-          w-5 h-5 ${checked ? "translate-x-5" : "translate-x-0"}
+          w-5 h-5 ${checked ? "translate-x-6" : "translate-x-0.5"}
 
-          /* tablet bullet */
-          sm:w-6 sm:h-6 ${checked ? "sm:translate-x-6" : "sm:translate-x-0"}
-
-          /* desktop bullet */
-          md:w-7 md:h-7 ${checked ? "md:translate-x-7" : "md:translate-x-0"}
+          /* tablet & desktop bullet */
+          sm:w-6 sm:h-6 ${checked ? "sm:translate-x-7" : "sm:translate-x-0.5"}
         `}
       />
     </div>

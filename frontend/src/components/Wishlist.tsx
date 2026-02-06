@@ -151,14 +151,6 @@ export default function Wishlist() {
               <div className="flex flex-col items-center justify-center text-white">
                 <Icon icon="gift" className="text-7xl opacity-80 mb-3" />
                 <p className="text-lg mb-8">Aucune idée pour l'instant.</p>
-                <Button
-                  type="button"
-                  icon="plus"
-                  text="Ajouter une idée"
-                  colour="green"
-                  onClick={addModal.open}
-                  className="px-4 py-2 rounded-xl"
-                />
               </div>
             </div>
           ) : (

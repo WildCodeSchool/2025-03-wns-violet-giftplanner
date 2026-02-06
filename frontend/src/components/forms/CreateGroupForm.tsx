@@ -4,7 +4,6 @@ import { useCreateGroupMutation } from "../../graphql/generated/graphql-types";
 import { GET_ALL_MY_GROUPS } from "../../graphql/operations/groupOperations";
 import { groupCreationFormValidation } from "../../hooks/formValidationRules";
 import { useSanitizedForm } from "../../hooks/useSanitizedForm";
-import Button from "../utils/Button";
 import Icon from "../utils/Icon";
 import Input from "../utils/Input";
 import InputWithToggle from "../utils/InputWithToggle";
@@ -15,9 +14,10 @@ import GroupLink from "./GroupLink";
 
 type CreateGroupFormProps = {
   onSuccess?: () => void;
+  onCancel?: () => void;
 };
 
-export default function CreateGroupForm({ onSuccess }: CreateGroupFormProps) {
+export default function CreateGroupForm({ onSuccess, onCancel }: CreateGroupFormProps) {
   const options = [
     {
       label: "Anniversaire",
@@ -121,14 +121,18 @@ export default function CreateGroupForm({ onSuccess }: CreateGroupFormProps) {
   }
 
   return (
-    <form className=" flex w-full h-full rounded-2xl" onSubmit={handleSubmit} autoComplete="off">
-      <div className="bg-green w-1/2 h-full flex flex-col justify-center pt-10 pb-5 rounded-tl-2xl rounded-bl-2xl">
+    <form
+      className="flex w-full h-full rounded-2xl max-md:flex-col max-md:bg-green max-md:rounded-none max-md:overflow-y-auto max-md:p-8 max-md:justify-center"
+      onSubmit={handleSubmit}
+      autoComplete="off"
+    >
+      <div className="bg-green w-1/2 h-full flex flex-col justify-center pt-10 pb-5 rounded-tl-2xl rounded-bl-2xl max-md:w-full max-md:rounded-none max-md:pt-0 max-md:pb-0">
         {/* Form to create a new group */}
-        <Subtitle className="text-center text-2xl">Créer un groupe</Subtitle>
-        <div className="text-white text-8xl m-auto">
+        <Subtitle className="text-center text-2xl max-md:text-xl max-md:mb-10">Créer un groupe</Subtitle>
+        <div className="text-white text-8xl m-auto max-md:hidden">
           <Icon icon="image" />
         </div>
-        <div className="flex flex-col gap-4 px-20">
+        <div className="flex flex-col gap-4 px-20 max-md:px-0">
           <Input
             name="name"
             type="text"
@@ -154,16 +158,6 @@ export default function CreateGroupForm({ onSuccess }: CreateGroupFormProps) {
             theme="light"
           />
 
-          <Input
-            name="piggy_bank"
-            type="number"
-            value={String(formData.piggy_bank)}
-            onChange={handleChange}
-            placeholder={String(0)}
-            error={errors.piggy_bank}
-            icon="dollar"
-          />
-
           <InputWithToggle
             checked={checked}
             onCheckedChange={() => {
@@ -185,20 +179,28 @@ export default function CreateGroupForm({ onSuccess }: CreateGroupFormProps) {
             error={errors.deadline}
           />
         </div>
-        <Button
-          type="submit"
-          text="Créer le groupe"
-          className="text-center w-fit px-8 py-1 m-auto text-lg"
-          colour="dark"
-          rounded
-        >
-          Créer
-        </Button>
+        <div className="flex flex-col gap-6 max-md:w-full max-md:mt-8">
+          <button
+            type="submit"
+            className="bg-dark text-white font-inter-extra-bold rounded-lg py-2 px-8 w-fit m-auto text-lg shadow-md hover:brightness-110 max-md:w-full max-md:py-3 max-md:rounded-full max-md:text-base max-md:font-bold max-md:shadow-[0_2px_6px_rgba(32,9,4,0.2)] max-md:bg-white max-md:text-dark max-md:hover:bg-gray-100"
+          >
+            Créer le groupe
+          </button>
+          {onCancel && (
+            <button
+              type="button"
+              onClick={onCancel}
+              className="hidden max-md:block w-full py-3 rounded-full bg-dark text-white text-base font-bold shadow-[0_2px_6px_rgba(32,9,4,0.2)] hover:bg-[#463835]"
+            >
+              Annuler
+            </button>
+          )}
+        </div>
         {error && <p className="text-orange font-inter text-sm pt-1 text-center">{error}</p>}
         {errors.main && <p className="text-orange font-inter text-sm pt-1 text-center">{errors.main}</p>}
       </div>
 
-      <div className="w-1/2 bg-white max-md:w-full flex flex-col max-md:rounded-none rounded-tr-2xl rounded-br-2xl">
+      <div className="w-1/2 bg-white h-full flex flex-col rounded-tr-2xl rounded-br-2xl max-md:hidden">
         <div className="flex flex-col gap-4 px-20 m-auto">
           {/* Adding users can go here */}
           <div className="flex flex-row items-center w-full border border-blue">
