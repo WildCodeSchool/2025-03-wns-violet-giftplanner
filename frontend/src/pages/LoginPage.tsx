@@ -1,6 +1,6 @@
-import LoginForm from "../components/auth/LoginForm";
+import LoginForm from "../components/forms/auth/LoginForm";
 import InfoHome from "../components/InfoHome";
-import "../components/auth/auth.css";
+import "../components/forms/auth/auth.css";
 
 const LoginPage = () => {
   return (

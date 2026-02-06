@@ -43,9 +43,13 @@ export class GroupMember extends BaseEntity {
   @Field()
   lastTempstampVu: Date;
 
+  @Field(() => User)
   @ManyToOne(
     () => User,
     (user) => user.groupMember,
+    {
+      onDelete: "CASCADE",
+    },
   )
   @JoinColumn({ name: "userId" })
   user: User;
@@ -53,6 +57,9 @@ export class GroupMember extends BaseEntity {
   @ManyToOne(
     () => Group,
     (group) => group.groupMember,
+    {
+      onDelete: "CASCADE",
+    },
   )
   @JoinColumn({ name: "groupId" })
   group: Group;

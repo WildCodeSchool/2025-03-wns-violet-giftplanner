@@ -1,5 +1,6 @@
 import { useId } from "react";
 import Icon from "./Icon";
+import Input from "./Input";
 import Tag from "./Tag";
 
 interface SearchInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "onClick"> {
@@ -14,6 +15,7 @@ interface SearchInputProps extends Omit<React.InputHTMLAttributes<HTMLInputEleme
   onClick: (tag: string) => void;
   onAddTag?: (tag: string) => void;
   items: string[];
+  disabled?: boolean;
 }
 
 export default function SearchInput({
@@ -29,6 +31,7 @@ export default function SearchInput({
   type = "text",
   error,
   className,
+  disabled = false,
   ...props
 }: SearchInputProps) {
   const baseStyles =
@@ -44,12 +47,14 @@ export default function SearchInput({
   const id = useId();
 
   function handleAddTag() {
+    if (disabled) return;
     if (value.trim() !== "" && onAddTag) {
       onAddTag(value.trim());
     }
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
+    if (disabled) return;
     if (e.key === "Enter" && value.trim() !== "") {
       e.preventDefault();
       handleAddTag();
@@ -64,29 +69,43 @@ export default function SearchInput({
         </label>
       )}
       <div className="relative">
-        <input
-          id={id}
+        <Input
+          name={name}
+          disabled={disabled}
+          theme="dark"
           type={type}
           value={value}
           onChange={onChange}
           onKeyDown={handleKeyDown}
           className={`${baseStyles} ${themeStyles} ${errorStyles} ${className}`}
-          name={name}
           placeholder={placeholder}
           {...props}
         />
 
-        <button type="button" onClick={handleAddTag} className="absolute right-0 top-0 h-full px-3">
+        <button
+          type="button"
+          onClick={handleAddTag}
+          disabled={disabled}
+          className={`absolute right-0 top-0 h-full px-3 ${disabled ? "cursor-not-allowed" : ""}`}
+        >
           <Icon
             icon={value ? "plus" : "search"}
-            className={`${error ? "text-orange" : "text-dark"} text-2xl cursor-pointer`}
+            className={`${
+              error ? "text-orange" : disabled ? "text-gray-400" : "text-dark"
+            } text-2xl ${disabled ? "cursor-not-allowed" : "cursor-pointer"}`}
           />
         </button>
       </div>
       {error && <p className="text-orange font-inter text-sm pt-1">{error}</p>}
       <div className="flex flex-wrap w-full gap-1 mt-2">
         {items.map((item) => (
-          <Tag key={item} tag={item} type="dark" className="mt-2" onClick={() => onClick(item)} />
+          <Tag
+            key={item}
+            tag={item}
+            type="dark"
+            disabled={disabled}
+            onClick={() => !disabled && onClick(item)}
+          />
         ))}
       </div>
     </div>

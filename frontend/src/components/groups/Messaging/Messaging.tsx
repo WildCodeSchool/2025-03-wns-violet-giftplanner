@@ -3,10 +3,13 @@ import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { FaArrowDown, FaLocationArrow } from "react-icons/fa";
 import type { GetAllMessageMyGroupsQuery } from "../../../graphql/generated/graphql-types.ts";
 import { useGetLazyMessagesLazyQuery } from "../../../graphql/generated/graphql-types.ts";
+import { useToggle } from "../../../hooks/useToggle.ts";
 import type { Message as MessageType } from "../../../types/Message";
 import { countdownDate, isSameDate } from "../../../utils/dateCalculator.ts";
 import { useMyProfileStore } from "../../../zustand/myProfileStore.ts";
+import GroupFormIndex from "../../forms/groups/index.tsx";
 import Icon from "../../utils/Icon.tsx";
+import Modal from "../../utils/Modal.tsx";
 import Subtitle from "../../utils/Subtitle.tsx";
 import Message from "./Message.tsx";
 import TimeLigne from "./TimeLigne.tsx";
@@ -45,6 +48,7 @@ export default function Messaging({
   const id = useId();
   const [messageInput, setMessageInput] = useState<string>("");
   const { userProfile } = useMyProfileStore();
+  const groupFormModal = useToggle(false);
 
   // scroll automatique le plus en bas possible
   const bottomRef = useRef<HTMLDivElement | null>(null);
@@ -221,8 +225,20 @@ export default function Messaging({
             </p>
           </div>
           <div className="absolute right-0 px-8">
-            <Icon icon="dots" className="text-white" />
+            <button type="button" onClick={groupFormModal.open}>
+              <Icon icon="edit" className="text-white" />
+            </button>
           </div>
+          {groupFormModal.isOpen && (
+            <Modal isOpen={groupFormModal.isOpen} onClose={groupFormModal.close}>
+              <GroupFormIndex
+                isOpen={groupFormModal.isOpen}
+                onSuccess={groupFormModal.close}
+                groupId={groupId}
+                onCancel={groupFormModal.close}
+              />
+            </Modal>
+          )}
         </div>
       )}
       <div

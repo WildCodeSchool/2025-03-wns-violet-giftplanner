@@ -1,6 +1,6 @@
-import RegisterForm from "../components/auth/RegisterForm";
+import RegisterForm from "../components/forms/auth/RegisterForm";
 import InfoHome from "../components/InfoHome";
-import "../components/auth/auth.css";
+import "../components/forms/auth/auth.css";
 
 const RegisterPage = () => {
   return (

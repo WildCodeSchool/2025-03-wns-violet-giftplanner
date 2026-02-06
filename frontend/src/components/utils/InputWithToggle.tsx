@@ -7,6 +7,7 @@ interface InputToggleProps extends React.ComponentProps<typeof Input> {
   label?: string;
   question?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  disabled?: boolean;
 }
 
 export default function InputWithToggle({
@@ -16,11 +17,14 @@ export default function InputWithToggle({
   theme = "light",
   label,
   question,
+  disabled = false,
   ...props
 }: InputToggleProps) {
   return (
     <div className="flex flex-row w-full gap-1 justify-between items-center">
-      {checked && <Input theme={theme} {...props} placeholder={label} onChange={onChange} />}
+      {checked && (
+        <Input theme={theme} {...props} placeholder={label} onChange={onChange} disabled={disabled} />
+      )}
       {!checked && <span className="text-white font-bold text-lg">{question}</span>}
       <ToggleSwitch checked={checked} onChange={onCheckedChange} colour={theme} />
     </div>

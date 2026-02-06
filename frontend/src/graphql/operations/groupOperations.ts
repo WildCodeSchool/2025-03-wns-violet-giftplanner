@@ -24,10 +24,17 @@ mutation CreateGroup($data: CreateGroupInput!) {
       email
     }
     groupMember {
-      id
-      userId
-      groupId
-    }
+          id
+          userId
+          groupId
+          isGroupAdmin
+          joined_at
+          user {
+            firstName
+            email
+            lastName
+          }
+        }
   }
 }
 `;
@@ -44,11 +51,24 @@ export const GET_ALL_MY_GROUPS = gql`
         event_type
         piggy_bank
         deadline
-        groupMember {
+         groupMember {
           id
           userId
           groupId
+          isGroupAdmin
+          joined_at
+          user {
+            firstName
+            email
+            lastName
+          }
         }
+        user_admin {
+        isAdmin
+        firstName
+        lastName
+        email
+      }
       }
     }
   }
@@ -97,6 +117,72 @@ export const GET_LAZY_MESSAGES = gql`
       }
     }
   }
+`;
+
+export const GET_GROUP_BY_ID = gql`
+  query GetGroupById($id: Float!) {
+    getGroupById(id: $id) {
+      user_admin {
+        firstName
+        lastName
+        id
+        email
+      }
+      piggy_bank
+      name
+      id
+      groupMember {
+          id
+          userId
+          groupId
+          isGroupAdmin
+          joined_at
+          user {
+            firstName
+            email
+            lastName
+          }
+        }
+      deadline
+      event_type
+      user_beneficiary {
+        firstName
+        lastName
+        id
+      }
+      user_admin {
+      isAdmin
+      firstName
+      lastName
+      email
+    }
+    }
+  }
+`;
+
+export const UPDATE_GROUP = gql`
+  mutation UpdateGroup($data: UpdateGroupInput!, $updateGroupId: Float!) {
+  updateGroup(data: $data, id: $updateGroupId) {
+    id
+    event_type
+    updatedAt
+    name
+    piggy_bank
+    deadline
+  }
+}
+`;
+
+export const DELETE_GROUP = gql`
+mutation DeleteGroup($deleteGroupId: Float!) {
+  deleteGroup(id: $deleteGroupId)
+}
+`;
+
+export const REMOVE_GROUP_MEMBERS = gql`
+mutation RemoveMembersFromGroup($groupId: Float!, $data: RemoveMembersInput!) {
+  removeMembersFromGroup(groupId: $groupId, data: $data) 
+}
 `;
 
 // pour mettre en bdd le vu du dernier message pour un groupe donné
