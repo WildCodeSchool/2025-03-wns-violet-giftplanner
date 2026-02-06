@@ -225,7 +225,9 @@ export default function Messaging({
           </div>
         </div>
       )}
-      <div className={`flex-1 w-full flex flex-col ${isMobile ? "px-1.5 pb-5 pl-4 min-h-0" : "h-full pr-[6px] pb-5 pl-4"}`}>
+      <div
+        className={`flex-1 w-full flex flex-col ${isMobile ? "px-1.5 pb-5 pl-4 min-h-0" : "h-full pr-[6px] pb-5 pl-4"}`}
+      >
         <div
           className={`relative w-full overflow-hidden ${isMobile ? "flex-grow flex-shrink flex-basis-0" : "min-h-auto flex-grow flex-shrink basis-0"} pt-[10px] pb-2.5 pl-0`}
         >
