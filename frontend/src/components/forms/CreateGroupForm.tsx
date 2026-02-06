@@ -198,7 +198,7 @@ export default function CreateGroupForm({ onSuccess }: CreateGroupFormProps) {
         {errors.main && <p className="text-orange font-inter text-sm pt-1 text-center">{errors.main}</p>}
       </div>
 
-      <div className="w-1/2 bg-white h-full flex flex-col rounded-tr-2xl rounded-br-2xl">
+      <div className="w-1/2 bg-white max-md:w-full flex flex-col max-md:rounded-none rounded-tr-2xl rounded-br-2xl">
         <div className="flex flex-col gap-4 px-20 m-auto">
           {/* Adding users can go here */}
           <div className="flex flex-row items-center w-full border border-blue">
