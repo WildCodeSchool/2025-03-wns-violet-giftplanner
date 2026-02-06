@@ -49,7 +49,7 @@ export default function Message({ regroupement, userId }: MessageProps) {
             {regroupement.map((message, index) => {
               return (
                 <div
-                  className={`w-[320px] border-[1px] px-[16px] py-[10px] ${defClassRadius(regroupement.length, index + 1, isAutreMessage)} ${defClassColor(isAutreMessage)}`}
+                  className={`w-[250px] md:w-[320px] border-[1px] px-[16px] py-[10px] ${defClassRadius(regroupement.length, index + 1, isAutreMessage)} ${defClassColor(isAutreMessage)}`}
                   key={message.id}
                 >
                   <p className="text-[16px] leading-[1.25]">{message.content}</p>
@@ -68,7 +68,7 @@ export default function Message({ regroupement, userId }: MessageProps) {
         <img
           src={getProfilePictureUrl(regroupement[0].user.image_url)}
           alt="profile utilisateur"
-          className="w-[60px] h-[60px] rounded-full object-cover"
+          className="w-[40px] h-[40px] md:w-[60px] md:h-[60px] rounded-full object-cover"
         />
       </div>
     </div>

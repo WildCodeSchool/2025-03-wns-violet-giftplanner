@@ -17,12 +17,14 @@ type MessagingProps = {
   date: Date;
   groupId: number;
   messages: GetAllMessageMyGroupsQuery["getAllMessageMyGroups"][number]["messages"];
-  addMessages: (message: GetAllMessageMyGroupsQuery["getAllMessageMyGroups"][number]["messages"]) => void;
+  addMessages?: (message: GetAllMessageMyGroupsQuery["getAllMessageMyGroups"][number]["messages"]) => void;
   calbackSendMessage: (groupId: number, message: string) => void;
   contenairMessageRef: RefObject<HTMLDivElement | null>;
-  updateLastVu: (groupId: number, date: Date | string, serveurSyconization?: boolean) => void;
-  getLastVu: (groupId: number) => Date | undefined;
-  getNbNewMessages: (groupId: number, messages: MessageType[]) => number;
+  updateLastVu?: (groupId: number, date: Date | string, serveurSyconization?: boolean) => void;
+  getLastVu?: (groupId: number) => Date | undefined;
+  getNbNewMessages?: (groupId: number, messages: MessageType[]) => number;
+  isMobile?: boolean;
+  hideHeader?: boolean;
 };
 
 export default function Messaging({
@@ -37,6 +39,8 @@ export default function Messaging({
   updateLastVu,
   getLastVu,
   getNbNewMessages,
+  isMobile = false,
+  hideHeader = false,
 }: MessagingProps) {
   const id = useId();
   const [messageInput, setMessageInput] = useState<string>("");
@@ -116,7 +120,7 @@ export default function Messaging({
       },
     });
 
-    addMessages(olderMessages.data?.getLazyMessages.messages || []);
+    addMessages?.(olderMessages.data?.getLazyMessages.messages || []);
     setOldMessagesPending(false);
     setIsMaximumMessages(olderMessages.data?.getLazyMessages.isMaximumMessages || false);
   };
@@ -174,7 +178,7 @@ export default function Messaging({
 
   useEffect(() => {
     const el = contenairMessageRef.current;
-    if (!el) return;
+    if (!el || !getLastVu || !updateLastVu) return;
 
     const onScroll = () => {
       if (el.scrollHeight - (el.scrollTop + el.clientHeight) <= 5) {
@@ -191,36 +195,46 @@ export default function Messaging({
 
     el.addEventListener("scroll", onScroll);
     return () => el.removeEventListener("scroll", onScroll);
-  }, [messages, groupId]);
+  }, [messages, groupId, getLastVu, updateLastVu]);
 
   return (
-    <div className="rounded-2xl w-full h-full border-grey border-2 border-lg flex flex-col">
-      <div className="relative w-full h-[80px] bg-blue rounded-t-2xl flex-row flex justify-center items-center py-4">
-        <div className="flex flex-col w-full items-center">
-          <Subtitle>{title}</Subtitle>
-          <p className="text-white text-xs sm:text-sm place-self-center">
-            <span>
-              {expired
-                ? `Ce groupe a expiré depuis ${Math.abs(daysLeft)} jour(s)`
-                : `${daysLeft} jour(s) restant(s)`}{" "}
-            </span>{" "}
-            -{" "}
-            <span>
-              {" "}
-              {participants} {participants === 1 ? "participant" : "participants"}{" "}
-            </span>
-          </p>
+    <div
+      className={`${hideHeader ? "" : isMobile ? "rounded-none" : "rounded-2xl border-grey border-2 border-lg"} w-full h-full flex flex-col`}
+    >
+      {!hideHeader && (
+        <div
+          className={`relative w-full h-[80px] bg-blue ${isMobile ? "rounded-none" : "rounded-t-2xl"} flex-row flex justify-center items-center py-4`}
+        >
+          <div className="flex flex-col w-full items-center">
+            <Subtitle className={isMobile ? "text-lg" : ""}>{title}</Subtitle>
+            <p className="text-white text-xs sm:text-sm place-self-center">
+              <span>
+                {expired
+                  ? `Ce groupe a expiré depuis ${Math.abs(daysLeft)} jour(s)`
+                  : `${daysLeft} jour(s) restant(s)`}{" "}
+              </span>{" "}
+              -{" "}
+              <span>
+                {" "}
+                {participants} {participants === 1 ? "participant" : "participants"}{" "}
+              </span>
+            </p>
+          </div>
+          <div className="absolute right-0 px-8">
+            <Icon icon="dots" className="text-white" />
+          </div>
         </div>
-        <div className="absolute right-0 px-8">
-          <Icon icon="dots" className="text-white" />
-        </div>
-      </div>
-      <div className="h-full w-full flex flex-col pr-[6px] pb-5 pl-4">
-        <div className="relative w-full overflow-hidden min-h-auto flex-grow flex-shrink basis-0 pt-[10px] pb-2.5 pl-0">
+      )}
+      <div
+        className={`flex-1 w-full flex flex-col ${isMobile ? "px-1.5 pb-5 pl-4 min-h-0" : "h-full pr-[6px] pb-5 pl-4"}`}
+      >
+        <div
+          className={`relative w-full overflow-hidden ${isMobile ? "flex-grow flex-shrink flex-basis-0" : "min-h-auto flex-grow flex-shrink basis-0"} pt-[10px] pb-2.5 pl-0`}
+        >
           <div
             ref={contenairMessageRef}
-            className="flex flex-col w-full overflow-y-auto min-h-auto h-full pr-[10px] gap-[20px]"
-            onScroll={onScrollContainerMessages}
+            className={`flex flex-col w-full overflow-y-auto min-h-auto h-full ${isMobile ? "pr-2.5" : "pr-[10px]"} gap-[20px]`}
+            onScroll={addMessages ? onScrollContainerMessages : undefined}
           >
             {orderedMessages.map((message, index) => {
               return (
@@ -234,7 +248,7 @@ export default function Messaging({
               );
             })}
             <div ref={bottomRef} />
-            {getNbNewMessages(groupId, messages) > 0 && (
+            {getNbNewMessages && getNbNewMessages(groupId, messages) > 0 && (
               <button
                 className="flex cursor-pointer gap-[5px] items-center absolute px-[10px] py-[5px] bottom-[5px] left-[50%] rounded-[100px] text-[16px] text-white bg-[var(--color-blue)] hover:bg-[#1e2366]"
                 style={{ transform: "translateX(-50%)" }}

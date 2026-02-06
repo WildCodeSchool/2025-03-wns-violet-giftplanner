@@ -46,7 +46,7 @@ export default function Button({
       disabled={disabled}
       className={`${backgroundColour} text-white font-inter-extra-bold
         ${rounded ? "rounded-full p-2" : "rounded-lg py-2 px-4"}
-        flex items-center gap-1 font-medium shadow-md
+        flex items-center gap-2 font-medium shadow-md
         transition-all duration-200 ease-in-out
         ${disabled ? "opacity-60 cursor-not-allowed hover:brightness-100 hover:scale-100 active:scale-100" : "hover:brightness-110 hover:scale-[1.02] active:scale-[0.97] active:brightness-95"}
         ${className}

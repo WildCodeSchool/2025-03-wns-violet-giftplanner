@@ -17,6 +17,8 @@ type GroupsProps = {
   messages: Record<number, Message[]>;
   getNbNewMessages: (groupId: number, messages: Message[]) => number;
   updateLastVu: (groupId: number, date: Date | string, serveurSyconization?: boolean) => void;
+  onGroupClick?: (group: GetAllMyGroupsQuery["getAllMyGroups"]["groups"][number]) => void;
+  activeGroupId?: number;
 };
 
 export default function Groups({
@@ -25,6 +27,8 @@ export default function Groups({
   loading,
   error,
   messages,
+  onGroupClick,
+  activeGroupId,
   getNbNewMessages,
   updateLastVu,
 }: GroupsProps) {
@@ -37,7 +41,8 @@ export default function Groups({
     <>
       <Container
         colour="blue"
-        title="Mes Groupes"
+        title="Mes groupes"
+        classNameTitle="text-[1.125rem]"
         button={
           <Button text={"Ajouter un groupe"} icon="plus" colour="green" onClick={createGroupModal.open} />
         }
@@ -51,13 +56,15 @@ export default function Groups({
               key={group.id}
               id={Number(group.id)}
               title={group.name}
+              active={activeGroupId === Number(group.id)}
               onClick={() => {
                 setActiveGroup?.(group);
                 updateLastVu(Number(group.id), messages[Number(group.id)][0].createdAt);
+                onGroupClick?.(group);
               }}
               nbNewMessages={getNbNewMessages(Number(group.id), messages[Number(group.id)] || [])}
             >
-              <p className="text-gray-600 text-sm sm:text-base truncate overflow-hidden text-ellipsis whitespace-nowrap">
+              <p className="text-gray-600 text-xs sm:text-sm leading-tight">
                 <span> Date limite: {formatDate(new Date(group.deadline))} </span> <br />
                 <span>
                   {group.groupMember?.length}{" "}

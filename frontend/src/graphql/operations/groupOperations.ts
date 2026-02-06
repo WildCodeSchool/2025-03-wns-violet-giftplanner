@@ -107,3 +107,12 @@ export const SET_LAST_MESSAGE_VU = gql`
   }
 }
 `;
+
+export const ADD_FUNDS_TO_GROUP = gql`
+  mutation AddFundsToGroup($data: AddFundsInput!) {
+    addFundsToGroup(data: $data) {
+      id
+      piggy_bank
+    }
+  }
+`;
