@@ -97,11 +97,18 @@ export default function Wishlist({ groupId, beneficiaryItems, groupItems, onAddI
       colour="orange"
       title="Wishlist du groupe"
       classNameTitle="text-[1.125rem]"
-      button={<Button text="Proposer une idée" icon="plus" colour="green" onClick={() => {
-      setEditingGift(null);
-      setFormData({ name: "", description: "", imageUrl: "", url: "" });
-      setIsModalOpen(true);
-    }} />}
+      button={
+        <Button
+          text="Proposer une idée"
+          icon="plus"
+          colour="green"
+          onClick={() => {
+            setEditingGift(null);
+            setFormData({ name: "", description: "", imageUrl: "", url: "" });
+            setIsModalOpen(true);
+          }}
+        />
+      }
     >
       {/* Beneficiary wishlist */}
       <section className="mb-6">
@@ -183,7 +190,6 @@ export default function Wishlist({ groupId, beneficiaryItems, groupItems, onAddI
                           className="px-2 py-1 rounded-md bg-[#A74228] text-white text-sm shadow cursor-pointer"
                           disabled={deleting}
                         />
-
                       </>
                     ) : null
                   }

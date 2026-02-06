@@ -73,9 +73,9 @@ export default function Card({
           src={isExternalImage ? img : `/images/${img}.jpg`}
           alt={title}
           className={`h-12 w-12 ${square ? "rounded-xl" : "rounded-full"} object-cover mr-4`}
-        onError={(e) => {
-          (e.currentTarget as HTMLImageElement).src = "/images/papier-theme.jpg";
-        }}
+          onError={(e) => {
+            (e.currentTarget as HTMLImageElement).src = "/images/papier-theme.jpg";
+          }}
         />
 
         {nbNewMessages && nbNewMessages > 0 ? (

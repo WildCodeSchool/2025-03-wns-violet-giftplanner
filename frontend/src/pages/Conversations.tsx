@@ -40,6 +40,7 @@ export default function Conversations() {
   const [isCreateGroupModalOpen, setIsCreateGroupModalOpen] = useState(false);
   const [isAddFundsModalOpen, setIsAddFundsModalOpen] = useState(false);
 
+
   const { data: groupData, refetch: refetchGroups } = useGetAllMyGroupsQuery({
     fetchPolicy: "no-cache",
     nextFetchPolicy: "no-cache",
@@ -363,29 +364,17 @@ export default function Conversations() {
           )}
 
           {/* Wishlist View */}
-          {mobileView === "wishlist" && indexGroups !== -1 && (
+          {mobileView === "wishlist" && indexGroups !== -1 && groups[indexGroups] && (
             <div className="mobile-subview-content mobile-wishlist-bg">
-              {/* Idées du bénéficiaire */}
-              <div className="mobile-wishlist-section">
-                <h3 className="mobile-wishlist-section-title">Idées du bénéficiaire</h3>
-                <p className="mobile-wishlist-section-empty">Aucune idée ajoutée par le bénéficiaire.</p>
-              </div>
-
-              {/* Idées du groupe */}
-              <div className="mobile-wishlist-section">
-                <h3 className="mobile-wishlist-section-title">Idées proposées par le groupe</h3>
-                <p className="mobile-wishlist-section-empty">Aucune idée proposée pour le moment.</p>
-              </div>
-
-              {/* Button */}
-              <div className="mobile-subview-button-container">
-                <button type="button" className="mobile-subview-button">
-                  <LuCirclePlus className="text-xl" />
-                  Proposer une idée
-                </button>
-              </div>
+              <Wishlist
+                groupId={Number(groups[indexGroups].id)}
+                beneficiaryItems={beneficiaryItems}
+                groupItems={groupItems}
+                onAddIdea={() => refetchWishlist()}
+              />
             </div>
           )}
+
 
           {/* Cagnotte View */}
           {mobileView === "cagnotte" && indexGroups !== -1 && groups[indexGroups] && (
