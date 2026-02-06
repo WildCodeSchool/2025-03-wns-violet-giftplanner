@@ -95,6 +95,7 @@ export default class GroupResolver {
     return messages || [];
   }
 
+  @UseMiddleware(RoleMiddleware())
   @Mutation(() => Group)
   async createGroup(@Arg("data") data: CreateGroupInput, @Ctx() ctx: ContextType) {
     //TO DO: vérifier les inputs et les nettoyer

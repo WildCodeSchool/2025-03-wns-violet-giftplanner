@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
-import { useLogoutMutation } from "../generated/graphql-types";
+import { useLogoutMutation } from "../graphql/generated/graphql-types";
 import consoleErrorDev from "../hooks/erreurMod";
 import { useMyProfileStore } from "../zustand/myProfileStore";
 import "./PlaceholderPage.css";

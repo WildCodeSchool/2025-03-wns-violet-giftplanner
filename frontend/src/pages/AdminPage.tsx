@@ -6,7 +6,7 @@ import {
   useDeleteUserMutation,
   useGetAllUsersForAdminQuery,
   useUnbanUserMutation, // ← Ajoute cette import après avoir régénéré les types
-} from "../generated/graphql-types";
+} from "../graphql/generated/graphql-types";
 import type { ModalConfig, User } from "../types/AdminPage";
 import { useMyProfileStore } from "../zustand/myProfileStore";
 

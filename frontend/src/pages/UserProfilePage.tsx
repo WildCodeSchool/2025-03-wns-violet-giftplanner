@@ -10,7 +10,7 @@ import {
   useDeleteMyProfileMutation,
   useLogoutMutation,
   useUpdateMyProfileMutation,
-} from "../generated/graphql-types";
+} from "../graphql/generated/graphql-types";
 import consoleErrorDev from "../hooks/erreurMod";
 import { useIsMobile } from "../hooks/useIsMobile";
 import { useMyProfileStore } from "../zustand/myProfileStore";

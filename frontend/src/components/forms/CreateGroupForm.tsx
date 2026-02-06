@@ -1,7 +1,7 @@
 import type React from "react";
 import { useState } from "react";
-import { useCreateGroupMutation } from "../../generated/graphql-types";
-import { GET_ALL_MY_GROUPS } from "../../graphql/operations";
+import { useCreateGroupMutation } from "../../graphql/generated/graphql-types";
+import { GET_ALL_MY_GROUPS } from "../../graphql/operations/groupOperations";
 import { groupCreationFormValidation } from "../../hooks/formValidationRules";
 import { useSanitizedForm } from "../../hooks/useSanitizedForm";
 import Button from "../utils/Button";
@@ -10,7 +10,7 @@ import Input from "../utils/Input";
 import InputWithToggle from "../utils/InputWithToggle";
 import ResponsiveImage from "../utils/ResponsiveImage";
 import SearchSelectInput from "../utils/SearchSelectInput";
-import Title from "../utils/Title";
+import Subtitle from "../utils/Subtitle";
 import GroupLink from "./GroupLink";
 
 type CreateGroupFormProps = {
@@ -124,7 +124,7 @@ export default function CreateGroupForm({ onSuccess }: CreateGroupFormProps) {
     <form className=" flex w-full h-full rounded-2xl" onSubmit={handleSubmit} autoComplete="off">
       <div className="bg-green w-1/2 h-full flex flex-col justify-center pt-10 pb-5 rounded-tl-2xl rounded-bl-2xl">
         {/* Form to create a new group */}
-        <Title className="text-center text-2xl">Créer un groupe</Title>
+        <Subtitle className="text-center text-2xl">Créer un groupe</Subtitle>
         <div className="text-white text-8xl m-auto">
           <Icon icon="image" />
         </div>
@@ -198,7 +198,7 @@ export default function CreateGroupForm({ onSuccess }: CreateGroupFormProps) {
         {errors.main && <p className="text-orange font-inter text-sm pt-1 text-center">{errors.main}</p>}
       </div>
 
-      <div className="w-1/2 bg-white h-full flex flex-col rounded-tr-2xl rounded-br-2xl">
+      <div className="w-1/2 bg-white max-md:w-full flex flex-col max-md:rounded-none rounded-tr-2xl rounded-br-2xl">
         <div className="flex flex-col gap-4 px-20 m-auto">
           {/* Adding users can go here */}
           <div className="flex flex-row items-center w-full border border-blue">

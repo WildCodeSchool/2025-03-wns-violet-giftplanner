@@ -3,7 +3,7 @@ import {
   useAddGiftToGroupListMutation,
   useDeleteGiftMutation,
   useUpdateGiftMutation,
-} from "../../generated/graphql-types";
+} from "../../graphql/generated/graphql-types";
 import type { Gift } from "../../types/Gift";
 import { useMyProfileStore } from "../../zustand/myProfileStore";
 // import type { WishlistItemProps } from "../../types/Groups";
@@ -102,7 +102,7 @@ export default function Wishlist({ groupId, beneficiaryItems, groupItems, onAddI
     >
       {/* Beneficiary wishlist */}
       <section className="mb-6">
-        <h3 className="text-md font-semibold mb-2 text-[#200904]">Idées du bénéficiaire</h3>
+        <h3 className="text-md font-semibold mb-2 text-dark">Idées du bénéficiaire</h3>
 
         {beneficiaryItems.length === 0 ? (
           <p className="text-gray-600 text-sm">Aucune idée ajoutée par le bénéficiaire.</p>
@@ -114,13 +114,9 @@ export default function Wishlist({ groupId, beneficiaryItems, groupItems, onAddI
                 id={Number(gift.id)}
                 title={gift.name}
                 img={gift.imageUrl || "papier-theme"}
+                url={gift.url}
                 large
                 square
-                onClick={() => {
-                  if (gift.url) {
-                    window.open(gift.url, "_blank", "noopener,noreferrer");
-                  }
-                }}
               >
                 <p className="text-gray-600 text-xs sm:text-sm">{gift.description}</p>
               </Card>
@@ -131,7 +127,7 @@ export default function Wishlist({ groupId, beneficiaryItems, groupItems, onAddI
 
       {/* Group suggestions */}
       <section>
-        <h3 className="text-md font-semibold mb-2 text-[#200904]">Idées proposées par le groupe</h3>
+        <h3 className="text-md font-semibold mb-2 text-dark">Idées proposées par le groupe</h3>
 
         {groupItems.length === 0 ? (
           <p className="text-gray-600 text-sm">Aucune idée proposée pour le moment.</p>
@@ -147,13 +143,9 @@ export default function Wishlist({ groupId, beneficiaryItems, groupItems, onAddI
                   id={Number(gift.id)}
                   title={gift.name}
                   img={gift.imageUrl || "papier-theme"}
+                  url={gift.url}
                   large
                   square
-                  onClick={() => {
-                    if (gift.url) {
-                      window.open(gift.url, "_blank", "noopener,noreferrer");
-                    }
-                  }}
                   actions={
                     isOwner ? (
                       <>

@@ -1,9 +1,12 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router";
-import { useSignupMutation } from "../../generated/graphql-types";
+import { useNavigate } from "react-router";
+import { useSignupMutation } from "../../graphql/generated/graphql-types";
 import consoleErrorDev from "../../hooks/erreurMod";
 import { useMyProfileStore } from "../../zustand/myProfileStore";
-import "../auth/auth.css";
+import Button from "../utils/Button";
+import Input from "../utils/Input";
+import AuthFooter from "./AuthFooter";
+import AuthFormTemplate from "./AuthFormTemplate";
 
 const RegisterForm = () => {
   const [form, setForm] = useState({
@@ -74,7 +77,6 @@ const RegisterForm = () => {
         email: form.email,
         date_of_birth: form.date_of_birth,
         password: form.password,
-        // Ajoute phone_number si ton SignupInput l'accepte
       };
 
       // Appeler la mutation
@@ -101,95 +103,81 @@ const RegisterForm = () => {
   };
 
   return (
-    <div className="form-register-div">
-      <h2 className="h2-register">Créer mon compte</h2>
-      <div className="form-register-div">
-        <form className="form-login" onSubmit={handleSubmit}>
-          {messageError && <p className="error-message">{messageError}</p>}
-          {/* Input Pseudo */}
-          <div>
-            <input
-              type="text"
-              placeholder="Nom"
-              className="input-custom"
-              value={form.lastName}
-              onChange={(e) => setForm({ ...form, lastName: e.target.value })}
-            />
-          </div>
-
-          {/* Input Mot de passe */}
-          <div>
-            <input
-              type="text"
-              placeholder="Prénom"
-              className="input-custom"
-              value={form.firstName}
-              onChange={(e) => setForm({ ...form, firstName: e.target.value })}
-            />
-          </div>
-
-          <div>
-            <input
-              type="text"
-              placeholder="Email"
-              className="input-custom"
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-            />
-          </div>
-
-          <div>
-            <input
-              type="date"
-              placeholder="Date de naissance"
-              className="input-custom"
-              value={form.date_of_birth}
-              onChange={(e) => setForm({ ...form, date_of_birth: e.target.value })}
-            />
-          </div>
-
-          <div>
-            <input
-              type="password"
-              placeholder="Mot de passe"
-              className="input-custom"
-              value={form.password}
-              onChange={(e) => setForm({ ...form, password: e.target.value })}
-            />
-          </div>
-
-          <div>
-            <input
-              type="password"
-              placeholder="Confirmation du mot de passe"
-              className="input-custom"
-              value={form.passwordConfirmation}
-              onChange={(e) => setForm({ ...form, passwordConfirmation: e.target.value })}
-            />
-          </div>
-
-          <div>
-            <label className={`image-input-button margin-more ${hasFile ? "image-input-button-filled" : ""}`}>
-              <span className="file-label-text">{fileName}</span>
-              <input type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
-            </label>
-          </div>
-
-          {/* Bouton de connexion */}
-          <button type="submit" className="button-black margin-more size-20px">
-            Inscription
-          </button>
-        </form>
-
-        {/* Lien vers inscription */}
-        <p className="paragraph-login">
+    <AuthFormTemplate
+      title="Créer mon compte"
+      onSubmit={handleSubmit}
+      footer={
+        <AuthFooter to="/connexion" link="Connexion">
           Déjà inscrit ?{" "}
-          <Link to={"/connexion"} className="link-login">
-            Connexion
-          </Link>
-        </p>
+        </AuthFooter>
+      }
+    >
+      {messageError && <p className="text-orange font-bold text-lg">{messageError}</p>}
+
+      <Input
+        theme="dark"
+        type="text"
+        placeholder="Nom"
+        name="lastname"
+        value={form.lastName}
+        onChange={(e) => setForm({ ...form, lastName: e.target.value })}
+      ></Input>
+      <Input
+        theme="dark"
+        type="text"
+        placeholder="Prénom"
+        name="firstname"
+        value={form.firstName}
+        onChange={(e) => setForm({ ...form, firstName: e.target.value })}
+      ></Input>
+      <Input
+        theme="dark"
+        type="text"
+        placeholder="Adresse email"
+        name="email"
+        value={form.email}
+        onChange={(e) => setForm({ ...form, email: e.target.value })}
+      ></Input>
+      <Input
+        theme="dark"
+        type="date"
+        placeholder="Date de naissance"
+        name="date_of_birth"
+        value={form.date_of_birth}
+        onChange={(e) => setForm({ ...form, date_of_birth: e.target.value })}
+      ></Input>
+      <Input
+        theme="dark"
+        type="password"
+        placeholder="Mot de passe"
+        name="password"
+        value={form.password}
+        onChange={(e) => setForm({ ...form, password: e.target.value })}
+      ></Input>
+      <Input
+        theme="dark"
+        type="password"
+        placeholder="Confirmation du mot de passe"
+        name="passwordConfirmation"
+        value={form.passwordConfirmation}
+        onChange={(e) => setForm({ ...form, passwordConfirmation: e.target.value })}
+      ></Input>
+
+      <div className="w-full ">
+        {/* md:w-auto */}
+        <label
+          className={`inline-block w-full bg-dark text-white text-center border-none px-5 py-3 rounded-lg cursor-pointer text-sm md:text-lg font-inter font-bold transition-colors duration-300 overflow-hidden whitespace-nowrap w-[400px] px-4 py-2 text-xl ${hasFile ? "bg-[#292e96]" : ""}`}
+        >
+          <span className="block overflow-hidden text-lg text-ellipsis font-bold">{fileName}</span>
+          <input type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
+        </label>
       </div>
-    </div>
+
+      {/* Bouton de connexion */}
+      <Button type="submit" colour="dark" rounded className="text-xl px-[25px] py-[10px] mt-5">
+        Inscription
+      </Button>
+    </AuthFormTemplate>
   );
 };
 

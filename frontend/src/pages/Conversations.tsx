@@ -4,12 +4,12 @@ import Messaging from "../components/groups/Messaging/Messaging";
 import PiggyBank from "../components/groups/PiggyBank";
 import Wishlist from "../components/groups/Wishlist";
 import Button from "../components/utils/Button";
-import type { GetAllMessageMyGroupsQuery, GetAllMyGroupsQuery } from "../generated/graphql-types";
+import type { GetAllMessageMyGroupsQuery, GetAllMyGroupsQuery } from "../graphql/generated/graphql-types";
 import {
   useGetAllMessageMyGroupsQuery,
   useGetAllMyGroupsQuery,
   useGroupWishlistItemsQuery,
-} from "../generated/graphql-types";
+} from "../graphql/generated/graphql-types";
 import { useLiveChat } from "../hooks/useChat";
 import type { MessageType } from "../types/Groups";
 
@@ -43,8 +43,6 @@ export default function Conversations() {
   const beneficiaryItems = wishlistData?.groupWishlistItems?.fromWishlist ?? [];
 
   const groupItems = wishlistData?.groupWishlistItems?.fromGroupList ?? [];
-
-  // type DebugWishlist = GroupWishlistItemsQuery;
 
   const contenairMessageRef = useRef<HTMLDivElement | null>(null);
 
