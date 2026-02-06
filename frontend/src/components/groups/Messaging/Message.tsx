@@ -68,7 +68,7 @@ export default function Message({ regroupement, userId }: MessageProps) {
         <img
           src={getProfilePictureUrl(regroupement[0].user.image_url)}
           alt="profile utilisateur"
-          className="w-[60px] h-[60px] rounded-full"
+          className="w-[60px] h-[60px] rounded-full object-cover"
         />
       </div>
     </div>
