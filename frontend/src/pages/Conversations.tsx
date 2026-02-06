@@ -473,7 +473,7 @@ export default function Conversations() {
           {indexGroups !== -1 &&
             groups[indexGroups] &&
             (wishlist ? (
-              <Wishlist beneficiaryItems={[]} groupItems={[]} onAddIdea={() => { }} />
+              <Wishlist beneficiaryItems={[]} groupItems={[]} onAddIdea={() => {}} />
             ) : (
               <PiggyBank
                 pot={groups[indexGroups].piggy_bank}
