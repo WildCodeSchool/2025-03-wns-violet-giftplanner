@@ -83,7 +83,7 @@ export default function Groups({
         withPadding={false}
         className="p-0 overflow-y-auto max-h-[85vh] max-md:max-h-full"
       >
-        <GroupFormindex onSuccess={createGroupModal.close} />
+        <GroupFormindex onCancel={createGroupModal.close} onSuccess={createGroupModal.close} />
       </Modal>
     </>
   );
