@@ -1,5 +1,6 @@
-import { useState } from "react";
 import type { GetAllMyGroupsQuery } from "../../graphql/generated/graphql-types";
+import { useToggle } from "../../hooks/useToggle";
+import type { Message } from "../../types/Message";
 import { formatDate } from "../../utils/dateCalculator";
 import CreateGroupForm from "../forms/CreateGroupForm";
 import Button from "../utils/Button";
@@ -13,6 +14,9 @@ type GroupsProps = {
   loading: boolean;
   error?: string;
   onClick?: () => void;
+  messages: Record<number, Message[]>;
+  getNbNewMessages: (groupId: number, messages: Message[]) => number;
+  updateLastVu: (groupId: number, date: Date | string, serveurSyconization?: boolean) => void;
   onGroupClick?: (group: GetAllMyGroupsQuery["getAllMyGroups"]["groups"][number]) => void;
   activeGroupId?: number;
 };
@@ -22,14 +26,16 @@ export default function Groups({
   setActiveGroup,
   loading,
   error,
+  messages,
   onGroupClick,
   activeGroupId,
+  getNbNewMessages,
+  updateLastVu,
 }: GroupsProps) {
-  const [isOpen, setIsOpen] = useState(false);
-
-  function toggleModal() {
-    setIsOpen(!isOpen);
-  }
+  const createGroupModal = useToggle(false);
+  const closeCreateGroupModal = () => {
+    createGroupModal.close();
+  };
 
   return (
     <>
@@ -37,7 +43,9 @@ export default function Groups({
         colour="blue"
         title="Mes groupes"
         classNameTitle="text-[1.125rem]"
-        button={<Button text={"Ajouter un groupe"} icon="plus" colour="green" onClick={toggleModal} />}
+        button={
+          <Button text={"Ajouter un groupe"} icon="plus" colour="green" onClick={createGroupModal.open} />
+        }
       >
         {loading && <div>Loading...</div>}
         {error && <div>Error: {error}</div>}
@@ -51,8 +59,10 @@ export default function Groups({
               active={activeGroupId === Number(group.id)}
               onClick={() => {
                 setActiveGroup?.(group);
+                updateLastVu(Number(group.id), messages[Number(group.id)][0].createdAt);
                 onGroupClick?.(group);
               }}
+              nbNewMessages={getNbNewMessages(Number(group.id), messages[Number(group.id)] || [])}
             >
               <p className="text-gray-600 text-xs sm:text-sm leading-tight">
                 <span> Date limite: {formatDate(new Date(group.deadline))} </span> <br />
@@ -65,11 +75,16 @@ export default function Groups({
           );
         })}
       </Container>
-      {isOpen && (
-        <Modal onClose={toggleModal} isOpen={isOpen}>
-          <CreateGroupForm onSuccess={toggleModal} onCancel={toggleModal} />
-        </Modal>
-      )}
+
+      <Modal
+        isOpen={createGroupModal.isOpen}
+        onClose={closeCreateGroupModal}
+        size="lg"
+        withPadding={false}
+        className="p-0 overflow-y-auto max-h-[85vh] max-md:max-h-full"
+      >
+        <CreateGroupForm onSuccess={closeCreateGroupModal} />
+      </Modal>
     </>
   );
 }

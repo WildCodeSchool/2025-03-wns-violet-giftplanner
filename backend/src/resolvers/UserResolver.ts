@@ -47,7 +47,7 @@ class UpdateMyProfileInput {
   @Field()
   date_of_birth!: string;
   @Field()
-  phone_number!: string;
+  phone_number?: string;
   @Field(() => String, { nullable: true })
   pictureBase64?: string;
 }
@@ -261,13 +261,14 @@ export default class UserResolver {
       password: undefined,
       image_url: urlImage ? urlImage.data.url : undefined,
       pictureBase64: undefined,
+      phone_number: data.phone_number ?? undefined,
     };
 
     // modifie l'utilisateur connecté
     await User.update({ id: ctx.user.id }, newData);
 
     //récupère le profil de l'utilisateur connecté
-    const user = await User.findOne({ where: { id: ctx.user.id } });
+    const user = await User.findOne({ where: { id: ctx.user.id }, relations: ["lists"] });
 
     return user as User;
   }

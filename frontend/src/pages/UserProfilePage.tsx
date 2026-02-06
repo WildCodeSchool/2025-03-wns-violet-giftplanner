@@ -290,13 +290,13 @@ const UserProfilePage = () => {
               src={imageUrl}
               alt="Profile"
               className="profile-image"
-              onClick={() => isEditing && document.getElementById("file-input")?.click()}
+              onClick={() => isEditing && document.getElementById(pictureInputId)?.click()}
             />
             {isEditing && (
               <button
                 type="button"
                 className="profile-image-edit-icon"
-                onClick={() => document.getElementById("file-input")?.click()}
+                onClick={() => document.getElementById(pictureInputId)?.click()}
               >
                 <LuPencil />
               </button>

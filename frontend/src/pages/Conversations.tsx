@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { HiDotsVertical } from "react-icons/hi";
 import { LuCirclePlus, LuMessageCircleMore } from "react-icons/lu";
@@ -14,14 +14,15 @@ import Button from "../components/utils/Button";
 import Modal from "../components/utils/Modal";
 import type { GetAllMessageMyGroupsQuery, GetAllMyGroupsQuery } from "../graphql/generated/graphql-types";
 import { useGetAllMessageMyGroupsQuery, useGetAllMyGroupsQuery } from "../graphql/generated/graphql-types";
+import useVuMessage from "../hooks/message/vuMessage";
 import { useLiveChat } from "../hooks/useChat";
 import { useIsMobile } from "../hooks/useIsMobile";
 import type { MessageType } from "../types/Groups";
 import { countdownDate, formatDate } from "../utils/dateCalculator";
 import { useMobileNavigationStore } from "../zustand/mobileNavigationStore";
 import "./conversations.css";
+import type { Message } from "../types/Message";
 
-type message = GetAllMessageMyGroupsQuery["getAllMessageMyGroups"][number]["messages"][number];
 type MobileViewState = "groups" | "chat" | "wishlist" | "cagnotte";
 
 export default function Conversations() {
@@ -46,11 +47,13 @@ export default function Conversations() {
 
   const [groups, setGroups] = useState<GetAllMyGroupsQuery["getAllMyGroups"]["groups"]>([]);
   const [messages, setMessages] = useState<MessageType>({});
+  // const [nbNewMessagesRef, setNbNewMessagesRef] = useState<{ [groupId: number]: number }>({});
+  const { updateLastVu, getNbNewMessages, getLastVu } = useVuMessage();
   const [indexGroups, setIndexGroup] = useState<number>(0);
 
   const contenairMessageRef = useRef<HTMLDivElement | null>(null);
 
-  const handlerNewMessage = (response: { newMessage: message; groupId: number }) => {
+  const handlerNewMessage = (response: { newMessage: Message; groupId: number }) => {
     setMessages((prev) => {
       const clone = structuredClone(prev);
       clone[response.groupId]?.unshift(response.newMessage);
@@ -58,8 +61,28 @@ export default function Conversations() {
     });
   };
 
-  useLayoutEffect(() => {
-    contenairMessageRef.current?.scrollTo(0, contenairMessageRef.current.scrollHeight);
+  // scroller vers le bas quand on reçoit un nouveau message
+  useEffect(() => {
+    if (indexGroups === -1) return;
+    if (!groups[indexGroups]) return;
+    if (!Number(groups[indexGroups].id)) return;
+    const groupsId = Number(groups[indexGroups].id);
+
+    if (getNbNewMessages(groupsId, messages[groupsId]) > 0) {
+      // scrolle vers le bas si on y est déjà
+      if (!contenairMessageRef.current) return;
+      const scrollTop = contenairMessageRef.current.scrollTop;
+      const scrollHeight = contenairMessageRef.current.scrollHeight;
+      const clientHeight = contenairMessageRef.current.clientHeight;
+
+      const distanceToBottom = scrollHeight - (scrollTop + clientHeight);
+
+      if (distanceToBottom >= clientHeight) return;
+
+      contenairMessageRef.current.scrollTo(0, scrollHeight);
+
+      updateLastVu(groupsId, messages[groupsId][0].createdAt);
+    }
   }, [messages]);
 
   const chat = useLiveChat(handlerNewMessage);
@@ -108,6 +131,7 @@ export default function Conversations() {
     setIndexGroup(existing ? indexGroups : 0);
   }, [groupData, indexGroups]);
 
+  // pour set les messages initiaux
   useEffect(() => {
     const data = messageData?.getAllMessageMyGroups;
     const messagesMap: MessageType = {};
@@ -116,6 +140,11 @@ export default function Conversations() {
     });
 
     setMessages(messagesMap);
+
+    // set les nb de nouveaux messages
+    data?.forEach((groupMessages) => {
+      updateLastVu(Number(groupMessages.groupId), groupMessages.lastTempstampVu, false);
+    });
   }, [messageData]);
 
   useEffect(() => {
@@ -125,6 +154,17 @@ export default function Conversations() {
     }
     setIndexGroup(indexGroups);
   }, [indexGroups]);
+
+  const addMessage = (groupId: number, message: Message[]) => {
+    setMessages((prev) => {
+      const clone = structuredClone(prev);
+      if (!clone[groupId]) {
+        clone[groupId] = [];
+      }
+      clone[groupId] = [...clone[groupId], ...message];
+      return clone;
+    });
+  };
 
   const myGroups = groupData?.getAllMyGroups;
 
@@ -387,6 +427,9 @@ export default function Conversations() {
               setActiveGroup={setActiveGroup}
               loading={false}
               error={undefined}
+              messages={messages}
+              getNbNewMessages={getNbNewMessages}
+              updateLastVu={updateLastVu}
               activeGroupId={
                 indexGroups !== -1 && groups[indexGroups] ? Number(groups[indexGroups].id) : undefined
               }
@@ -449,8 +492,14 @@ export default function Conversations() {
               date={new Date(groups[indexGroups].deadline)}
               groupId={Number(groups[indexGroups].id)}
               messages={messages[Number(groups[indexGroups].id)]}
+              addMessages={(
+                message: GetAllMessageMyGroupsQuery["getAllMessageMyGroups"][number]["messages"],
+              ) => addMessage(Number(groups[indexGroups].id), message)}
               calbackSendMessage={chat.sendMessage}
               contenairMessageRef={contenairMessageRef}
+              updateLastVu={updateLastVu}
+              getLastVu={getLastVu}
+              getNbNewMessages={getNbNewMessages}
             />
           )}
       </div>

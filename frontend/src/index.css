@@ -56,10 +56,11 @@
 
 ::-webkit-scrollbar-thumb {
   @apply bg-grey rounded-full;
+  background-color: #c3c1bc;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #c3c1bc;
+  background-color: #9c9b97;
 }
 
 /* Thin scrollbar for containers */
@@ -102,8 +103,7 @@
   }
 
   input[type=password]::-ms-reveal,
-  input[type=password]::-ms-clear
-  {
-      display: none;
+  input[type=password]::-ms-clear {
+    display: none;
   }
 }

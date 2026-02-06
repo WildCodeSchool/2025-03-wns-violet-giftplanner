@@ -7,6 +7,7 @@ import {
   MY_WISHLIST_ITEMS,
   UPDATE_GIFT,
 } from "../graphql/operations/wishlistOperations";
+import { useToggle } from "../hooks/useToggle";
 import type { Gift } from "../types/Gift";
 import { useMyProfileStore } from "../zustand/myProfileStore";
 import Button from "./utils/Button";
@@ -29,18 +30,35 @@ export default function Wishlist() {
   const [deleteGift] = useMutation(DELETE_GIFT);
 
   const [updateGift, { loading: updating }] = useMutation(UPDATE_GIFT);
-  const [editingGift, setEditingGift] = useState<Gift | null>(null);
-  const [isEditModalOpen, setEditModalOpen] = useState(false);
 
+  // hooks
+  const addModal = useToggle(false);
+  const editModal = useToggle(false);
+
+  // state
   const [editFormData, setEditFormData] = useState({
     name: "",
     description: "",
     imageUrl: "",
     url: "",
   });
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({ name: "", description: "", imageUrl: "", url: "" });
+  const [editingGift, setEditingGift] = useState<Gift | null>(null);
+
+  // helpers
+  const closeAddModal = () => {
+    addModal.close();
+    setFormData({
+      name: "",
+      description: "",
+      imageUrl: "",
+      url: "",
+    });
+  };
+  const closeEditModal = () => {
+    editModal.close();
+    setEditingGift(null);
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -66,7 +84,8 @@ export default function Wishlist() {
     });
 
     setFormData({ name: "", description: "", imageUrl: "", url: "" });
-    setIsModalOpen(false);
+    // setIsModalOpen(false);
+    addModal.close();
   };
 
   const handleDeleteGift = async (gift: Gift) => {
@@ -101,7 +120,7 @@ export default function Wishlist() {
       refetchQueries: [{ query: MY_WISHLIST_ITEMS }],
       awaitRefetchQueries: true,
     });
-    setEditModalOpen(false);
+    editModal.close();
     setEditingGift(null);
   };
 
@@ -118,7 +137,7 @@ export default function Wishlist() {
             icon="plus"
             text="Nouvelle idée"
             colour="green"
-            onClick={() => setIsModalOpen(true)}
+            onClick={addModal.open}
             className="max-md:hidden"
           />
         </div>
@@ -168,7 +187,7 @@ export default function Wishlist() {
                           imageUrl: gift.imageUrl ?? "",
                           url: gift.url ?? "",
                         });
-                        setEditModalOpen(true);
+                        editModal.open();
                       }}
                     />
                   </li>
@@ -184,13 +203,13 @@ export default function Wishlist() {
           icon="plus"
           text="Nouvelle idée"
           colour="green"
-          onClick={() => setIsModalOpen(true)}
+          onClick={addModal.open}
           className="wishlist-mobile-button"
         />
       </div>
 
       {/* Modal when adding */}
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+      <Modal isOpen={addModal.isOpen} onClose={closeAddModal}>
         <div className="modal-mobile-content">
           <h2 className="text-xl font-bold text-dark mb-4">Ajouter une nouvelle idée</h2>
           <form onSubmit={handleSubmit} className="space-y-3">
@@ -247,20 +266,25 @@ export default function Wishlist() {
                 className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-orange"
               />
             </div>
-            <div className="modal-buttons">
-              <button type="button" onClick={() => setIsModalOpen(false)} className="bg-orange text-white">
+            <div className="flex justify-end gap-3 pt-3 modal-buttons">
+              <Button
+                type="submit"
+                text={creating ? "Ajout…" : "Ajouter"}
+                colour="green"
+                className="rounded-[10px]"
+                // If Button supports disabled:
+                disabled={creating}
+              />
+              <Button type="button" colour="dark" onClick={closeAddModal} className="rounded-[10px]">
                 Annuler
-              </button>
-              <button type="submit" disabled={creating} className="bg-green text-white">
-                {creating ? "Ajout…" : "Ajouter"}
-              </button>
+              </Button>
             </div>
           </form>
         </div>
       </Modal>
 
       {/* edit modal */}
-      <Modal isOpen={isEditModalOpen} onClose={() => setEditModalOpen(false)}>
+      <Modal isOpen={editModal.isOpen} onClose={closeEditModal}>
         <div className="modal-mobile-content">
           <h2 className="text-xl font-bold text-dark mb-4">Modifier le cadeau</h2>
           <form onSubmit={handleEditSubmit} className="space-y-3">
@@ -317,13 +341,13 @@ export default function Wishlist() {
                 className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-orange"
               />
             </div>
-            <div className="modal-buttons">
-              <button type="button" onClick={() => setEditModalOpen(false)} className="bg-orange text-white">
-                Annuler
-              </button>
-              <button type="submit" disabled={updating} className="bg-green text-white">
+            <div className="flex justify-end gap-3 pt-3 modal-buttons">
+              <Button type="submit" colour="green" className="rounded-[10px]">
                 {updating ? "Mis à jour…" : "Mettre à jour"}
-              </button>
+              </Button>
+              <Button type="button" colour="dark" onClick={closeEditModal} className="rounded-[10px]">
+                Annuler
+              </Button>
             </div>
           </form>
         </div>

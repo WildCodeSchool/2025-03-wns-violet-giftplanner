@@ -1,0 +1,24 @@
+name: check-biome
+
+on: push
+
+jobs:
+  check-biome:
+    name: check-biome
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Récupère le code du dépôt
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.20.0
+          cache: "npm"
+
+      - name: Installe les dépendances
+        run: npm install
+
+      - name: Exécute biome
+        run: npm run husky-lint
