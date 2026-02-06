@@ -1,12 +1,16 @@
 import { useState } from "react";
+import {
+  useAddGiftToGroupListMutation,
+  useDeleteGiftMutation,
+  useUpdateGiftMutation,
+} from "../../generated/graphql-types";
 import type { Gift } from "../../types/Gift";
+import { useMyProfileStore } from "../../zustand/myProfileStore";
 // import type { WishlistItemProps } from "../../types/Groups";
 import Button from "../utils/Button";
 import Card from "../utils/Card";
 import Container from "../utils/Container";
 import Modal from "../utils/Modal";
-import { useAddGiftToGroupListMutation, useDeleteGiftMutation, useUpdateGiftMutation } from "../../generated/graphql-types";
-import { useMyProfileStore } from "../../zustand/myProfileStore";
 
 type Props = {
   groupId: number;
@@ -16,12 +20,11 @@ type Props = {
 };
 
 export default function Wishlist({ groupId, beneficiaryItems, groupItems, onAddIdea }: Props) {
-
   const user = useMyProfileStore((s) => s.userProfile);
   const currentUserId = user?.id;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formData, setFormData] = useState({ name: "", description: "", imageUrl: "", url: ""});
+  const [formData, setFormData] = useState({ name: "", description: "", imageUrl: "", url: "" });
 
   const [editingGift, setEditingGift] = useState<Gift | null>(null);
 
@@ -34,7 +37,7 @@ export default function Wishlist({ groupId, beneficiaryItems, groupItems, onAddI
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
-  const handleSubmit = async(e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
@@ -63,13 +66,13 @@ export default function Wishlist({ groupId, beneficiaryItems, groupItems, onAddI
           },
         });
       }
-    
+
       // reset + close
       setFormData({ name: "", description: "", imageUrl: "", url: "" });
       setIsModalOpen(false);
 
       // ask parent to refresh list
-      onAddIdea?.()
+      onAddIdea?.();
     } catch (err) {
       console.error("Erreur lors de l'enregistrement :", err);
     }
@@ -93,7 +96,9 @@ export default function Wishlist({ groupId, beneficiaryItems, groupItems, onAddI
     <Container
       colour="orange"
       title="Wishlist du groupe"
-      button={<Button text="Proposer une idée" icon="plus" colour="green" onClick={() => setIsModalOpen(true)} />}
+      button={
+        <Button text="Proposer une idée" icon="plus" colour="green" onClick={() => setIsModalOpen(true)} />
+      }
     >
       {/* Beneficiary wishlist */}
       <section className="mb-6">
@@ -104,8 +109,7 @@ export default function Wishlist({ groupId, beneficiaryItems, groupItems, onAddI
         ) : (
           <div className="grid gap-3 grid-cols-[repeat(auto-fill,minmax(220px,1fr))]">
             {beneficiaryItems.map((gift) => (
-
-              <Card 
+              <Card
                 key={gift.id}
                 id={Number(gift.id)}
                 title={gift.name}
@@ -113,10 +117,10 @@ export default function Wishlist({ groupId, beneficiaryItems, groupItems, onAddI
                 large
                 square
                 onClick={() => {
-                    if (gift.url) {
-                      window.open(gift.url, "_blank", "noopener,noreferrer");
-                    }
-                  }}
+                  if (gift.url) {
+                    window.open(gift.url, "_blank", "noopener,noreferrer");
+                  }
+                }}
               >
                 <p className="text-gray-600 text-xs sm:text-sm">{gift.description}</p>
               </Card>
@@ -134,10 +138,8 @@ export default function Wishlist({ groupId, beneficiaryItems, groupItems, onAddI
         ) : (
           <div className="grid gap-3 grid-cols-[repeat(auto-fill,minmax(220px,1fr))]">
             {groupItems.map((gift) => {
-              const isOwner = 
-              gift.user?.id != null &&
-              currentUserId != null &&
-              gift.user?.id === currentUserId;
+              const isOwner =
+                gift.user?.id != null && currentUserId != null && gift.user?.id === currentUserId;
 
               return (
                 <Card
@@ -169,26 +171,25 @@ export default function Wishlist({ groupId, beneficiaryItems, groupItems, onAddI
                           icon="dots"
                           colour="dark"
                           className="px-2 py-1 rounded-md bg-[#E9A800] text-white text-sm shadow"
-                        >
-                        </Button>
+                          disabled={updating}
+                        ></Button>
                         <Button
                           onClick={() => handleDelete(gift)}
                           icon="delete"
                           colour="orange"
                           className="px-2 py-1 rounded-md bg-[#A74228] text-white text-sm shadow cursor-pointer"
                           disabled={deleting}
-                        >
-                        </Button>
+                        ></Button>
                       </>
                     ) : null
                   }
                 >
                   <p className="text-gray-600 text-xs sm:text-sm">{gift.description}</p>
                 </Card>
-              )
+              );
             })}
           </div>
-          )}
+        )}
       </section>
 
       {/* Add idea modal */}

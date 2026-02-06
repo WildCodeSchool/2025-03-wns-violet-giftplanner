@@ -19,11 +19,10 @@ export default function Card({
   children,
   actions,
 }: CardProps) {
-
   const isExternalImage = img?.startsWith("http");
 
   return (
-    <div
+    <a
       key={id}
       onClick={onClick}
       role={onClick ? "button" : undefined}
@@ -51,11 +50,11 @@ export default function Card({
           <div
             className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 pointer-events-auto"
             onClick={(e) => e.stopPropagation()}
-            >
+          >
             {actions}
           </div>
         )}
       </div>
-    </div>
+    </a>
   );
 }
