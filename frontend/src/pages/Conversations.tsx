@@ -119,37 +119,37 @@ export default function Conversations() {
     chat.connectToRoom(groupData?.getAllMyGroups.groupToken);
   }, [groupData, chat]);
 
-  useEffect(() => {
-    if (!groupData?.getAllMyGroups) return;
+  // useEffect(() => {
+  //   if (!groupData?.getAllMyGroups) return;
 
-    if (groupData?.getAllMyGroups.groups.length === 0) {
-      setIndexGroup(-1);
-      setSelectedGroupId(null);
-      return;
-    }
+  //   if (groupData?.getAllMyGroups.groups.length === 0) {
+  //     setIndexGroup(-1);
+  //     setSelectedGroupId(null);
+  //     return;
+  //   }
 
-    const newGroups = groupData?.getAllMyGroups.groups || [];
-    setGroups(newGroups);
+  //   const newGroups = groupData?.getAllMyGroups.groups || [];
+  //   setGroups(newGroups);
 
-    // Initialize messages map with empty arrays for all groups
-    setMessages((prev) => {
-      const updated = { ...prev };
-      newGroups.forEach((group) => {
-        const groupId = Number(group.id);
-        if (!updated[groupId]) {
-          updated[groupId] = [];
-        }
-      });
-      return updated;
-    });
+  //   // Initialize messages map with empty arrays for all groups
+  //   setMessages((prev) => {
+  //     const updated = { ...prev };
+  //     newGroups.forEach((group) => {
+  //       const groupId = Number(group.id);
+  //       if (!updated[groupId]) {
+  //         updated[groupId] = [];
+  //       }
+  //     });
+  //     return updated;
+  //   });
 
-    const existing =
-      indexGroups !== -1
-        ? groupData?.getAllMyGroups.groups.find((group) => Number(group.id) === Number(indexGroups))
-        : null;
+  //   const existing =
+  //     indexGroups !== -1
+  //       ? groupData?.getAllMyGroups.groups.find((group) => Number(group.id) === Number(indexGroups))
+  //       : null;
 
-    setIndexGroup(existing ? indexGroups : 0);
-  }, [groupData, indexGroups]);
+  //   setIndexGroup(existing ? indexGroups : 0);
+  // }, [groupData, indexGroups]);
 
   // pour set les messages initiaux
   useEffect(() => {
