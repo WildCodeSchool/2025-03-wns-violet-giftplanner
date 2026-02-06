@@ -25,7 +25,7 @@ export default function InputWithToggle({
       {checked && (
         <Input theme={theme} {...props} placeholder={label} onChange={onChange} disabled={disabled} />
       )}
-      {!checked && <span className="text-white">{question}</span>}
+      {!checked && <span className="text-white font-bold text-lg">{question}</span>}
       <ToggleSwitch checked={checked} onChange={onCheckedChange} colour={theme} />
     </div>
   );

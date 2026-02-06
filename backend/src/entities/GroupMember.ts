@@ -39,6 +39,10 @@ export class GroupMember extends BaseEntity {
   @Field()
   isGroupAdmin: boolean;
 
+  @Column({ type: "timestamptz", default: () => "CURRENT_TIMESTAMP" })
+  @Field()
+  lastTempstampVu: Date;
+
   @Field(() => User)
   @ManyToOne(
     () => User,

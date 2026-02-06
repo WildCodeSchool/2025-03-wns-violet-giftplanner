@@ -30,8 +30,8 @@ class CreateGroupInput {
   @Field()
   event_type!: string;
 
-  @Field()
-  piggy_bank!: number;
+  @Field({ nullable: true, defaultValue: 0 })
+  piggy_bank?: number;
 
   @Field()
   deadline!: Date;
@@ -40,6 +40,15 @@ class CreateGroupInput {
 
   @Field({ nullable: true })
   user_beneficiary?: string;
+}
+
+@InputType()
+class AddFundsInput {
+  @Field()
+  groupId!: number;
+
+  @Field()
+  amount!: number;
 }
 
 @InputType()
@@ -176,7 +185,7 @@ export default class GroupResolver {
       user_admin: userAdmin,
       name: data.name,
       event_type: data.event_type,
-      piggy_bank: data.piggy_bank,
+      piggy_bank: data.piggy_bank ?? 0,
       deadline: data.deadline,
       user_beneficiary: beneficiaryUser ?? undefined,
     });
@@ -208,6 +217,36 @@ export default class GroupResolver {
         }),
       );
     }
+
+    return group;
+  }
+
+  @UseMiddleware(RoleMiddleware())
+  @Mutation(() => Group)
+  async addFundsToGroup(@Arg("data") data: AddFundsInput, @Ctx() ctx: ContextType) {
+    if (!ctx.user) throw new Error("Utilisateur non connecté");
+
+    // Vérifier que le groupe existe
+    const group = await Group.findOne({
+      where: { id: data.groupId },
+      relations: { groupMember: true },
+    });
+
+    if (!group) throw new Error("Groupe introuvable");
+
+    // Vérifier que l'utilisateur est membre du groupe
+    const isMember = await GroupMember.findOne({
+      where: { groupId: data.groupId, userId: ctx.user.id },
+    });
+
+    if (!isMember) throw new Error("Vous n'êtes pas membre de ce groupe");
+
+    // Vérifier que le montant est positif
+    if (data.amount <= 0) throw new Error("Le montant doit être positif");
+
+    // Ajouter les fonds à la cagnotte
+    group.piggy_bank += data.amount;
+    await group.save();
 
     return group;
   }

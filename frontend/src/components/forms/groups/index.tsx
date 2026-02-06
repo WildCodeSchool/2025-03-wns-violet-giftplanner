@@ -18,6 +18,7 @@ import UsersForm from "./UsersForm";
 
 type GroupFormIndex = {
   onSuccess: () => void;
+  onCancel: () => void;
   groupId?: number;
   isOpen?: boolean;
 };

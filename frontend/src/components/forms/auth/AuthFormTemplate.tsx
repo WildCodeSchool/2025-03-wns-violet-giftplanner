@@ -15,7 +15,7 @@ export default function AuthFormTemplate({ title, children, onSubmit, footer }: 
       </Title>
       <div className="flex flex-col justify-start w-full flex-shrink-0">
         <form
-          className="flex flex-col items-center gap-3 justify-center w-full max-w-[600px]  md:w-auto md:max-w-none"
+          className="flex flex-col items-center gap-4 justify-center w-full max-w-[600px]  md:w-auto md:max-w-none"
           onSubmit={onSubmit}
         >
           {children}

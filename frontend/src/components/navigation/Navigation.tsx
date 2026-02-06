@@ -75,7 +75,7 @@ export default function Navigation() {
               link="/dashboard/profile"
               icon={
                 <LuUserRound
-                  className={`"cursor-pointer transition-bnt-nav ${currentLocation === "/dashboard/profile" && "profile-icon"}`}
+                  className={`cursor-pointer transition-bnt-nav ${currentLocation === "/dashboard/profile" && "profile-icon"}`}
                 />
               }
             />

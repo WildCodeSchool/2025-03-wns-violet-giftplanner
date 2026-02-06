@@ -55,7 +55,8 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  font-size: 60px;
+  font-size: 75px;
+  line-height: 1;
   font-weight: 400;
   color: #fdfbf6;
 }

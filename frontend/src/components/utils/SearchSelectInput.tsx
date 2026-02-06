@@ -90,12 +90,12 @@ export default function SearchSelectInput({
 
   // Styles (copied from your Input component)
   const baseInput =
-    "w-full px-4 py-2 border-2 rounded-lg font-inter font-bold text-md outline-none transition-colors duration-200 focus:border-4";
+    "w-full p-2 rounded-lg font-inter font-bold text-lg outline-none transition-colors duration-200 cursor-pointer placeholder:font-bold";
 
   const themeInput =
     theme === "dark"
-      ? "border-dark text-dark focus:border-dark bg-white"
-      : "bg-transparent border-white text-white placeholder-white-100 focus:placeholder-white";
+      ? "border-dark border-[3.5px] text-dark focus:border-blue bg-white placeholder:text-dark/50"
+      : "bg-transparent border-white border-[3.5px] text-white placeholder:text-white/70";
 
   const disabledStyles = disabled
     ? theme === "dark"
@@ -145,7 +145,7 @@ export default function SearchSelectInput({
               }
             }}
           >
-            <span className={value ? "" : "opacity-50"}>
+            <span className={value ? "" : "opacity-70"}>
               {value ? options.find((o) => o.value === value)?.label : placeholder}
             </span>
 

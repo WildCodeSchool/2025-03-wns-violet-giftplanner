@@ -30,12 +30,12 @@ export default function Input({
   ...props
 }: InputProps) {
   const baseStyles =
-    "w-full p-2 border-2 rounded-lg font-bold text-lg outline-none transition-colors duration-200";
+    "w-full p-2 rounded-lg font-inter font-bold text-lg outline-none transition-colors duration-200 placeholder:font-bold";
 
   const themeStyles =
     theme === "dark"
-      ? "border-dark border-[3.5px] text-dark focus:border-blue"
-      : "bg-transparent border-white border-[3.5px] text-white placeholder-white-100 focus:placeholder-white";
+      ? "border-dark border-[3.5px] text-dark focus:border-blue placeholder:text-dark/50"
+      : "bg-transparent border-white border-[3.5px] text-white placeholder:text-white/70";
 
   const disabledStyles = disabled
     ? theme === "dark"
