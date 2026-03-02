@@ -51,6 +51,9 @@ export class Message extends BaseEntity {
   @ManyToOne(
     () => Group,
     (group) => group.messages,
+    {
+      onDelete: "CASCADE",
+    },
   )
   @Field(() => Group)
   group: Group;

@@ -1,6 +1,6 @@
-import type { CreateGroupInput } from "../graphql/generated/graphql-types";
-import { countdownDate } from "../utils/dateCalculator";
-import { verifyEmail } from "./verifyEmail";
+import type { CreateGroupInput } from "../../../graphql/generated/graphql-types";
+import { verifyEmail } from "../../../hooks/verifyEmail";
+import { countdownDate } from "../../../utils/dateCalculator";
 
 export type GroupFormErrors = Partial<Record<keyof CreateGroupInput, string>> & {
   main?: string;

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { HiDotsVertical } from "react-icons/hi";
 import { LuCirclePlus, LuMessageCircleMore } from "react-icons/lu";
-import CreateGroupForm from "../components/forms/CreateGroupForm";
+import GroupFormindex from "../components/forms/groups/index";
 import AddFundsModal from "../components/groups/AddFundsModal";
 import Groups from "../components/groups/Groups";
 import Messaging from "../components/groups/Messaging/Messaging";
@@ -55,6 +55,7 @@ export default function Conversations() {
   // const [nbNewMessagesRef, setNbNewMessagesRef] = useState<{ [groupId: number]: number }>({});
   const { updateLastVu, getNbNewMessages, getLastVu } = useVuMessage();
   const [indexGroups, setIndexGroup] = useState<number>(0);
+  const [selectedGroupId, setSelectedGroupId] = useState<number | null>(null);
 
   const canQueryWishlist = indexGroups !== -1 && groups.length > 0 && !!groups[indexGroups];
 
@@ -74,6 +75,9 @@ export default function Conversations() {
   const handlerNewMessage = (response: { newMessage: Message; groupId: number }) => {
     setMessages((prev) => {
       const clone = structuredClone(prev);
+      if (!clone[response.groupId]) {
+        clone[response.groupId] = [];
+      }
       clone[response.groupId]?.unshift(response.newMessage);
       return clone;
     });
@@ -106,7 +110,9 @@ export default function Conversations() {
   const chat = useLiveChat(handlerNewMessage);
 
   function setActiveGroup(group: GetAllMyGroupsQuery["getAllMyGroups"]["groups"][number]) {
-    setIndexGroup(groups.findIndex((g) => Number(g.id) === Number(group.id)));
+    const groupIndex = groups.findIndex((g) => Number(g.id) === Number(group.id));
+    setIndexGroup(groupIndex);
+    setSelectedGroupId(Number(group.id));
   }
 
   // Handle mobile view changes - hide/show bottom navigation
@@ -131,23 +137,37 @@ export default function Conversations() {
     chat.connectToRoom(groupData?.getAllMyGroups.groupToken);
   }, [groupData, chat]);
 
-  useEffect(() => {
-    if (!groupData?.getAllMyGroups) return;
+  // useEffect(() => {
+  //   if (!groupData?.getAllMyGroups) return;
 
-    if (groupData?.getAllMyGroups.groups.length === 0) {
-      setIndexGroup(-1);
-      return;
-    }
+  //   if (groupData?.getAllMyGroups.groups.length === 0) {
+  //     setIndexGroup(-1);
+  //     setSelectedGroupId(null);
+  //     return;
+  //   }
 
-    setGroups(groupData?.getAllMyGroups.groups || []);
+  //   const newGroups = groupData?.getAllMyGroups.groups || [];
+  //   setGroups(newGroups);
 
-    const existing =
-      indexGroups !== -1
-        ? groupData?.getAllMyGroups.groups.find((group) => Number(group.id) === Number(indexGroups))
-        : null;
+  //   // Initialize messages map with empty arrays for all groups
+  //   setMessages((prev) => {
+  //     const updated = { ...prev };
+  //     newGroups.forEach((group) => {
+  //       const groupId = Number(group.id);
+  //       if (!updated[groupId]) {
+  //         updated[groupId] = [];
+  //       }
+  //     });
+  //     return updated;
+  //   });
 
-    setIndexGroup(existing ? indexGroups : 0);
-  }, [groupData, indexGroups]);
+  //   const existing =
+  //     indexGroups !== -1
+  //       ? groupData?.getAllMyGroups.groups.find((group) => Number(group.id) === Number(indexGroups))
+  //       : null;
+
+  //   setIndexGroup(existing ? indexGroups : 0);
+  // }, [groupData, indexGroups]);
 
   // pour set les messages initiaux
   useEffect(() => {
@@ -164,14 +184,6 @@ export default function Conversations() {
       updateLastVu(Number(groupMessages.groupId), groupMessages.lastTempstampVu, false);
     });
   }, [messageData]);
-
-  useEffect(() => {
-    if (indexGroups === -1) {
-      setIndexGroup(-1);
-      return;
-    }
-    setIndexGroup(indexGroups);
-  }, [indexGroups]);
 
   const addMessage = (groupId: number, message: Message[]) => {
     setMessages((prev) => {
@@ -310,9 +322,10 @@ export default function Conversations() {
           {/* Create Group Modal */}
           {isCreateGroupModalOpen && (
             <Modal onClose={() => setIsCreateGroupModalOpen(false)} isOpen={isCreateGroupModalOpen}>
-              <CreateGroupForm
+              <GroupFormindex
                 onSuccess={() => setIsCreateGroupModalOpen(false)}
                 onCancel={() => setIsCreateGroupModalOpen(false)}
+                groupId={selectedGroupId || undefined}
               />
             </Modal>
           )}
@@ -497,10 +510,11 @@ export default function Conversations() {
       <div className="flex flex-1 w-1/2 h-full  mt-0 justify-center">
         {indexGroups !== -1 &&
           groups.length > 0 &&
+          indexGroups < groups.length &&
           messages[Number(groups[indexGroups].id)] !== undefined && (
             <Messaging
               title={groups[indexGroups].name}
-              participants={2}
+              participants={groups[indexGroups].groupMember.length}
               date={new Date(groups[indexGroups].deadline)}
               groupId={Number(groups[indexGroups].id)}
               messages={messages[Number(groups[indexGroups].id)]}

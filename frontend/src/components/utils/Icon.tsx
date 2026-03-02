@@ -5,7 +5,7 @@ import { HiOutlineChatBubbleLeftRight } from "react-icons/hi2";
 import { ImCancelCircle } from "react-icons/im";
 import { IoIosClose } from "react-icons/io";
 import { IoChatboxEllipsesOutline, IoSearch } from "react-icons/io5";
-import { LuCirclePlus, LuGift, LuHeart, LuPiggyBank } from "react-icons/lu";
+import { LuCirclePlus, LuGift, LuHeart, LuPencil, LuPiggyBank } from "react-icons/lu";
 import { RiImageCircleLine } from "react-icons/ri";
 
 export type IconTypes =
@@ -24,7 +24,8 @@ export type IconTypes =
   | "doubleChat"
   | "image"
   | "delete"
-  | "search";
+  | "search"
+  | "edit";
 export type IconProps = {
   icon: IconTypes;
   text?: string;
@@ -48,6 +49,7 @@ const iconMap = {
   image: RiImageCircleLine,
   delete: IoIosClose,
   search: IoSearch,
+  edit: LuPencil,
 };
 
 export default function Icon({ icon, text, className }: IconProps) {

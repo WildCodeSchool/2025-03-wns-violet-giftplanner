@@ -2,7 +2,7 @@ import type { GetAllMyGroupsQuery } from "../../graphql/generated/graphql-types"
 import { useToggle } from "../../hooks/useToggle";
 import type { Message } from "../../types/Message";
 import { formatDate } from "../../utils/dateCalculator";
-import CreateGroupForm from "../forms/CreateGroupForm";
+import GroupFormindex from "../forms/groups/index";
 import Button from "../utils/Button";
 import Card from "../utils/Card";
 import Container from "../utils/Container";
@@ -83,7 +83,7 @@ export default function Groups({
         withPadding={false}
         className="p-0 overflow-y-auto max-h-[85vh] max-md:max-h-full"
       >
-        <CreateGroupForm onSuccess={closeCreateGroupModal} />
+        <GroupFormindex onCancel={createGroupModal.close} onSuccess={createGroupModal.close} />
       </Modal>
     </>
   );
