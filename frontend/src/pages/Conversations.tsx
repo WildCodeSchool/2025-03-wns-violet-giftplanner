@@ -13,7 +13,11 @@ import Wishlist from "../components/groups/Wishlist";
 import Button from "../components/utils/Button";
 import Modal from "../components/utils/Modal";
 import type { GetAllMessageMyGroupsQuery, GetAllMyGroupsQuery } from "../graphql/generated/graphql-types";
-import { useGetAllMessageMyGroupsQuery, useGetAllMyGroupsQuery } from "../graphql/generated/graphql-types";
+import {
+  useGetAllMessageMyGroupsQuery,
+  useGetAllMyGroupsQuery,
+  useGroupWishlistItemsQuery,
+} from "../graphql/generated/graphql-types";
 import useVuMessage from "../hooks/message/vuMessage";
 import { useLiveChat } from "../hooks/useChat";
 import { useIsMobile } from "../hooks/useIsMobile";
@@ -51,6 +55,19 @@ export default function Conversations() {
   const { updateLastVu, getNbNewMessages, getLastVu } = useVuMessage();
   const [indexGroups, setIndexGroup] = useState<number>(0);
   const [selectedGroupId, setSelectedGroupId] = useState<number | null>(null);
+
+  const canQueryWishlist = indexGroups !== -1 && groups.length > 0 && !!groups[indexGroups];
+
+  const { data: wishlistData, refetch: refetchWishlist } = useGroupWishlistItemsQuery({
+    variables: { groupId: Number(groups[indexGroups]?.id) },
+    skip: !canQueryWishlist,
+    fetchPolicy: "no-cache",
+    nextFetchPolicy: "no-cache",
+  });
+
+  const beneficiaryItems = wishlistData?.groupWishlistItems?.fromWishlist ?? [];
+
+  const groupItems = wishlistData?.groupWishlistItems?.fromGroupList ?? [];
 
   const contenairMessageRef = useRef<HTMLDivElement | null>(null);
 
@@ -359,27 +376,14 @@ export default function Conversations() {
           )}
 
           {/* Wishlist View */}
-          {mobileView === "wishlist" && indexGroups !== -1 && (
+          {mobileView === "wishlist" && indexGroups !== -1 && groups[indexGroups] && (
             <div className="mobile-subview-content mobile-wishlist-bg">
-              {/* Idées du bénéficiaire */}
-              <div className="mobile-wishlist-section">
-                <h3 className="mobile-wishlist-section-title">Idées du bénéficiaire</h3>
-                <p className="mobile-wishlist-section-empty">Aucune idée ajoutée par le bénéficiaire.</p>
-              </div>
-
-              {/* Idées du groupe */}
-              <div className="mobile-wishlist-section">
-                <h3 className="mobile-wishlist-section-title">Idées proposées par le groupe</h3>
-                <p className="mobile-wishlist-section-empty">Aucune idée proposée pour le moment.</p>
-              </div>
-
-              {/* Button */}
-              <div className="mobile-subview-button-container">
-                <button type="button" className="mobile-subview-button">
-                  <LuCirclePlus className="text-xl" />
-                  Proposer une idée
-                </button>
-              </div>
+              <Wishlist
+                groupId={Number(groups[indexGroups].id)}
+                beneficiaryItems={beneficiaryItems}
+                groupItems={groupItems}
+                onAddIdea={() => refetchWishlist()}
+              />
             </div>
           )}
 
@@ -471,9 +475,15 @@ export default function Conversations() {
 
         <div className="h-[calc(50%-2rem)] flex">
           {indexGroups !== -1 &&
+            groups.length > 0 &&
             groups[indexGroups] &&
             (wishlist ? (
-              <Wishlist beneficiaryItems={[]} groupItems={[]} onAddIdea={() => {}} />
+              <Wishlist
+                groupId={Number(groups[indexGroups].id)}
+                beneficiaryItems={beneficiaryItems}
+                groupItems={groupItems}
+                onAddIdea={() => refetchWishlist()}
+              />
             ) : (
               <PiggyBank
                 pot={groups[indexGroups].piggy_bank}

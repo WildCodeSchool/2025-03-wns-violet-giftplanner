@@ -7,5 +7,7 @@ export interface Gift {
   createdAt?: string;
   updatedAt?: string;
   listId?: string;
-  userId?: string;
+  user?: {
+    id: string;
+  } | null;
 }
