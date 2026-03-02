@@ -1,10 +1,11 @@
+import type { MouseEventHandler } from "react";
 import type { ColourScheme } from "../../types/ColourScheme";
 import type { IconProps } from "./Icon";
 import Icon from "./Icon";
 
 type ButtonType = HTMLButtonElement["type"];
 type ButtonProps = {
-  onClick?: () => void;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
   text?: string;
   colour?: ColourScheme["colour"];
   icon?: IconProps["icon"];
