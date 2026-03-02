@@ -9,6 +9,7 @@ type CardProps = {
   nbNewMessages?: number;
   active?: boolean;
   actions?: React.ReactNode;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
 };
 
 export default function Card({
@@ -22,16 +23,22 @@ export default function Card({
   nbNewMessages,
   active = false,
   actions,
+  onClick,
 }: CardProps) {
   const isExternalImage = img?.startsWith("http");
 
   if (!url) {
+    const isClickable = typeof onClick === "function";
+
     return (
-      <div
+      <button
         key={id}
-        className={`group relative flex items-center bg-white rounded-lg p-4 mr-4 shadow ${
+        type="button"
+        onClick={isClickable ? onClick : undefined}
+        disabled={!isClickable}
+        className={`group relative block w-full flex items-center rounded-lg p-4 shadow text-left ${
           large ? "min-h-[100px]" : "min-h-[75px]"
-        }`}
+        } ${active ? "bg-[#CECFEB]" : "bg-white"} ${isClickable ? "cursor-pointer" : "cursor-default"}`}
       >
         <img
           src={isExternalImage ? img : `/images/${img}.jpg`}
@@ -41,12 +48,12 @@ export default function Card({
             (e.currentTarget as HTMLImageElement).src = "/images/papier-theme.jpg";
           }}
         />
+
         <div className="flex flex-col flex-1 min-w-0">
           <h2 className="font-bold text-gray-900 truncate">{title}</h2>
           <div className="overflow-hidden text-ellipsis whitespace-nowrap">{children}</div>
         </div>
 
-        {/* Hover overlay */}
         <div className="pointer-events-none absolute inset-0 rounded-lg transition group-hover:bg-black/10">
           {actions && (
             <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 pointer-events-auto">
@@ -54,7 +61,7 @@ export default function Card({
             </div>
           )}
         </div>
-      </div>
+      </button>
     );
   }
 
@@ -64,7 +71,7 @@ export default function Card({
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className={`group relative flex items-center bg-white rounded-lg p-4 mr-4 shadow transition ${
+      className={`group relative flex items-center bg-white rounded-lg p-4 shadow transition ${
         large ? "min-h-[100px]" : "min-h-[75px]"
       } ${active ? "bg-[#CECFEB]" : "bg-white"}`}
     >
