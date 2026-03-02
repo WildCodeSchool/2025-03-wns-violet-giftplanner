@@ -40,7 +40,6 @@ export default function Conversations() {
   const [isCreateGroupModalOpen, setIsCreateGroupModalOpen] = useState(false);
   const [isAddFundsModalOpen, setIsAddFundsModalOpen] = useState(false);
 
-
   const { data: groupData, refetch: refetchGroups } = useGetAllMyGroupsQuery({
     fetchPolicy: "no-cache",
     nextFetchPolicy: "no-cache",
@@ -387,7 +386,6 @@ export default function Conversations() {
               />
             </div>
           )}
-
 
           {/* Cagnotte View */}
           {mobileView === "cagnotte" && indexGroups !== -1 && groups[indexGroups] && (
