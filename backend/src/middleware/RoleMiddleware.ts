@@ -1,7 +1,7 @@
 import type { MiddlewareFn } from "type-graphql";
 import type { ContextType } from "../types/context";
 
-export function RoleMiddleware(adminRequed: boolean = false): MiddlewareFn<ContextType> {
+export function RoleMiddleware(adminRequired: boolean = false): MiddlewareFn<ContextType> {
   return async ({ context }, next) => {
     const user = context.user;
 
@@ -9,7 +9,7 @@ export function RoleMiddleware(adminRequed: boolean = false): MiddlewareFn<Conte
     if (!user) throw new Error("Utilisateur non authentifié");
 
     // Si l'utilisateur n'est pas admin et que le rôle admin est requis
-    if (!user.isAdmin && adminRequed) {
+    if (!user.isAdmin && adminRequired) {
       throw new Error(`utilisateur non autorisé`);
     }
 

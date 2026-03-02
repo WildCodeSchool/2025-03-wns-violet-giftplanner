@@ -6,7 +6,7 @@ import { buildSchema } from "type-graphql";
 import dataSource from "./config/db";
 import startServeurContext from "./context";
 import { getVariableEnv } from "./lib/envManager/envManager";
-import resolverArray from "./resolversArray";
+import resolversArray from "./resolversArray";
 
 dotenv.config();
 
@@ -17,12 +17,12 @@ async function startServer() {
   await dataSource.initialize();
 
   const schema = await buildSchema({
-    resolvers: resolverArray,
+    resolvers: resolversArray,
   });
 
   const apolloServer = new ApolloServer({
     schema,
-    introspection: mode === "dev", // désactive la liste des query &m utation en dehors de dev
+    introspection: mode === "dev", // désactive la liste des query & mutation en dehors de dev
   });
 
   const { url } = await startStandaloneServer(apolloServer, {
