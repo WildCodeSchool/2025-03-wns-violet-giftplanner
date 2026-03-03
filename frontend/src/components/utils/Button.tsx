@@ -57,7 +57,11 @@ export default function Button({
       onClick={disabled ? undefined : onClick}
     >
       {children}
-      {icon ? <Icon icon={icon} text={text} className={small ? "!text-lg" : undefined} /> : text ? <span>{text}</span> : null}
+      {icon ? (
+        <Icon icon={icon} text={text} className={small ? "!text-lg" : undefined} />
+      ) : text ? (
+        <span>{text}</span>
+      ) : null}
     </button>
   );
 }

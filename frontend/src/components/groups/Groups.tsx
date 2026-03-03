@@ -44,7 +44,13 @@ export default function Groups({
         title="Mes groupes"
         classNameTitle="text-[1.125rem]"
         button={
-          <Button text={"Ajouter un groupe"} icon="plus" colour="green" small onClick={createGroupModal.open} />
+          <Button
+            text={"Ajouter un groupe"}
+            icon="plus"
+            colour="green"
+            small
+            onClick={createGroupModal.open}
+          />
         }
       >
         {loading && <div>Loading...</div>}
