@@ -62,7 +62,7 @@ export default function SearchInput({
   }
 
   return (
-    <div className="flex flex-col w-full">
+    <div className="flex flex-col w-full  min-h-0">
       {label && (
         <label htmlFor={id} className="font-semibold text-md">
           {label}
@@ -97,7 +97,7 @@ export default function SearchInput({
         </button>
       </div>
       {error && <p className="text-orange font-inter text-sm pt-1">{error}</p>}
-      <div className="flex flex-wrap w-full gap-1 mt-2">
+      <div className="flex flex-wrap w-full flex-1 min-h-0 gap-1 py-2 overflow-y-auto pr-1 scrollbar-thin">
         {items.map((item) => (
           <Tag
             key={item}

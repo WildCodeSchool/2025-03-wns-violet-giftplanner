@@ -230,7 +230,14 @@ export default function Messaging({
             </button>
           </div>
           {groupFormModal.isOpen && (
-            <Modal isOpen={groupFormModal.isOpen} onClose={groupFormModal.close}>
+            <Modal
+              colour="blue"
+              isOpen={groupFormModal.isOpen}
+              onClose={groupFormModal.close}
+              size="lg"
+              withPadding
+              className="p-0 overflow-y-auto max-h-[85vh] max-md:max-h-full"
+            >
               <GroupFormIndex
                 isOpen={groupFormModal.isOpen}
                 onSuccess={groupFormModal.close}

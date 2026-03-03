@@ -8,7 +8,7 @@ import MyWishlistResolver from "./resolvers/MyWishlistResolver";
 import UserResolver from "./resolvers/UserResolver";
 import Welcome from "./resolvers/welcome";
 
-const resolverArray = [
+const resolversArray = [
   Welcome,
   UserResolver,
   MyWishlistResolver,
@@ -19,4 +19,4 @@ const resolverArray = [
   LikeResolver,
 ] as NonEmptyArray<Function>;
 
-export default resolverArray;
+export default resolversArray;

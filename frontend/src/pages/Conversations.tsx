@@ -334,9 +334,16 @@ export default function Conversations() {
             )}
           </div>
 
-          {/* Create Group Modal */}
+          {/* Create / Edit Group Modal (mobile) */}
           {isCreateGroupModalOpen && (
-            <Modal onClose={() => setIsCreateGroupModalOpen(false)} isOpen={isCreateGroupModalOpen}>
+            <Modal
+              colour="blue"
+              isOpen={isCreateGroupModalOpen}
+              onClose={() => setIsCreateGroupModalOpen(false)}
+              size="lg"
+              withPadding
+              className="p-0 overflow-y-auto max-h-[85vh] max-md:max-h-full"
+            >
               <GroupFormindex
                 onSuccess={() => setIsCreateGroupModalOpen(false)}
                 onCancel={() => setIsCreateGroupModalOpen(false)}
