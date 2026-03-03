@@ -1,10 +1,12 @@
 import clsx from "clsx";
 import type React from "react";
 import { useEffect } from "react";
+import type { ColourScheme } from "../../types/ColourScheme";
 
 type ModalSize = "sm" | "md" | "lg";
 
 type ModalProps = {
+  colour?: ColourScheme["colour"];
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
@@ -13,13 +15,22 @@ type ModalProps = {
   closeOnOverlayClick?: boolean;
   showCloseButton?: boolean;
   withPadding?: boolean;
-  hideCloseButton?: boolean;
 };
 
 const sizeClasses: Record<ModalSize, string> = {
-  sm: "max-w-md",
-  md: "max-w-2xl",
-  lg: "max-w-6xl",
+  sm: "max-w-md p-4",
+  md: "max-w-2xl p-4",
+  lg: "max-w-6xl h-full p-0 ",
+};
+
+const colourClasses: Record<NonNullable<ModalProps["colour"]>, string> = {
+  dark: "bg-dark",
+  light: "bg-light",
+  green: "bg-green",
+  yellow: "bg-yellow",
+  blue: "bg-blue",
+  orange: "bg-orange",
+  white: "bg-white",
 };
 
 export default function Modal({
@@ -28,6 +39,7 @@ export default function Modal({
   children,
   size = "md",
   className,
+  colour,
   closeOnOverlayClick = true,
   showCloseButton = true,
   withPadding = true,
@@ -56,7 +68,7 @@ export default function Modal({
   return (
     // biome-ignore lint/a11y/noStaticElementInteractions: overlay click is pointer-only; keyboard users dismiss via Escape
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 max-md:p-0"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 max-md:p-0" //
       role="presentation"
       onMouseDown={() => {
         if (closeOnOverlayClick) onClose();
@@ -66,8 +78,8 @@ export default function Modal({
         role="dialog"
         aria-modal="true"
         className={clsx(
-          // panel base
-          "relative w-full bg-[#FDFBF6] shadow-xl",
+          // panel base (background applied below to avoid conflicts)
+          "relative w-full shadow-xl",
           // desktop shape + sizing
           "rounded-2xl max-md:rounded-none",
           sizeClasses[size],
@@ -75,6 +87,7 @@ export default function Modal({
           "max-md:h-full max-md:max-w-none",
           // if you want internal padding to live here (recommended)
           withPadding ? "p-6 max-md:p-6" : "p-0",
+          colour ? colourClasses[colour] : "bg-white",
           className,
         )}
         onMouseDown={(e) => {
