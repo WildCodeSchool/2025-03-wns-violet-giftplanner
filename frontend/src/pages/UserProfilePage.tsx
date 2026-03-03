@@ -3,6 +3,7 @@ import "./userprofile.css";
 import { LuLogOut, LuPencil, LuSettings, LuTrash2 } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import DropdownMenu from "../components/utils/DropdownMenu";
 import Icon from "../components/utils/Icon";
 import Modal from "../components/utils/Modal";
 import { defaultPictureProfile } from "../data/pictureDefault";
@@ -242,43 +243,39 @@ const UserProfilePage = () => {
                   <LuSettings />
                 </button>
                 {isMenuOpen && (
-                  <div className="profile-menu-dropdown">
-                    {!isEditing && (
-                      <button
-                        type="button"
-                        onClick={() => {
+                  <DropdownMenu
+                    items={[
+                      ...(!isEditing
+                        ? [
+                            {
+                              label: "Modifier mes infos",
+                              icon: <LuPencil />,
+                              onClick: () => {
+                                setIsMenuOpen(false);
+                                handleEditClick();
+                              },
+                            },
+                          ]
+                        : []),
+                      {
+                        label: "Supprimer mon profil",
+                        icon: <LuTrash2 />,
+                        danger: true,
+                        onClick: () => {
                           setIsMenuOpen(false);
-                          handleEditClick();
-                        }}
-                        className="profile-menu-item"
-                      >
-                        <LuPencil />
-                        Modifier mes infos
-                      </button>
-                    )}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setIsMenuOpen(false);
-                        setIsDeleteModalOpen(true);
-                      }}
-                      className="profile-menu-item profile-menu-item-danger"
-                    >
-                      <LuTrash2 />
-                      Supprimer mon profil
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setIsMenuOpen(false);
-                        handleLogout();
-                      }}
-                      className="profile-menu-item"
-                    >
-                      <LuLogOut />
-                      Se déconnecter
-                    </button>
-                  </div>
+                          setIsDeleteModalOpen(true);
+                        },
+                      },
+                      {
+                        label: "Se déconnecter",
+                        icon: <LuLogOut />,
+                        onClick: () => {
+                          setIsMenuOpen(false);
+                          handleLogout();
+                        },
+                      },
+                    ]}
+                  />
                 )}
               </div>
             )}

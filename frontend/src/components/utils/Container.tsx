@@ -26,7 +26,7 @@ export default function Container({ colour, title, icon, button, children, class
       </div>
 
       {/* Scrollable content */}
-      <div className="flex-1 overflow-y-auto flex flex-col gap-4 -mr-4 pr-2 scrollbar-thin">{children}</div>
+      <div className="flex-1 overflow-y-auto flex flex-col gap-4 -mr-4 pr-4 scrollbar-thin">{children}</div>
     </div>
   );
 }

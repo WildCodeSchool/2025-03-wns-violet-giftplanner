@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from "type-graphql";
+import { Field, ID, Int, ObjectType } from "type-graphql";
 import {
   BaseEntity,
   Column,
@@ -51,13 +51,19 @@ export class Gift extends BaseEntity {
   @Field()
   updatedAt: Date;
 
-  // joiture many
   @OneToMany(
     () => Like,
-    (likes) => likes.group,
+    (likes) => likes.gift,
   )
   @Field(() => [Like])
   likes: Like[];
+
+  // Champs virtuels résolus par LikeResolver
+  @Field(() => Int)
+  likeCount!: number;
+
+  @Field(() => Boolean)
+  likedByMe!: boolean;
 
   // joiture id
   @ManyToOne(
