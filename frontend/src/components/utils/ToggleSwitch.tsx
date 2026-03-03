@@ -7,16 +7,6 @@ interface ToggleProps {
   mode?: "light" | "dark";
 }
 
-// const colourClasses: Record<string, string> = {
-//   orange: "bg-red",
-//   blue: "bg-blue",
-//   green: "bg-green",
-//   yellow: "bg-yellow",
-//   light: "bg-light-gray",
-
-//   // add more as needed
-// };
-
 export default function ToggleSwitch({ checked, onChange, mode = "light" }: ToggleProps) {
   const borderColour = mode === "dark" ? "border-dark" : "border-white";
   // When checked: solid fill, when unchecked: transparent (outline only)
@@ -25,7 +15,7 @@ export default function ToggleSwitch({ checked, onChange, mode = "light" }: Togg
   const bulletBorderColour = checked
     ? mode === "dark"
       ? "border-white"
-      : "border-green"
+      : "border-blue"
     : mode === "dark"
       ? "border-dark"
       : "border-white";

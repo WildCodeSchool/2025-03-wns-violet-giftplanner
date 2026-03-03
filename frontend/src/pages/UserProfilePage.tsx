@@ -442,11 +442,11 @@ const UserProfilePage = () => {
             {/* Boutons d'action */}
             {isEditing && (
               <div className="profile-actions">
-                <button type="button" onClick={handleCancelClick} className="profile-cancel-button">
-                  Annuler
-                </button>
                 <button type="button" onClick={handleSaveClick} className="profile-save-button">
                   Enregistrer
+                </button>
+                <button type="button" onClick={handleCancelClick} className="profile-cancel-button">
+                  Annuler
                 </button>
               </div>
             )}

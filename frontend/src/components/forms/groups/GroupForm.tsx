@@ -29,8 +29,8 @@ export default function GroupForm({
   const disabled = isEdit && !isAdmin;
 
   return (
-    <div className="flex flex-col h-full w-full py-4 my-5">
-      <div className="flex flex-col lg:px-20 flex-1 justify-between min-h-0">
+    <div className="flex flex-col w-full py-4 md:h-100 md:my-5">
+      <div className="flex flex-col lg:px-20 gap-4 md:flex-1 md:justify-between md:min-h-0">
         <Input
           disabled={disabled}
           name="name"

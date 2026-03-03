@@ -35,12 +35,12 @@ export default function SearchInput({
   ...props
 }: SearchInputProps) {
   const baseStyles =
-    "w-full px-4 py-2 border-2 focus:border-3 rounded-lg font-inter font-bold text-md outline-none transition-colors duration-200";
+    "w-full p-2 border-2 focus:border-3 rounded-lg font-inter font-bold text-md outline-none transition-colors duration-200";
 
   const themeStyles =
     theme === "dark"
-      ? " border-dark text-dark focus:border-dark text-dark"
-      : "bg-transparent border-white-100 text-white placeholder-white-100 focus:placeholder-white ";
+      ? "border-dark text-dark focus:border-dark text-dark"
+      : "border-white text-white focus:border-white placeholder:text-white focus:placeholder:text-white ";
 
   const errorStyles = error ? "border-orange focus:border-orange text-orange" : "";
 
@@ -62,7 +62,7 @@ export default function SearchInput({
   }
 
   return (
-    <div className="flex flex-col w-full  min-h-0">
+    <div className="flex flex-col w-full h-full min-h-0">
       {label && (
         <label htmlFor={id} className="font-semibold text-md">
           {label}
@@ -92,7 +92,7 @@ export default function SearchInput({
             icon={value ? "plus" : "search"}
             className={`${
               error ? "text-orange" : disabled ? "text-gray-400" : "text-dark"
-            } text-2xl ${disabled ? "cursor-not-allowed" : "cursor-pointer"}`}
+            } text-2xl ${disabled ? "cursor-not-allowed" : "cursor-pointer"} ${theme === "dark" ? "text-dark" : "text-white"}`}
           />
         </button>
       </div>

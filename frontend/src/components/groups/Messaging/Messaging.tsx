@@ -226,7 +226,7 @@ export default function Messaging({
           </div>
           <div className="absolute right-0 px-8">
             <button type="button" onClick={groupFormModal.open}>
-              <Icon icon="edit" className="text-white" />
+              <Icon icon="settings" className="text-white" />
             </button>
           </div>
           {groupFormModal.isOpen && (
@@ -236,7 +236,7 @@ export default function Messaging({
               onClose={groupFormModal.close}
               size="lg"
               withPadding
-              className="p-0 overflow-y-auto max-h-[85vh] max-md:max-h-full"
+              className="p-0 overflow-y-auto max-h-[72vh] max-md:max-h-full"
             >
               <GroupFormIndex
                 isOpen={groupFormModal.isOpen}
