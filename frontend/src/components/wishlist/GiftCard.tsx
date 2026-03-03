@@ -4,7 +4,6 @@ import { HiDotsVertical } from "react-icons/hi";
 import { LuPencil, LuTrash2 } from "react-icons/lu";
 import type { Gift } from "../../types/Gift";
 import DropdownMenu from "../utils/DropdownMenu";
-import Icon from "../utils/Icon";
 import "./giftcard.css";
 import "./Wishlist.css";
 
@@ -42,16 +41,12 @@ export default function GiftCard({ gift, className, onEdit, onDelete }: GiftCard
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isMenuOpen]);
 
-  const imageContent = imageUrl ? (
+  const imageContent = (
     <img
-      src={errorImageUrl ? "/images/gift-not-find.png" : imageUrl}
+      src={imageUrl && !errorImageUrl ? imageUrl : "/images/papier-theme.jpg"}
       alt={name}
-      className={`w-full h-40 ${errorImageUrl ? "object-contain" : "object-cover"}`}
+      className="w-full h-40 object-cover"
     />
-  ) : (
-    <div className="flex items-center justify-center w-full h-40 bg-white">
-      <Icon icon="gift" className="text-9xl text-orange opacity-70" />
-    </div>
   );
 
   return (

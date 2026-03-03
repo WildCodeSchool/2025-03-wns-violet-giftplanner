@@ -33,6 +33,8 @@ export const GROUP_WISHLIST_ITEMS = gql`
         url
         createdAt
         updatedAt
+        likeCount
+        likedByMe
         user {
           id
         }
@@ -48,6 +50,8 @@ export const GROUP_WISHLIST_ITEMS = gql`
         url
         createdAt
         updatedAt
+        likeCount
+        likedByMe
         user {
           id
         }
@@ -115,5 +119,11 @@ export const UPDATE_GIFT = gql`
 export const DELETE_GIFT = gql`
   mutation DeleteGift($id: Int!) {
     deleteGift(id: $id)
+  }
+`;
+
+export const TOGGLE_GIFT_LIKE = gql`
+  mutation ToggleGiftLike($giftId: Int!, $groupId: Int!) {
+    toggleGiftLike(giftId: $giftId, groupId: $groupId)
   }
 `;

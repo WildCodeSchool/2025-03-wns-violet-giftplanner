@@ -71,6 +71,8 @@ export type Gift = {
   description: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   imageUrl: Scalars['String']['output'];
+  likeCount: Scalars['Int']['output'];
+  likedByMe: Scalars['Boolean']['output'];
   likes: Array<Like>;
   list?: Maybe<List>;
   name: Scalars['String']['output'];
@@ -174,6 +176,7 @@ export type Mutation = {
   sendMessage: Message;
   setLastMessageVu: SetLastMessageVuOutput;
   signup: User;
+  toggleGiftLike: Scalars['Boolean']['output'];
   unbanUser: BanUserResponse;
   updateGift: Gift;
   updateGroup: Group;
@@ -249,6 +252,12 @@ export type MutationSetLastMessageVuArgs = {
 
 export type MutationSignupArgs = {
   data: SignupInput;
+};
+
+
+export type MutationToggleGiftLikeArgs = {
+  giftId: Scalars['Int']['input'];
+  groupId: Scalars['Int']['input'];
 };
 
 
@@ -538,7 +547,7 @@ export type GroupWishlistItemsQueryVariables = Exact<{
 }>;
 
 
-export type GroupWishlistItemsQuery = { __typename?: 'Query', groupWishlistItems: { __typename?: 'GroupWishlistItems', fromWishlist: Array<{ __typename?: 'Gift', id: string, name: string, description: string, imageUrl: string, url: string, createdAt: any, updatedAt: any, user?: { __typename?: 'User', id: string } | null, list?: { __typename?: 'List', id: string } | null }>, fromGroupList: Array<{ __typename?: 'Gift', id: string, name: string, description: string, imageUrl: string, url: string, createdAt: any, updatedAt: any, user?: { __typename?: 'User', id: string } | null, list?: { __typename?: 'List', id: string } | null }> } };
+export type GroupWishlistItemsQuery = { __typename?: 'Query', groupWishlistItems: { __typename?: 'GroupWishlistItems', fromWishlist: Array<{ __typename?: 'Gift', id: string, name: string, description: string, imageUrl: string, url: string, createdAt: any, updatedAt: any, likeCount: number, likedByMe: boolean, user?: { __typename?: 'User', id: string } | null, list?: { __typename?: 'List', id: string } | null }>, fromGroupList: Array<{ __typename?: 'Gift', id: string, name: string, description: string, imageUrl: string, url: string, createdAt: any, updatedAt: any, likeCount: number, likedByMe: boolean, user?: { __typename?: 'User', id: string } | null, list?: { __typename?: 'List', id: string } | null }> } };
 
 export type AddGiftMutationVariables = Exact<{
   data: AddGiftInput;
@@ -569,6 +578,14 @@ export type DeleteGiftMutationVariables = Exact<{
 
 
 export type DeleteGiftMutation = { __typename?: 'Mutation', deleteGift: number };
+
+export type ToggleGiftLikeMutationVariables = Exact<{
+  giftId: Scalars['Int']['input'];
+  groupId: Scalars['Int']['input'];
+}>;
+
+
+export type ToggleGiftLikeMutation = { __typename?: 'Mutation', toggleGiftLike: boolean };
 
 
 export const CreateGroupDocument = gql`
@@ -1521,6 +1538,8 @@ export const GroupWishlistItemsDocument = gql`
       url
       createdAt
       updatedAt
+      likeCount
+      likedByMe
       user {
         id
       }
@@ -1536,6 +1555,8 @@ export const GroupWishlistItemsDocument = gql`
       url
       createdAt
       updatedAt
+      likeCount
+      likedByMe
       user {
         id
       }
@@ -1740,3 +1761,35 @@ export function useDeleteGiftMutation(baseOptions?: Apollo.MutationHookOptions<D
 export type DeleteGiftMutationHookResult = ReturnType<typeof useDeleteGiftMutation>;
 export type DeleteGiftMutationResult = Apollo.MutationResult<DeleteGiftMutation>;
 export type DeleteGiftMutationOptions = Apollo.BaseMutationOptions<DeleteGiftMutation, DeleteGiftMutationVariables>;
+export const ToggleGiftLikeDocument = gql`
+    mutation ToggleGiftLike($giftId: Int!, $groupId: Int!) {
+  toggleGiftLike(giftId: $giftId, groupId: $groupId)
+}
+    `;
+export type ToggleGiftLikeMutationFn = Apollo.MutationFunction<ToggleGiftLikeMutation, ToggleGiftLikeMutationVariables>;
+
+/**
+ * __useToggleGiftLikeMutation__
+ *
+ * To run a mutation, you first call `useToggleGiftLikeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useToggleGiftLikeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [toggleGiftLikeMutation, { data, loading, error }] = useToggleGiftLikeMutation({
+ *   variables: {
+ *      giftId: // value for 'giftId'
+ *      groupId: // value for 'groupId'
+ *   },
+ * });
+ */
+export function useToggleGiftLikeMutation(baseOptions?: Apollo.MutationHookOptions<ToggleGiftLikeMutation, ToggleGiftLikeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ToggleGiftLikeMutation, ToggleGiftLikeMutationVariables>(ToggleGiftLikeDocument, options);
+      }
+export type ToggleGiftLikeMutationHookResult = ReturnType<typeof useToggleGiftLikeMutation>;
+export type ToggleGiftLikeMutationResult = Apollo.MutationResult<ToggleGiftLikeMutation>;
+export type ToggleGiftLikeMutationOptions = Apollo.BaseMutationOptions<ToggleGiftLikeMutation, ToggleGiftLikeMutationVariables>;

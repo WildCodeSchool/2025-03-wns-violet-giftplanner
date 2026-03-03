@@ -2,6 +2,7 @@ import { Arg, Ctx, Field, Int, Mutation, ObjectType, Query, Resolver, UseMiddlew
 import { Gift } from "../entities/Gift";
 import Group from "../entities/Group";
 import { GroupMember } from "../entities/GroupMember";
+import List from "../entities/List";
 
 // biome-ignore lint/style/useImportType: bypass biome linting
 import { AddGiftInput } from "../inputs/AddGiftInput";
@@ -137,8 +138,11 @@ export default class GroupWishlistResolver {
     }
 
     if (!group.list_group) {
-      throw new Error("Ce groupe n'a pas encore de liste associée.");
-      // use utils function here ?
+      // Groupes créés avant l'ajout de la liste : on la crée à la volée
+      const newList = List.create({ name: `Liste du groupe ${group.name}` });
+      await newList.save();
+      group.list_group = newList;
+      await group.save();
     }
 
     // create gift, ignoring any userId/listId coming from the client
