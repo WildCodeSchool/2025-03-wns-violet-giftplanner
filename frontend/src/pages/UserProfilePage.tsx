@@ -68,19 +68,17 @@ const UserProfilePage = () => {
   const [logoutMutation] = useLogoutMutation();
 
   useEffect(() => {
-    setTimeout(() => {
-      setProfile({
-        lastName: userProfile?.lastName || "",
-        firstName: userProfile?.firstName || "",
-        email: userProfile?.email || "",
-        phone_number: userProfile?.phone_number || "",
-        date_of_birth: userProfile?.date_of_birth || "",
-        image_url: userProfile?.image_url || "",
-        password: "",
-        passwordConfirmation: "",
-      });
-      setImageUrl(userProfile?.image_url || defaultPictureProfile);
-    }, 300);
+    setProfile({
+      lastName: userProfile?.lastName || "",
+      firstName: userProfile?.firstName || "",
+      email: userProfile?.email || "",
+      phone_number: userProfile?.phone_number || "",
+      date_of_birth: userProfile?.date_of_birth || "",
+      image_url: userProfile?.image_url || "",
+      password: "",
+      passwordConfirmation: "",
+    });
+    setImageUrl(userProfile?.image_url || defaultPictureProfile);
   }, [userProfile]);
 
   useEffect(() => {

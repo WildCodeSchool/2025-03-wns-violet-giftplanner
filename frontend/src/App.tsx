@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Navigate, Outlet, Route, Routes, useNavigate } from "react-router";
 import AdminRoute from "./components/AdminRoute";
 import { useGetMyProfileQuery } from "./graphql/generated/graphql-types";
+import UserProfileLayout from "./layout/UserProfileLayout";
 import AdminPage from "./pages/AdminPage";
 import ContactPage from "./pages/ContactPage";
 import Conversations from "./pages/Conversations";
@@ -11,7 +12,6 @@ import LoginPage from "./pages/LoginPage";
 import LoadingHomePage from "./pages/loadingHomePage/LoadingHomePage";
 import NotFound404Page from "./pages/notFound404Page/NotFound404Page";
 import RegisterPage from "./pages/RegisterPage";
-import UserProfilePage from "./pages/UserProfilePage";
 import WishListPage from "./pages/WishListPage";
 import { useMyProfileStore } from "./zustand/myProfileStore";
 
@@ -50,7 +50,7 @@ const App = () => {
         <Route path="dashboard" element={<Dashboard />}>
           <Route index element={<Navigate to="conversations" replace />} />
           <Route path="conversations" element={<Conversations />} />
-          <Route path="profile" element={<UserProfilePage />} />
+          <Route path="profile" element={<UserProfileLayout />} />
           <Route path="wishlist" element={<WishListPage />} />
           <Route
             path="admin"
