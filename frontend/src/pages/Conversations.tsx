@@ -342,12 +342,11 @@ export default function Conversations() {
               onClose={() => setIsCreateGroupModalOpen(false)}
               size="lg"
               withPadding
-              className="p-0 overflow-y-auto max-h-[85vh] max-md:max-h-full"
+              className="p-0 overflow-y-auto max-h-[72vh] max-md:max-h-full"
             >
               <GroupFormindex
                 onSuccess={() => setIsCreateGroupModalOpen(false)}
                 onCancel={() => setIsCreateGroupModalOpen(false)}
-                groupId={selectedGroupId || undefined}
               />
             </Modal>
           )}
@@ -403,7 +402,14 @@ export default function Conversations() {
 
           {/* Modale paramètres du groupe */}
           {isEditGroupModalOpen && selectedGroupId && (
-            <Modal isOpen={isEditGroupModalOpen} onClose={() => setIsEditGroupModalOpen(false)}>
+            <Modal
+              isOpen={isEditGroupModalOpen}
+              onClose={() => setIsEditGroupModalOpen(false)}
+              colour="blue"
+              size="lg"
+              withPadding
+              className="p-0 overflow-y-auto max-h-[72vh] max-md:max-h-full max-md:overflow-y-auto"
+            >
               <GroupFormindex
                 groupId={selectedGroupId}
                 onSuccess={() => {

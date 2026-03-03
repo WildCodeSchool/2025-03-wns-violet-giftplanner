@@ -1,9 +1,4 @@
 import type { Dispatch, SetStateAction } from "react";
-import {
-  useDeleteGroupMutation,
-  useRemoveMembersFromGroupMutation,
-} from "../../../graphql/generated/graphql-types";
-import Button from "../../utils/Button";
 import SearchInput from "../../utils/SearchInput";
 
 // For testing: 30 fictional emails
@@ -48,10 +43,7 @@ type handleUsersFormProps = {
   onAddTag: (email: string) => void;
   isEdit: boolean;
   isAdmin: boolean;
-  groupId: number;
-  currentUser: any;
   items: string[];
-  onSuccess?: () => void;
   onRemoveMember?: (email: string) => void;
 };
 
@@ -64,62 +56,25 @@ export default function UsersForm({
   errors,
   isAdmin,
   isEdit,
-  groupId,
-  currentUser,
-  onSuccess,
   onRemoveMember,
 }: handleUsersFormProps) {
-  const [deleteGroup] = useDeleteGroupMutation();
-  const [removeMembers] = useRemoveMembersFromGroupMutation();
-
-  async function leaveGroup() {
-    if (!currentUser?.id) return;
-    try {
-      await removeMembers({
-        variables: {
-          groupId: groupId,
-          data: {
-            userIds: [Number(currentUser.id)],
-          },
-        },
-      });
-      if (onSuccess) onSuccess();
-    } catch (error) {
-      console.error("Error leaving group:", error);
-    }
-  }
-
-  async function deleteMyGroup() {
-    try {
-      await deleteGroup({
-        variables: {
-          deleteGroupId: groupId,
-        },
-      });
-      if (onSuccess) onSuccess();
-    } catch (error) {
-      console.error("Error deleting group:", error);
-    }
-  }
-
   return (
-    <div className="flex flex-col h-full w-full py-4 my-5 md:px-10 lg:px-20 gap-4">
+    <div className="flex flex-col h-full w-full py-2 md:py-4 md:my-5 md:px-10 lg:px-20 gap-4">
       <div className="flex flex-col w-full overflow-y-hidden">
         <SearchInput
           disabled={isEdit && !isAdmin}
           placeholder="Ajouter des participants..."
-          theme="dark"
+          theme="light"
           name="users"
           value={query}
-          onChange={(e) => setQuery(e.target.value)} // ✅ correct
-          items={[...items]} // add ...FICTIONAL_TEST_EMAILS to the array to test
+          onChange={(e) => setQuery(e.target.value)}
+          items={[...items]}
           error={errors.users}
           onClick={(email: string) => {
             setFormData((prev: any) => ({
               ...prev,
               users: prev?.users?.filter((user: string) => user !== email),
             }));
-            // Notify parent component about member removal
             if (onRemoveMember) {
               onRemoveMember(email);
             }
@@ -127,16 +82,6 @@ export default function UsersForm({
           onAddTag={onAddTag}
         />
       </div>
-      {!isAdmin && isEdit && (
-        <Button colour="orange" onClick={leaveGroup}>
-          Quitter le groupe
-        </Button>
-      )}
-      {isAdmin && isEdit && (
-        <Button colour="orange" onClick={deleteMyGroup}>
-          Supprimer le groupe
-        </Button>
-      )}
     </div>
   );
 }
