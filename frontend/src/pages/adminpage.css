@@ -156,7 +156,6 @@ td.admin-actions {
 
 .admin-table th {
   padding: 16px;
-  margin-bottom: 16px;
   font-size: clamp(14px, 1.5vw, 16px);
   font-weight: 800;
   font-family: "Inter", sans-serif;

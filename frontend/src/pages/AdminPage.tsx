@@ -8,6 +8,7 @@ import {
   useUnbanUserMutation, // ← Ajoute cette import après avoir régénéré les types
 } from "../graphql/generated/graphql-types";
 import type { ModalConfig, User } from "../types/AdminPage";
+import getProfilePictureUrl from "../utils/pictureProfileManager";
 import { useMyProfileStore } from "../zustand/myProfileStore";
 
 interface ConfirmModalProps {
@@ -200,7 +201,7 @@ const AdminPage = () => {
 
           <div className="admin-table-wrapper">
             <table className="admin-table">
-              <thead>
+              <thead className="mb-[16px]">
                 <tr>
                   <th>Profil</th>
                   <th>Nom</th>
@@ -214,20 +215,24 @@ const AdminPage = () => {
 
               <tbody>
                 {filteredUsers.map((u) => (
-                  <tr key={u.id} className={u.isBanned ? "admin-user-banned" : ""}>
-                    <td>
-                      <img src={u.image_url || "/default.png"} className="admin-user-img" alt="profile" />
+                  <tr key={u.id} className={`${u.isBanned ? "admin-user-banned" : ""}`}>
+                    <td className="h-[77px]">
+                      <img
+                        src={getProfilePictureUrl(u.image_url)}
+                        className="admin-user-img w-[48px] h-[48px] object-cover rounded-[50%]"
+                        alt="profile"
+                      />
                     </td>
                     <td>{`${u.firstName} ${u.lastName}`}</td>
                     <td>{u.email}</td>
 
-                    <td>
+                    <td className="h-[77px]">
                       <span className={`admin-role ${u.isAdmin ? "admin-role-admin" : ""}`}>
                         {u.isAdmin ? "ADMIN" : "USER"}
                       </span>
                     </td>
 
-                    <td>
+                    <td className="h-[77px]">
                       {u.isBanned ? (
                         <span className="admin-status-banned">Banni</span>
                       ) : (
@@ -235,9 +240,9 @@ const AdminPage = () => {
                       )}
                     </td>
 
-                    <td>{new Date(u.createdAt).toLocaleDateString("fr-FR")}</td>
+                    <td className="h-[77px]">{new Date(u.createdAt).toLocaleDateString("fr-FR")}</td>
 
-                    <td className="admin-actions">
+                    <td className="admin-actions h-[79px]">
                       {/* ← Modifier cette partie */}
                       {u.isBanned ? (
                         <button
