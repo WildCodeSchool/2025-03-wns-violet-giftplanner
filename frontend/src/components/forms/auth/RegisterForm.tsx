@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useSignupMutation } from "../../../graphql/generated/graphql-types";
 import consoleErrorDev from "../../../hooks/erreurMod";
+import { toBase64 } from "../../../utils/pictureProfileManager";
 import { useMyProfileStore } from "../../../zustand/myProfileStore";
 import Button from "../../utils/Button";
 import Input from "../../utils/Input";
@@ -19,7 +20,7 @@ const RegisterForm = () => {
     image_url: "",
   });
   const [fileName, setFileName] = useState("Importer une photo");
-  const [hasFile, setHasFile] = useState(false);
+  const [file, setFile] = useState<null | File>(null);
   const navigate = useNavigate();
   const [messageError, setMessageError] = useState("");
   const { setUserProfile } = useMyProfileStore();
@@ -30,10 +31,10 @@ const RegisterForm = () => {
     const file = e.target.files?.[0];
     if (file) {
       setFileName(file.name);
-      setHasFile(true);
+      setFile(file);
     } else {
       setFileName("Importer une photo");
-      setHasFile(false);
+      setFile(null);
     }
   };
 
@@ -77,6 +78,7 @@ const RegisterForm = () => {
         email: form.email,
         date_of_birth: form.date_of_birth,
         password: form.password,
+        pictureBase64: file ? ((await toBase64(file)) as string) : undefined,
       };
 
       // Appeler la mutation
@@ -166,7 +168,7 @@ const RegisterForm = () => {
       <div className="w-full ">
         {/* md:w-auto */}
         <label
-          className={`inline-block w-full bg-dark text-white text-center border-none px-5 py-3 rounded-lg cursor-pointer text-sm md:text-lg font-inter font-bold transition-colors duration-300 overflow-hidden whitespace-nowrap w-[400px] px-4 py-2 text-xl ${hasFile ? "bg-[#292e96]" : ""}`}
+          className={`inline-block w-full bg-dark text-white text-center border-none px-5 py-3 rounded-lg cursor-pointer text-sm md:text-lg font-inter font-bold transition-colors duration-300 overflow-hidden whitespace-nowrap w-[400px] px-4 py-2 text-xl ${file ? "bg-[#292e96]" : ""}`}
         >
           <span className="block overflow-hidden text-lg text-ellipsis font-bold">{fileName}</span>
           <input type="file" accept="image/*" className="hidden" onChange={handleFileChange} />

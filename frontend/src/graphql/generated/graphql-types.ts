@@ -345,6 +345,7 @@ export type SignupInput = {
   firstName: Scalars['String']['input'];
   lastName: Scalars['String']['input'];
   password: Scalars['String']['input'];
+  pictureBase64?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateGiftInput = {

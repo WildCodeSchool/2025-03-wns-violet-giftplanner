@@ -13,24 +13,8 @@ import {
 } from "../graphql/generated/graphql-types";
 import consoleErrorDev from "../hooks/erreurMod";
 import { useIsMobile } from "../hooks/useIsMobile";
+import { toBase64 } from "../utils/pictureProfileManager";
 import { useMyProfileStore } from "../zustand/myProfileStore";
-
-// interface ConfirmModalProps {
-//   isOpen: boolean;
-//   onClose: () => void;
-//   onConfirm: () => void;
-//   title?: string;
-//   message?: string;
-// }
-
-function toBase64(file: File) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
-}
 
 const UserProfilePage = () => {
   const { userProfile, setUserProfile, clearUserProfile } = useMyProfileStore();
