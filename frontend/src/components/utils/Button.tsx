@@ -14,6 +14,7 @@ type ButtonProps = {
   children?: React.ReactNode;
   type?: ButtonType;
   big?: boolean;
+  small?: boolean;
   disabled?: boolean;
 };
 
@@ -26,6 +27,7 @@ export default function Button({
   className,
   children,
   type = "button",
+  small = false,
   disabled = false,
 }: ButtonProps) {
   const backgroundColours = {
@@ -46,7 +48,7 @@ export default function Button({
       type={type}
       disabled={disabled}
       className={`${backgroundColour} text-white font-inter-extra-bold
-        ${rounded ? "rounded-full p-2" : "rounded-lg py-2 px-4"}
+        ${rounded ? "rounded-full p-2" : small ? "rounded-lg py-1.5 px-3 text-sm" : "rounded-lg py-2 px-4"}
         flex items-center gap-2 font-medium shadow-md
         transition-all duration-200 ease-in-out
         ${disabled ? "opacity-60 cursor-not-allowed hover:brightness-100 hover:scale-100 active:scale-100" : "hover:brightness-110 hover:scale-[1.02] active:scale-[0.97] active:brightness-95"}
@@ -55,7 +57,7 @@ export default function Button({
       onClick={disabled ? undefined : onClick}
     >
       {children}
-      {icon ? <Icon icon={icon} text={text} /> : text ? <span>{text}</span> : null}
+      {icon ? <Icon icon={icon} text={text} className={small ? "!text-lg" : undefined} /> : text ? <span>{text}</span> : null}
     </button>
   );
 }

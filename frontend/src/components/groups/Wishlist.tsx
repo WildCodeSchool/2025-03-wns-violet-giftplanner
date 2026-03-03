@@ -241,11 +241,11 @@ export default function Wishlist({ groupId, beneficiaryItems, groupItems, onAddI
       {/* Titre principal — desktop uniquement */}
       <div className="hidden md:flex justify-between items-center mb-4">
         <h2 className="text-white font-inter-extra-bold text-[1.125rem]">Wishlist du groupe</h2>
-        <Button text="Proposer une idée" icon="plus" colour="green" onClick={openAddModal} />
+        <Button text="Proposer une idée" icon="plus" colour="green" small onClick={openAddModal} />
       </div>
 
       {/* Contenu scrollable */}
-      <div className="flex-1 overflow-y-auto flex flex-col gap-6 md:-mr-4 md:pr-2 scrollbar-thin pb-24 md:pb-0">
+      <div className="flex-1 overflow-y-auto flex flex-col gap-6 md:-mr-4 md:pr-4 scrollbar-thin pb-24 md:pb-0">
         {/* Section bénéficiaire */}
         <section>
           <h3 className="font-inter-extra-bold text-[18px] mb-3 text-white/90">
