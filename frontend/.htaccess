@@ -1,0 +1,7 @@
+RewriteEngine On
+RewriteBase /
+
+# Si ce n’est pas un fichier ou dossier existant → renvoyer index.html
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.html [L]

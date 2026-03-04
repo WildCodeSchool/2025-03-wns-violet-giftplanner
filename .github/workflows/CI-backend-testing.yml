@@ -1,0 +1,42 @@
+name: tests-backend
+
+on: push
+
+jobs:
+    tests-backend:
+        runs-on: ubuntu-latest
+        services:
+          postgres:
+            image: postgres
+            env:
+              POSTGRES_USER: test
+              POSTGRES_PASSWORD: test
+              POSTGRES_DB: testdb
+            ports:
+              - 5432:5432
+            options: >-
+              --health-cmd="pg_isready -U test"
+              --health-interval=10s
+              --health-timeout=5s
+              --health-retries=5
+        steps:
+          - name: Récupère le code
+            uses: actions/checkout@v4
+
+          - name: créer l'image docker
+            run: docker build -t backend-test ./backend
+
+          - name: Fait les tests backend
+            run: |
+              docker run --rm \
+                --network host \
+                -e DB_HOST=localhost \
+                -e DB_USER=test \
+                -e DB_PASSWORD=test \
+                -e DB_DATABASE=testdb \
+                -e JWT_SECRET=cleJwt \
+                -e SERVEUR_PORT=3310 \
+                backend-test npm test
+
+
+

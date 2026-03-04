@@ -1,0 +1,15 @@
+.env
+.env.* 
+!.env.sample
+**/node_modules/
+.DS_Store
+persit/
+database/
+.vscode/
+commandes-debug.sh
+
+dist
+
+# pour avoir une liste des tâche a faire qui reste en local
+toodo.md
+ingnore

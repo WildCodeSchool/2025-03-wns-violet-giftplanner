@@ -1,0 +1,46 @@
+name: Staging deployment
+
+on:
+  push:
+    branches:
+      - staging
+
+jobs:
+  build-and-push-projects:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - nom_service: frontend
+            nom_image: ${{ vars.IMAGE_FRONTEND_STAGING }}
+          - nom_service: backend
+            nom_image: ${{ vars.IMAGE_BACKEND_STAGING }}
+          - nom_service: gateway
+            nom_image: ${{ vars.IMAGE_GATEWAY_STAGING }}
+          - nom_service: message-service
+            nom_image: ${{ vars.IMAGE_MESSAGE_SERVICE_STAGING }}
+          - nom_service: picture-service
+            nom_image: ${{ vars.IMAGE_PICTURE_SERVICE_STAGING }}
+    steps:
+      - name: Récupérer le code source
+        uses: actions/checkout@v4
+      - name: Se connecter à DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+      - name: Build et push l'image Docker
+        uses: docker/build-push-action@v4
+        with:
+          context: ./${{ matrix.nom_service }}
+          file: ./${{ matrix.nom_service }}/Dockerfile.staging
+          push: true
+          tags: ${{ vars.DOCKERHUB_USERNAME }}/${{ matrix.nom_image }}:latest
+  
+  serveur-deploy:
+    needs: build-and-push-projects
+    runs-on: ubuntu-latest
+    steps:
+      - name: Déployer sur le serveur distant
+        run: curl -f ${{ vars.SERVER_WEBHOOK_STAGING }}
+        
