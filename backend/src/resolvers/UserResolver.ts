@@ -32,6 +32,8 @@ class SignupInput {
   lastName!: string;
   @Field()
   date_of_birth!: string;
+  @Field(() => String, { nullable: true })
+  pictureBase64?: string;
 }
 
 @InputType()
@@ -156,11 +158,29 @@ export default class UserResolver {
       throw new Error("Mot de passe trop long");
     }
 
+    let urlImage = null;
+    if (data.pictureBase64) {
+      try {
+        urlImage = await axios.post("http://picture-service:3410/service/picture/uploads", {
+          imageBase64: data.pictureBase64,
+        });
+      } catch (_error) {
+        throw new Error("Erreur lors de l'upload de l'image");
+      }
+    }
+
     // hash le mot de passe
     const password_hashed = await argon2.hash(data.password);
 
+    const dataFormatted = {
+      ...data,
+      password_hashed,
+      pictureBase64: undefined, //enlève le champ pictureBase64 qui n'est pas dans l'entité User
+      image_url: urlImage ? urlImage.data.url : undefined,
+    };
+
     // crée le nouvel utilisateur
-    const user = User.create({ ...data, password_hashed });
+    const user = User.create(dataFormatted);
     //sauvegarde le nouvel utilisateur dans la bdd
     try {
       await user.save();
