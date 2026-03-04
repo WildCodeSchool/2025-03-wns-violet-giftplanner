@@ -13,8 +13,15 @@ const upload: RequestHandler = async (req, res, next) => {
         const mimeType = matches[1];
         const buffer = Buffer.from(matches[2], "base64");
 
+        const uploadDir = path.join(__dirname, "../../public/uploads/profil-user");
+
+        // crée le dossier s'il n'existe pas
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+        }
+
         const filename = `${Date.now()}.png`;
-        const filePath = path.join(__dirname, "../../public/uploads/profil-user", filename);
+        const filePath = path.join(uploadDir, filename);
         fs.writeFileSync(filePath, buffer);
 
         res.json({ url: `uploads/profil-user/${filename}`, mimeType });
