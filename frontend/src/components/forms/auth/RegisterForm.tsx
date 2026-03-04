@@ -120,6 +120,7 @@ const RegisterForm = () => {
         theme="dark"
         type="text"
         placeholder="Nom"
+        label="Nom"
         name="lastname"
         value={form.lastName}
         onChange={(e) => setForm({ ...form, lastName: e.target.value })}
@@ -128,6 +129,7 @@ const RegisterForm = () => {
         theme="dark"
         type="text"
         placeholder="Prénom"
+        label="Prénom"
         name="firstname"
         value={form.firstName}
         onChange={(e) => setForm({ ...form, firstName: e.target.value })}
@@ -136,6 +138,7 @@ const RegisterForm = () => {
         theme="dark"
         type="text"
         placeholder="Adresse email"
+        label="Adresse email"
         name="email"
         value={form.email}
         onChange={(e) => setForm({ ...form, email: e.target.value })}
@@ -144,6 +147,7 @@ const RegisterForm = () => {
         theme="dark"
         type="date"
         placeholder="Date de naissance"
+        label="Date de naissance"
         name="date_of_birth"
         value={form.date_of_birth}
         onChange={(e) => setForm({ ...form, date_of_birth: e.target.value })}
@@ -152,6 +156,7 @@ const RegisterForm = () => {
         theme="dark"
         type="password"
         placeholder="Mot de passe"
+        label="Mot de passe"
         name="password"
         value={form.password}
         onChange={(e) => setForm({ ...form, password: e.target.value })}
@@ -160,6 +165,7 @@ const RegisterForm = () => {
         theme="dark"
         type="password"
         placeholder="Confirmation du mot de passe"
+        label="Confirmation du mot de passe"
         name="passwordConfirmation"
         value={form.passwordConfirmation}
         onChange={(e) => setForm({ ...form, passwordConfirmation: e.target.value })}
