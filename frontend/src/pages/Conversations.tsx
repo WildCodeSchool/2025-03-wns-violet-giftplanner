@@ -25,6 +25,7 @@ import { useIsMobile } from "../hooks/useIsMobile";
 import type { MessageType } from "../types/Groups";
 import { countdownDate, formatDate } from "../utils/dateCalculator";
 import { useMobileNavigationStore } from "../zustand/mobileNavigationStore";
+import { useMyProfileStore } from "../zustand/myProfileStore";
 import "./conversations.css";
 import type { Message } from "../types/Message";
 
@@ -43,6 +44,7 @@ export default function Conversations() {
   const [isGroupMenuOpen, setIsGroupMenuOpen] = useState(false);
   const [isEditGroupModalOpen, setIsEditGroupModalOpen] = useState(false);
   const groupMenuRef = useRef<HTMLDivElement>(null);
+  const { userProfile } = useMyProfileStore();
 
   const { data: groupData, refetch: refetchGroups } = useGetAllMyGroupsQuery({
     fetchPolicy: "no-cache",
@@ -148,6 +150,7 @@ export default function Conversations() {
 
   // pour set les groups
   useEffect(() => {
+    if (!userProfile) return;
     setGroups(groupData?.getAllMyGroups.groups || []);
     chat.connectToRoom(groupData?.getAllMyGroups.groupToken);
   }, [groupData, chat]);
