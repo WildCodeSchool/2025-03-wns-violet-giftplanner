@@ -23,7 +23,6 @@ interface SearchableSelectProps {
 }
 
 export default function SearchSelectInput({
-  // name,
   value,
   onChange,
   options,
@@ -35,6 +34,7 @@ export default function SearchSelectInput({
   icon,
   className = "",
   name,
+  ...rest
 }: SearchableSelectProps) {
   const id = useId();
   const [open, setOpen] = useState(false);
@@ -112,6 +112,7 @@ export default function SearchSelectInput({
 
   return (
     <div
+      {...rest}
       tabIndex={disabled ? -1 : 0}
       ref={containerRef}
       role="combobox"

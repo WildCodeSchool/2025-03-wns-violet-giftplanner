@@ -82,7 +82,7 @@ const LoginForm = () => {
         colour="dark"
         className="text-xl px-[25px] py-[10px] mt-5"
         type="submit"
-        dataTestId="buttonLogin"
+        data-testid="buttonLogin"
       >
         Connexion
       </Button>

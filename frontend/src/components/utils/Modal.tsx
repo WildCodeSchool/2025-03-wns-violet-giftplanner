@@ -43,6 +43,7 @@ export default function Modal({
   closeOnOverlayClick = true,
   showCloseButton = true,
   withPadding = true,
+  ...rest
 }: ModalProps) {
   useEffect(() => {
     if (!isOpen) return;
@@ -68,7 +69,8 @@ export default function Modal({
   return (
     // biome-ignore lint/a11y/noStaticElementInteractions: overlay click is pointer-only; keyboard users dismiss via Escape
     <div
-      className="fixed inset-0 z-[1100] flex items-center justify-center bg-black/75 max-md:p-0" //
+      {...rest}
+      className="fixed inset-0 z-[1100] flex items-center justify-center bg-black/75 max-md:p-0"
       role="presentation"
       onMouseDown={() => {
         if (closeOnOverlayClick) onClose();

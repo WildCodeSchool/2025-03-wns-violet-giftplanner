@@ -5,6 +5,7 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router'
 import LoginForm from '../src/components/forms/auth/LoginForm'
 import RegisterForm from '../src/components/forms/auth/RegisterForm'
+import React from 'react'
 
 const { mockNavigate, mockLogin, mockSetUserProfile, mockRegister } = vi.hoisted(() => ({
   mockNavigate: vi.fn(),

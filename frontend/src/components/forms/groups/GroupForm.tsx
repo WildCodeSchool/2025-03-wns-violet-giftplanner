@@ -39,6 +39,7 @@ export default function GroupForm({
           onChange={handleChange}
           placeholder="Entrez le nom du groupe"
           error={errors.name}
+          data-testid="name-input"
         />
 
         <SearchSelectInput
@@ -54,6 +55,7 @@ export default function GroupForm({
           error={errors.event_type}
           options={options}
           theme="light"
+          data-testid="event-type-select"
         />
 
         <Input
@@ -64,6 +66,7 @@ export default function GroupForm({
           onChange={handleChange}
           placeholder={String(0)}
           error={errors.piggy_bank}
+          data-testid="piggy-bank-input"
         />
 
         <InputWithToggle
@@ -78,6 +81,7 @@ export default function GroupForm({
           label="Le nom du destinataire"
           question="Voulez-vous ajouter un destinataire? "
           error={errors.user_beneficiary}
+          data-testid="toggle-beneficiary-input"
         />
 
         <Input
@@ -87,6 +91,7 @@ export default function GroupForm({
           value={formData.deadline}
           onChange={handleChange}
           error={errors.deadline}
+          data-testid="deadline-input"
         />
       </div>
     </div>

@@ -28,6 +28,7 @@ export default function GroupFormTemplate({
   return (
     <form
       className="relative flex flex-col w-full md:h-full md:min-h-0 max-md:h-auto"
+      data-testid="create-group-form"
       onSubmit={(e) => {
         onSubmit(e);
       }}
@@ -46,16 +47,29 @@ export default function GroupFormTemplate({
 
       {/* Boutons desktop : positionnés en absolu */}
       <div className="max-md:hidden absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-row items-center gap-5">
-        <Button colour="dark" rounded type="button" onClick={onSuccess} className="px-4">
+        <Button
+          colour="dark"
+          rounded
+          type="button"
+          onClick={onSuccess}
+          className="px-4"
+          data-testid="cancel-button"
+        >
           Annuler
         </Button>
         {isEdit && isAdmin && (
-          <Button colour="green" rounded type="submit" className="px-4">
+          <Button colour="green" rounded type="submit" className="px-4" data-testid="edit-group-button">
             Modifier
           </Button>
         )}
         {!isEdit && (
-          <Button colour="green" rounded type="submit" className="px-4">
+          <Button
+            colour="green"
+            rounded
+            type="submit"
+            className="px-4"
+            data-testid="submit-create-group-button"
+          >
             Créer
           </Button>
         )}

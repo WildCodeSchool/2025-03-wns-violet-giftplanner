@@ -187,7 +187,7 @@ const RegisterForm = () => {
         colour="dark"
         rounded
         className="text-xl px-[25px] py-[10px] mt-5"
-        dataTestId="buttonRegister"
+        data-testid="buttonRegister"
       >
         Inscription
       </Button>
