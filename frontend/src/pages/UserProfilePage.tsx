@@ -447,18 +447,30 @@ const UserProfilePage = () => {
         </div>
       </div>
 
-      <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)}>
+      <Modal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        className="profile-delete-modal-panel"
+        overlayClassName="profile-delete-modal-overlay"
+        showCloseButton={false}
+        withPadding={false}
+        mobileFullscreen={false}
+      >
         <div>
-          <h2>Supprimer votre profil</h2>
-          <p>
+          <h2 className="profile-delete-modal-title">Supprimer votre profil</h2>
+          <p className="profile-delete-modal-text">
             Êtes-vous sûr de vouloir faire ça ? Cette action est irréversible et toutes vos données seront
             effacées.
           </p>
-          <div className="modal-actions">
-            <button type="button" className="modal-btn-cancel" onClick={() => setIsDeleteModalOpen(false)}>
+          <div className="profile-delete-modal-actions">
+            <button
+              type="button"
+              className="profile-delete-modal-btn-cancel"
+              onClick={() => setIsDeleteModalOpen(false)}
+            >
               Annuler
             </button>
-            <button type="button" className="modal-btn-confirm" onClick={handleConfirmDelete}>
+            <button type="button" className="profile-delete-modal-btn-confirm" onClick={handleConfirmDelete}>
               Confirmer
             </button>
           </div>
