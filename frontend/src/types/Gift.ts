@@ -7,6 +7,8 @@ export interface Gift {
   createdAt?: string;
   updatedAt?: string;
   listId?: string;
+  likeCount?: number;
+  likedByMe?: boolean;
   user?: {
     id: string;
   } | null;

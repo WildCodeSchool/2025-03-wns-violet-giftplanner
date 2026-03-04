@@ -27,7 +27,7 @@ export default function SearchSelectInput({
   value,
   onChange,
   options,
-  placeholder = "Select option...",
+  placeholder = "Sélectionner une option...",
   label,
   error,
   theme = "light",
@@ -90,12 +90,12 @@ export default function SearchSelectInput({
 
   // Styles (copied from your Input component)
   const baseInput =
-    "w-full p-2 rounded-lg font-inter font-bold text-lg outline-none transition-colors duration-200 cursor-pointer placeholder:font-bold";
+    " bg-transparent border-white border-[2.5px] w-full p-2 rounded-lg font-inter-extra-bold text-lg outline-none transition-colors duration-200 cursor-pointer placeholder:font-inter placeholder:font-bold";
 
   const themeInput =
     theme === "dark"
-      ? "border-dark border-[3.5px] text-dark focus:border-blue bg-white placeholder:text-dark/50"
-      : "bg-transparent border-white border-[3.5px] text-white placeholder:text-white/70";
+      ? "border-dark text-dark focus:border-blue bg-transparent placeholder:text-dark/50"
+      : "border-white text-white focus:border-white bg-transparent placeholder:text-white";
 
   const disabledStyles = disabled
     ? theme === "dark"
@@ -106,7 +106,9 @@ export default function SearchSelectInput({
   const errorInput = error ? "border-orange focus:border-orange" : "";
 
   const dropdownStyles =
-    theme === "dark" ? "bg-black border-white text-white" : "bg-white border-white border-4 text-dark";
+    theme === "dark"
+      ? "bg-black border-white font-inter-extra-bold text-white"
+      : "bg-white border-white font-inter-extra-bold border-4 text-dark";
 
   return (
     <div
@@ -145,8 +147,8 @@ export default function SearchSelectInput({
               }
             }}
           >
-            <span className={value ? "" : "opacity-70"}>
-              {value ? options.find((o) => o.value === value)?.label : placeholder}
+            <span className={`font-inter-extra-bold} ${theme === "light" ? "text-white" : "text-dark/75"}`}>
+              {value ? options.find((option) => option.value === value)?.label : placeholder}
             </span>
 
             {icon && (
@@ -176,7 +178,7 @@ export default function SearchSelectInput({
               setFocusedIndex(-1);
             }}
             className={`${baseInput} ${themeInput} ${errorInput} ${className}`}
-            placeholder="Search..."
+            placeholder="Rechercher..."
             onKeyDown={handleKeyDown}
           />
         )}
@@ -194,7 +196,12 @@ export default function SearchSelectInput({
           >
             {/* OPTIONS */}
             {filtered.length === 0 && (
-              <div className="p-3 opacity-60 italic" role="option" tabIndex={0} aria-selected={false}>
+              <div
+                className="p-3 opacity-60 italic font-inter font-bold"
+                role="option"
+                tabIndex={0}
+                aria-selected={false}
+              >
                 Pas de résultats...
               </div>
             )}
@@ -224,7 +231,7 @@ export default function SearchSelectInput({
                     }
                   }}
                   className={`
-                    px-4 py-2 cursor-pointer transition
+                    px-4 py-2 cursor-pointer transition font-inter
                     ${selected ? "opacity-100 font-bold" : "opacity-80"}
                     ${focused ? "bg-white/20" : ""}
                   `}

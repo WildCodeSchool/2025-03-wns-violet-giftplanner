@@ -3,6 +3,7 @@ import {
   type CreateGroupInput,
   type Group,
   useCreateGroupMutation,
+  useDeleteGroupMutation,
   useGetGroupByIdQuery,
   useRemoveMembersFromGroupMutation,
   useUpdateGroupMutation,
@@ -11,6 +12,7 @@ import { GET_ALL_MY_GROUPS } from "../../../graphql/operations/groupOperations";
 import { useSanitizedForm } from "../../../hooks/useSanitizedForm";
 import { useUserPermissions } from "../../../hooks/useUserPermissions";
 import { useMyProfileStore } from "../../../zustand/myProfileStore";
+import Button from "../../utils/Button";
 import { type GroupFormErrors, groupCreationFormValidation } from "../groups/formValidationRules";
 import GroupForm from "./GroupForm";
 import GroupFormTemplate from "./GroupFormTemplate";
@@ -42,11 +44,11 @@ export default function GroupFormindex({ onSuccess, groupId }: GroupFormIndex) {
   const isEditMode = !!groupId; //(truthy => true or falsy => false)
   const [removeMembers] = useRemoveMembersFromGroupMutation({
     awaitRefetchQueries: true,
-    refetchQueries: [
-      {
-        query: GET_ALL_MY_GROUPS,
-      },
-    ],
+    refetchQueries: [{ query: GET_ALL_MY_GROUPS }],
+  });
+  const [deleteGroup] = useDeleteGroupMutation({
+    awaitRefetchQueries: true,
+    refetchQueries: [{ query: GET_ALL_MY_GROUPS }],
   });
   const [usersToRemove, setUsersToRemove] = useState<string[]>([]);
   const [originalMemberEmails, setOriginalMemberEmails] = useState<string[]>([]);
@@ -260,6 +262,27 @@ export default function GroupFormindex({ onSuccess, groupId }: GroupFormIndex) {
     }
   }
 
+  async function leaveGroup() {
+    if (!currentUser?.id) return;
+    try {
+      await removeMembers({
+        variables: { groupId: groupId!, data: { userIds: [Number(currentUser.id)] } },
+      });
+      onSuccess();
+    } catch (error) {
+      console.error("Error leaving group:", error);
+    }
+  }
+
+  async function deleteMyGroup() {
+    try {
+      await deleteGroup({ variables: { deleteGroupId: groupId! } });
+      onSuccess();
+    } catch (error) {
+      console.error("Error deleting group:", error);
+    }
+  }
+
   const handleRemoveMember = (email: string) => {
     // Only track removal if this email was originally a member
     if (isEditMode && isAdmin && originalMemberEmails.includes(email)) {
@@ -298,16 +321,38 @@ export default function GroupFormindex({ onSuccess, groupId }: GroupFormIndex) {
           onAddTag={handleAddUserByEmail}
           isAdmin={isAdmin}
           isEdit={isEditMode}
-          groupId={groupId || 0}
-          currentUser={currentUser}
-          onSuccess={onSuccess}
           onRemoveMember={handleRemoveMember}
-        ></UsersForm>
+        />
       }
       onSubmit={handleSubmit}
       isEdit={isEditMode}
       submitError={submitError}
       errors={errors}
+      extraButton={
+        isEditMode ? (
+          isAdmin ? (
+            <Button
+              colour="orange"
+              rounded
+              type="button"
+              onClick={deleteMyGroup}
+              className="px-4 max-md:w-full max-md:justify-center max-md:!rounded-[40px] max-md:shadow"
+            >
+              Supprimer
+            </Button>
+          ) : (
+            <Button
+              colour="orange"
+              rounded
+              type="button"
+              onClick={leaveGroup}
+              className="px-4 max-md:w-full max-md:justify-center max-md:!rounded-[40px] max-md:shadow"
+            >
+              Quitter
+            </Button>
+          )
+        ) : null
+      }
     />
   );
 }

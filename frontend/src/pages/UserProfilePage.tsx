@@ -3,6 +3,7 @@ import "./userprofile.css";
 import { LuLogOut, LuPencil, LuSettings, LuTrash2 } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import DropdownMenu from "../components/utils/DropdownMenu";
 import Icon from "../components/utils/Icon";
 import Modal from "../components/utils/Modal";
 import { defaultPictureProfile } from "../data/pictureDefault";
@@ -13,24 +14,8 @@ import {
 } from "../graphql/generated/graphql-types";
 import consoleErrorDev from "../hooks/erreurMod";
 import { useIsMobile } from "../hooks/useIsMobile";
+import { toBase64 } from "../utils/pictureProfileManager";
 import { useMyProfileStore } from "../zustand/myProfileStore";
-
-// interface ConfirmModalProps {
-//   isOpen: boolean;
-//   onClose: () => void;
-//   onConfirm: () => void;
-//   title?: string;
-//   message?: string;
-// }
-
-function toBase64(file: File) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
-}
 
 const UserProfilePage = () => {
   const { userProfile, setUserProfile, clearUserProfile } = useMyProfileStore();
@@ -68,19 +53,17 @@ const UserProfilePage = () => {
   const [logoutMutation] = useLogoutMutation();
 
   useEffect(() => {
-    setTimeout(() => {
-      setProfile({
-        lastName: userProfile?.lastName || "",
-        firstName: userProfile?.firstName || "",
-        email: userProfile?.email || "",
-        phone_number: userProfile?.phone_number || "",
-        date_of_birth: userProfile?.date_of_birth || "",
-        image_url: userProfile?.image_url || "",
-        password: "",
-        passwordConfirmation: "",
-      });
-      setImageUrl(userProfile?.image_url || defaultPictureProfile);
-    }, 300);
+    setProfile({
+      lastName: userProfile?.lastName || "",
+      firstName: userProfile?.firstName || "",
+      email: userProfile?.email || "",
+      phone_number: userProfile?.phone_number || "",
+      date_of_birth: userProfile?.date_of_birth || "",
+      image_url: userProfile?.image_url || "",
+      password: "",
+      passwordConfirmation: "",
+    });
+    setImageUrl(userProfile?.image_url || defaultPictureProfile);
   }, [userProfile]);
 
   useEffect(() => {
@@ -242,43 +225,39 @@ const UserProfilePage = () => {
                   <LuSettings />
                 </button>
                 {isMenuOpen && (
-                  <div className="profile-menu-dropdown">
-                    {!isEditing && (
-                      <button
-                        type="button"
-                        onClick={() => {
+                  <DropdownMenu
+                    items={[
+                      ...(!isEditing
+                        ? [
+                            {
+                              label: "Modifier mes infos",
+                              icon: <LuPencil />,
+                              onClick: () => {
+                                setIsMenuOpen(false);
+                                handleEditClick();
+                              },
+                            },
+                          ]
+                        : []),
+                      {
+                        label: "Supprimer mon profil",
+                        icon: <LuTrash2 />,
+                        danger: true,
+                        onClick: () => {
                           setIsMenuOpen(false);
-                          handleEditClick();
-                        }}
-                        className="profile-menu-item"
-                      >
-                        <LuPencil />
-                        Modifier mes infos
-                      </button>
-                    )}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setIsMenuOpen(false);
-                        setIsDeleteModalOpen(true);
-                      }}
-                      className="profile-menu-item profile-menu-item-danger"
-                    >
-                      <LuTrash2 />
-                      Supprimer mon profil
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setIsMenuOpen(false);
-                        handleLogout();
-                      }}
-                      className="profile-menu-item"
-                    >
-                      <LuLogOut />
-                      Se déconnecter
-                    </button>
-                  </div>
+                          setIsDeleteModalOpen(true);
+                        },
+                      },
+                      {
+                        label: "Se déconnecter",
+                        icon: <LuLogOut />,
+                        onClick: () => {
+                          setIsMenuOpen(false);
+                          handleLogout();
+                        },
+                      },
+                    ]}
+                  />
                 )}
               </div>
             )}
@@ -445,11 +424,11 @@ const UserProfilePage = () => {
             {/* Boutons d'action */}
             {isEditing && (
               <div className="profile-actions">
-                <button type="button" onClick={handleCancelClick} className="profile-cancel-button">
-                  Annuler
-                </button>
                 <button type="button" onClick={handleSaveClick} className="profile-save-button">
                   Enregistrer
+                </button>
+                <button type="button" onClick={handleCancelClick} className="profile-cancel-button">
+                  Annuler
                 </button>
               </div>
             )}

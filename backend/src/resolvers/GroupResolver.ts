@@ -15,6 +15,7 @@ import {
 
 import Group from "../entities/Group";
 import { GroupMember } from "../entities/GroupMember";
+import List from "../entities/List";
 import { Message } from "../entities/Message";
 import User from "../entities/User";
 import { getVariableEnv } from "../lib/envManager/envManager";
@@ -181,6 +182,9 @@ export default class GroupResolver {
       });
     }
 
+    const groupList = List.create({ name: `Liste du groupe ${data.name}` });
+    await groupList.save();
+
     const group = Group.create({
       user_admin: userAdmin,
       name: data.name,
@@ -188,6 +192,7 @@ export default class GroupResolver {
       piggy_bank: data.piggy_bank ?? 0,
       deadline: data.deadline,
       user_beneficiary: beneficiaryUser ?? undefined,
+      list_group: groupList,
     });
     await group.save();
 

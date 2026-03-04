@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { HiDotsVertical } from "react-icons/hi";
-import { LuCirclePlus, LuMessageCircleMore } from "react-icons/lu";
+import { LuCirclePlus, LuMessageCircleMore, LuSettings } from "react-icons/lu";
 import GroupFormindex from "../components/forms/groups/index";
 import AddFundsModal from "../components/groups/AddFundsModal";
 import Groups from "../components/groups/Groups";
@@ -11,6 +11,7 @@ import MobileBottomButtons from "../components/groups/Messaging/MobileBottomButt
 import PiggyBank from "../components/groups/PiggyBank";
 import Wishlist from "../components/groups/Wishlist";
 import Button from "../components/utils/Button";
+import DropdownMenu from "../components/utils/DropdownMenu";
 import Modal from "../components/utils/Modal";
 import type { GetAllMessageMyGroupsQuery, GetAllMyGroupsQuery } from "../graphql/generated/graphql-types";
 import {
@@ -39,6 +40,9 @@ export default function Conversations() {
   const [slideDirection, setSlideDirection] = useState<"left" | "right">("right");
   const [isCreateGroupModalOpen, setIsCreateGroupModalOpen] = useState(false);
   const [isAddFundsModalOpen, setIsAddFundsModalOpen] = useState(false);
+  const [isGroupMenuOpen, setIsGroupMenuOpen] = useState(false);
+  const [isEditGroupModalOpen, setIsEditGroupModalOpen] = useState(false);
+  const groupMenuRef = useRef<HTMLDivElement>(null);
 
   const { data: groupData, refetch: refetchGroups } = useGetAllMyGroupsQuery({
     fetchPolicy: "no-cache",
@@ -113,6 +117,18 @@ export default function Conversations() {
     setIndexGroup(groupIndex);
     setSelectedGroupId(Number(group.id));
   }
+
+  // Fermer le menu groupe si click en dehors
+  useEffect(() => {
+    if (!isGroupMenuOpen) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (groupMenuRef.current && !groupMenuRef.current.contains(e.target as Node)) {
+        setIsGroupMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isGroupMenuOpen]);
 
   // Handle mobile view changes - hide/show bottom navigation
   useEffect(() => {
@@ -318,13 +334,19 @@ export default function Conversations() {
             )}
           </div>
 
-          {/* Create Group Modal */}
+          {/* Create / Edit Group Modal (mobile) */}
           {isCreateGroupModalOpen && (
-            <Modal onClose={() => setIsCreateGroupModalOpen(false)} isOpen={isCreateGroupModalOpen}>
+            <Modal
+              colour="blue"
+              isOpen={isCreateGroupModalOpen}
+              onClose={() => setIsCreateGroupModalOpen(false)}
+              size="lg"
+              withPadding
+              className="p-0 overflow-y-auto max-h-[72vh] max-md:max-h-full"
+            >
               <GroupFormindex
                 onSuccess={() => setIsCreateGroupModalOpen(false)}
                 onCancel={() => setIsCreateGroupModalOpen(false)}
-                groupId={selectedGroupId || undefined}
               />
             </Modal>
           )}
@@ -350,10 +372,53 @@ export default function Conversations() {
                 <h2>{groups[indexGroups].name}</h2>
                 <p>{getHeaderSubtitle()}</p>
               </div>
-              <button type="button" className="mobile-chat-menu" aria-label="Menu">
-                <HiDotsVertical className="text-xl" />
-              </button>
+              <div ref={groupMenuRef} className="relative">
+                <button
+                  type="button"
+                  className="mobile-chat-menu"
+                  aria-label="Menu"
+                  onClick={() => setIsGroupMenuOpen((prev) => !prev)}
+                >
+                  <HiDotsVertical className="text-xl" />
+                </button>
+                {isGroupMenuOpen && (
+                  <DropdownMenu
+                    width={250}
+                    items={[
+                      {
+                        label: "Paramètres du groupe",
+                        icon: <LuSettings />,
+                        onClick: () => {
+                          setIsGroupMenuOpen(false);
+                          setIsEditGroupModalOpen(true);
+                        },
+                      },
+                    ]}
+                  />
+                )}
+              </div>
             </div>
+          )}
+
+          {/* Modale paramètres du groupe */}
+          {isEditGroupModalOpen && selectedGroupId && (
+            <Modal
+              isOpen={isEditGroupModalOpen}
+              onClose={() => setIsEditGroupModalOpen(false)}
+              colour="blue"
+              size="lg"
+              withPadding
+              className="p-0 overflow-y-auto max-h-[72vh] max-md:max-h-full max-md:overflow-y-auto"
+            >
+              <GroupFormindex
+                groupId={selectedGroupId}
+                onSuccess={() => {
+                  setIsEditGroupModalOpen(false);
+                  refetchGroups();
+                }}
+                onCancel={() => setIsEditGroupModalOpen(false)}
+              />
+            </Modal>
           )}
 
           {/* Chat View */}

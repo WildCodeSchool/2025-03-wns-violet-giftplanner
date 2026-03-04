@@ -216,7 +216,7 @@
 }
 
 .profile-save-button {
-  background-color: #200904;
+  background-color: #3d9a3e;
   color: #fdfbf6;
   border: none;
   padding: 14px 48px;
@@ -229,11 +229,11 @@
 }
 
 .profile-save-button:hover {
-  background-color: #463835;
+  background-color: #2e7a2f;
 }
 
 .profile-cancel-button {
-  background-color: #ea4b09;
+  background-color: #200904;
   color: #fdfbf6;
   border: none;
   padding: 14px 48px;
@@ -246,7 +246,7 @@
 }
 
 .profile-cancel-button:hover {
-  background-color: #ea4b09;
+  background-color: #463835;
 }
 
 /* Groupe de boutons */
@@ -364,48 +364,6 @@
   opacity: 0.8;
 }
 
-.profile-menu-dropdown {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  margin-top: 8px;
-  background-color: #fdfbf6;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  min-width: 248px;
-  z-index: 9999;
-}
-
-.profile-menu-item {
-  width: 100%;
-  padding: 14px 20px;
-  background: transparent;
-  border: none;
-  text-align: left;
-  font-size: 16px;
-  font-weight: 600;
-  color: #200904;
-  font-family: "Inter", sans-serif;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.profile-menu-item:hover {
-  background-color: #f0ece6;
-}
-
-.profile-menu-item-danger {
-  color: #ea4b09;
-}
-
-.profile-menu-item-danger:hover {
-  background-color: #ffebe5;
-}
-
 /* VERSION MOBILE */
 
 @media (max-width: 768px) {
@@ -521,7 +479,7 @@
 
   .profile-save-button,
   .profile-cancel-button {
-    flex: 1;
+    width: 100%;
     padding: 10px 20px;
     font-size: 16px;
     box-shadow: rgba(32, 9, 4, 0.2) 0px 2px 6px;
@@ -529,7 +487,7 @@
   }
 
   .profile-actions {
-    flex-direction: row;
+    flex-direction: column;
     gap: 12px;
     margin-top: 24px;
     margin-bottom: 16px;

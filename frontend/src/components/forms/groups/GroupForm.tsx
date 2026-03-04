@@ -1,9 +1,7 @@
 import type React from "react";
-import Icon from "../../utils/Icon";
 import Input from "../../utils/Input";
 import InputWithToggle from "../../utils/InputWithToggle";
 import SearchSelectInput from "../../utils/SearchSelectInput";
-import Subtitle from "../../utils/Subtitle";
 import { options } from "../groups/eventOptions.ts";
 
 type GroupFormProps = {
@@ -31,14 +29,8 @@ export default function GroupForm({
   const disabled = isEdit && !isAdmin;
 
   return (
-    <>
-      <Subtitle className="text-center text-2xl">
-        {isEdit ? "Modifier le groupe" : "Créer un groupe"}
-      </Subtitle>
-      <div className="text-white text-8xl m-auto">
-        <Icon icon="image" />
-      </div>
-      <div className="flex flex-col gap-4 px-20">
+    <div className="flex flex-col w-full py-4 md:h-100 md:my-5">
+      <div className="flex flex-col lg:px-20 gap-4 md:flex-1 md:justify-between md:min-h-0">
         <Input
           disabled={disabled}
           name="name"
@@ -47,7 +39,6 @@ export default function GroupForm({
           onChange={handleChange}
           placeholder="Entrez le nom du groupe"
           error={errors.name}
-          icon="doubleChat"
         />
 
         <SearchSelectInput
@@ -61,7 +52,6 @@ export default function GroupForm({
           }
           placeholder="Quel est l'événement ?"
           error={errors.event_type}
-          icon="gift"
           options={options}
           theme="light"
         />
@@ -74,7 +64,6 @@ export default function GroupForm({
           onChange={handleChange}
           placeholder={String(0)}
           error={errors.piggy_bank}
-          icon="dollar"
         />
 
         <InputWithToggle
@@ -100,6 +89,6 @@ export default function GroupForm({
           error={errors.deadline}
         />
       </div>
-    </>
+    </div>
   );
 }

@@ -22,3 +22,26 @@
   color: #776b69;
   padding-bottom: 16px;
 }
+
+/* Three-dot menu on gift card (mobile) */
+.giftcard-menu-container {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 10;
+}
+
+.giftcard-menu-button {
+  background: rgba(253, 251, 246, 0.95);
+  border: none;
+  color: #200904;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(32, 9, 4, 0.2);
+  font-size: 20px;
+}
