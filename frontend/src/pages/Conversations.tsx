@@ -546,8 +546,8 @@ export default function Conversations() {
   return (
     <div className="flex flex-row h-full justify-around w-full relative ">
       {/* Left Column */}
-      <div className="flex flex-col mx-[calc(var(--spacing)*10)] h-full min-h-0">
-        <div className="h-[calc(50%-2rem)] flex">
+      <div className="grid grid-rows-[1fr_40px_fit-content(100px)_1fr] mx-[calc(var(--spacing)*10)] h-full min-h-0">
+        <div className="flex h-full min-h-0">
           {groups && (
             <Groups
               groups={groups}
@@ -565,7 +565,10 @@ export default function Conversations() {
           )}
         </div>
 
-        <div className="flex flex-row gap-4 mt-[calc(var(--spacing)*10)] mb-4">
+        {/* div inutil qui sert que a prendre une place */}
+        <div></div>
+
+        <div className="flex flex-row gap-4 h-fit mb-[16px]">
           <Button
             text="Wishlist"
             icon="heart"
@@ -584,7 +587,7 @@ export default function Conversations() {
           />
         </div>
 
-        <div className="h-[calc(50%-2rem)] flex">
+        <div className="flex h-full min-h-0">
           {indexGroups !== -1 &&
             groups.length > 0 &&
             groups[indexGroups] &&

@@ -13,9 +13,7 @@ type ContainerProps = {
 
 export default function Container({ colour, title, icon, button, children, classNameTitle }: ContainerProps) {
   return (
-    <div
-      className={`bg-${colour} py-6 pb-6 px-6 rounded-2xl w-[40vw] aspect-[415/300] max-w-[450px] flex flex-col`}
-    >
+    <div className={`bg-${colour} py-6 pb-6 px-6 rounded-2xl w-[40vw] max-w-[450px] flex flex-col`}>
       {/* Header */}
       <div className="flex justify-between items-center pb-4">
         <div className="flex items-center gap-2">
