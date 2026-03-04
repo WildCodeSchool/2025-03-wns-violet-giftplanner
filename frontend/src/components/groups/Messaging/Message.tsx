@@ -52,7 +52,9 @@ export default function Message({ regroupement, userId }: MessageProps) {
                   className={`w-[250px] md:w-[320px] border-[1px] px-[16px] py-[10px] ${defClassRadius(regroupement.length, index + 1, isAutreMessage)} ${defClassColor(isAutreMessage)}`}
                   key={message.id}
                 >
-                  <p className="text-[16px] leading-[1.25]">{message.content}</p>
+                  <p className="text-[16px] leading-[1.25] whitespace-pre-line wrap-break-word">
+                    {message.content}
+                  </p>
                   <p className="text-end text-[#4B5563] text-[14px]">
                     {heurMintute(dateOrStringToDate(message.createdAt))}
                   </p>
