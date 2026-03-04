@@ -28,6 +28,8 @@ type MessagingProps = {
   getNbNewMessages?: (groupId: number, messages: MessageType[]) => number;
   isMobile?: boolean;
   hideHeader?: boolean;
+  editGroupSuccess?: () => void;
+  setIndexGroup: (index: number) => void;
 };
 
 export default function Messaging({
@@ -44,6 +46,8 @@ export default function Messaging({
   getNbNewMessages,
   isMobile = false,
   hideHeader = false,
+  editGroupSuccess,
+  setIndexGroup,
 }: MessagingProps) {
   const id = useId();
   const [messageInput, setMessageInput] = useState<string>("");
@@ -240,7 +244,15 @@ export default function Messaging({
             >
               <GroupFormIndex
                 isOpen={groupFormModal.isOpen}
-                onSuccess={groupFormModal.close}
+                onSuccess={() => {
+                  groupFormModal.close();
+                  editGroupSuccess?.();
+                }}
+                onDelete={() => {
+                  groupFormModal.close();
+                  setIndexGroup(0);
+                  editGroupSuccess?.();
+                }}
                 groupId={groupId}
                 onCancel={groupFormModal.close}
               />

@@ -50,7 +50,8 @@ export default function Conversations() {
     fetchPolicy: "no-cache",
     nextFetchPolicy: "no-cache",
   });
-  const { data: messageData } = useGetAllMessageMyGroupsQuery({
+
+  const { data: messageData, refetch: refechMessages } = useGetAllMessageMyGroupsQuery({
     fetchPolicy: "no-cache",
     nextFetchPolicy: "no-cache",
   });
@@ -87,6 +88,12 @@ export default function Conversations() {
       return clone;
     });
   };
+
+  async function refetchGroupsCallback() {
+    await refetchGroups();
+    await refechMessages();
+    await refetchWishlist();
+  }
 
   // scroller vers le bas quand on reçoit un nouveau message
   useEffect(() => {
@@ -213,8 +220,6 @@ export default function Conversations() {
       return clone;
     });
   };
-
-  const myGroups = groupData?.getAllMyGroups;
 
   // Mobile navigation handlers
   const handleGroupClick = (group: GetAllMyGroupsQuery["getAllMyGroups"]["groups"][number]) => {
@@ -407,7 +412,7 @@ export default function Conversations() {
                 groupId={selectedGroupId}
                 onSuccess={() => {
                   setIsEditGroupModalOpen(false);
-                  refetchGroups();
+                  refetchGroupsCallback();
                 }}
                 onCancel={() => setIsEditGroupModalOpen(false)}
               />
@@ -428,6 +433,7 @@ export default function Conversations() {
                   contenairMessageRef={contenairMessageRef}
                   isMobile={true}
                   hideHeader={true}
+                  setIndexGroup={setIndexGroup}
                 />
               )}
             </div>
@@ -469,7 +475,7 @@ export default function Conversations() {
               <AddFundsModal
                 isOpen={isAddFundsModalOpen}
                 onClose={() => setIsAddFundsModalOpen(false)}
-                onSuccess={() => refetchGroups()}
+                onSuccess={() => refetchGroupsCallback()}
                 groupId={Number(groups[indexGroups].id)}
                 currentAmount={groups[indexGroups]?.piggy_bank || 0}
               />
@@ -526,7 +532,10 @@ export default function Conversations() {
         >
           <GroupFormindex
             onCancel={() => setIsCreateGroupModalOpen(false)}
-            onSuccess={() => setIsCreateGroupModalOpen(false)}
+            onSuccess={() => {
+              setIsCreateGroupModalOpen(false);
+              refetchGroupsCallback();
+            }}
           />
         </Modal>
       </div>
@@ -539,10 +548,11 @@ export default function Conversations() {
       {/* Left Column */}
       <div className="flex flex-col mx-[calc(var(--spacing)*10)] h-full min-h-0">
         <div className="h-[calc(50%-2rem)] flex">
-          {myGroups && (
+          {groups && (
             <Groups
-              groups={myGroups}
+              groups={groups}
               setActiveGroup={setActiveGroup}
+              onSuccess={refetchGroupsCallback}
               loading={false}
               error={undefined}
               messages={messages}
@@ -598,7 +608,7 @@ export default function Conversations() {
           <AddFundsModal
             isOpen={isAddFundsModalOpen}
             onClose={() => setIsAddFundsModalOpen(false)}
-            onSuccess={() => refetchGroups()}
+            onSuccess={() => refetchGroupsCallback()}
             groupId={Number(groups[indexGroups].id)}
             currentAmount={groups[indexGroups].piggy_bank}
           />
@@ -625,6 +635,8 @@ export default function Conversations() {
               updateLastVu={updateLastVu}
               getLastVu={getLastVu}
               getNbNewMessages={getNbNewMessages}
+              editGroupSuccess={refetchGroupsCallback}
+              setIndexGroup={setIndexGroup}
             />
           )}
       </div>
