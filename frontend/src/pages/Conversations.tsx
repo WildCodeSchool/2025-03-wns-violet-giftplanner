@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { HiDotsVertical } from "react-icons/hi";
-import { LuCirclePlus, LuMessageCircleMore, LuSettings } from "react-icons/lu";
+import { LuCirclePlus, LuMessageCircleMore, LuSettings, LuUsers } from "react-icons/lu";
 import GroupFormindex from "../components/forms/groups/index";
 import AddFundsModal from "../components/groups/AddFundsModal";
 import Groups from "../components/groups/Groups";
@@ -281,16 +281,8 @@ export default function Conversations() {
             <div className="mobile-groups-content">
               {groups.length === 0 ? (
                 <div className="mobile-groups-empty">
-                  <LuMessageCircleMore className="mobile-groups-empty-icon" />
-                  <p className="mobile-groups-empty-text">Aucun groupe pour l'instant.</p>
-                  <button
-                    type="button"
-                    onClick={() => setIsCreateGroupModalOpen(true)}
-                    className="mobile-groups-empty-button"
-                  >
-                    <LuCirclePlus />
-                    Créer un groupe
-                  </button>
+                  <LuUsers className="mobile-groups-empty-icon" />
+                  <p className="mobile-groups-empty-text">Vous n'avez encore aucun groupe pour le moment</p>
                 </div>
               ) : (
                 <div className="mobile-groups-list">
@@ -320,18 +312,16 @@ export default function Conversations() {
             </div>
 
             {/* Mobile Add Button */}
-            {groups.length > 0 && (
-              <div className="mobile-groups-button-container">
-                <button
-                  type="button"
-                  className="mobile-groups-button"
-                  onClick={() => setIsCreateGroupModalOpen(true)}
-                >
-                  <LuCirclePlus className="text-xl" />
-                  Ajouter un groupe
-                </button>
-              </div>
-            )}
+            <div className="mobile-groups-button-container">
+              <button
+                type="button"
+                className="mobile-groups-button"
+                onClick={() => setIsCreateGroupModalOpen(true)}
+              >
+                <LuCirclePlus className="text-xl" />
+                {groups.length === 0 ? "Créer un groupe" : "Ajouter un groupe"}
+              </button>
+            </div>
           </div>
 
           {/* Create / Edit Group Modal (mobile) */}
@@ -493,6 +483,49 @@ export default function Conversations() {
             />
           )}
         </div>
+      </div>
+    );
+  }
+
+  // Desktop empty state (no groups)
+  if (groups.length === 0 && groupData !== undefined) {
+    return (
+      <div className="flex h-full w-full pl-10 relative">
+        <div className="h-full w-full flex flex-col bg-blue rounded-[18px] overflow-hidden p-10">
+          {/* Header */}
+          <div className="flex justify-between items-start text-white mb-8 flex-shrink-0">
+            <div className="flex items-center gap-4">
+              <LuMessageCircleMore className="text-[40px]" />
+              <h2 className="text-[32px] font-bold">Mes groupes</h2>
+            </div>
+            <Button
+              icon="plus"
+              text="Créer un groupe"
+              colour="green"
+              onClick={() => setIsCreateGroupModalOpen(true)}
+            />
+          </div>
+          {/* Centered empty state */}
+          <div className="flex-1 flex items-center justify-center">
+            <div className="flex flex-col items-center text-white">
+              <LuUsers className="text-7xl opacity-80 mb-3" />
+              <p className="text-lg mb-8">Aucun groupe de discussion pour l'instant.</p>
+            </div>
+          </div>
+        </div>
+        <Modal
+          colour="blue"
+          isOpen={isCreateGroupModalOpen}
+          onClose={() => setIsCreateGroupModalOpen(false)}
+          size="lg"
+          withPadding
+          className="p-0 overflow-y-auto max-h-[72vh] max-md:max-h-full"
+        >
+          <GroupFormindex
+            onCancel={() => setIsCreateGroupModalOpen(false)}
+            onSuccess={() => setIsCreateGroupModalOpen(false)}
+          />
+        </Modal>
       </div>
     );
   }
