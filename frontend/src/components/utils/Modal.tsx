@@ -99,7 +99,7 @@ export default function Modal({
           <button
             type="button"
             onClick={onClose}
-            className="absolute top-3 right-4 text-2xl font-bold text-[#200904] hover:text-[#EA4B09] max-md:hidden"
+            className="absolute top-3 right-4 text-2xl font-bold text-[#200904] hover:text-[#EA4B09] max-md:hidden cursor-pointer"
             aria-label="Fermer"
           >
             &times;
