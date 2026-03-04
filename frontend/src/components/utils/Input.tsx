@@ -13,6 +13,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   icon?: IconTypes;
   disabled?: boolean;
+  dataTestId?: string;
 }
 
 export default function Input({
@@ -27,6 +28,7 @@ export default function Input({
   placeholder,
   icon,
   disabled = false,
+  dataTestId,
   ...props
 }: InputProps) {
   const baseStyles =
@@ -64,6 +66,7 @@ export default function Input({
           className={`${baseStyles} ${themeStyles} ${disabledStyles} ${errorStyles} ${className}`}
           name={name}
           placeholder={placeholder}
+          data-testid={dataTestId}
           {...props}
         />
         {icon && (

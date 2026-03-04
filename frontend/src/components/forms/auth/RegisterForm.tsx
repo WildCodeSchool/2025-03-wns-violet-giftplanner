@@ -117,6 +117,7 @@ const RegisterForm = () => {
       {messageError && <p className="text-orange font-bold text-lg">{messageError}</p>}
 
       <Input
+        dataTestId="lastNameRegister"
         theme="dark"
         type="text"
         placeholder="Nom"
@@ -125,6 +126,7 @@ const RegisterForm = () => {
         onChange={(e) => setForm({ ...form, lastName: e.target.value })}
       ></Input>
       <Input
+        dataTestId="firstNameRegister"
         theme="dark"
         type="text"
         placeholder="Prénom"
@@ -133,6 +135,7 @@ const RegisterForm = () => {
         onChange={(e) => setForm({ ...form, firstName: e.target.value })}
       ></Input>
       <Input
+        dataTestId="emailRegister"
         theme="dark"
         type="text"
         placeholder="Adresse email"
@@ -141,6 +144,7 @@ const RegisterForm = () => {
         onChange={(e) => setForm({ ...form, email: e.target.value })}
       ></Input>
       <Input
+        dataTestId="birthdayRegister"
         theme="dark"
         type="date"
         placeholder="Date de naissance"
@@ -149,6 +153,7 @@ const RegisterForm = () => {
         onChange={(e) => setForm({ ...form, date_of_birth: e.target.value })}
       ></Input>
       <Input
+        dataTestId="passwordRegister"
         theme="dark"
         type="password"
         placeholder="Mot de passe"
@@ -157,6 +162,7 @@ const RegisterForm = () => {
         onChange={(e) => setForm({ ...form, password: e.target.value })}
       ></Input>
       <Input
+        dataTestId="passwordConfirmRegister"
         theme="dark"
         type="password"
         placeholder="Confirmation du mot de passe"
@@ -176,7 +182,13 @@ const RegisterForm = () => {
       </div>
 
       {/* Bouton de connexion */}
-      <Button type="submit" colour="dark" rounded className="text-xl px-[25px] py-[10px] mt-5">
+      <Button
+        type="submit"
+        colour="dark"
+        rounded
+        className="text-xl px-[25px] py-[10px] mt-5"
+        dataTestId="buttonRegister"
+      >
         Inscription
       </Button>
     </AuthFormTemplate>

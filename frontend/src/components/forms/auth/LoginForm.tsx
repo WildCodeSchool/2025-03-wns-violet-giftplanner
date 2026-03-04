@@ -59,6 +59,7 @@ const LoginForm = () => {
     >
       {messageError.length > 0 ? <p className="error-message">{messageError}</p> : null}
       <Input
+        dataTestId="emailLogin"
         theme="dark"
         type="text"
         name="email"
@@ -67,6 +68,7 @@ const LoginForm = () => {
         onChange={(e) => setForm({ ...form, email: e.target.value })}
       />
       <Input
+        dataTestId="passwordLogin"
         theme="dark"
         type="password"
         name="password"
@@ -75,7 +77,13 @@ const LoginForm = () => {
         onChange={(e) => setForm({ ...form, password: e.target.value })}
       />
 
-      <Button rounded colour="dark" className="text-xl px-[25px] py-[10px] mt-5" type="submit">
+      <Button
+        rounded
+        colour="dark"
+        className="text-xl px-[25px] py-[10px] mt-5"
+        type="submit"
+        dataTestId="buttonLogin"
+      >
         Connexion
       </Button>
     </AuthFormTemplate>

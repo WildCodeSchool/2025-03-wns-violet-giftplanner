@@ -16,6 +16,7 @@ type ButtonProps = {
   big?: boolean;
   small?: boolean;
   disabled?: boolean;
+  dataTestId?: string;
 };
 
 export default function Button({
@@ -29,6 +30,7 @@ export default function Button({
   type = "button",
   small = false,
   disabled = false,
+  dataTestId,
 }: ButtonProps) {
   const backgroundColours = {
     blue: "bg-blue",
@@ -47,6 +49,7 @@ export default function Button({
     <button
       type={type}
       disabled={disabled}
+      data-testid={dataTestId}
       className={`${backgroundColour} text-white font-inter-extra-bold
         ${rounded ? "rounded-full p-2" : small ? "rounded-lg py-1.5 px-3 text-sm" : "rounded-lg py-2 px-4"}
         flex items-center gap-2 font-medium shadow-md
