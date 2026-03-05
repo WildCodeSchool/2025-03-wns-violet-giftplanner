@@ -206,7 +206,7 @@ export default function Conversations() {
 
     // set les nb de nouveaux messages
     data?.forEach((groupMessages) => {
-      updateLastVu(Number(groupMessages.groupId), groupMessages.lastTempstampVu, false);
+      updateLastVu(Number(groupMessages.groupId), groupMessages.lastTempstampVu || 0, false);
     });
   }, [messageData]);
 

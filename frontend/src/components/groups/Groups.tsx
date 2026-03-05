@@ -67,7 +67,7 @@ export default function Groups({
               active={activeGroupId === Number(group.id)}
               onClick={() => {
                 setActiveGroup?.(group);
-                updateLastVu(Number(group.id), messages[Number(group.id)][0].createdAt);
+                updateLastVu(Number(group.id), messages[Number(group.id)][0]?.createdAt ?? 0);
                 onGroupClick?.(group);
               }}
               nbNewMessages={getNbNewMessages(Number(group.id), messages[Number(group.id)] || [])}

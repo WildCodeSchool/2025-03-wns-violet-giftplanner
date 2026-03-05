@@ -123,7 +123,7 @@ export default function Messaging({
       variables: {
         data: {
           groupId: groupId,
-          oldTimestamp: messages[messages.length - 1].createdAt,
+          oldTimestamp: messages[messages.length - 1]?.createdAt ?? new Date(),
         },
       },
     });
@@ -203,7 +203,7 @@ export default function Messaging({
 
     el.addEventListener("scroll", onScroll);
     return () => el.removeEventListener("scroll", onScroll);
-  }, [messages, groupId, getLastVu, updateLastVu]);
+  }, [messages, groupId]);
 
   return (
     <div
