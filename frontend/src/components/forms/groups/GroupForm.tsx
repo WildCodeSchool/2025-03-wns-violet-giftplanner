@@ -34,6 +34,7 @@ export default function GroupForm({
         <Input
           disabled={disabled}
           name="name"
+          label="Nom"
           type="text"
           value={formData.name}
           onChange={handleChange}
@@ -51,6 +52,7 @@ export default function GroupForm({
             } as React.ChangeEvent<HTMLInputElement>)
           }
           placeholder="Quel est l'événement ?"
+          label="Type événement"
           error={errors.event_type}
           options={options}
           theme="light"
@@ -60,6 +62,7 @@ export default function GroupForm({
           disabled={disabled}
           name="piggy_bank"
           type="number"
+          label="Piggy bank"
           value={String(formData.piggy_bank)}
           onChange={handleChange}
           placeholder={String(0)}
@@ -84,6 +87,7 @@ export default function GroupForm({
           disabled={disabled}
           name="deadline"
           type="date"
+          label="Deadline"
           value={formData.deadline}
           onChange={handleChange}
           error={errors.deadline}

@@ -7,7 +7,7 @@ on:
       - main
 
 jobs:
-  build-and-push-projects:
+  build-services-teste:
     runs-on: ubuntu-latest
     strategy:
       # pouvoir voir tout les builds qui échouent pas juste le premier
@@ -22,7 +22,7 @@ jobs:
     steps:
       - name: Récupérer le code source
         uses: actions/checkout@v4
-      
+
       - name: setup Docker Buildx (pour du cache)
         uses: docker/setup-buildx-action@v3
 
@@ -35,4 +35,3 @@ jobs:
           load: false
           cache-from: type=gha
           cache-to: type=gha,mode=max
-        

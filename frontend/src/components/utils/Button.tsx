@@ -53,6 +53,7 @@ export default function Button({
         transition-all duration-200 ease-in-out
         ${disabled ? "opacity-60 cursor-not-allowed hover:brightness-100 hover:scale-100 active:scale-100" : "hover:brightness-110 hover:scale-[1.02] active:scale-[0.97] active:brightness-95"}
         ${className}
+        cursor-pointer
       `}
       onClick={disabled ? undefined : onClick}
     >

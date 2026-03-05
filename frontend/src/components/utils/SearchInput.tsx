@@ -64,7 +64,10 @@ export default function SearchInput({
   return (
     <div className="flex flex-col w-full h-full min-h-0">
       {label && (
-        <label htmlFor={id} className="font-semibold text-md">
+        <label
+          htmlFor={id}
+          className={`font-semibold text-md  ${theme === "dark" ? "text-dark" : "text-white"}`}
+        >
           {label}
         </label>
       )}

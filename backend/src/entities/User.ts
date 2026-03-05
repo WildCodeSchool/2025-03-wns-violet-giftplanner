@@ -63,9 +63,9 @@ class User extends BaseEntity {
   @Field()
   updatedAt: Date;
 
-  @Column({ default: null, nullable: true })
-  @Field({ nullable: true })
-  image_url: string;
+  @Column({ type: "text", default: null, nullable: true })
+  @Field(() => String, { nullable: true })
+  image_url: string | null;
 
   @Column({ default: false })
   @Field()

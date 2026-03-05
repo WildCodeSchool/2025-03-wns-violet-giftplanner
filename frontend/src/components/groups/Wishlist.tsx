@@ -235,6 +235,9 @@ export default function Wishlist({ groupId, beneficiaryItems, groupItems, onAddI
 
   // Tri décroissant par nombre de likes
   const sortedGroupItems = [...groupItems].sort((a, b) => getLikeState(b).count - getLikeState(a).count);
+  const sortedBeneficiaryItems = [...beneficiaryItems].sort(
+    (a, b) => getLikeState(b).count - getLikeState(a).count,
+  );
 
   return (
     <div className="w-full h-full flex flex-col md:bg-orange md:rounded-2xl md:py-6 md:px-6">
@@ -253,11 +256,11 @@ export default function Wishlist({ groupId, beneficiaryItems, groupItems, onAddI
             <span className="hidden md:inline text-dark">Idées du bénéficiaire</span>
           </h3>
 
-          {beneficiaryItems.length === 0 ? (
+          {sortedBeneficiaryItems.length === 0 ? (
             <p className="text-white/70 md:text-dark text-sm">Aucune idée ajoutée par le bénéficiaire.</p>
           ) : (
             <div className="flex flex-col gap-4">
-              {beneficiaryItems.map((gift) => (
+              {sortedBeneficiaryItems.map((gift) => (
                 <WishlistCard
                   key={gift.id}
                   gift={gift}
