@@ -59,7 +59,7 @@ const LoginForm = () => {
     >
       {messageError.length > 0 ? <p className="error-message">{messageError}</p> : null}
       <Input
-        dataTestId="emailLogin"
+        data-testid="emailLogin"
         theme="dark"
         type="text"
         name="email"
@@ -68,7 +68,7 @@ const LoginForm = () => {
         onChange={(e) => setForm({ ...form, email: e.target.value })}
       />
       <Input
-        dataTestId="passwordLogin"
+        data-testid="passwordLogin"
         theme="dark"
         type="password"
         name="password"

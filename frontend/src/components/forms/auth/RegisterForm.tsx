@@ -117,7 +117,7 @@ const RegisterForm = () => {
       {messageError && <p className="text-orange font-bold text-lg">{messageError}</p>}
 
       <Input
-        dataTestId="lastNameRegister"
+        data-testid="lastNameRegister"
         theme="dark"
         type="text"
         placeholder="Nom"
@@ -126,7 +126,7 @@ const RegisterForm = () => {
         onChange={(e) => setForm({ ...form, lastName: e.target.value })}
       ></Input>
       <Input
-        dataTestId="firstNameRegister"
+        data-testid="firstNameRegister"
         theme="dark"
         type="text"
         placeholder="Prénom"
@@ -135,7 +135,7 @@ const RegisterForm = () => {
         onChange={(e) => setForm({ ...form, firstName: e.target.value })}
       ></Input>
       <Input
-        dataTestId="emailRegister"
+        data-testid="emailRegister"
         theme="dark"
         type="text"
         placeholder="Adresse email"
@@ -144,7 +144,7 @@ const RegisterForm = () => {
         onChange={(e) => setForm({ ...form, email: e.target.value })}
       ></Input>
       <Input
-        dataTestId="birthdayRegister"
+        data-testid="birthdayRegister"
         theme="dark"
         type="date"
         placeholder="Date de naissance"
@@ -153,7 +153,7 @@ const RegisterForm = () => {
         onChange={(e) => setForm({ ...form, date_of_birth: e.target.value })}
       ></Input>
       <Input
-        dataTestId="passwordRegister"
+        data-testid="passwordRegister"
         theme="dark"
         type="password"
         placeholder="Mot de passe"
@@ -162,7 +162,7 @@ const RegisterForm = () => {
         onChange={(e) => setForm({ ...form, password: e.target.value })}
       ></Input>
       <Input
-        dataTestId="passwordConfirmRegister"
+        data-testid="passwordConfirmRegister"
         theme="dark"
         type="password"
         placeholder="Confirmation du mot de passe"

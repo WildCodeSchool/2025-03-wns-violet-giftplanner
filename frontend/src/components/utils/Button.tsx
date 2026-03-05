@@ -4,7 +4,7 @@ import type { IconProps } from "./Icon";
 import Icon from "./Icon";
 
 type ButtonType = HTMLButtonElement["type"];
-type ButtonProps = {
+type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   onClick?: MouseEventHandler<HTMLButtonElement>;
   text?: string;
   colour?: ColourScheme["colour"];
@@ -16,7 +16,6 @@ type ButtonProps = {
   big?: boolean;
   small?: boolean;
   disabled?: boolean;
-  dataTestId?: string;
 };
 
 export default function Button({
