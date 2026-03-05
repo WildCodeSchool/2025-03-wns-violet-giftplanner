@@ -93,6 +93,10 @@ describe('Créer un groupe', () => {
       expect(screen.queryByTestId('create-group-modal')).not.toBeInTheDocument()
     })
     expect(mocks.mockCreateGroup).not.toHaveBeenCalled()
+    // expect(defaultProps.onCancel).toHaveBeenCalled()
+    await waitFor(() => {
+      expect(screen.queryByTestId('create-group-modal')).not.toBeInTheDocument()
+    })
   })
 
   test("l'utilisateur peut quitter le formulaire via un clic sur l'overlay", async () => {
