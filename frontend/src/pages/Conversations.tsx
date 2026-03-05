@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { HiDotsVertical } from "react-icons/hi";
-import { LuCirclePlus, LuMessageCircleMore, LuSettings } from "react-icons/lu";
+import { LuCirclePlus, LuMessageCircleMore, LuSettings, LuUsers } from "react-icons/lu";
 import GroupFormindex from "../components/forms/groups/index";
 import AddFundsModal from "../components/groups/AddFundsModal";
 import Groups from "../components/groups/Groups";
@@ -25,6 +25,7 @@ import { useIsMobile } from "../hooks/useIsMobile";
 import type { MessageType } from "../types/Groups";
 import { countdownDate, formatDate } from "../utils/dateCalculator";
 import { useMobileNavigationStore } from "../zustand/mobileNavigationStore";
+import { useMyProfileStore } from "../zustand/myProfileStore";
 import "./conversations.css";
 import type { Message } from "../types/Message";
 
@@ -43,12 +44,14 @@ export default function Conversations() {
   const [isGroupMenuOpen, setIsGroupMenuOpen] = useState(false);
   const [isEditGroupModalOpen, setIsEditGroupModalOpen] = useState(false);
   const groupMenuRef = useRef<HTMLDivElement>(null);
+  const { userProfile } = useMyProfileStore();
 
   const { data: groupData, refetch: refetchGroups } = useGetAllMyGroupsQuery({
     fetchPolicy: "no-cache",
     nextFetchPolicy: "no-cache",
   });
-  const { data: messageData } = useGetAllMessageMyGroupsQuery({
+
+  const { data: messageData, refetch: refechMessages } = useGetAllMessageMyGroupsQuery({
     fetchPolicy: "no-cache",
     nextFetchPolicy: "no-cache",
   });
@@ -85,6 +88,12 @@ export default function Conversations() {
       return clone;
     });
   };
+
+  async function refetchGroupsCallback() {
+    await refetchGroups();
+    await refechMessages();
+    await refetchWishlist();
+  }
 
   // scroller vers le bas quand on reçoit un nouveau message
   useEffect(() => {
@@ -148,6 +157,7 @@ export default function Conversations() {
 
   // pour set les groups
   useEffect(() => {
+    if (!userProfile) return;
     setGroups(groupData?.getAllMyGroups.groups || []);
     chat.connectToRoom(groupData?.getAllMyGroups.groupToken);
   }, [groupData, chat]);
@@ -196,7 +206,7 @@ export default function Conversations() {
 
     // set les nb de nouveaux messages
     data?.forEach((groupMessages) => {
-      updateLastVu(Number(groupMessages.groupId), groupMessages.lastTempstampVu, false);
+      updateLastVu(Number(groupMessages.groupId), groupMessages.lastTempstampVu || 0, false);
     });
   }, [messageData]);
 
@@ -210,8 +220,6 @@ export default function Conversations() {
       return clone;
     });
   };
-
-  const myGroups = groupData?.getAllMyGroups;
 
   // Mobile navigation handlers
   const handleGroupClick = (group: GetAllMyGroupsQuery["getAllMyGroups"]["groups"][number]) => {
@@ -281,16 +289,8 @@ export default function Conversations() {
             <div className="mobile-groups-content">
               {groups.length === 0 ? (
                 <div className="mobile-groups-empty">
-                  <LuMessageCircleMore className="mobile-groups-empty-icon" />
-                  <p className="mobile-groups-empty-text">Aucun groupe pour l'instant.</p>
-                  <button
-                    type="button"
-                    onClick={() => setIsCreateGroupModalOpen(true)}
-                    className="mobile-groups-empty-button"
-                  >
-                    <LuCirclePlus />
-                    Créer un groupe
-                  </button>
+                  <LuUsers className="mobile-groups-empty-icon" />
+                  <p className="mobile-groups-empty-text">Vous n'avez encore aucun groupe pour le moment</p>
                 </div>
               ) : (
                 <div className="mobile-groups-list">
@@ -320,18 +320,16 @@ export default function Conversations() {
             </div>
 
             {/* Mobile Add Button */}
-            {groups.length > 0 && (
-              <div className="mobile-groups-button-container">
-                <button
-                  type="button"
-                  className="mobile-groups-button"
-                  onClick={() => setIsCreateGroupModalOpen(true)}
-                >
-                  <LuCirclePlus className="text-xl" />
-                  Ajouter un groupe
-                </button>
-              </div>
-            )}
+            <div className="mobile-groups-button-container">
+              <button
+                type="button"
+                className="mobile-groups-button"
+                onClick={() => setIsCreateGroupModalOpen(true)}
+              >
+                <LuCirclePlus className="text-xl" />
+                {groups.length === 0 ? "Créer un groupe" : "Ajouter un groupe"}
+              </button>
+            </div>
           </div>
 
           {/* Create / Edit Group Modal (mobile) */}
@@ -414,7 +412,7 @@ export default function Conversations() {
                 groupId={selectedGroupId}
                 onSuccess={() => {
                   setIsEditGroupModalOpen(false);
-                  refetchGroups();
+                  refetchGroupsCallback();
                 }}
                 onCancel={() => setIsEditGroupModalOpen(false)}
               />
@@ -435,6 +433,7 @@ export default function Conversations() {
                   contenairMessageRef={contenairMessageRef}
                   isMobile={true}
                   hideHeader={true}
+                  setIndexGroup={setIndexGroup}
                 />
               )}
             </div>
@@ -476,7 +475,7 @@ export default function Conversations() {
               <AddFundsModal
                 isOpen={isAddFundsModalOpen}
                 onClose={() => setIsAddFundsModalOpen(false)}
-                onSuccess={() => refetchGroups()}
+                onSuccess={() => refetchGroupsCallback()}
                 groupId={Number(groups[indexGroups].id)}
                 currentAmount={groups[indexGroups]?.piggy_bank || 0}
               />
@@ -497,16 +496,63 @@ export default function Conversations() {
     );
   }
 
+  // Desktop empty state (no groups)
+  if (groups.length === 0 && groupData !== undefined) {
+    return (
+      <div className="flex h-full w-full pl-10 relative">
+        <div className="h-full w-full flex flex-col bg-blue rounded-[18px] overflow-hidden p-10">
+          {/* Header */}
+          <div className="flex justify-between items-start text-white mb-8 flex-shrink-0">
+            <div className="flex items-center gap-4">
+              <LuMessageCircleMore className="text-[40px]" />
+              <h2 className="text-[32px] font-bold">Mes groupes</h2>
+            </div>
+            <Button
+              icon="plus"
+              text="Créer un groupe"
+              colour="green"
+              onClick={() => setIsCreateGroupModalOpen(true)}
+            />
+          </div>
+          {/* Centered empty state */}
+          <div className="flex-1 flex items-center justify-center">
+            <div className="flex flex-col items-center text-white">
+              <LuUsers className="text-7xl opacity-80 mb-3" />
+              <p className="text-lg mb-8">Aucun groupe de discussion pour l'instant.</p>
+            </div>
+          </div>
+        </div>
+        <Modal
+          colour="blue"
+          isOpen={isCreateGroupModalOpen}
+          onClose={() => setIsCreateGroupModalOpen(false)}
+          size="lg"
+          withPadding
+          className="p-0 overflow-y-auto max-h-[72vh] max-md:max-h-full"
+        >
+          <GroupFormindex
+            onCancel={() => setIsCreateGroupModalOpen(false)}
+            onSuccess={() => {
+              setIsCreateGroupModalOpen(false);
+              refetchGroupsCallback();
+            }}
+          />
+        </Modal>
+      </div>
+    );
+  }
+
   // Desktop render (original layout)
   return (
     <div className="flex flex-row h-full justify-around w-full relative ">
       {/* Left Column */}
-      <div className="flex flex-col mx-[calc(var(--spacing)*10)] h-full min-h-0">
-        <div className="h-[calc(50%-2rem)] flex">
-          {myGroups && (
+      <div className="grid grid-rows-[1fr_40px_fit-content(100px)_1fr] mx-[calc(var(--spacing)*10)] h-full min-h-0">
+        <div className="flex h-full min-h-0">
+          {groups && (
             <Groups
-              groups={myGroups}
+              groups={groups}
               setActiveGroup={setActiveGroup}
+              onSuccess={refetchGroupsCallback}
               loading={false}
               error={undefined}
               messages={messages}
@@ -519,7 +565,10 @@ export default function Conversations() {
           )}
         </div>
 
-        <div className="flex flex-row gap-4 mt-[calc(var(--spacing)*10)] mb-4">
+        {/* div inutil qui sert que a prendre une place */}
+        <div></div>
+
+        <div className="flex flex-row gap-4 h-fit mb-[16px]">
           <Button
             text="Wishlist"
             icon="heart"
@@ -538,7 +587,7 @@ export default function Conversations() {
           />
         </div>
 
-        <div className="h-[calc(50%-2rem)] flex">
+        <div className="flex h-full min-h-0">
           {indexGroups !== -1 &&
             groups.length > 0 &&
             groups[indexGroups] &&
@@ -562,7 +611,7 @@ export default function Conversations() {
           <AddFundsModal
             isOpen={isAddFundsModalOpen}
             onClose={() => setIsAddFundsModalOpen(false)}
-            onSuccess={() => refetchGroups()}
+            onSuccess={() => refetchGroupsCallback()}
             groupId={Number(groups[indexGroups].id)}
             currentAmount={groups[indexGroups].piggy_bank}
           />
@@ -589,6 +638,8 @@ export default function Conversations() {
               updateLastVu={updateLastVu}
               getLastVu={getLastVu}
               getNbNewMessages={getNbNewMessages}
+              editGroupSuccess={refetchGroupsCallback}
+              setIndexGroup={setIndexGroup}
             />
           )}
       </div>

@@ -28,6 +28,8 @@ type MessagingProps = {
   getNbNewMessages?: (groupId: number, messages: MessageType[]) => number;
   isMobile?: boolean;
   hideHeader?: boolean;
+  editGroupSuccess?: () => void;
+  setIndexGroup: (index: number) => void;
 };
 
 export default function Messaging({
@@ -44,6 +46,8 @@ export default function Messaging({
   getNbNewMessages,
   isMobile = false,
   hideHeader = false,
+  editGroupSuccess,
+  setIndexGroup,
 }: MessagingProps) {
   const id = useId();
   const [messageInput, setMessageInput] = useState<string>("");
@@ -119,7 +123,7 @@ export default function Messaging({
       variables: {
         data: {
           groupId: groupId,
-          oldTimestamp: messages[messages.length - 1].createdAt,
+          oldTimestamp: messages[messages.length - 1]?.createdAt ?? new Date(),
         },
       },
     });
@@ -199,7 +203,7 @@ export default function Messaging({
 
     el.addEventListener("scroll", onScroll);
     return () => el.removeEventListener("scroll", onScroll);
-  }, [messages, groupId, getLastVu, updateLastVu]);
+  }, [messages, groupId]);
 
   return (
     <div
@@ -240,7 +244,15 @@ export default function Messaging({
             >
               <GroupFormIndex
                 isOpen={groupFormModal.isOpen}
-                onSuccess={groupFormModal.close}
+                onSuccess={() => {
+                  groupFormModal.close();
+                  editGroupSuccess?.();
+                }}
+                onDelete={() => {
+                  groupFormModal.close();
+                  setIndexGroup(0);
+                  editGroupSuccess?.();
+                }}
                 groupId={groupId}
                 onCancel={groupFormModal.close}
               />

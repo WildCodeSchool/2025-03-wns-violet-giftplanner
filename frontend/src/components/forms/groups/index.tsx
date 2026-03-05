@@ -23,6 +23,7 @@ type GroupFormIndex = {
   onCancel: () => void;
   groupId?: number;
   isOpen?: boolean;
+  onDelete?: () => void;
 };
 
 const EMPTY_FORM_STATE: CreateGroupInput = {
@@ -34,7 +35,7 @@ const EMPTY_FORM_STATE: CreateGroupInput = {
   user_beneficiary: "",
 };
 
-export default function GroupFormindex({ onSuccess, groupId }: GroupFormIndex) {
+export default function GroupFormindex({ onSuccess, groupId, onDelete }: GroupFormIndex) {
   const [submitError, setSubmitError] = useState<string>("");
   const [checked, setChecked] = useState(false);
   const [query, setQuery] = useState("");
@@ -221,11 +222,9 @@ export default function GroupFormindex({ onSuccess, groupId }: GroupFormIndex) {
         // Reset removal tracking after successful update
         setUsersToRemove([]);
       } else {
-        const response = await createGroup({
+        await createGroup({
           variables: commonVariables,
         });
-
-        console.info("Group created successfully:", response.data);
 
         setFormData(EMPTY_FORM_STATE);
         setChecked(false);
@@ -277,7 +276,7 @@ export default function GroupFormindex({ onSuccess, groupId }: GroupFormIndex) {
   async function deleteMyGroup() {
     try {
       await deleteGroup({ variables: { deleteGroupId: groupId! } });
-      onSuccess();
+      onDelete?.();
     } catch (error) {
       console.error("Error deleting group:", error);
     }

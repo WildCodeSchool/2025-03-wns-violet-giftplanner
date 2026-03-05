@@ -6,7 +6,6 @@ import { toast } from "react-toastify";
 import DropdownMenu from "../components/utils/DropdownMenu";
 import Icon from "../components/utils/Icon";
 import Modal from "../components/utils/Modal";
-import { defaultPictureProfile } from "../data/pictureDefault";
 import {
   useDeleteMyProfileMutation,
   useLogoutMutation,
@@ -14,14 +13,14 @@ import {
 } from "../graphql/generated/graphql-types";
 import consoleErrorDev from "../hooks/erreurMod";
 import { useIsMobile } from "../hooks/useIsMobile";
-import { toBase64 } from "../utils/pictureProfileManager";
+import getProfilePictureUrl, { toBase64 } from "../utils/pictureProfileManager";
 import { useMyProfileStore } from "../zustand/myProfileStore";
 
 const UserProfilePage = () => {
   const { userProfile, setUserProfile, clearUserProfile } = useMyProfileStore();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
-  const [imageUrl, setImageUrl] = useState(defaultPictureProfile);
+  const [imageUrl, setImageUrl] = useState(getProfilePictureUrl(null));
   const [image, setImage] = useState<null | File>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [messageError, setMessageError] = useState("");
@@ -63,7 +62,7 @@ const UserProfilePage = () => {
       password: "",
       passwordConfirmation: "",
     });
-    setImageUrl(userProfile?.image_url || defaultPictureProfile);
+    setImageUrl(getProfilePictureUrl(userProfile?.image_url));
   }, [userProfile]);
 
   useEffect(() => {
@@ -100,7 +99,7 @@ const UserProfilePage = () => {
   const handleCancelClick = () => {
     setIsEditing(false);
     setProfile({ ...profileBackup });
-    setImageUrl(userProfile?.image_url || defaultPictureProfile);
+    setImageUrl(getProfilePictureUrl(userProfile?.image_url));
     setMessageError("");
     setMessageSuccess("");
   };
@@ -447,18 +446,30 @@ const UserProfilePage = () => {
         </div>
       </div>
 
-      <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)}>
+      <Modal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        className="profile-delete-modal-panel"
+        overlayClassName="profile-delete-modal-overlay"
+        showCloseButton={false}
+        withPadding={false}
+        mobileFullscreen={false}
+      >
         <div>
-          <h2>Supprimer votre profil</h2>
-          <p>
+          <h2 className="profile-delete-modal-title">Supprimer votre profil</h2>
+          <p className="profile-delete-modal-text">
             Êtes-vous sûr de vouloir faire ça ? Cette action est irréversible et toutes vos données seront
             effacées.
           </p>
-          <div className="modal-actions">
-            <button type="button" className="modal-btn-cancel" onClick={() => setIsDeleteModalOpen(false)}>
+          <div className="profile-delete-modal-actions">
+            <button
+              type="button"
+              className="profile-delete-modal-btn-cancel"
+              onClick={() => setIsDeleteModalOpen(false)}
+            >
               Annuler
             </button>
-            <button type="button" className="modal-btn-confirm" onClick={handleConfirmDelete}>
+            <button type="button" className="profile-delete-modal-btn-confirm" onClick={handleConfirmDelete}>
               Confirmer
             </button>
           </div>
