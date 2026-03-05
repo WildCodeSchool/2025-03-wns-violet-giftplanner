@@ -122,7 +122,10 @@ export default function SearchSelectInput({
       onKeyDown={handleKeyDown}
     >
       {label && (
-        <label htmlFor={id} className="font-semibold text-md text-white dark:text-dark">
+        <label
+          htmlFor={id}
+          className={`font-semibold text-md ${theme === "light" ? "text-white" : "dark:text-dark"}`}
+        >
           {label}
         </label>
       )}

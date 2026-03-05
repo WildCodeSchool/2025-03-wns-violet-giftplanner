@@ -9,7 +9,7 @@ import Container from "../utils/Container";
 import Modal from "../utils/Modal";
 
 type GroupsProps = {
-  groups: GetAllMyGroupsQuery["getAllMyGroups"];
+  groups: GetAllMyGroupsQuery["getAllMyGroups"]["groups"];
   setActiveGroup: (group: GetAllMyGroupsQuery["getAllMyGroups"]["groups"][number]) => void;
   loading: boolean;
   error?: string;
@@ -19,6 +19,7 @@ type GroupsProps = {
   updateLastVu: (groupId: number, date: Date | string, serveurSyconization?: boolean) => void;
   onGroupClick?: (group: GetAllMyGroupsQuery["getAllMyGroups"]["groups"][number]) => void;
   activeGroupId?: number;
+  onSuccess?: () => void;
 };
 
 export default function Groups({
@@ -31,6 +32,7 @@ export default function Groups({
   activeGroupId,
   getNbNewMessages,
   updateLastVu,
+  onSuccess,
 }: GroupsProps) {
   const createGroupModal = useToggle(false);
   const closeCreateGroupModal = () => {
@@ -56,7 +58,7 @@ export default function Groups({
         {loading && <div>Loading...</div>}
         {error && <div>Error: {error}</div>}
 
-        {groups?.groups.map((group) => {
+        {groups.map((group) => {
           return (
             <Card
               key={group.id}
@@ -65,7 +67,7 @@ export default function Groups({
               active={activeGroupId === Number(group.id)}
               onClick={() => {
                 setActiveGroup?.(group);
-                updateLastVu(Number(group.id), messages[Number(group.id)][0].createdAt);
+                updateLastVu(Number(group.id), messages[Number(group.id)][0]?.createdAt ?? 0);
                 onGroupClick?.(group);
               }}
               nbNewMessages={getNbNewMessages(Number(group.id), messages[Number(group.id)] || [])}
@@ -90,7 +92,13 @@ export default function Groups({
         withPadding
         className="p-0 overflow-y-auto max-h-[72vh] max-md:max-h-full"
       >
-        <GroupFormindex onCancel={createGroupModal.close} onSuccess={createGroupModal.close} />
+        <GroupFormindex
+          onCancel={createGroupModal.close}
+          onSuccess={() => {
+            createGroupModal.close();
+            onSuccess?.();
+          }}
+        />
       </Modal>
     </>
   );

@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useLogoutMutation } from "../../graphql/generated/graphql-types";
 import consoleErrorDev from "../../hooks/erreurMod";
+import getProfilePictureUrl from "../../utils/pictureProfileManager";
 import { useMyProfileStore } from "../../zustand/myProfileStore";
 import Redirect from "./Redirect";
 import "./navigation.css";
@@ -39,9 +40,9 @@ export default function Navigation() {
       <div className="h-7/12 flex flex-col  justify-between ">
         <div className="w-full aspect-1/1">
           <img
-            src={userProfile?.image_url || "/default-profile.png"}
+            src={getProfilePictureUrl(userProfile?.image_url)}
             alt="Profile"
-            className=" border-4 border-white aspect-1/1 rounded-full object-cover"
+            className=" border-4 border-white aspect-1/1 w-full rounded-full object-cover"
           />
           <div
             className="text-white h-auto"
