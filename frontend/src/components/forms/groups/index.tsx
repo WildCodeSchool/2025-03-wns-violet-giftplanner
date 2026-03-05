@@ -222,7 +222,7 @@ export default function GroupFormindex({ onSuccess, groupId, onDelete }: GroupFo
         // Reset removal tracking after successful update
         setUsersToRemove([]);
       } else {
-        const _response = await createGroup({
+        await createGroup({
           variables: commonVariables,
         });
 
