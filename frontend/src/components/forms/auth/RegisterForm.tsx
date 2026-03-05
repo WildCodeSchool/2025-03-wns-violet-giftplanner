@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import { useNavigate } from "react-router";
 import { useSignupMutation } from "../../../graphql/generated/graphql-types";
 import consoleErrorDev from "../../../hooks/erreurMod";
@@ -24,6 +24,7 @@ const RegisterForm = () => {
   const navigate = useNavigate();
   const [messageError, setMessageError] = useState("");
   const { setUserProfile } = useMyProfileStore();
+  const idInputFile = useId();
 
   const [signup] = useSignupMutation();
 
@@ -175,9 +176,16 @@ const RegisterForm = () => {
         {/* md:w-auto */}
         <label
           className={`inline-block w-full bg-dark text-white text-center border-none px-5 py-3 rounded-lg cursor-pointer text-sm md:text-lg font-inter font-bold transition-colors duration-300 overflow-hidden whitespace-nowrap w-[400px] px-4 py-2 text-xl ${file ? "bg-[#292e96]" : ""}`}
+          htmlFor={idInputFile}
         >
           <span className="block overflow-hidden text-lg text-ellipsis font-bold">{fileName}</span>
-          <input type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
+          <input
+            id={idInputFile}
+            type="file"
+            accept="image/*"
+            className="sr-only"
+            onChange={handleFileChange}
+          />
         </label>
       </div>
 
