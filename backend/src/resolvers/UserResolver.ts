@@ -1,5 +1,6 @@
 import argon2 from "argon2";
 import axios from "axios";
+import jwt from "jsonwebtoken";
 import {
   Arg,
   Ctx,
@@ -15,6 +16,7 @@ import { IsNull } from "typeorm";
 import { PendingInvitation } from "../entities/PendingInvitation";
 import User from "../entities/User";
 import cookieManager from "../lib/cookieManager/cookieManager";
+import { getVariableEnv } from "../lib/envManager/envManager";
 import { RoleMiddleware } from "../middleware/RoleMiddleware";
 import { addMembersToGroup } from "../services/groupMemberService";
 import type { ContextType } from "../types/context";
@@ -163,6 +165,9 @@ export default class UserResolver {
       try {
         urlImage = await axios.post("http://picture-service:3410/service/picture/uploads", {
           imageBase64: data.pictureBase64,
+          tokenService: jwt.sign({ service: "API-graphQL" }, getVariableEnv("INTERNAL_SECRET_KEY"), {
+            expiresIn: "2m",
+          }),
         });
       } catch (_error) {
         throw new Error("Erreur lors de l'upload de l'image");
@@ -262,11 +267,18 @@ export default class UserResolver {
   async UpdateMyProfile(@Arg("data") data: UpdateMyProfileInput, @Ctx() ctx: ContextType) {
     if (!ctx.user) throw new Error("Utilisateur non connecté update impossible");
 
+    // récupère l'utilisateur avant la modification
+    const userBeforeUpdate = await User.findOne({ where: { id: ctx.user.id } });
+
     let urlImage = null;
     if (data.pictureBase64) {
       try {
         urlImage = await axios.post("http://picture-service:3410/service/picture/uploads", {
           imageBase64: data.pictureBase64,
+          tokenService: jwt.sign({ service: "API-graphQL" }, getVariableEnv("INTERNAL_SECRET_KEY"), {
+            expiresIn: "2m",
+          }),
+          urlExistant: userBeforeUpdate?.image_url, // donne a notre service d'image son potentielle url actuelle
         });
       } catch (_error) {
         throw new Error("Erreur lors de l'upload de l'image");
@@ -328,6 +340,12 @@ export default class UserResolver {
       {
         deletedAt: new Date(),
         email: deletedEmail,
+        firstName: "deleted",
+        lastName: "user",
+        phone_number: "0000000000",
+        image_url: null,
+        password_hashed: "",
+        date_of_birth: "1970-01-01",
       },
     );
 
@@ -468,6 +486,24 @@ export default class UserResolver {
       };
     }
 
+    // si il existe on fait appel a notres service d'image pour qu'il supprime l'image de profil de l'utilisateur
+    if (user.image_url) {
+      try {
+        await axios.post("http://picture-service:3410/service/picture/delete", {
+          url: user.image_url,
+          tokenService: jwt.sign({ service: "API-graphQL" }, getVariableEnv("INTERNAL_SECRET_KEY"), {
+            expiresIn: "2m",
+          }),
+        });
+      } catch (error) {
+        // on ne bloque pas la suppression du compte si la suppression de l'image échoue
+        console.error(
+          `Erreur lors de la suppression de l'image de profil de l'utilisateur id=${user.id} :`,
+          error,
+        );
+      }
+    }
+
     // Soft delete : mettre à jour le champ deletedAt et modifier l'email pour permettre la réutilisation
     const deletedEmail = `${user.email}_deleted_${Date.now()}`;
     await User.update(
@@ -475,6 +511,12 @@ export default class UserResolver {
       {
         deletedAt: new Date(),
         email: deletedEmail,
+        firstName: "deleted",
+        lastName: "user",
+        phone_number: "0000000000",
+        image_url: null,
+        password_hashed: "",
+        date_of_birth: "1970-01-01",
       },
     );
 
