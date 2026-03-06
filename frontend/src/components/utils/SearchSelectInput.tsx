@@ -124,7 +124,7 @@ export default function SearchSelectInput({
       {label && (
         <label
           htmlFor={id}
-          className={`font-semibold text-md ${theme === "light" ? "text-white" : "dark:text-dark"}`}
+          className={`font-semibold text-lg mb-2.5 ${theme === "light" ? "text-white" : "dark:text-dark"}`}
         >
           {label}
         </label>

@@ -14,10 +14,12 @@ import {
 import consoleErrorDev from "../hooks/erreurMod";
 import { useIsMobile } from "../hooks/useIsMobile";
 import getProfilePictureUrl, { toBase64 } from "../utils/pictureProfileManager";
+import { useMobileNavigationStore } from "../zustand/mobileNavigationStore";
 import { useMyProfileStore } from "../zustand/myProfileStore";
 
 const UserProfilePage = () => {
   const { userProfile, setUserProfile, clearUserProfile } = useMyProfileStore();
+  const { setBottomNavVisible } = useMobileNavigationStore();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [imageUrl, setImageUrl] = useState(getProfilePictureUrl(null));
@@ -92,12 +94,14 @@ const UserProfilePage = () => {
 
   const handleEditClick = () => {
     setIsEditing(true);
+    setBottomNavVisible(false);
     setMessageError("");
     setMessageSuccess("");
   };
 
   const handleCancelClick = () => {
     setIsEditing(false);
+    setBottomNavVisible(true);
     setProfile({ ...profileBackup });
     setImageUrl(getProfilePictureUrl(userProfile?.image_url));
     setMessageError("");
@@ -137,6 +141,7 @@ const UserProfilePage = () => {
     }
 
     setIsEditing(false);
+    setBottomNavVisible(true);
     if (!userProfile) {
       setMessageError("Vous devez être connecté pour modifier votre profil");
       return;

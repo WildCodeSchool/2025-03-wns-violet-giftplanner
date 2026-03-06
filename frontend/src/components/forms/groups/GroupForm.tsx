@@ -78,7 +78,7 @@ export default function GroupForm({
           name="user_beneficiary"
           value={formData.user_beneficiary ?? ""}
           onChange={handleChange}
-          label="Le nom du destinataire"
+          label="Bénéficiaire"
           question="Voulez-vous ajouter un destinataire? "
           error={errors.user_beneficiary}
         />

@@ -66,7 +66,7 @@ export default function SearchInput({
       {label && (
         <label
           htmlFor={id}
-          className={`font-semibold text-md  ${theme === "dark" ? "text-dark" : "text-white"}`}
+          className={`font-semibold text-lg mb-2.5 ${theme === "dark" ? "text-dark" : "text-white"}`}
         >
           {label}
         </label>
