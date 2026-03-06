@@ -218,6 +218,7 @@ export default function Wishlist() {
                 Nom
               </label>
               <input
+                id="name"
                 type="text"
                 name="name"
                 value={formData.name}
