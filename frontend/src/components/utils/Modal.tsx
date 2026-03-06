@@ -47,6 +47,7 @@ export default function Modal({
   showCloseButton = true,
   withPadding = true,
   mobileFullscreen = true,
+  ...rest
 }: ModalProps) {
   useEffect(() => {
     if (!isOpen) return;
@@ -67,6 +68,7 @@ export default function Modal({
   return (
     // biome-ignore lint/a11y/noStaticElementInteractions: overlay click is pointer-only; keyboard users dismiss via Escape
     <div
+      {...rest}
       className={clsx(
         "fixed inset-0 z-[1100] flex items-center justify-center bg-black/75",
         mobileFullscreen ? "max-md:p-0" : "max-md:px-2",

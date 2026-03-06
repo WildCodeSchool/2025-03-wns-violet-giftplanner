@@ -310,6 +310,7 @@ const UserProfilePage = () => {
                   Prénom
                 </label>
                 <input
+                  data-testid="firstName"
                   id={firstNameInputId}
                   type="text"
                   value={profile.firstName}
@@ -325,6 +326,7 @@ const UserProfilePage = () => {
                   Nom
                 </label>
                 <input
+                  data-testid="lastName"
                   id={lastNameInputId}
                   type="text"
                   value={profile.lastName}
@@ -340,6 +342,7 @@ const UserProfilePage = () => {
                   Email
                 </label>
                 <input
+                  data-testid="email"
                   id={emailInputId}
                   type="email"
                   value={profile.email}
@@ -355,6 +358,7 @@ const UserProfilePage = () => {
                   Téléphone
                 </label>
                 <input
+                  data-testid="phoneNumber"
                   type="text"
                   id={phoneNumberInputId}
                   value={profile.phone_number}
@@ -370,6 +374,7 @@ const UserProfilePage = () => {
                   Date de naissance
                 </label>
                 <input
+                  data-testid="birthday"
                   id={dateOfBirthInputId}
                   type={isEditing ? "date" : "text"}
                   value={
@@ -452,6 +457,7 @@ const UserProfilePage = () => {
       </div>
 
       <Modal
+        data-testid="modal-delete-profile"
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         className="profile-delete-modal-panel"

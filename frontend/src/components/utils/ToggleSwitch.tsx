@@ -22,6 +22,7 @@ export default function ToggleSwitch({ checked, onChange, mode = "light" }: Togg
 
   return (
     <div
+      data-testid="toggle-switch"
       onClick={() => onChange(!checked)}
       onKeyDown={(e) => {
         if (e.key === "Enter") {

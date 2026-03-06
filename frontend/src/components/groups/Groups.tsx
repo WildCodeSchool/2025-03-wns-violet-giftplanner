@@ -56,6 +56,7 @@ export default function Groups({
         classNameTitle="text-[1.125rem]"
         button={
           <Button
+            data-testid="create-group-button"
             text={"Ajouter un groupe"}
             icon="plus"
             colour="green"
@@ -99,6 +100,7 @@ export default function Groups({
         onClose={closeCreateGroupModal}
         size="lg"
         withPadding
+        data-testid="create-group-modal"
         className="p-0 overflow-y-auto max-h-[72vh] max-md:max-h-full"
       >
         <GroupFormindex
