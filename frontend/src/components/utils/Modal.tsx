@@ -57,13 +57,8 @@ export default function Modal({
 
     document.addEventListener("keydown", onKeyDown);
 
-    // lock background scroll
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
     return () => {
       document.removeEventListener("keydown", onKeyDown);
-      document.body.style.overflow = prevOverflow;
     };
   }, [isOpen, onClose]);
 
@@ -92,7 +87,7 @@ export default function Modal({
           "rounded-2xl",
           sizeClasses[size],
           // mobile full screen
-          mobileFullscreen && "max-md:h-full max-md:max-w-none max-md:rounded-none",
+          mobileFullscreen && "max-md:h-full max-md:max-w-none max-md:rounded-none max-md:overflow-y-auto",
           // if you want internal padding to live here (recommended)
           withPadding ? "p-6 max-md:p-6" : "p-0",
           colour ? colourClasses[colour] : "bg-white",

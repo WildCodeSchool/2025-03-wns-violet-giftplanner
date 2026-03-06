@@ -142,11 +142,11 @@ export default function Conversations() {
   // Handle mobile view changes - hide/show bottom navigation
   useEffect(() => {
     if (isMobile) {
-      setBottomNavVisible(mobileView === "groups");
+      setBottomNavVisible(mobileView === "groups" && !isCreateGroupModalOpen && !isEditGroupModalOpen);
     } else {
       setBottomNavVisible(true);
     }
-  }, [isMobile, mobileView, setBottomNavVisible]);
+  }, [isMobile, mobileView, isCreateGroupModalOpen, isEditGroupModalOpen, setBottomNavVisible]);
 
   // Reset mobile view when switching from mobile to desktop
   useEffect(() => {
