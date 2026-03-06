@@ -2,6 +2,7 @@ import type { GetAllMyGroupsQuery } from "../../graphql/generated/graphql-types"
 import { useToggle } from "../../hooks/useToggle";
 import type { Message } from "../../types/Message";
 import { formatDate } from "../../utils/dateCalculator";
+import { useMobileNavigationStore } from "../../zustand/mobileNavigationStore";
 import GroupFormindex from "../forms/groups/index";
 import Button from "../utils/Button";
 import Card from "../utils/Card";
@@ -35,8 +36,16 @@ export default function Groups({
   onSuccess,
 }: GroupsProps) {
   const createGroupModal = useToggle(false);
+  const { setBottomNavVisible } = useMobileNavigationStore();
+
+  const openCreateGroupModal = () => {
+    createGroupModal.open();
+    setBottomNavVisible(false);
+  };
+
   const closeCreateGroupModal = () => {
     createGroupModal.close();
+    setBottomNavVisible(true);
   };
 
   return (
@@ -47,11 +56,12 @@ export default function Groups({
         classNameTitle="text-[1.125rem]"
         button={
           <Button
+            data-testid="create-group-button"
             text={"Ajouter un groupe"}
             icon="plus"
             colour="green"
             small
-            onClick={createGroupModal.open}
+            onClick={openCreateGroupModal}
           />
         }
       >
@@ -90,12 +100,13 @@ export default function Groups({
         onClose={closeCreateGroupModal}
         size="lg"
         withPadding
+        data-testid="create-group-modal"
         className="p-0 overflow-y-auto max-h-[72vh] max-md:max-h-full"
       >
         <GroupFormindex
-          onCancel={createGroupModal.close}
+          onCancel={closeCreateGroupModal}
           onSuccess={() => {
-            createGroupModal.close();
+            closeCreateGroupModal();
             onSuccess?.();
           }}
         />

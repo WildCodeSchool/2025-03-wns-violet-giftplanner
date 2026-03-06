@@ -118,6 +118,7 @@ const RegisterForm = () => {
       {messageError && <p className="text-orange font-bold text-lg">{messageError}</p>}
 
       <Input
+        data-testid="lastNameRegister"
         theme="dark"
         type="text"
         placeholder="Nom"
@@ -127,6 +128,7 @@ const RegisterForm = () => {
         onChange={(e) => setForm({ ...form, lastName: e.target.value })}
       ></Input>
       <Input
+        data-testid="firstNameRegister"
         theme="dark"
         type="text"
         placeholder="Prénom"
@@ -136,6 +138,7 @@ const RegisterForm = () => {
         onChange={(e) => setForm({ ...form, firstName: e.target.value })}
       ></Input>
       <Input
+        data-testid="emailRegister"
         theme="dark"
         type="text"
         placeholder="Adresse email"
@@ -145,6 +148,7 @@ const RegisterForm = () => {
         onChange={(e) => setForm({ ...form, email: e.target.value })}
       ></Input>
       <Input
+        data-testid="birthdayRegister"
         theme="dark"
         type="date"
         placeholder="Date de naissance"
@@ -154,6 +158,7 @@ const RegisterForm = () => {
         onChange={(e) => setForm({ ...form, date_of_birth: e.target.value })}
       ></Input>
       <Input
+        data-testid="passwordRegister"
         theme="dark"
         type="password"
         placeholder="Mot de passe"
@@ -163,6 +168,7 @@ const RegisterForm = () => {
         onChange={(e) => setForm({ ...form, password: e.target.value })}
       ></Input>
       <Input
+        data-testid="passwordConfirmRegister"
         theme="dark"
         type="password"
         placeholder="Confirmation du mot de passe"
@@ -190,7 +196,13 @@ const RegisterForm = () => {
       </div>
 
       {/* Bouton de connexion */}
-      <Button type="submit" colour="dark" rounded className="text-xl px-[25px] py-[10px] mt-5">
+      <Button
+        type="submit"
+        colour="dark"
+        rounded
+        className="text-xl px-[25px] py-[10px] mt-5"
+        data-testid="buttonRegister"
+      >
         Inscription
       </Button>
     </AuthFormTemplate>

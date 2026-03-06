@@ -79,7 +79,7 @@ export default function GiftCard({ gift, className, onEdit, onDelete }: GiftCard
       ) : (
         <div className="div-content-giftcard">
           <h5 className="text-lg font-semibold text-dark mb-2">{name}</h5>
-          {description && <p className="text-sm text-dark opacity-80 flex-1">{description}</p>}
+          {description && <p className="text-sm break-all text-dark opacity-80 flex-1">{description}</p>}
         </div>
       )}
 

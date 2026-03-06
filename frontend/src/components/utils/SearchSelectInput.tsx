@@ -23,7 +23,6 @@ interface SearchableSelectProps {
 }
 
 export default function SearchSelectInput({
-  // name,
   value,
   onChange,
   options,
@@ -35,6 +34,7 @@ export default function SearchSelectInput({
   icon,
   className = "",
   name,
+  ...rest
 }: SearchableSelectProps) {
   const id = useId();
   const [open, setOpen] = useState(false);
@@ -112,6 +112,7 @@ export default function SearchSelectInput({
 
   return (
     <div
+      {...rest}
       tabIndex={disabled ? -1 : 0}
       ref={containerRef}
       role="combobox"
@@ -124,7 +125,7 @@ export default function SearchSelectInput({
       {label && (
         <label
           htmlFor={id}
-          className={`font-semibold text-md ${theme === "light" ? "text-white" : "dark:text-dark"}`}
+          className={`font-semibold text-lg mb-2.5 ${theme === "light" ? "text-white" : "dark:text-dark"}`}
         >
           {label}
         </label>

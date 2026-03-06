@@ -4,7 +4,7 @@ import type { IconProps } from "./Icon";
 import Icon from "./Icon";
 
 type ButtonType = HTMLButtonElement["type"];
-type ButtonProps = {
+type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   onClick?: MouseEventHandler<HTMLButtonElement>;
   text?: string;
   colour?: ColourScheme["colour"];
@@ -29,6 +29,7 @@ export default function Button({
   type = "button",
   small = false,
   disabled = false,
+  ...rest
 }: ButtonProps) {
   const backgroundColours = {
     blue: "bg-blue",
@@ -45,6 +46,7 @@ export default function Button({
 
   return (
     <button
+      {...rest}
       type={type}
       disabled={disabled}
       className={`${backgroundColour} text-white font-inter-extra-bold
