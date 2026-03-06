@@ -1,6 +1,6 @@
 // src/components/Wishlist.tsx
 import { useMutation, useQuery } from "@apollo/client";
-import { useState } from "react";
+import { useId, useState } from "react";
 import {
   ADD_GIFT,
   DELETE_GIFT,
@@ -30,6 +30,8 @@ export default function Wishlist() {
   const [deleteGift] = useMutation(DELETE_GIFT);
 
   const [updateGift, { loading: updating }] = useMutation(UPDATE_GIFT);
+
+  const nameId = useId();
 
   // hooks
   const addModal = useToggle(false);
@@ -214,11 +216,11 @@ export default function Wishlist() {
           <h2 className="text-xl font-bold text-dark mb-4">Ajouter une nouvelle idée</h2>
           <form onSubmit={handleSubmit} className="space-y-3">
             <div>
-              <label htmlFor="name" className="block text-dark mb-1">
+              <label htmlFor={nameId} className="block text-dark mb-1">
                 Nom
               </label>
               <input
-                id="name"
+                id={nameId}
                 type="text"
                 name="name"
                 value={formData.name}

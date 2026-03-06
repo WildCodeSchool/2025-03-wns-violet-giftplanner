@@ -170,6 +170,6 @@ describe("Wishlist", () => {
         expect(callArg.refetchQueries?.length).toBe(1);
     });
 
-    // todo : add test for editing a gift idea
+    // todo : add test for editing, deleting a gift idea
 
 });
