@@ -457,12 +457,9 @@ const UserProfilePage = () => {
       </div>
 
       <Modal
-       
         data-testid="modal-delete-profile"
         isOpen={isDeleteModalOpen}
-       
         onClose={() => setIsDeleteModalOpen(false)}
-      
         className="profile-delete-modal-panel"
         overlayClassName="profile-delete-modal-overlay"
         showCloseButton={false}
