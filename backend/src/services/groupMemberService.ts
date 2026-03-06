@@ -14,7 +14,7 @@ type RemoveMembersInput = {
 
 /**
  * Add users to a group from a list of emails.
- * - Silently skips emails that do not match a user.
+ * - Add emails to a pending invitation list if they do not exist in the db.
  */
 export async function addMembersToGroup({ userEmails, groupId }: AddMembersInput) {
   if (!userEmails.length) return;
@@ -22,24 +22,27 @@ export async function addMembersToGroup({ userEmails, groupId }: AddMembersInput
   await Promise.all(
     userEmails.map(async (userEmail) => {
       const userToAdd = await User.findOne({ where: { email: userEmail } });
-      const userPending = await PendingInvitation.findOne({ where: { userEmail: userEmail } });
-      if (!userToAdd && !userPending) {
-        // if the user does not exist in the db, add it to the pendinginvitationList
-        const pendingInvitation = PendingInvitation.create({
-          userEmail: userEmail,
-          groupId,
-        });
 
-        await pendingInvitation.save();
+      //If the user exists in the db, check if they are already a member of the group and if not, add them to the group
+      if (userToAdd) {
+        const existingMember = await GroupMember.findOne({
+          where: { userId: userToAdd.id, groupId },
+        });
+        if (existingMember) return;
+
+        const groupMember = GroupMember.create({ userId: userToAdd.id, groupId });
+        await groupMember.save();
         return;
       }
 
-      const groupMember = GroupMember.create({
-        userId: userToAdd?.id,
-        groupId,
+      //If the user does not exist in the db, check if they are already in the pendinginvitationList and if not, add them to the pendinginvitationList
+      const userPending = await PendingInvitation.findOne({
+        where: { userEmail, groupId },
       });
+      if (userPending) return;
 
-      await groupMember.save();
+      const pendingInvitation = PendingInvitation.create({ userEmail, groupId });
+      await pendingInvitation.save();
     }),
   );
 }
