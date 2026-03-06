@@ -4,6 +4,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Wishlist from "../src/components/Wishlist";
 import { ADD_GIFT, DELETE_GIFT, UPDATE_GIFT } from "../src/graphql/operations/wishlistOperations";
+import React from "react";
 
 /* 
 1) What do we want to test ?

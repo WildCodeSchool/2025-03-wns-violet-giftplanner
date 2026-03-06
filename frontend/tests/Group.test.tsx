@@ -44,7 +44,7 @@ import Groups from '../src/components/groups/Groups'
 import GroupFormindex from '../src/components/forms/groups/index'
 
 const defaultProps = {
-  groups: fakeGroups,
+  groups: fakeGroups.groups,
   setActiveGroup: vi.fn(),
   loading: false,
   messages: fakeMessages,
