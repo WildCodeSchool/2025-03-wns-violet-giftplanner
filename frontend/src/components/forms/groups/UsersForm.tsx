@@ -67,6 +67,7 @@ export default function UsersForm({
           label="Ajouter des participants"
           theme="light"
           name="users"
+          data-testid="users-input"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           items={[...items]}
