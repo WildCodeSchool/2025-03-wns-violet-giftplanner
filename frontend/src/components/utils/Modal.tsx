@@ -12,9 +12,11 @@ type ModalProps = {
   children: React.ReactNode;
   size?: ModalSize;
   className?: string; // extra classes for the PANEL (not the overlay)
+  overlayClassName?: string;
   closeOnOverlayClick?: boolean;
   showCloseButton?: boolean;
   withPadding?: boolean;
+  mobileFullscreen?: boolean;
 };
 
 const sizeClasses: Record<ModalSize, string> = {
@@ -39,10 +41,12 @@ export default function Modal({
   children,
   size = "md",
   className,
+  overlayClassName,
   colour,
   closeOnOverlayClick = true,
   showCloseButton = true,
   withPadding = true,
+  mobileFullscreen = true,
   ...rest
 }: ModalProps) {
   useEffect(() => {
@@ -54,13 +58,8 @@ export default function Modal({
 
     document.addEventListener("keydown", onKeyDown);
 
-    // lock background scroll
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
     return () => {
       document.removeEventListener("keydown", onKeyDown);
-      document.body.style.overflow = prevOverflow;
     };
   }, [isOpen, onClose]);
 
@@ -70,7 +69,11 @@ export default function Modal({
     // biome-ignore lint/a11y/noStaticElementInteractions: overlay click is pointer-only; keyboard users dismiss via Escape
     <div
       {...rest}
-      className="fixed inset-0 z-[1100] flex items-center justify-center bg-black/75 max-md:p-0"
+      className={clsx(
+        "fixed inset-0 z-[1100] flex items-center justify-center bg-black/75",
+        mobileFullscreen ? "max-md:p-0" : "max-md:px-2",
+        overlayClassName,
+      )}
       role="presentation"
       onMouseDown={() => {
         if (closeOnOverlayClick) onClose();
@@ -83,10 +86,10 @@ export default function Modal({
           // panel base (background applied below to avoid conflicts)
           "relative w-full shadow-xl",
           // desktop shape + sizing
-          "rounded-2xl max-md:rounded-none",
+          "rounded-2xl",
           sizeClasses[size],
           // mobile full screen
-          "max-md:h-full max-md:max-w-none",
+          mobileFullscreen && "max-md:h-full max-md:max-w-none max-md:rounded-none max-md:overflow-y-auto",
           // if you want internal padding to live here (recommended)
           withPadding ? "p-6 max-md:p-6" : "p-0",
           colour ? colourClasses[colour] : "bg-white",
@@ -101,7 +104,7 @@ export default function Modal({
           <button
             type="button"
             onClick={onClose}
-            className="absolute top-3 right-4 text-2xl font-bold text-[#200904] hover:text-[#EA4B09] max-md:hidden"
+            className="absolute top-3 right-4 text-2xl font-bold text-[#200904] hover:text-[#EA4B09] max-md:hidden cursor-pointer"
             aria-label="Fermer"
           >
             &times;

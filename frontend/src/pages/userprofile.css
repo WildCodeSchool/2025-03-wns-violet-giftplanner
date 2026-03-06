@@ -112,7 +112,7 @@
 .profile-content-inner {
   flex: 1;
   overflow-y: auto;
-  padding-right: 32px;
+  padding-right: 24px;
   margin-right: -24px;
 }
 
@@ -275,18 +275,13 @@
   background-color: #c43e08;
 }
 
-/* Modal styles - même style que adminpage.css */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
+/* Modal suppression profil */
+.profile-delete-modal-overlay {
   background-color: rgba(32, 9, 4, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   z-index: 1200;
 }
 
-.modal-content {
+.profile-delete-modal-panel {
   background: #ea4b09;
   border-radius: 14px;
   max-width: 520px;
@@ -295,7 +290,7 @@
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
 }
 
-.modal-content h2 {
+.profile-delete-modal-title {
   margin: 0 0 12px 0;
   text-align: center;
   color: #fdfbf6;
@@ -304,7 +299,7 @@
   font-family: "Inter", sans-serif;
 }
 
-.modal-content p {
+.profile-delete-modal-text {
   text-align: center;
   margin: 24px 0;
   padding-bottom: 16px;
@@ -314,28 +309,28 @@
   line-height: 1.4;
 }
 
-.modal-actions {
+.profile-delete-modal-actions {
   display: flex;
   justify-content: center;
   gap: 16px;
 }
 
-.modal-btn-cancel {
+.profile-delete-modal-btn-cancel {
   background: #200904;
   color: #fdfbf6;
   border: none;
   padding: 8px 28px;
-  border-radius: 16px;
+  border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
 }
 
-.modal-btn-confirm {
+.profile-delete-modal-btn-confirm {
   background: #fdfbf6;
   color: #200904;
   border: none;
   padding: 8px 18px;
-  border-radius: 16px;
+  border-radius: 8px;
   cursor: pointer;
   font-weight: 700;
 }
@@ -515,5 +510,29 @@
     position: absolute;
     top: -16px;
     right: -4px;
+  }
+
+  .profile-delete-modal-panel {
+    width: 95%;
+    padding: 18px 20px;
+  }
+
+  .profile-delete-modal-title {
+    font-size: 18px;
+  }
+
+  .profile-delete-modal-text {
+    font-size: 16px;
+    margin: 16px 0;
+  }
+
+  .profile-delete-modal-actions {
+    gap: 12px;
+  }
+
+  .profile-delete-modal-btn-cancel,
+  .profile-delete-modal-btn-confirm {
+    padding: 10px 20px;
+    font-size: 14px;
   }
 }

@@ -63,6 +63,7 @@ const LoginForm = () => {
         theme="dark"
         type="text"
         name="email"
+        label="Email"
         placeholder="Entrez votre adresse email"
         value={form.email}
         onChange={(e) => setForm({ ...form, email: e.target.value })}
@@ -71,6 +72,7 @@ const LoginForm = () => {
         data-testid="passwordLogin"
         theme="dark"
         type="password"
+        label="Password"
         name="password"
         placeholder="Entrez votre mot de passe"
         value={form.password}

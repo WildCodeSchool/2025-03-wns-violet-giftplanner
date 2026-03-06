@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { defaultPictureProfile } from "../data/pictureDefault";
 import type { GetMyProfileQuery } from "../graphql/generated/graphql-types";
 
 type State = {
@@ -17,7 +16,7 @@ export const useMyProfileStore = create<State>((set) => ({
       userProfile: newUser
         ? ({
             ...newUser,
-            image_url: newUser.image_url ? `/service/picture/${newUser.image_url}` : defaultPictureProfile,
+            image_url: newUser.image_url ? newUser.image_url : null,
           } as UserProfile)
         : null,
     })),

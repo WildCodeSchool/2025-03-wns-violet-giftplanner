@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import { useNavigate } from "react-router";
 import { useSignupMutation } from "../../../graphql/generated/graphql-types";
 import consoleErrorDev from "../../../hooks/erreurMod";
@@ -24,6 +24,7 @@ const RegisterForm = () => {
   const navigate = useNavigate();
   const [messageError, setMessageError] = useState("");
   const { setUserProfile } = useMyProfileStore();
+  const idInputFile = useId();
 
   const [signup] = useSignupMutation();
 
@@ -121,6 +122,7 @@ const RegisterForm = () => {
         theme="dark"
         type="text"
         placeholder="Nom"
+        label="Nom"
         name="lastname"
         value={form.lastName}
         onChange={(e) => setForm({ ...form, lastName: e.target.value })}
@@ -130,6 +132,7 @@ const RegisterForm = () => {
         theme="dark"
         type="text"
         placeholder="Prénom"
+        label="Prénom"
         name="firstname"
         value={form.firstName}
         onChange={(e) => setForm({ ...form, firstName: e.target.value })}
@@ -139,6 +142,7 @@ const RegisterForm = () => {
         theme="dark"
         type="text"
         placeholder="Adresse email"
+        label="Adresse email"
         name="email"
         value={form.email}
         onChange={(e) => setForm({ ...form, email: e.target.value })}
@@ -148,6 +152,7 @@ const RegisterForm = () => {
         theme="dark"
         type="date"
         placeholder="Date de naissance"
+        label="Date de naissance"
         name="date_of_birth"
         value={form.date_of_birth}
         onChange={(e) => setForm({ ...form, date_of_birth: e.target.value })}
@@ -157,6 +162,7 @@ const RegisterForm = () => {
         theme="dark"
         type="password"
         placeholder="Mot de passe"
+        label="Mot de passe"
         name="password"
         value={form.password}
         onChange={(e) => setForm({ ...form, password: e.target.value })}
@@ -166,6 +172,7 @@ const RegisterForm = () => {
         theme="dark"
         type="password"
         placeholder="Confirmation du mot de passe"
+        label="Confirmation du mot de passe"
         name="passwordConfirmation"
         value={form.passwordConfirmation}
         onChange={(e) => setForm({ ...form, passwordConfirmation: e.target.value })}
@@ -175,9 +182,16 @@ const RegisterForm = () => {
         {/* md:w-auto */}
         <label
           className={`inline-block w-full bg-dark text-white text-center border-none px-5 py-3 rounded-lg cursor-pointer text-sm md:text-lg font-inter font-bold transition-colors duration-300 overflow-hidden whitespace-nowrap w-[400px] px-4 py-2 text-xl ${file ? "bg-[#292e96]" : ""}`}
+          htmlFor={idInputFile}
         >
           <span className="block overflow-hidden text-lg text-ellipsis font-bold">{fileName}</span>
-          <input type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
+          <input
+            id={idInputFile}
+            type="file"
+            accept="image/*"
+            className="sr-only"
+            onChange={handleFileChange}
+          />
         </label>
       </div>
 

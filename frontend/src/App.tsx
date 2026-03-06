@@ -25,16 +25,16 @@ const App = () => {
       setUserProfile(data.getMyProfile);
       // si on était sur une page que on est pas censé étre une foie connecté on redirige vers la page principale
       if (["/", "/connexion", "/inscription"].includes(window.location.pathname)) {
-        navigate("/dashboard");
+        navigate("/dashboard/conversations", { replace: true });
       }
     } else if (!loading) {
       setUserProfile(null);
       // si on est pas connecté on redirige forcement vers la page de connexion ou d'inscription
       if (!["/connexion", "/inscription", "/", "/contact"].includes(window.location.pathname)) {
-        navigate("/");
+        navigate("/", { replace: true });
       }
     }
-  }, [data, loading]);
+  }, [loading]);
 
   if (loading) return <LoadingHomePage />;
 

@@ -62,6 +62,7 @@ services:
     environment:
       BACKEND_URL: ${SERVEUR_URL}
       CLIENT_URL: ${FRONTEND_URL}
+      INTERNAL_SECRET_KEY: ${INTERNAL_SECRET_KEY}
       APP_PORT: ${PICTURE_SERVICE_PORT}
 
   message-service:

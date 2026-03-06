@@ -34,6 +34,7 @@ export default function GroupForm({
         <Input
           disabled={disabled}
           name="name"
+          label="Nom"
           type="text"
           value={formData.name}
           onChange={handleChange}
@@ -52,6 +53,7 @@ export default function GroupForm({
             } as React.ChangeEvent<HTMLInputElement>)
           }
           placeholder="Quel est l'événement ?"
+          label="Type événement"
           error={errors.event_type}
           options={options}
           theme="light"
@@ -62,6 +64,7 @@ export default function GroupForm({
           disabled={disabled}
           name="piggy_bank"
           type="number"
+          label="Piggy bank"
           value={String(formData.piggy_bank)}
           onChange={handleChange}
           placeholder={String(0)}
@@ -78,7 +81,7 @@ export default function GroupForm({
           name="user_beneficiary"
           value={formData.user_beneficiary ?? ""}
           onChange={handleChange}
-          label="Le nom du destinataire"
+          label="Bénéficiaire"
           question="Voulez-vous ajouter un destinataire? "
           error={errors.user_beneficiary}
           data-testid="toggle-beneficiary-input"
@@ -88,6 +91,7 @@ export default function GroupForm({
           disabled={disabled}
           name="deadline"
           type="date"
+          label="Deadline"
           value={formData.deadline}
           onChange={handleChange}
           error={errors.deadline}

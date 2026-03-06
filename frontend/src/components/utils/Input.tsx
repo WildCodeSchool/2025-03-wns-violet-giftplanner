@@ -50,7 +50,10 @@ export default function Input({
   return (
     <div className="flex flex-col w-full">
       {label && (
-        <label htmlFor={id} className="font-semibold text-md text-white dark:text-dark">
+        <label
+          htmlFor={id}
+          className={`font-semibold text-lg mb-2.5 ${theme === "light" ? "text-white" : "dark:text-dark"}`}
+        >
           {label}
         </label>
       )}

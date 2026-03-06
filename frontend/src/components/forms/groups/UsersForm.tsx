@@ -64,6 +64,7 @@ export default function UsersForm({
         <SearchInput
           disabled={isEdit && !isAdmin}
           placeholder="Ajouter des participants..."
+          label="Ajouter des participants"
           theme="light"
           name="users"
           data-testid="users-input"
