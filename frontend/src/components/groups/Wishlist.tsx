@@ -1,7 +1,7 @@
 import { useMutation } from "@apollo/client";
 import { useEffect, useId, useRef, useState } from "react";
 import { HiDotsVertical } from "react-icons/hi";
-import { LuHeart, LuPencil, LuTrash2 } from "react-icons/lu";
+import { LuCirclePlus, LuHeart, LuPencil, LuTrash2 } from "react-icons/lu";
 import {
   useAddGiftToGroupListMutation,
   useDeleteGiftMutation,
@@ -251,13 +251,15 @@ export default function Wishlist({ groupId, beneficiaryItems, groupItems, onAddI
       <div className="flex-1 overflow-y-auto flex flex-col gap-6 md:-mr-4 md:pr-4 scrollbar-thin pb-24 md:pb-0">
         {/* Section bénéficiaire */}
         <section>
-          <h3 className="font-inter-extra-bold text-[18px] mb-3 text-white/90">
+          <h3 className="font-inter-extra-bold text-[18px] md:text-[16px] mb-1.5 text-white md:text-white/60">
             <span className="md:hidden">Wishlist du bénéficiaire</span>
-            <span className="hidden md:inline text-dark">Idées du bénéficiaire</span>
+            <span className="hidden md:inline">Idées du bénéficiaire</span>
           </h3>
 
           {sortedBeneficiaryItems.length === 0 ? (
-            <p className="text-white/70 md:text-dark text-sm">Aucune idée ajoutée par le bénéficiaire.</p>
+            <div className="border-2 border-dotted border-white/40 rounded-xl p-[11px]">
+              <p className="text-sm italic text-white/70 md:text-white/60">Aucune idée ajoutée par le bénéficiaire.</p>
+            </div>
           ) : (
             <div className="flex flex-col gap-4">
               {sortedBeneficiaryItems.map((gift) => (
@@ -274,13 +276,15 @@ export default function Wishlist({ groupId, beneficiaryItems, groupItems, onAddI
 
         {/* Section idées du groupe — triée par likes décroissants */}
         <section>
-          <h3 className="font-inter-extra-bold text-[18px] mb-3 text-white/90">
+          <h3 className="font-inter-extra-bold text-[18px] md:text-[16px] mb-1.5 text-white md:text-white/60">
             <span className="md:hidden">Wishlist du groupe</span>
-            <span className="hidden md:inline text-dark">Idées proposées par le groupe</span>
+            <span className="hidden md:inline">Idées proposées par le groupe</span>
           </h3>
 
           {sortedGroupItems.length === 0 ? (
-            <p className="text-white/70 md:text-dark text-sm">Aucune idée proposée pour le moment.</p>
+            <div className="border-2 border-dotted border-white/40 rounded-xl p-[11px]">
+              <p className="text-sm italic text-white/70 md:text-white/60">Aucune idée proposée pour le moment.</p>
+            </div>
           ) : (
             <div className="flex flex-col gap-4">
               {sortedGroupItems.map((gift) => {
@@ -315,7 +319,7 @@ export default function Wishlist({ groupId, beneficiaryItems, groupItems, onAddI
       {/* Bouton mobile flottant en bas */}
       <div className="wishlist-mobile-button-container md:hidden">
         <button type="button" className="wishlist-mobile-button mobile-subview-button" onClick={openAddModal}>
-          + Proposer une idée
+          <LuCirclePlus className="text-xl" style={{ strokeWidth: 3 }} /> Proposer une idée
         </button>
       </div>
 

@@ -152,7 +152,7 @@ export default function Wishlist() {
             <div className="h-full flex items-center justify-center">
               <div className="flex flex-col items-center justify-center text-white">
                 <Icon icon="gift" className="text-7xl opacity-80 mb-3" />
-                <p className="text-lg mb-8">Aucune idée pour l'instant.</p>
+                <p className="text-lg mb-8">Aucune idée pour le moment.</p>
               </div>
             </div>
           ) : (

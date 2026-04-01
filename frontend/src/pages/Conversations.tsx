@@ -382,6 +382,14 @@ export default function Conversations() {
                   setIsEditGroupModalOpen(false);
                   refetchGroupsCallback();
                 }}
+                onDelete={() => {
+                  setIsEditGroupModalOpen(false);
+                  setSelectedGroupId(null);
+                  setIndexGroup(0);
+                  setMobileView("groups");
+                  refetchGroups();
+                  refechMessages();
+                }}
                 onCancel={() => setIsEditGroupModalOpen(false)}
               />
             </Modal>
