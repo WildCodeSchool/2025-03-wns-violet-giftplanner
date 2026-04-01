@@ -240,6 +240,11 @@ export default function Conversations() {
     return classes.join(" ");
   };
 
+  const nbTotalNewMessages =
+    groups.reduce((acc, group) => {
+      return acc + getNbNewMessages(Number(group.id), messages[Number(group.id)] || []);
+    }, 0) || undefined;
+
   // Mobile render
   if (isMobile) {
     return (
@@ -251,6 +256,9 @@ export default function Conversations() {
             <div className="mobile-groups-header">
               <div className="mobile-groups-title">
                 <h2>Mes groupes</h2>
+                {nbTotalNewMessages && nbTotalNewMessages > 0 && (
+                  <p className="mobile-groups-title-notification">{nbTotalNewMessages}</p>
+                )}
               </div>
             </div>
 
