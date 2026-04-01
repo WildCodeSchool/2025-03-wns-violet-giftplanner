@@ -467,7 +467,7 @@ export default function Conversations() {
   // Desktop empty state (no groups)
   if (groups.length === 0 && groupData !== undefined) {
     return (
-      <div className="flex h-full w-full pl-10 relative">
+      <div className="flex h-full w-full relative min-w-0 pl-10 gap-6 box-border">
         <div className="h-full w-full flex flex-col bg-blue rounded-[18px] overflow-hidden p-10">
           {/* Header */}
           <div className="flex justify-between items-start text-white mb-8 flex-shrink-0">
@@ -514,10 +514,10 @@ export default function Conversations() {
 
   // Desktop render (original layout)
   return (
-    <div className="flex flex-row h-full justify-around w-full relative ">
+    <div className="flex h-full w-full relative min-w-0 pl-6 gap-6 box-border">
       {/* Left Column */}
-      <div className="grid grid-rows-[1fr_40px_fit-content(100px)_1fr] mx-[calc(var(--spacing)*10)] h-full min-h-0">
-        <div className="flex h-full min-h-0">
+      <div className="grid grid-rows-[1fr_40px_fit-content(100px)_1fr] h-full min-h-0 min-w-0 basis-[38%] max-w-[38%]">
+        <div className="flex h-full min-h-0 min-w-0">
           {groups && (
             <Groups
               groups={groups}
@@ -557,22 +557,26 @@ export default function Conversations() {
           />
         </div>
 
-        <div className="flex h-full min-h-0">
+        <div className="flex h-full min-h-0 min-w-0">
           {indexGroups !== -1 &&
             groups.length > 0 &&
             groups[indexGroups] &&
             (wishlist ? (
-              <Wishlist
-                groupId={Number(groups[indexGroups].id)}
-                beneficiaryItems={beneficiaryItems}
-                groupItems={groupItems}
-                onAddIdea={() => refetchWishlist()}
-              />
+              <div className="w-full min-w-0">
+                <Wishlist
+                  groupId={Number(groups[indexGroups].id)}
+                  beneficiaryItems={beneficiaryItems}
+                  groupItems={groupItems}
+                  onAddIdea={() => refetchWishlist()}
+                />
+              </div>
             ) : (
-              <PiggyBank
-                pot={groups[indexGroups].piggy_bank}
-                onAddFunds={() => setIsAddFundsModalOpen(true)}
-              />
+              <div className="w-full min-w-0">
+                <PiggyBank
+                  pot={groups[indexGroups].piggy_bank}
+                  onAddFunds={() => setIsAddFundsModalOpen(true)}
+                />
+              </div>
             ))}
         </div>
 
@@ -589,7 +593,7 @@ export default function Conversations() {
       </div>
 
       {/* Right Column */}
-      <div className="flex flex-1 w-1/2 h-full  mt-0 justify-center">
+      <div className="flex flex-1 min-w-0 h-full">
         {indexGroups !== -1 &&
           groups.length > 0 &&
           indexGroups < groups.length &&
