@@ -9,16 +9,32 @@ type ContainerProps = {
   button?: React.ReactNode;
   children?: React.ReactNode;
   classNameTitle?: string;
+  nbNewMessages?: number;
 };
 
-export default function Container({ colour, title, icon, button, children, classNameTitle }: ContainerProps) {
+export default function Container({
+  colour,
+  title,
+  icon,
+  button,
+  children,
+  classNameTitle,
+  nbNewMessages,
+}: ContainerProps) {
   return (
     <div className={`bg-${colour} py-6 pb-6 px-6 rounded-2xl w-[40vw] max-w-[450px] flex flex-col`}>
       {/* Header */}
       <div className="flex justify-between items-center pb-4">
         <div className="flex items-center gap-2">
           {icon}
-          <Subtitle className={classNameTitle}>{title}</Subtitle>
+          <div className="relative flex items-center gap-2">
+            <Subtitle className={classNameTitle}>{title}</Subtitle>
+            {nbNewMessages && nbNewMessages > 0 && (
+              <p className="w-[25px] h-[25px] flex align-middle justify-center font-semibold bg-[var(--color-orange)] rounded-[50%] text-white">
+                {nbNewMessages}
+              </p>
+            )}
+          </div>
         </div>
         {button}
       </div>
