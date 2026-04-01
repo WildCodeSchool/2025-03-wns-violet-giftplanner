@@ -328,7 +328,10 @@ export default function Conversations() {
               className="p-0 overflow-y-auto max-h-[72vh] max-md:max-h-full"
             >
               <GroupFormindex
-                onSuccess={() => setIsCreateGroupModalOpen(false)}
+                onSuccess={() => {
+                  setIsCreateGroupModalOpen(false);
+                  refetchGroupsCallback();
+                }}
                 onCancel={() => setIsCreateGroupModalOpen(false)}
               />
             </Modal>
