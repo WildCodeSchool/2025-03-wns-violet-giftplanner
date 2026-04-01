@@ -30,7 +30,7 @@ export default function GroupForm({
 
   return (
     <div className="flex flex-col w-full py-4 md:h-100 md:my-5">
-      <div className="flex flex-col lg:px-20 gap-4 md:flex-1 md:justify-between md:min-h-0">
+      <div className="flex flex-col lg:px-20 gap-4 md:flex-1 md:justify-between md:min-h-0 ">
         <Input
           disabled={disabled}
           name="name"
@@ -89,6 +89,7 @@ export default function GroupForm({
 
         <Input
           disabled={disabled}
+          className="md:mb-16" //prevent the input from being hidden by the bottom buttons on desktop
           name="deadline"
           type="date"
           label="Deadline"
