@@ -140,7 +140,12 @@ export default function Wishlist({ groupId, beneficiaryItems, groupItems, onAddI
   const urlId = `${uid}-url`;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formData, setFormData] = useState({ name: "", description: "", imageUrl: "", url: "" });
+  const [formData, setFormData] = useState({
+    name: "",
+    description: "",
+    imageUrl: "",
+    url: "",
+  });
   const [editingGift, setEditingGift] = useState<Gift | null>(null);
 
   // État local des likes (mise à jour optimiste)
@@ -149,13 +154,19 @@ export default function Wishlist({ groupId, beneficiaryItems, groupItems, onAddI
   useEffect(() => {
     const initial: Record<string, { count: number; liked: boolean }> = {};
     for (const gift of [...groupItems, ...beneficiaryItems]) {
-      initial[gift.id] = { count: gift.likeCount ?? 0, liked: gift.likedByMe ?? false };
+      initial[gift.id] = {
+        count: gift.likeCount ?? 0,
+        liked: gift.likedByMe ?? false,
+      };
     }
     setLocalLikes(initial);
   }, [groupItems, beneficiaryItems]);
 
   const getLikeState = (gift: Gift) =>
-    localLikes[gift.id] ?? { count: gift.likeCount ?? 0, liked: gift.likedByMe ?? false };
+    localLikes[gift.id] ?? {
+      count: gift.likeCount ?? 0,
+      liked: gift.likedByMe ?? false,
+    };
 
   const [addGiftToGroupList, { loading: creating }] = useAddGiftToGroupListMutation();
   const [updateGift, { loading: updating }] = useUpdateGiftMutation();
@@ -222,7 +233,10 @@ export default function Wishlist({ groupId, beneficiaryItems, groupItems, onAddI
     const newCount = newLiked ? current.count + 1 : Math.max(0, current.count - 1);
 
     // Mise à jour optimiste
-    setLocalLikes((prev) => ({ ...prev, [gift.id]: { count: newCount, liked: newLiked } }));
+    setLocalLikes((prev) => ({
+      ...prev,
+      [gift.id]: { count: newCount, liked: newLiked },
+    }));
 
     try {
       await toggleGiftLike({ variables: { giftId: Number(gift.id), groupId } });
@@ -258,7 +272,9 @@ export default function Wishlist({ groupId, beneficiaryItems, groupItems, onAddI
 
           {sortedBeneficiaryItems.length === 0 ? (
             <div className="border-2 border-dotted border-white/40 rounded-xl p-[11px]">
-              <p className="text-sm italic text-white/70 md:text-white/60">Aucune idée ajoutée par le bénéficiaire.</p>
+              <p className="text-sm italic text-white/70 md:text-white/60">
+                Aucune idée ajoutée par le bénéficiaire.
+              </p>
             </div>
           ) : (
             <div className="flex flex-col gap-4">
@@ -283,7 +299,9 @@ export default function Wishlist({ groupId, beneficiaryItems, groupItems, onAddI
 
           {sortedGroupItems.length === 0 ? (
             <div className="border-2 border-dotted border-white/40 rounded-xl p-[11px]">
-              <p className="text-sm italic text-white/70 md:text-white/60">Aucune idée proposée pour le moment.</p>
+              <p className="text-sm italic text-white/70 md:text-white/60">
+                Aucune idée proposée pour le moment.
+              </p>
             </div>
           ) : (
             <div className="flex flex-col gap-4">
