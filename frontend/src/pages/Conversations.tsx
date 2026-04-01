@@ -196,6 +196,7 @@ export default function Conversations() {
     setIsAnimating(true);
     setMobileView("chat");
     setTimeout(() => setIsAnimating(false), 300);
+    updateLastVu(Number(group.id), messages[Number(group.id)][0]?.createdAt ?? 0);
   };
 
   const handleBackToGroups = () => {
@@ -269,11 +270,19 @@ export default function Conversations() {
                       className="mobile-group-card"
                       onClick={() => handleGroupClick(group)}
                     >
-                      <img
-                        src="/images/papier-theme.jpg"
-                        alt={group.name}
-                        className="mobile-group-card-image"
-                      />
+                      <div style={{ position: "relative" }}>
+                        <img
+                          src="/images/papier-theme.jpg"
+                          alt={group.name}
+                          className="mobile-group-card-image"
+                        />
+                        {/* notification mobile new message */}
+                        {getNbNewMessages(Number(group.id), messages[Number(group.id)] || []) > 0 && (
+                          <p className="mobile-group-card-notification">
+                            {getNbNewMessages(Number(group.id), messages[Number(group.id)] || [])}
+                          </p>
+                        )}
+                      </div>
                       <div className="mobile-group-card-content">
                         <h3 className="mobile-group-card-title">{group.name}</h3>
                         <p className="mobile-group-card-info">
