@@ -55,7 +55,7 @@ export default function Card({
       </div>
       <div className="flex flex-col flex-1 min-w-0">
         <h2 className="font-inter-extra-bold text-sm text-gray-900 truncate">{title}</h2>
-        <div className="overflow-hidden text-ellipsis whitespace-nowrap">{children}</div>
+        <div className="overflow-hidden text-sm text-ellipsis whitespace-nowrap">{children}</div>
       </div>
 
       <div className="pointer-events-none absolute inset-0 rounded-lg transition group-hover:bg-black/10">
