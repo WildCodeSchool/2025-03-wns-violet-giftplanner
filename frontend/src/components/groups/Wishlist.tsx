@@ -68,7 +68,7 @@ function WishlistCard({ gift, isOwner, likeState, onEdit, onDelete, onLikeToggle
         <p className="font-bold text-dark text-sm leading-tight line-clamp-1 break-words">{gift.name}</p>
 
         {gift.description && (
-          <p className="text-gray-500 text-xs mt-0.5 line-clamp-2 break-words">{gift.description}</p>
+          <p className="text-gray-500 text-sm mt-0.5 line-clamp-2 break-words">{gift.description}</p>
         )}
 
         {gift.url && (

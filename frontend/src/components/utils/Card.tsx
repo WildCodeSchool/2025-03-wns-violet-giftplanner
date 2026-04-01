@@ -54,7 +54,7 @@ export default function Card({
         ) : null}
       </div>
       <div className="flex flex-col flex-1 min-w-0">
-        <h2 className="font-inter-extra-bold text-gray-900 truncate">{title}</h2>
+        <h2 className="font-inter-extra-bold text-sm text-gray-900 truncate">{title}</h2>
         <div className="overflow-hidden text-ellipsis whitespace-nowrap">{children}</div>
       </div>
 
