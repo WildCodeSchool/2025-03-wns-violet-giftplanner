@@ -102,6 +102,12 @@ export default function Conversations() {
     if (!Number(groups[indexGroups].id)) return;
     const groupsId = Number(groups[indexGroups].id);
 
+    // si on est sur mobile on fait juste info que le message est vu sans scroller
+    if (isMobile && mobileView === "chat") {
+      updateLastVu(groupsId, messages[groupsId][0].createdAt);
+      return;
+    }
+
     if (getNbNewMessages(groupsId, messages[groupsId]) > 0) {
       // scrolle vers le bas si on y est déjà
       if (!contenairMessageRef.current) return;
