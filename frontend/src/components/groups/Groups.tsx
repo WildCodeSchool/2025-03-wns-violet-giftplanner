@@ -54,6 +54,11 @@ export default function Groups({
         colour="blue"
         title="Mes groupes"
         classNameTitle="text-[1.125rem]"
+        nbNewMessages={
+          groups.reduce((acc, group) => {
+            return acc + getNbNewMessages(Number(group.id), messages[Number(group.id)] || []);
+          }, 0) || undefined
+        }
         button={
           <Button
             data-testid="create-group-button"

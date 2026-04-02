@@ -102,6 +102,12 @@ export default function Conversations() {
     if (!Number(groups[indexGroups].id)) return;
     const groupsId = Number(groups[indexGroups].id);
 
+    // si on est sur mobile on fait juste info que le message est vu sans scroller
+    if (isMobile && mobileView === "chat") {
+      updateLastVu(groupsId, messages[groupsId][0].createdAt);
+      return;
+    }
+
     if (getNbNewMessages(groupsId, messages[groupsId]) > 0) {
       // scrolle vers le bas si on y est déjà
       if (!contenairMessageRef.current) return;
@@ -196,6 +202,7 @@ export default function Conversations() {
     setIsAnimating(true);
     setMobileView("chat");
     setTimeout(() => setIsAnimating(false), 300);
+    updateLastVu(Number(group.id), messages[Number(group.id)][0]?.createdAt ?? 0);
   };
 
   const handleBackToGroups = () => {
@@ -239,6 +246,11 @@ export default function Conversations() {
     return classes.join(" ");
   };
 
+  const nbTotalNewMessages =
+    groups.reduce((acc, group) => {
+      return acc + getNbNewMessages(Number(group.id), messages[Number(group.id)] || []);
+    }, 0) || undefined;
+
   // Mobile render
   if (isMobile) {
     return (
@@ -250,6 +262,9 @@ export default function Conversations() {
             <div className="mobile-groups-header">
               <div className="mobile-groups-title">
                 <h2>Mes groupes</h2>
+                {nbTotalNewMessages && nbTotalNewMessages > 0 && (
+                  <p className="mobile-groups-title-notification">{nbTotalNewMessages}</p>
+                )}
               </div>
             </div>
 
@@ -269,11 +284,19 @@ export default function Conversations() {
                       className="mobile-group-card"
                       onClick={() => handleGroupClick(group)}
                     >
-                      <img
-                        src="/images/papier-theme.jpg"
-                        alt={group.name}
-                        className="mobile-group-card-image"
-                      />
+                      <div style={{ position: "relative" }}>
+                        <img
+                          src="/images/papier-theme.jpg"
+                          alt={group.name}
+                          className="mobile-group-card-image"
+                        />
+                        {/* notification mobile new message */}
+                        {getNbNewMessages(Number(group.id), messages[Number(group.id)] || []) > 0 && (
+                          <p className="mobile-group-card-notification">
+                            {getNbNewMessages(Number(group.id), messages[Number(group.id)] || [])}
+                          </p>
+                        )}
+                      </div>
                       <div className="mobile-group-card-content">
                         <h3 className="mobile-group-card-title">{group.name}</h3>
                         <p className="mobile-group-card-info">
@@ -311,7 +334,10 @@ export default function Conversations() {
               className="p-0 overflow-y-auto max-h-[72vh] max-md:max-h-full"
             >
               <GroupFormindex
-                onSuccess={() => setIsCreateGroupModalOpen(false)}
+                onSuccess={() => {
+                  setIsCreateGroupModalOpen(false);
+                  refetchGroupsCallback();
+                }}
                 onCancel={() => setIsCreateGroupModalOpen(false)}
               />
             </Modal>
