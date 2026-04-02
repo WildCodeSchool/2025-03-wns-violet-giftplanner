@@ -113,8 +113,7 @@ export default function GroupFormindex({ onSuccess, groupId, onDelete }: GroupFo
       piggy_bank: groupData?.piggy_bank ?? 0,
       // Normalise to YYYY-MM-DD for the date input, if possible
       deadline: groupData?.deadline ? new Date(groupData?.deadline).toISOString().slice(0, 10) : "",
-      // We don't currently have an email here, so use the first name as a display value if present
-      user_beneficiary: groupData?.user_beneficiary?.firstName ?? "",
+      user_beneficiary: groupData?.user_beneficiary?.email ?? "",
       users: existingMemberEmails,
     }));
     setChecked(Boolean(groupData?.user_beneficiary));

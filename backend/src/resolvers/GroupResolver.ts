@@ -265,6 +265,18 @@ export default class GroupResolver {
     group.event_type = data.event_type;
     group.piggy_bank = data.piggy_bank;
     group.deadline = data.deadline;
+
+    if (data.user_beneficiary !== undefined) {
+      if (data.user_beneficiary) {
+        const beneficiaryUser = await User.findOne({
+          where: { email: data.user_beneficiary },
+        });
+        group.user_beneficiary = beneficiaryUser ?? undefined;
+      } else {
+        group.user_beneficiary = undefined;
+      }
+    }
+
     await group.save();
 
     if (data.users?.length) {
