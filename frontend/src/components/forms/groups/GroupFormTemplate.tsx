@@ -46,7 +46,7 @@ export default function GroupFormTemplate({
       </div>
 
       {/* Boutons desktop : positionnés en absolu */}
-      <div className="max-md:hidden absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-row items-center gap-5">
+      <div className="max-md:hidden absolute bottom-1 left-1/2 -translate-x-1/2 flex flex-row items-center gap-5 pt-10">
         <Button
           colour="dark"
           rounded
