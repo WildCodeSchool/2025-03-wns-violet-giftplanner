@@ -11,7 +11,7 @@ const RegisterPage = () => {
       </div>
 
       {/* Right column */}
-      <div className="w-full md:w-1/2 h-full relative overflow-hidden">
+      <div className="w-full md:w-1/2 h-full relative overflow-y-auto">
         <RegisterForm />
         {/* Décorations mobiles - différentes de la page login */}
         <img

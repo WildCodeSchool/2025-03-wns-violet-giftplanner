@@ -169,7 +169,7 @@ export default function GroupFormindex({ onSuccess, groupId, onDelete }: GroupFo
     }
 
     setErrors((prev) => {
-      const { ...rest } = prev;
+      const { users: _removed, ...rest } = prev;
       return rest;
     });
     setQuery("");
