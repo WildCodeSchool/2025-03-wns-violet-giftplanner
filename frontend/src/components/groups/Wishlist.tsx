@@ -68,7 +68,7 @@ function WishlistCard({ gift, isOwner, likeState, onEdit, onDelete, onLikeToggle
         <p className="font-bold text-dark text-sm leading-tight line-clamp-1 break-words">{gift.name}</p>
 
         {gift.description && (
-          <p className="text-gray-500 text-sm mt-0.5 line-clamp-2 break-words" style={{ lineHeight: 1.2 }}>
+          <p className="text-gray-500 text-sm mt-1.5 line-clamp-2 break-words" style={{ lineHeight: 1.0 }}>
             {gift.description}
           </p>
         )}
@@ -280,7 +280,7 @@ export default function Wishlist({ groupId, beneficiaryItems, groupItems, onAddI
       </div>
 
       {/* Contenu scrollable */}
-      <div className="flex-1 overflow-y-auto flex flex-col gap-6 md:-mr-4 md:pr-4 scrollbar-thin pb-24 md:pb-0">
+      <div className="flex-1 overflow-y-auto flex flex-col gap-6 -mr-4 pr-4 md:-mr-4 md:pr-4 scrollbar-thin pb-24 md:pb-0">
         {/* Section bénéficiaire */}
         <section>
           <h3 className="font-inter-extra-bold text-[18px] md:text-[16px] mb-3 text-white md:text-white/60">
