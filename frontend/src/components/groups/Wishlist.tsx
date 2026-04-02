@@ -64,9 +64,24 @@ function WishlistCard({ gift, isOwner, likeState, onEdit, onDelete, onLikeToggle
       </div>
 
       {/* Titre + description */}
-      <div className="flex-1 min-w-0">
-        <p className="font-bold text-dark text-sm leading-tight line-clamp-1">{gift.name}</p>
-        {gift.description && <p className="text-gray-500 text-xs mt-0.5 line-clamp-2">{gift.description}</p>}
+      <div className="flex-1 min-w-0 overflow-hidden">
+        <p className="font-bold text-dark text-sm leading-tight line-clamp-1 break-words">{gift.name}</p>
+
+        {gift.description && (
+          <p className="text-gray-500 text-sm mt-0.5 line-clamp-2 break-words">{gift.description}</p>
+        )}
+
+        {gift.url && (
+          <a
+            href={gift.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block mt-1 text-xs font-semibold text-[#EA4B09] underline underline-offset-2"
+            onClick={(e) => e.stopPropagation()}
+          >
+            Voir le lien
+          </a>
+        )}
       </div>
 
       {/* Trois points + dropdown (propriétaire uniquement) */}
@@ -352,10 +367,10 @@ export default function Wishlist({ groupId, beneficiaryItems, groupItems, onAddI
                 value={formData.description}
                 onChange={handleChange}
                 rows={2}
-                maxLength={150}
+                maxLength={120}
                 className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#EA4B09]"
               />
-              <div className="text-xs text-gray-600 text-right">{formData.description.length}/150</div>
+              <div className="text-xs text-gray-600 text-right">{formData.description.length}/120</div>
             </div>
 
             <div>
