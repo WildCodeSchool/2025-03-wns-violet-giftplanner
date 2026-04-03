@@ -45,7 +45,7 @@ export default function GiftCard({ gift, className, onEdit, onDelete }: GiftCard
     <img
       src={imageUrl && !errorImageUrl ? imageUrl : "/images/papier-theme.jpg"}
       alt={name}
-      className="w-full h-40 object-cover"
+      className="w-full h-[152px] md:h-56 object-cover"
     />
   );
 
@@ -57,30 +57,37 @@ export default function GiftCard({ gift, className, onEdit, onDelete }: GiftCard
         className,
       )}
     >
-      {/* Image area — overflow-hidden here to preserve rounded corners on image */}
-      <div className="overflow-hidden rounded-t-xl">
-        {url ? (
-          <a href={url} target="_blank" rel="noopener noreferrer" className="block">
-            {imageContent}
-          </a>
-        ) : (
-          imageContent
-        )}
-      </div>
-
-      {/* Content area */}
+      {/* Image + content — cliquable si url présente */}
       {url ? (
-        <a href={url} target="_blank" rel="noopener noreferrer" className="flex-1">
-          <div className="p-3 flex-1 flex flex-col">
-            <h5 className="text-lg font-semibold text-dark mb-2 leading-tight">{name}</h5>
-            {description && <p className="text-sm text-dark opacity-80 flex-1">{description}</p>}
+        <a href={url} target="_blank" rel="noopener noreferrer" className="flex flex-col flex-1 min-h-0">
+          <div className="overflow-hidden rounded-t-xl">{imageContent}</div>
+          <div className="div-content-giftcard">
+            <h5 className="text-lg font-semibold text-dark mb-2">{name}</h5>
+            {description && (
+              <p className="text-sm break-all text-dark opacity-80 flex-1">
+                <span className="md:hidden">
+                  {description.length > 50 ? `${description.slice(0, 50)}…` : description}
+                </span>
+                <span className="hidden md:inline">{description}</span>
+              </p>
+            )}
           </div>
         </a>
       ) : (
-        <div className="div-content-giftcard">
-          <h5 className="text-lg font-semibold text-dark mb-2">{name}</h5>
-          {description && <p className="text-sm break-all text-dark opacity-80 flex-1">{description}</p>}
-        </div>
+        <>
+          <div className="overflow-hidden rounded-t-xl">{imageContent}</div>
+          <div className="div-content-giftcard">
+            <h5 className="text-lg font-semibold text-dark mb-2">{name}</h5>
+            {description && (
+              <p className="text-sm break-all text-dark opacity-80 flex-1">
+                <span className="md:hidden">
+                  {description.length > 50 ? `${description.slice(0, 50)}…` : description}
+                </span>
+                <span className="hidden md:inline">{description}</span>
+              </p>
+            )}
+          </div>
+        </>
       )}
 
       {/* Three-dot menu — mobile only */}
@@ -156,7 +163,7 @@ export default function GiftCard({ gift, className, onEdit, onDelete }: GiftCard
               e.stopPropagation();
               onDelete?.(gift);
             }}
-            className="px-3 py-1 rounded-md bg-[#A74228] text-white text-sm font-bold shadow cursor-pointer"
+            className="px-3 py-1 rounded-md bg-[#ea4b09] text-white text-sm font-bold shadow cursor-pointer"
           >
             Supprimer
           </button>

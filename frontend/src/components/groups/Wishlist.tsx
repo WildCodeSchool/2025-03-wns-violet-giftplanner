@@ -64,23 +64,13 @@ function WishlistCard({ gift, isOwner, likeState, onEdit, onDelete, onLikeToggle
       </div>
 
       {/* Titre + description */}
-      <div className="flex-1 min-w-0 overflow-hidden">
+      <div className="flex-1 min-w-0 overflow-hidden pr-14">
         <p className="font-bold text-dark text-sm leading-tight line-clamp-1 break-words">{gift.name}</p>
 
         {gift.description && (
-          <p className="text-gray-500 text-sm mt-0.5 line-clamp-2 break-words">{gift.description}</p>
-        )}
-
-        {gift.url && (
-          <a
-            href={gift.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block mt-1 text-xs font-semibold text-[#EA4B09] underline underline-offset-2"
-            onClick={(e) => e.stopPropagation()}
-          >
-            Voir le lien
-          </a>
+          <p className="text-gray-500 text-sm mt-1.5 line-clamp-2 break-words" style={{ lineHeight: 1.0 }}>
+            {gift.description}
+          </p>
         )}
       </div>
 
@@ -89,7 +79,7 @@ function WishlistCard({ gift, isOwner, likeState, onEdit, onDelete, onLikeToggle
         <div ref={menuRef} className="absolute top-2 right-2">
           <button
             type="button"
-            className="p-1 text-dark"
+            className="p-1 text-dark cursor-pointer"
             aria-label="Menu"
             onClick={(e) => {
               e.stopPropagation();
@@ -125,21 +115,34 @@ function WishlistCard({ gift, isOwner, likeState, onEdit, onDelete, onLikeToggle
         </div>
       )}
 
-      {/* Bouton like — bas droite, aligné avec les trois points */}
-      <button
-        type="button"
-        onClick={(e) => {
-          e.stopPropagation();
-          onLikeToggle();
-        }}
-        className="absolute bottom-2 right-2 flex items-center gap-1 px-2 py-1 rounded-[6px] bg-dark text-xs font-semibold transition-colors"
-      >
-        <LuHeart
-          className={`text-sm ${likeState.liked ? "text-[#EA4B09]" : "text-white"}`}
-          style={likeState.liked ? { fill: "currentColor" } : undefined}
-        />
-        <span className={likeState.liked ? "text-[#EA4B09]" : "text-white"}>{likeState.count}</span>
-      </button>
+      {/* Boutons bas droite : lien + like */}
+      <div className="absolute bottom-2 right-2 flex items-center gap-1.5">
+        {gift.url && (
+          <a
+            href={gift.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className="flex items-center gap-1 px-2 py-1 rounded-[6px] bg-[#292E96] text-white text-xs font-semibold shadow-sm cursor-pointer"
+          >
+            Lien
+          </a>
+        )}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onLikeToggle();
+          }}
+          className="flex items-center gap-1 px-2 py-1 rounded-[6px] bg-dark text-xs font-semibold transition-colors cursor-pointer"
+        >
+          <LuHeart
+            className={`text-sm ${likeState.liked ? "text-[#EA4B09]" : "text-white"}`}
+            style={likeState.liked ? { fill: "currentColor" } : undefined}
+          />
+          <span className={likeState.liked ? "text-[#EA4B09]" : "text-white"}>{likeState.count}</span>
+        </button>
+      </div>
     </div>
   );
 }
@@ -277,10 +280,10 @@ export default function Wishlist({ groupId, beneficiaryItems, groupItems, onAddI
       </div>
 
       {/* Contenu scrollable */}
-      <div className="flex-1 overflow-y-auto flex flex-col gap-6 md:-mr-4 md:pr-4 scrollbar-thin pb-24 md:pb-0">
+      <div className="flex-1 overflow-y-auto flex flex-col gap-6 -mr-4 pr-4 md:-mr-4 md:pr-4 scrollbar-thin pb-24 md:pb-0">
         {/* Section bénéficiaire */}
         <section>
-          <h3 className="font-inter-extra-bold text-[18px] md:text-[16px] mb-1.5 text-white md:text-white/60">
+          <h3 className="font-inter-extra-bold text-[18px] md:text-[16px] mb-3 text-white md:text-white/60">
             <span className="md:hidden">Wishlist du bénéficiaire</span>
             <span className="hidden md:inline">Idées du bénéficiaire</span>
           </h3>
@@ -307,7 +310,7 @@ export default function Wishlist({ groupId, beneficiaryItems, groupItems, onAddI
 
         {/* Section idées du groupe — triée par likes décroissants */}
         <section>
-          <h3 className="font-inter-extra-bold text-[18px] md:text-[16px] mb-1.5 text-white md:text-white/60">
+          <h3 className="font-inter-extra-bold text-[18px] md:text-[16px] mb-3 text-white md:text-white/60">
             <span className="md:hidden">Wishlist du groupe</span>
             <span className="hidden md:inline">Idées proposées par le groupe</span>
           </h3>
@@ -389,10 +392,10 @@ export default function Wishlist({ groupId, beneficiaryItems, groupItems, onAddI
                 value={formData.description}
                 onChange={handleChange}
                 rows={2}
-                maxLength={120}
+                maxLength={100}
                 className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#EA4B09]"
               />
-              <div className="text-xs text-gray-600 text-right">{formData.description.length}/120</div>
+              <div className="text-xs text-gray-600 text-right">{formData.description.length}/100</div>
             </div>
 
             <div>

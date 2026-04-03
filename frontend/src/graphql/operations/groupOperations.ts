@@ -149,6 +149,7 @@ export const GET_GROUP_BY_ID = gql`
         firstName
         lastName
         id
+        email
       }
       user_admin {
       isAdmin
