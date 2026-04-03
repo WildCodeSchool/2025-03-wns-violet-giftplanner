@@ -1,0 +1,13 @@
+services:
+  backend:
+    container_name: bot-notification
+    restart: always
+    build: .
+    volumes:
+      - ./src/:/app/src/
+    environment:
+      DISCORD_CHANNEL_ID: ${DISCORD_CHANNEL_ID}
+      DISCORD_TOKEN: ${DISCORD_TOKEN}
+      APP_PORT: ${APP_PORT}
+    ports:
+      - "${APP_PORT}:${APP_PORT}"

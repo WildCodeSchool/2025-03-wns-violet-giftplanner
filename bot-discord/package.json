@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "docker-dev": "docker compose --env-file .env.dev -f compose.bot.dev.yaml up -d --build",
+    "docker-dev-stop": "docker compose --env-file .env.dev -f compose.bot.dev.yaml down",
     "dev": "ts-node-dev --respawn --transpile-only --poll ./src/main.ts",
     "build": "tsc",
     "start": "node ./dist/main.js"

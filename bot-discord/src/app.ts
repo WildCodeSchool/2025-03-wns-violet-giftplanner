@@ -8,19 +8,6 @@ dotenv.config();
 
 const app = express();
 
-app.use(express.json({ limit: "20mb" }));
-
-if (process.env.BACKEND_URL && process.env.CLIENT_URL) {
-    app.use(
-        cors({
-            origin: [process.env.BACKEND_URL, process.env.CLIENT_URL],
-        }),
-    );
-} else {
-    console.error("Démarrage refusé: variables d'environnement cors manquantes (BACKEND_URL ou/et CLIENT_URL)");
-    process.exit(1);
-}
-
 // Mount the API router under the "/api" endpoint
 app.use(router);
 
