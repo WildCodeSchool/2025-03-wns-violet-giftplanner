@@ -1,0 +1,1 @@
+docker compose --env-file .env -f compose.bot.prod.yaml down
