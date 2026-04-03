@@ -15,12 +15,14 @@ export function buildDeployEmbed(environment: Environment) {
         production: {
             label: "PRODUCTION",
             color: 0x0099ff,
-            emoji: "🚀"
+            emoji: "🚀",
+            lien: "https://giftchat.032025-bleu-2.wns.wilders.dev"
         },
         staging: {
             label: "STAGING",
             color: 0x00c853,
-            emoji: "🧪"
+            emoji: "🧪",
+            lien: "https://staging.giftchat.032025-bleu-2.wns.wilders.dev"
         }
     };
 
@@ -30,15 +32,22 @@ export function buildDeployEmbed(environment: Environment) {
         .setColor(env.color)
         .setTitle(`${env.emoji} Déploiement ${env.label}`)
         .setDescription("✅ Déploiement effectué avec succès")
-        .addFields({
-            name: "Environnement",
-            value: env.label,
-            inline: true
-        },
+        .addFields(
+            {
+                name: "Environnement",
+                value: env.label,
+                inline: true
+            },
             {
                 name: "Application",
                 value: "GitChat",
-            })
+            },
+            {
+                name: "Lien de déploiement",
+                value: env.lien || "N/A",
+                inline: true
+            }
+        )
         .setTimestamp()
         .setFooter({
             text: "Déploiement VPS"
@@ -49,7 +58,7 @@ export function buildDeployEmbed(environment: Environment) {
 const notify = async (req: Request, res: Response) => {
     try {
         const { enviroment } = req.body as {
-            enviroment?: string;
+            enviroment?: Environment;
         };
 
         if (!enviroment || typeof enviroment !== 'string') {
@@ -70,7 +79,7 @@ const notify = async (req: Request, res: Response) => {
             return res.status(400).json({ error: 'Le salon n’est pas textuel' });
         }
 
-        const embed = buildDeployEmbed("staging"); // production ou "staging"
+        const embed = buildDeployEmbed(enviroment); // production ou "staging"
 
         await (channel as TextChannel).send({
             content: `<@&${DISCORD_ROLE_ID}>`,
