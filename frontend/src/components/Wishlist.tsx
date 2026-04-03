@@ -156,7 +156,7 @@ export default function Wishlist() {
               </div>
             </div>
           ) : (
-            <ul className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(280px,1fr))] auto-rows-fr max-md:grid-cols-2">
+            <ul className="grid gap-[1.6vw] grid-cols-[repeat(auto-fill,minmax(280px,1fr))] auto-rows-fr max-md:grid-cols-2 max-md:gap-4">
               {loading && (
                 <>
                   <li>

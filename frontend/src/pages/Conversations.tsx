@@ -501,7 +501,7 @@ export default function Conversations() {
   // Desktop empty state (no groups)
   if (groups.length === 0 && groupData !== undefined) {
     return (
-      <div className="flex h-full w-full relative min-w-0 pl-10 gap-6 box-border">
+      <div className="flex h-full w-full relative min-w-0 pl-[2vw] gap-[2vw] box-border">
         <div className="h-full w-full flex flex-col bg-blue rounded-[18px] overflow-hidden p-10">
           {/* Header */}
           <div className="flex justify-between items-start text-white mb-8 flex-shrink-0">
@@ -548,9 +548,9 @@ export default function Conversations() {
 
   // Desktop render (original layout)
   return (
-    <div className="flex h-full w-full relative min-w-0 pl-6 gap-6 box-border">
+    <div className="flex h-full w-full relative min-w-0 pl-[2vw] gap-[2vw] box-border">
       {/* Left Column */}
-      <div className="grid grid-rows-[1fr_40px_fit-content(100px)_1fr] h-full min-h-0 min-w-0 basis-[38%] max-w-[38%]">
+      <div className="grid grid-rows-[1fr_2vw_fit-content(100px)_1fr] h-full min-h-0 min-w-0 basis-[38%] max-w-[38%]">
         <div className="flex h-full min-h-0 min-w-0">
           {groups && (
             <Groups
