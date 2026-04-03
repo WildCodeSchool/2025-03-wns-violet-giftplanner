@@ -8,6 +8,8 @@ dotenv.config();
 
 const app = express();
 
+app.use(express.json());
+
 // Mount the API router under the "/api" endpoint
 app.use(router);
 

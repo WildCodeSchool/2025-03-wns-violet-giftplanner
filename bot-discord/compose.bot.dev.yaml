@@ -9,5 +9,6 @@ services:
       DISCORD_CHANNEL_ID: ${DISCORD_CHANNEL_ID}
       DISCORD_TOKEN: ${DISCORD_TOKEN}
       APP_PORT: ${APP_PORT}
+      DISCORD_ROLE_ID: ${DISCORD_ROLE_ID}
     ports:
       - "${APP_PORT}:${APP_PORT}"

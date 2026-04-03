@@ -8,8 +8,8 @@ router.get("/hey", (_req, res) => {
     res.send("Hello World!");
 });
 
-router.get('/notify', notification.notify);
+router.post('/notify', notification.notify);
 
-router.post('/health', health.health);
+router.get('/health', health.health);
 
 export default router;
