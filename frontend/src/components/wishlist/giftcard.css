@@ -5,6 +5,12 @@
   flex: 1;
 }
 
+@media (max-width: 768px) {
+  .div-content-giftcard {
+    padding: 14px 16px;
+  }
+}
+
 .div-content-giftcard h5 {
   line-height: 1.1;
   text-align: center;

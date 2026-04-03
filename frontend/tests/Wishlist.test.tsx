@@ -105,7 +105,7 @@ describe("Wishlist", () => {
 
         render(<Wishlist />);
 
-        expect(screen.getByText("Aucune idée pour l'instant.")).toBeInTheDocument();
+        expect(screen.getByText("Aucune idée pour le moment.")).toBeInTheDocument();
     });
 
     test("affiche une erreur si la query échoue", () => {

@@ -102,6 +102,12 @@ export default function Conversations() {
     if (!Number(groups[indexGroups].id)) return;
     const groupsId = Number(groups[indexGroups].id);
 
+    // si on est sur mobile on fait juste info que le message est vu sans scroller
+    if (isMobile && mobileView === "chat") {
+      updateLastVu(groupsId, messages[groupsId][0].createdAt);
+      return;
+    }
+
     if (getNbNewMessages(groupsId, messages[groupsId]) > 0) {
       // scrolle vers le bas si on y est déjà
       if (!contenairMessageRef.current) return;
@@ -196,6 +202,7 @@ export default function Conversations() {
     setIsAnimating(true);
     setMobileView("chat");
     setTimeout(() => setIsAnimating(false), 300);
+    updateLastVu(Number(group.id), messages[Number(group.id)][0]?.createdAt ?? 0);
   };
 
   const handleBackToGroups = () => {
@@ -239,6 +246,11 @@ export default function Conversations() {
     return classes.join(" ");
   };
 
+  const nbTotalNewMessages =
+    groups.reduce((acc, group) => {
+      return acc + getNbNewMessages(Number(group.id), messages[Number(group.id)] || []);
+    }, 0) || undefined;
+
   // Mobile render
   if (isMobile) {
     return (
@@ -250,6 +262,9 @@ export default function Conversations() {
             <div className="mobile-groups-header">
               <div className="mobile-groups-title">
                 <h2>Mes groupes</h2>
+                {nbTotalNewMessages && nbTotalNewMessages > 0 && (
+                  <p className="mobile-groups-title-notification">{nbTotalNewMessages}</p>
+                )}
               </div>
             </div>
 
@@ -269,11 +284,19 @@ export default function Conversations() {
                       className="mobile-group-card"
                       onClick={() => handleGroupClick(group)}
                     >
-                      <img
-                        src="/images/papier-theme.jpg"
-                        alt={group.name}
-                        className="mobile-group-card-image"
-                      />
+                      <div style={{ position: "relative" }}>
+                        <img
+                          src="/images/papier-theme.jpg"
+                          alt={group.name}
+                          className="mobile-group-card-image"
+                        />
+                        {/* notification mobile new message */}
+                        {getNbNewMessages(Number(group.id), messages[Number(group.id)] || []) > 0 && (
+                          <p className="mobile-group-card-notification">
+                            {getNbNewMessages(Number(group.id), messages[Number(group.id)] || [])}
+                          </p>
+                        )}
+                      </div>
                       <div className="mobile-group-card-content">
                         <h3 className="mobile-group-card-title">{group.name}</h3>
                         <p className="mobile-group-card-info">
@@ -311,7 +334,10 @@ export default function Conversations() {
               className="p-0 overflow-y-auto max-h-[72vh] max-md:max-h-full"
             >
               <GroupFormindex
-                onSuccess={() => setIsCreateGroupModalOpen(false)}
+                onSuccess={() => {
+                  setIsCreateGroupModalOpen(false);
+                  refetchGroupsCallback();
+                }}
                 onCancel={() => setIsCreateGroupModalOpen(false)}
               />
             </Modal>
@@ -382,6 +408,14 @@ export default function Conversations() {
                   setIsEditGroupModalOpen(false);
                   refetchGroupsCallback();
                 }}
+                onDelete={() => {
+                  setIsEditGroupModalOpen(false);
+                  setSelectedGroupId(null);
+                  setIndexGroup(0);
+                  setMobileView("groups");
+                  refetchGroups();
+                  refechMessages();
+                }}
                 onCancel={() => setIsEditGroupModalOpen(false)}
               />
             </Modal>
@@ -422,6 +456,7 @@ export default function Conversations() {
           {/* Cagnotte View */}
           {mobileView === "cagnotte" && indexGroups !== -1 && groups[indexGroups] && (
             <div className="mobile-subview-content mobile-cagnotte-bg">
+              <h3 className="font-inter-extra-bold text-[18px] mb-3 text-white">Cagnotte du groupe</h3>
               <div className="mobile-cagnotte-amount">
                 <p className="mobile-cagnotte-amount-value">{groups[indexGroups]?.piggy_bank || 0}€</p>
                 <p className="mobile-cagnotte-amount-label">Cagnotte actuelle</p>
@@ -467,7 +502,7 @@ export default function Conversations() {
   // Desktop empty state (no groups)
   if (groups.length === 0 && groupData !== undefined) {
     return (
-      <div className="flex h-full w-full pl-10 relative">
+      <div className="flex h-full w-full relative min-w-0 pl-[2vw] gap-[2vw] box-border">
         <div className="h-full w-full flex flex-col bg-blue rounded-[18px] overflow-hidden p-10">
           {/* Header */}
           <div className="flex justify-between items-start text-white mb-8 flex-shrink-0">
@@ -514,10 +549,10 @@ export default function Conversations() {
 
   // Desktop render (original layout)
   return (
-    <div className="flex flex-row h-full justify-around w-full relative ">
+    <div className="flex h-full w-full relative min-w-0 pl-[2vw] gap-[2vw] box-border">
       {/* Left Column */}
-      <div className="grid grid-rows-[1fr_40px_fit-content(100px)_1fr] mx-[calc(var(--spacing)*10)] h-full min-h-0">
-        <div className="flex h-full min-h-0">
+      <div className="grid grid-rows-[1fr_2vw_fit-content(100px)_1fr] h-full min-h-0 min-w-0 basis-[38%] max-w-[38%]">
+        <div className="flex h-full min-h-0 min-w-0">
           {groups && (
             <Groups
               groups={groups}
@@ -557,22 +592,26 @@ export default function Conversations() {
           />
         </div>
 
-        <div className="flex h-full min-h-0">
+        <div className="flex h-full min-h-0 min-w-0">
           {indexGroups !== -1 &&
             groups.length > 0 &&
             groups[indexGroups] &&
             (wishlist ? (
-              <Wishlist
-                groupId={Number(groups[indexGroups].id)}
-                beneficiaryItems={beneficiaryItems}
-                groupItems={groupItems}
-                onAddIdea={() => refetchWishlist()}
-              />
+              <div className="w-full min-w-0">
+                <Wishlist
+                  groupId={Number(groups[indexGroups].id)}
+                  beneficiaryItems={beneficiaryItems}
+                  groupItems={groupItems}
+                  onAddIdea={() => refetchWishlist()}
+                />
+              </div>
             ) : (
-              <PiggyBank
-                pot={groups[indexGroups].piggy_bank}
-                onAddFunds={() => setIsAddFundsModalOpen(true)}
-              />
+              <div className="w-full min-w-0">
+                <PiggyBank
+                  pot={groups[indexGroups].piggy_bank}
+                  onAddFunds={() => setIsAddFundsModalOpen(true)}
+                />
+              </div>
             ))}
         </div>
 
@@ -589,7 +628,7 @@ export default function Conversations() {
       </div>
 
       {/* Right Column */}
-      <div className="flex flex-1 w-1/2 h-full  mt-0 justify-center">
+      <div className="flex flex-1 min-w-0 h-full">
         {indexGroups !== -1 &&
           groups.length > 0 &&
           indexGroups < groups.length &&

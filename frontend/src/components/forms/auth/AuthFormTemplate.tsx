@@ -9,7 +9,7 @@ type FormProps = {
 
 export default function AuthFormTemplate({ title, children, onSubmit, footer }: FormProps) {
   return (
-    <div className="flex flex-col items-center justify-center gap-4 md:gap-8 h-full px-12 md:px-48 min-h-0 py-4 md:py-0">
+    <div className="flex flex-col items-center justify-center gap-4 md:gap-8 min-h-full px-12 md:px-48 py-4 md:py-8">
       <Title dark className="flex-shrink-0">
         {title}
       </Title>

@@ -152,11 +152,11 @@ export default function Wishlist() {
             <div className="h-full flex items-center justify-center">
               <div className="flex flex-col items-center justify-center text-white">
                 <Icon icon="gift" className="text-7xl opacity-80 mb-3" />
-                <p className="text-lg mb-8">Aucune idée pour l'instant.</p>
+                <p className="text-lg mb-8">Aucune idée pour le moment.</p>
               </div>
             </div>
           ) : (
-            <ul className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(280px,1fr))] auto-rows-fr max-md:grid-cols-2">
+            <ul className="grid gap-[1.6vw] grid-cols-[repeat(auto-fill,minmax(280px,1fr))] auto-rows-fr max-md:grid-cols-2 max-md:gap-4">
               {loading && (
                 <>
                   <li>
