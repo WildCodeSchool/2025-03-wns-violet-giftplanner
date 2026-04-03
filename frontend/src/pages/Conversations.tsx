@@ -456,6 +456,7 @@ export default function Conversations() {
           {/* Cagnotte View */}
           {mobileView === "cagnotte" && indexGroups !== -1 && groups[indexGroups] && (
             <div className="mobile-subview-content mobile-cagnotte-bg">
+              <h3 className="font-inter-extra-bold text-[18px] mb-3 text-white">Cagnotte du groupe</h3>
               <div className="mobile-cagnotte-amount">
                 <p className="mobile-cagnotte-amount-value">{groups[indexGroups]?.piggy_bank || 0}€</p>
                 <p className="mobile-cagnotte-amount-label">Cagnotte actuelle</p>
