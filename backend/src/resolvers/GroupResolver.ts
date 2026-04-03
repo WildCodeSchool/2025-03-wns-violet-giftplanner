@@ -266,13 +266,17 @@ export default class GroupResolver {
     group.piggy_bank = data.piggy_bank;
     group.deadline = data.deadline;
 
+    //If user beneficiary is not set at all
     if (data.user_beneficiary !== undefined) {
+      //If user beneficiary is set to a valid email (not an empty string)
       if (data.user_beneficiary) {
         const beneficiaryUser = await User.findOne({
           where: { email: data.user_beneficiary },
         });
+        //If user beneficiary is found, set it to the user, otherwise set it to undefined
         group.user_beneficiary = beneficiaryUser ?? undefined;
       } else {
+        //If user beneficiary is not set to a valid email (an empty string), set it to undefined
         group.user_beneficiary = undefined;
       }
     }
