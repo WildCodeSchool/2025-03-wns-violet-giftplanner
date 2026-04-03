@@ -1,0 +1,28 @@
+{
+  "name": "message-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "docker-dev": "docker compose --env-file .env.dev -f compose.bot.dev.yaml up -d --build",
+    "docker-dev-stop": "docker compose --env-file .env.dev -f compose.bot.dev.yaml down",
+    "dev": "ts-node-dev --respawn --transpile-only --poll ./src/main.ts",
+    "build": "tsc",
+    "start": "node ./dist/main.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "discord.js": "^14.26.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10"
+  }
+}
